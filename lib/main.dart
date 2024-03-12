@@ -6,12 +6,19 @@ import 'constants.dart';
 void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: const MainApp(),
+    home: MainApp(),
   ));
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+class MainApp extends StatefulWidget {
+  MainApp({super.key});
+
+  @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  String gender = "male";
 
   @override
   Widget build(BuildContext context) {
@@ -60,27 +67,36 @@ class MainApp extends StatelessWidget {
                       context: context,
                       builder: (BuildContext bc) {
                         return Container(
-                          color: kFillingColor,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              ListTile(
-                                title: Text('Male', style: kSettingsIconTextStyle),
-                                onTap: () {
-                                  // Handle selection of male gender
-                                  Navigator.pop(context);
-                                },
-                              ),
-                              ListTile(
-                                title: Text('Female'),
-                                onTap: () {
-                                  // Handle selection of female gender
-                                  Navigator.pop(context);
-                                },
-                              ),
-                            ],
-                          ),
-                        );
+                            color: kFillingColor,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ListTile(
+                                  title: const Text('Male'),
+                                  leading: Radio(
+                                    value: 'male',
+                                    groupValue: gender,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        gender = value!;
+                                      });
+                                    },
+                                  ),
+                                ),
+                                ListTile(
+                                  title: const Text('Female'),
+                                  leading: Radio(
+                                    value: 'female',
+                                    groupValue: gender,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        gender = value!;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ));
                       },
                     );
                   },
