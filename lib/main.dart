@@ -18,7 +18,7 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  String gender = "male";
+  String gender = "Farida";
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +58,7 @@ class _MainAppState extends State<MainApp> {
                     leadingIcon: Icons.person,
                   ),
                   titleText: "Gender",
-                  subtitleText: "Man",
+                  subtitleText: gender,
                   trailingWidget: const SettingsTileTrailingIcon(
                     trailingIcon: Icons.arrow_drop_down_sharp,
                   ),
@@ -67,36 +67,45 @@ class _MainAppState extends State<MainApp> {
                       context: context,
                       builder: (BuildContext bc) {
                         return Container(
-                            color: kFillingColor,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                ListTile(
-                                  title: const Text('Male'),
-                                  leading: Radio(
-                                    value: 'male',
-                                    groupValue: gender,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        gender = value!;
-                                      });
-                                    },
-                                  ),
+                          color: kFillingColor,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ListTile(
+                                title: const Text(
+                                  'Male',
+                                  style: TextStyle(color: Colors.white),
                                 ),
-                                ListTile(
-                                  title: const Text('Female'),
-                                  leading: Radio(
-                                    value: 'female',
-                                    groupValue: gender,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        gender = value!;
-                                      });
-                                    },
-                                  ),
+                                leading: Radio(
+                                  activeColor: Colors.white,
+                                  value: 'Male',
+                                  groupValue: gender,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      gender = value!;
+                                    });
+                                  },
                                 ),
-                              ],
-                            ));
+                              ),
+                              ListTile(
+                                title: const Text(
+                                  'Female',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                leading: Radio(
+                                  activeColor: Colors.white,
+                                  value: 'Female',
+                                  groupValue: gender,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      gender = value!;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
                       },
                     );
                   },
