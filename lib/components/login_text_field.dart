@@ -1,7 +1,5 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import '../constants.dart'; 
 
 class LoginTextField extends StatelessWidget {
@@ -37,16 +35,16 @@ class LoginTextField extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
           ),
           labelText: text,
-          labelStyle: TextStyle(color: kHintTextColor),
+          labelStyle: const TextStyle(color: kHintTextColor),
           fillColor: kFillingColor,
           filled: true,
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
-            borderSide: BorderSide(color: Colors.white),
+            borderSide: const BorderSide(color: Colors.white),
           ),
           suffixIcon: suffixIcon,
         ),
-        style: TextStyle(color: Colors.white),
+        style: const TextStyle(color: Colors.white),
       ),
     );
   }
