@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_bel_ham/screens/login_screen.dart';
 import '../constants.dart';
 import '../components/continue_button.dart';
 
 class FirstScreen extends StatelessWidget {
-  const FirstScreen({
+  FirstScreen({
     super.key,
   });
+
+  bool isPressed=false;
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +24,9 @@ class FirstScreen extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.15),
                   child: Image(
-                    image: AssetImage('assets/images/reddit_logo.png'),
-                    height: MediaQuery.of(context).size.height * 0.1,
-                    width: MediaQuery.of(context).size.width * 0.2,
+                    image: const AssetImage('assets/images/elham_final_logo.png'),
+                    height: MediaQuery.of(context).size.height * 0.2,
+                    width: MediaQuery.of(context).size.width * 0.3,
                   ),
                 ),
                 Center(
@@ -32,7 +35,7 @@ class FirstScreen extends StatelessWidget {
         horizontal: MediaQuery.of(context).size.width * 0.04,
         vertical: MediaQuery.of(context).size.height * 0.01),
                     child: Text(
-                      'All your interests in one place',
+                      'Reddit b Elham والهم مش راضي بينا',
                       style: TextStyle(
                         fontSize: MediaQuery.of(context).size.width * 0.11,
                         fontWeight: FontWeight.bold,
@@ -68,14 +71,7 @@ class FirstScreen extends StatelessWidget {
               ),
               ContinueButton(
                 onPress: () {
-                  print('Button pressed');
-                },
-                text: "Continue with Apple",
-                icon: const Icon(Icons.apple),
-              ),
-              ContinueButton(
-                onPress: () {
-                  print('Button pressed');
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
                 },
                 text: "Continue with Email",
                 icon: const Icon(Icons.email),
