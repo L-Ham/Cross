@@ -1,15 +1,25 @@
-import 'package:flutter/material.dart';
+ import 'package:flutter/material.dart';
 import '../constants.dart';
 import '../components/login_text_field.dart';
 import '../components/continue_button.dart';
+ 
+ class LoginScreen extends StatefulWidget {
+        const LoginScreen({Key? key}) : super(key: key);
 
-class LoginScreen extends StatelessWidget {
-  TextEditingController nameController = TextEditingController();
-  TextEditingController passController = TextEditingController();
-  bool isPassObscure = true;
-  bool isNameFocused = false;
-  bool isPassFocused = false;
-  bool activated = false;
+        @override
+        _LoginScreenState createState() => _LoginScreenState();
+      }
+
+      class _LoginScreenState extends State<LoginScreen> {
+        TextEditingController nameController = TextEditingController();
+        TextEditingController passController = TextEditingController();
+        bool isPassObscure = true;
+        bool isNameFocused = false;
+        bool isPassFocused = false;
+
+        void continueNavigation() {
+          print('Continue button pressed');
+        }
 
         @override
         Widget build(BuildContext context) {
@@ -20,7 +30,38 @@ class LoginScreen extends StatelessWidget {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // ... your ContinueButton widgets here ...
+                    ContinueButton(
+                      onPress: () {
+                        print('Button pressed');
+                      },
+                      text: "Continue with phone number",
+                      icon: const Icon(Icons.phone),
+                    ),
+                    ContinueButton(
+                      onPress: () {
+                        print('Button pressed');
+                      },
+                      text: "Continue with Google",
+                      icon: Image(
+                        image: const AssetImage('assets/images/google_logo.png'),
+                        height: MediaQuery.of(context).size.height * 0.03,
+                        width: MediaQuery.of(context).size.width * 0.05,
+                      ),
+                    ),
+                    ContinueButton(
+                      onPress: () {
+                        print('Button pressed');
+                      },
+                      text: "Continue with Apple",
+                      icon: const Icon(Icons.apple),
+                    ),
+                    ContinueButton(
+                      onPress: () {
+                        print('Button pressed');
+                      },
+                      text: "Continue with Email",
+                      icon: const Icon(Icons.email),
+                    ),
                     LoginTextField(
                       controller: nameController,
                       isObscure: false,
@@ -29,14 +70,18 @@ class LoginScreen extends StatelessWidget {
                           ? IconButton(
                               icon: Icon(Icons.clear_rounded),
                               onPressed: () {
-                                nameController.clear();
-                                isNameFocused = false;
+                                setState(() {
+                                  nameController.clear();
+                                  isNameFocused = false;
+                                });
                               },
                             )
                           : null,
                       isFocused: isNameFocused,
                       onChanged: (value) {
-                        isNameFocused = value.isNotEmpty;
+                        setState(() {
+                          isNameFocused = value.isNotEmpty;
+                        });
                       },
                     ),
                     LoginTextField(
@@ -47,13 +92,17 @@ class LoginScreen extends StatelessWidget {
                           ? IconButton(
                               icon: Icon(Icons.visibility_rounded),
                               onPressed: () {
-                                isPassObscure = !isPassObscure;
+                                setState(() {
+                                  isPassObscure = !isPassObscure;
+                                });
                               },
                             )
                           : null,
                       isFocused: isPassFocused,
                       onChanged: (value) {
-                        isPassFocused = value.isNotEmpty;
+                        setState(() {
+                          isPassFocused = value.isNotEmpty;
+                        });
                       },
                     ),
                   ],
@@ -62,8 +111,14 @@ class LoginScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     ContinueButton(
+                      //disable button if no text is entered (button is still not disabled)
                       onPress: () {
-                        print('Button pressed');
+                        if (nameController.text.isNotEmpty &&
+                            passController.text.isNotEmpty) {
+                          continueNavigation();
+                        } else {
+                          null;
+                        }
                       },
                       text: "Continue",
                     ),
