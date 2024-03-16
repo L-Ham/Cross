@@ -18,11 +18,10 @@ const double kSettingsTileTextRatio = 0.0205;
 const double kSettingsTileSubtextRatio = 0.0175;
 const double kSettingsTrailingIconRatio = 0.041;
 const double kSettingsSegmentTextRatio = 0.0187;
+const double kAppBarTitleFontSizeRatio = 0.025;
 
-const kPageTitleStyle = TextStyle(
-  fontWeight: FontWeight.w500,
-  color: Colors.white
-);
+const kPageTitleStyle =
+    TextStyle(fontWeight: FontWeight.w500, color: Colors.white);
 
 TextStyle kSettingsIconTextStyle = const TextStyle(
   fontWeight: FontWeight.w600,
@@ -35,8 +34,9 @@ TextStyle kSettingsConnectedAccountsTextStyle = const TextStyle(
 );
 
 TextStyle kSettingsSegmentTileTextStyle = const TextStyle(
-          fontWeight: FontWeight.bold,
-          color: Colors.white38,
-        );
+  fontWeight: FontWeight.bold,
+  color: Colors.white38,
+);
 
-
+TextStyle kDisconnectConnectedAccountsScreenTextStyle =
+    const TextStyle(color: Colors.white, fontWeight: FontWeight.w500);

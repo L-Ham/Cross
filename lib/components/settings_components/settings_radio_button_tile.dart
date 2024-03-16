@@ -21,7 +21,7 @@ class SettingsRadioButtonTile extends StatelessWidget {
           return ListTile(
             title: Text(
               value,
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
             leading: Theme(
               data: Theme.of(context)

@@ -34,7 +34,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.pop(context);
-            },
+            }
           ),
           title: Text(
             "Account Settings",
@@ -129,7 +129,9 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                             fontSize: ScreenSizeHandler.bigger * kSettingsTileTextRatio,
                           ),
                         ),
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.pushNamed(context, "connected_accounts_disconnect_screen");
+                        },
                       ),
                       SettingsTile(
                         leadingIcon: const SettingsTileImage(
