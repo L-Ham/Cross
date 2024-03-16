@@ -9,6 +9,19 @@ const kCreateCommunityButtonTextHeightRatio = 0.033;
 const kCreateCommunityButtonHeightRatio = 0.075;
 const kErrorTextHeightRatio = 0.018;
 
+const kNotificationSettingsPrivateMessagesSwitchIndex = 0;
+const kNotificationSettingsChatMessagesSwitchIndex = 1;
+const kNotificationSettingsChatRequestsSwitchIndex = 2;
+const kNotificationSettingsMentionsOfUsernameSwitchIndex = 3;
+const kNotificationSettingsCommentsOnYourPostsSwitchIndex = 4;
+const kNotificationSettingsUpvotesOnYourPostsSwitchIndex = 5;
+const kNotificationSettingsUpvotesOnYourCommentsSwitchIndex = 6;
+const kNotificationSettingsRepliesToYourCommentsSwitchIndex = 7;
+const kNotificationSettingsNewFollowersSwitchIndex = 8;
+const kNotificationSettingsCakeDaySwitchIndex = 9;
+const kNotificationSettingsModNotificationsSwitchIndex = 10;
+
+
 const Color kBackgroundColor = Color.fromARGB(255, 20, 20, 20);
 const Color kFillingColor = Color.fromARGB(255, 40, 40, 40);
 const Color kHintTextColor = Color.fromARGB(255, 122, 122, 122);
