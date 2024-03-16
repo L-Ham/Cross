@@ -61,13 +61,6 @@ class FirstScreen extends StatelessWidget {
                     onPress: () {
                       
                     },
-                    text: "Continue with phone number",
-                    icon: const Icon(Icons.phone),
-                  ),
-                  ContinueButton(
-                    onPress: () {
-                      
-                    },
                     text: "Continue with Google",
                     icon: Image(
                       image: const AssetImage('assets/images/google_logo.png'),

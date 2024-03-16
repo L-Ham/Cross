@@ -68,12 +68,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ContinueButton(
                       onPress: () {
                       },
-                      text: "Continue with phone number",
-                      icon: const Icon(Icons.phone),
-                    ),
-                    ContinueButton(
-                      onPress: () {
-                      },
                       text: "Continue with Google",
                       icon: Image(
                         image:
