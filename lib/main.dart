@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'constants.dart';
+import 'components/settings_components/settings_tile_trailing_icon.dart';
+import 'components/settings_components/settings_segment_tile.dart';
+import 'components/settings_components/settings_tile.dart';
+import 'components/settings_components/settings_tile_leading_icon.dart';
+import 'components/settings_components/settings_tile_image.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -131,7 +134,7 @@ class _MainAppState extends State<MainApp> {
                   trailingWidget: Text(
                     "Disconnect",
                     style: kSettingsConnectedAccountsTextStyle.copyWith(
-                      fontSize: MediaQuery.of(context).size.width *
+                      fontSize: MediaQuery.of(context).size.height *
                           kSettingsTileTextRatio,
                     ),
                   ),
@@ -145,7 +148,7 @@ class _MainAppState extends State<MainApp> {
                   trailingWidget: Text(
                     "Connect",
                     style: kSettingsConnectedAccountsTextStyle.copyWith(
-                      fontSize: MediaQuery.of(context).size.width *
+                      fontSize: MediaQuery.of(context).size.height *
                           kSettingsTileTextRatio,
                     ),
                   ),
@@ -196,148 +199,9 @@ class _MainAppState extends State<MainApp> {
   }
 }
 
-class SettingsTileTrailingIcon extends StatelessWidget {
-  const SettingsTileTrailingIcon({
-    required this.trailingIcon,
-    super.key,
-  });
 
-  final IconData trailingIcon;
 
-  @override
-  Widget build(BuildContext context) {
-    return Icon(
-      trailingIcon,
-      size: MediaQuery.of(context).size.width * 0.075,
-      color: Colors.white38,
-    );
-  }
-}
 
-class SettingsSegmentTitle extends StatelessWidget {
-  final String titleText;
 
-  const SettingsSegmentTitle({
-    required this.titleText,
-    super.key,
-  });
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.02),
-      child: Text(
-        titleText,
-        style: TextStyle(
-          fontSize: MediaQuery.of(context).size.width * 0.038,
-          fontWeight: FontWeight.bold,
-          color: Colors.white38,
-        ),
-      ),
-    );
-  }
-}
 
-class SettingsTile extends StatelessWidget {
-  final Widget leadingIcon;
-  final String titleText;
-  final String? subtitleText;
-  final Widget trailingWidget;
-  final VoidCallback? onTap;
-
-  const SettingsTile({
-    Key? key,
-    required this.leadingIcon,
-    required this.titleText,
-    this.subtitleText,
-    required this.trailingWidget,
-    this.onTap,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      tileColor: kFillingColor,
-      visualDensity: VisualDensity.compact,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          leadingIcon,
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  titleText,
-                  style: kSettingsIconTextStyle.copyWith(
-                    fontSize: MediaQuery.of(context).size.width *
-                        kSettingsTileTextRatio,
-                  ),
-                ),
-                if (subtitleText != null)
-                  Text(
-                    subtitleText!,
-                    style: kSettingsIconTextStyle.copyWith(
-                      fontSize: MediaQuery.of(context).size.width *
-                          kSettingsTileTextRatio,
-                      color: Colors.grey,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          trailingWidget
-        ],
-      ),
-      onTap: onTap,
-    );
-  }
-}
-
-class SettingsTileLeadingIcon extends StatelessWidget {
-  const SettingsTileLeadingIcon({
-    super.key,
-    required this.leadingIcon,
-  });
-
-  final IconData leadingIcon;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-        right: MediaQuery.of(context).size.width * 0.04,
-      ),
-      child: Icon(
-        leadingIcon,
-        size: MediaQuery.of(context).size.width * kSettingsLeadingIconRatio,
-        color: Colors.white38,
-      ),
-    );
-  }
-}
-
-class SettingsTileImage extends StatelessWidget {
-  const SettingsTileImage({
-    super.key,
-    required this.assetImageData,
-  });
-
-  final String assetImageData;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-        right: MediaQuery.of(context).size.width * 0.04,
-      ),
-      child: Image(
-        image: AssetImage(
-          assetImageData,
-        ),
-        width: MediaQuery.of(context).size.width * 0.06,
-        height: MediaQuery.of(context).size.height * 0.045,
-      ),
-    );
-  }
-}
