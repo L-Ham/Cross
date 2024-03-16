@@ -60,8 +60,7 @@ class _DisconnectScreenState extends State<DisconnectScreen> {
                               "u/Daniel_Gebraiel",
                               style: kDisconnectConnectedAccountsScreenTextStyle
                                   .copyWith(
-                                      fontSize:
-                                          ScreenSizeHandler.bigger * 0.019),
+                                      fontSize: ScreenSizeHandler.bigger * 0.019),
                             ),
                           ),
                           Padding(
@@ -72,8 +71,7 @@ class _DisconnectScreenState extends State<DisconnectScreen> {
                               "daniel.gebraiel01@eng-st.cu.edu.eg",
                               style: kDisconnectConnectedAccountsScreenTextStyle
                                   .copyWith(
-                                      fontSize:
-                                          ScreenSizeHandler.bigger * 0.019),
+                                      fontSize: ScreenSizeHandler.bigger * 0.019),
                             ),
                           )
                         ],
@@ -85,8 +83,8 @@ class _DisconnectScreenState extends State<DisconnectScreen> {
                         vertical: ScreenSizeHandler.bigger * 0.022),
                     child: Text(
                       "For your security, confirm your password.",
-                      style: kDisconnectConnectedAccountsScreenTextStyle
-                          .copyWith(fontSize: ScreenSizeHandler.bigger * 0.019),
+                      style: kDisconnectConnectedAccountsScreenTextStyle.copyWith(
+                          fontSize: ScreenSizeHandler.bigger * 0.019),
                     ),
                   ),
                   CredentialsTextField(
@@ -95,7 +93,7 @@ class _DisconnectScreenState extends State<DisconnectScreen> {
                     text: 'Password',
                     suffixIcon: isPassFocused
                         ? IconButton(
-                            icon: Icon(Icons.visibility_rounded),
+                            icon: const Icon(Icons.visibility_rounded),
                             onPressed: () {
                               setState(() {
                                 isPassObscure = !isPassObscure;
@@ -123,9 +121,6 @@ class _DisconnectScreenState extends State<DisconnectScreen> {
                   ),
                 ],
               ),
-            ),
-            SizedBox(
-              height: ScreenSizeHandler.screenHeight * 0.48,
             ),
             Padding(
               padding: EdgeInsets.symmetric(
