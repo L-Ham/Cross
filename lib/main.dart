@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
-import 'create_community.dart';
-import 'blocked_accounts.dart';
+import 'package:reddit_bel_ham/screens/create_community_screen.dart';
+import 'screens/account_settings_screen.dart';
 
-void main() => runApp(Myapp());
+void main() {
+  runApp(const RedditBElham());
+}
 
-class Myapp extends StatelessWidget {
-  const Myapp({Key? key}) : super(key: key);
+class RedditBElham extends StatelessWidget {
+  const RedditBElham({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData.dark(),
-      home: BlockedAccount(),
+      debugShowCheckedModeBanner: false,
+      routes: {
+        "create_community_screen": (context) => const CreateCommunityScreen(),
+        "account_settings_screen": (context) => const AccountSettingsScreen(),
+      },
+      initialRoute: "create_community_screen",
     );
   }
 }

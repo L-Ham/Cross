@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './community_type_tile.dart';
+import 'community_type_tile.dart';
 
 class CommunityTypeSelector extends StatelessWidget {
   final String communityType;
