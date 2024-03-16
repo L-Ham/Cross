@@ -1,16 +1,18 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import '../constants.dart'; 
+import '../utilities/screen_size_handler.dart';
+import '../constants.dart';
 
-class CredentialsTextfield extends StatelessWidget {
+class CredentialsTextField extends StatelessWidget {
   final TextEditingController controller;
   final bool isFocused;
   final ValueChanged<String> onChanged;
   final String text;
   final Widget? suffixIcon;
   final bool isObscure;
+  
 
-  const CredentialsTextfield({
+  // ignore: use_key_in_widget_constructors
+  const CredentialsTextField({
     required this.controller,
     required this.isFocused,
     required this.onChanged,
@@ -27,7 +29,6 @@ class CredentialsTextfield extends StatelessWidget {
         vertical: MediaQuery.of(context).size.height * 0.01,
       ),
       child: TextField(
-        
         controller: controller,
         onChanged: onChanged,
         obscureText: isObscure,
@@ -36,7 +37,9 @@ class CredentialsTextfield extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
           ),
           labelText: text,
-          labelStyle: const TextStyle(color: kHintTextColor),
+          labelStyle: TextStyle(
+              color: kHintTextColor,
+              fontSize: ScreenSizeHandler.smaller * 0.035),
           fillColor: kFillingColor,
           filled: true,
           focusedBorder: OutlineInputBorder(
@@ -45,7 +48,10 @@ class CredentialsTextfield extends StatelessWidget {
           ),
           suffixIcon: suffixIcon,
         ),
-        style: const TextStyle(color: Colors.white),
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: ScreenSizeHandler.smaller * 0.035,
+        ),
       ),
     );
   }

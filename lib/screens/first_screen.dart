@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_bel_ham/screens/login_screen.dart';
+import '../screens/login_screen.dart';
 import '../constants.dart';
 import '../components/continue_button.dart';
 import '../components/acknowledgement_text.dart';

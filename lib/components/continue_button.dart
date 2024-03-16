@@ -24,8 +24,7 @@ class ContinueButton extends StatelessWidget {
           vertical: MediaQuery.of(context).size.height * 0.01),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-            backgroundColor:isButtonEnabled ? kFillingColor : kDisabledButtonColor,
-            // backgroundColor: kFillingColor,
+            backgroundColor: isButtonEnabled ? kFillingColor : kDisabledButtonColor,
             foregroundColor: Colors.white,
             padding: EdgeInsets.symmetric(
               vertical: MediaQuery.of(context).size.height * 0.015,

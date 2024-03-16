@@ -3,7 +3,7 @@ import '../components/acknowledgement_text.dart';
 import '../components/text_link.dart';
 import '../utilities/screen_size_handler.dart';
 import '../constants.dart';
-import '../components/credentials_text_field.dart';
+import '../components/login_text_field.dart';
 import '../components/continue_button.dart';
 import 'first_screen.dart';
 import '../components/logo_text_app_bar.dart';
@@ -118,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ],
                       ),
                     ),
-                    CredentialsTextfield(
+                    CredentialsTextField(
                       controller: nameController,
                       isObscure: false,
                       text: 'Email or username',
@@ -137,19 +137,20 @@ class _LoginScreenState extends State<LoginScreen> {
                       onChanged: (value) {
                         setState(() {
                           isNameFocused = value.isNotEmpty;
-                          if (value.isNotEmpty && passController.text.isNotEmpty) {
-                      setState(() {
-                        isButtonEnabled = true;
-                      });
-                    } else {
-                      setState(() {
-                        isButtonEnabled = false;
-                      });
-                    }
+                          if (value.isNotEmpty &&
+                              passController.text.isNotEmpty) {
+                            setState(() {
+                              isButtonEnabled = true;
+                            });
+                          } else {
+                            setState(() {
+                              isButtonEnabled = false;
+                            });
+                          }
                         });
                       },
                     ),
-                    CredentialsTextfield(
+                    CredentialsTextField(
                       controller: passController,
                       isObscure: isPassObscure,
                       text: 'Password',
@@ -167,15 +168,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       onChanged: (value) {
                         setState(() {
                           isPassFocused = value.isNotEmpty;
-                          if (value.isNotEmpty && nameController.text.isNotEmpty) {
-                      setState(() {
-                        isButtonEnabled = true;
-                      });
-                    } else {
-                      setState(() {
-                        isButtonEnabled = false;
-                      });
-                    }
+                          if (value.isNotEmpty &&
+                              nameController.text.isNotEmpty) {
+                            setState(() {
+                              isButtonEnabled = true;
+                            });
+                          } else {
+                            setState(() {
+                              isButtonEnabled = false;
+                            });
+                          }
                         });
                       },
                     ),
@@ -211,8 +213,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     null;
                   }
                 },
-
-
               ),
             ],
           ),

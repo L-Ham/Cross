@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_bel_ham/constants.dart';
+import '/constants.dart';
 import '../utilities/screen_size_handler.dart';
 
 class AcknowledgementText extends StatelessWidget {

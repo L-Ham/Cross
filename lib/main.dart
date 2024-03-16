@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'screens/first_screen.dart';
+import 'utilities/screen_size_handler.dart';
+
 
 void main() {
   runApp(MainApp());
@@ -23,6 +25,9 @@ class _MainAppState extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
+    ScreenSizeHandler.initialize(
+        MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
+
     return MaterialApp( 
       home: FirstScreen()
     );
