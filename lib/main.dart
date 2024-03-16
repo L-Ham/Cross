@@ -22,7 +22,7 @@ class RedditBElham extends StatelessWidget {
         "account_settings_screen": (context) => const AccountSettingsScreen(),
         "notification_settings_screen": (context) => NotificationSettingsScreen(),
       },
-      initialRoute: "notification_settings_screen",
+      initialRoute: "create_community_screen",
     );
   }
 }
