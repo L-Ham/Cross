@@ -27,22 +27,22 @@ class FirstScreen extends StatelessWidget {
                 children: [
                   Padding(
                     padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height * 0.06),
+                        top: ScreenSizeHandler.screenHeight * 0.06),
                     child: Hero(
                       tag: 'logo',
                       child: Image(
                         image: const AssetImage(
                             'assets/images/elham_final_logo.png'),
-                        height: MediaQuery.of(context).size.height * 0.2,
-                        width: MediaQuery.of(context).size.width * 0.3,
+                        height: ScreenSizeHandler.screenHeight * 0.2,
+                        width: ScreenSizeHandler.screenWidth * 0.3,
                       ),
                     ),
                   ),
                   Center(
                     child: Padding(
                       padding: EdgeInsets.symmetric(
-                          horizontal: MediaQuery.of(context).size.width * 0.04,
-                          vertical: MediaQuery.of(context).size.height * 0.01),
+                          horizontal: ScreenSizeHandler.screenWidth * 0.04,
+                          vertical: ScreenSizeHandler.screenHeight * 0.01),
                       child: Text(
                         'Reddit byLham\n والهم مش راضي بينا',
                         style: TextStyle(
@@ -55,24 +55,24 @@ class FirstScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.15,
+                    height: ScreenSizeHandler.screenHeight * 0.15,
                   ),
                   ContinueButton(
                     onPress: () {
-                      print('Button pressed');
+                      
                     },
                     text: "Continue with phone number",
                     icon: const Icon(Icons.phone),
                   ),
                   ContinueButton(
                     onPress: () {
-                      print('Button pressed');
+                      
                     },
                     text: "Continue with Google",
                     icon: Image(
                       image: const AssetImage('assets/images/google_logo.png'),
-                      height: MediaQuery.of(context).size.height * 0.03,
-                      width: MediaQuery.of(context).size.width * 0.05,
+                      height: ScreenSizeHandler.screenHeight * 0.03,
+                      width: ScreenSizeHandler.screenWidth * 0.05,
                     ),
                   ),
                   ContinueButton(
@@ -80,11 +80,11 @@ class FirstScreen extends StatelessWidget {
                     text: "Continue with Email",
                     icon: const Icon(Icons.email),
                   ),
-                  AcknowledgementText(),
+                  const AcknowledgementText(),
                   Padding(
                     padding: EdgeInsets.symmetric(
-                        horizontal: MediaQuery.of(context).size.width * 0.04,
-                        vertical: MediaQuery.of(context).size.height * 0.02),
+                        horizontal: ScreenSizeHandler.screenWidth * 0.04,
+                        vertical: ScreenSizeHandler.screenHeight * 0.02),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -100,7 +100,7 @@ class FirstScreen extends StatelessWidget {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => LoginScreen()));
+                                      builder: (context) => const LoginScreen()));
                             },
                             text: 'Log in'),
                       ],

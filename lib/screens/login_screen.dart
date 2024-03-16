@@ -1,9 +1,10 @@
+
 import 'package:flutter/material.dart';
 import '../components/acknowledgement_text.dart';
 import '../components/text_link.dart';
 import '../utilities/screen_size_handler.dart';
 import '../constants.dart';
-import '../components/login_text_field.dart';
+import '../components/credentials_text_field.dart';
 import '../components/continue_button.dart';
 import 'first_screen.dart';
 import '../components/logo_text_app_bar.dart';
@@ -23,12 +24,9 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isPassFocused = false;
   bool isButtonEnabled = false;
 
-  _LoginScreenState({
-    Key? key,
-  });
+
 
   void continueNavigation() {
-    print('Continue button pressed');
   }
 
   @override
@@ -69,14 +67,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     ContinueButton(
                       onPress: () {
-                        print('Button pressed');
                       },
                       text: "Continue with phone number",
                       icon: const Icon(Icons.phone),
                     ),
                     ContinueButton(
                       onPress: () {
-                        print('Button pressed');
                       },
                       text: "Continue with Google",
                       icon: Image(
@@ -100,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           Padding(
                             padding:
-                                const EdgeInsets.symmetric(horizontal: 10.0),
+                                 EdgeInsets.symmetric(horizontal: ScreenSizeHandler.screenWidth * 0.03),
                             child: Text(
                               'OR',
                               style: TextStyle(
@@ -124,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       text: 'Email or username',
                       suffixIcon: isNameFocused
                           ? IconButton(
-                              icon: Icon(Icons.clear_rounded),
+                              icon: const Icon(Icons.clear_rounded),
                               onPressed: () {
                                 setState(() {
                                   nameController.clear();

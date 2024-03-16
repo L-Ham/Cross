@@ -25,8 +25,8 @@ class CredentialsTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: MediaQuery.of(context).size.width * 0.04,
-        vertical: MediaQuery.of(context).size.height * 0.01,
+        horizontal: ScreenSizeHandler.screenWidth * 0.04,
+        vertical: ScreenSizeHandler.screenHeight * 0.01,
       ),
       child: TextField(
         controller: controller,

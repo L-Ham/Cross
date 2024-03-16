@@ -20,15 +20,15 @@ class ContinueButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width * 0.04,
-          vertical: MediaQuery.of(context).size.height * 0.01),
+          horizontal: ScreenSizeHandler.screenWidth * 0.04,
+          vertical: ScreenSizeHandler.screenHeight * 0.01),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
             backgroundColor: isButtonEnabled ? kFillingColor : kDisabledButtonColor,
             foregroundColor: Colors.white,
             padding: EdgeInsets.symmetric(
-              vertical: MediaQuery.of(context).size.height * 0.015,
-              horizontal: MediaQuery.of(context).size.width * 0.04,
+              vertical: ScreenSizeHandler.screenHeight * 0.015,
+              horizontal: ScreenSizeHandler.screenWidth * 0.04,
             )),
         onPressed: onPress,
         child: Row(
