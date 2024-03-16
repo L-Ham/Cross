@@ -35,7 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String errorText = '';
 
   String validateInput(String value) {
-    if (value != null  && value.contains(new RegExp(r'[^\w\s]'))) {
+    if (value != null && value.contains(new RegExp(r'[^\w\s]'))) {
       return 'Community names must be between $kCommunityNameMinLength-$kCommunityNameMaxLength characters, and can only contain letters, numbers, and underscores';
     }
     return '';
@@ -52,8 +52,9 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Center(
           child: Text(
             'Create a community',
-              style: kPageTitleStyle.copyWith(
-              fontSize: MediaQuery.of(context).size.height * kPageTitleFontSizeHeightRatio,
+            style: kPageTitleStyle.copyWith(
+              fontSize: MediaQuery.of(context).size.height *
+                  kPageTitleFontSizeHeightRatio,
             ),
           ),
         ),
@@ -68,7 +69,8 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text('Community name',
                 style: TextStyle(
-                  fontSize: MediaQuery.of(context).size.height * kPageSubtitleFontSizeHeightRatio,
+                  fontSize: MediaQuery.of(context).size.height *
+                      kPageSubtitleFontSizeHeightRatio,
                 )),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.01,
@@ -78,14 +80,16 @@ class _MyHomePageState extends State<MyHomePage> {
               onChanged: (value) {
                 if (value.length > kCommunityNameMaxLength) {
                   setState(() {
-                    _controller.text = value.substring(0, kCommunityNameMaxLength);
+                    _controller.text =
+                        value.substring(0, kCommunityNameMaxLength);
                     _controller.selection = TextSelection.fromPosition(
                         TextPosition(offset: _controller.text.length));
                   });
                 }
                 setState(() {
                   errorText = validateInput(value);
-                  if (value.length >= kCommunityNameMinLength && errorText == '') {
+                  if (value.length >= kCommunityNameMinLength &&
+                      errorText == '') {
                     activated = true;
                   } else {
                     activated = false;
@@ -102,7 +106,8 @@ class _MyHomePageState extends State<MyHomePage> {
               errorText,
               style: TextStyle(
                 color: Colors.grey,
-                fontSize: MediaQuery.of(context).size.height * kErrorTextHeightRatio,
+                fontSize:
+                    MediaQuery.of(context).size.height * kErrorTextHeightRatio,
               ),
             ),
             Padding(
@@ -110,7 +115,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   top: MediaQuery.of(context).size.height * 0.01),
               child: Text('Community type',
                   style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.height * kPageSubtitleFontSizeHeightRatio,
+                    fontSize: MediaQuery.of(context).size.height *
+                        kPageSubtitleFontSizeHeightRatio,
                   )),
             ),
             CommunityTypeSelector(
@@ -124,7 +130,8 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(communityTypeDescription,
                 style: TextStyle(
-                  fontSize: MediaQuery.of(context).size.height * kCommunityTypeDescriptionHeightRatio,
+                  fontSize: MediaQuery.of(context).size.height *
+                      kCommunityTypeDescriptionHeightRatio,
                   color: Colors.grey,
                 )),
             SizedBox(height: MediaQuery.of(context).size.height * 0.04),
@@ -134,7 +141,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 Text(
                   '18+ community',
                   style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.height * kPageTitleFontSizeHeightRatio,
+                    fontSize: MediaQuery.of(context).size.height *
+                        kPageTitleFontSizeHeightRatio,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -157,7 +165,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 ElevatedButton(
                   onPressed: (activated) ? createCommunity : null,
                   style: ButtonStyle(
-                    minimumSize: MaterialStateProperty.all(Size(MediaQuery.of(context).size.height*0.02, MediaQuery.of(context).size.height*kCreateCommunityButtonHeightRatio)),
+                    minimumSize: MaterialStateProperty.all(Size(
+                        MediaQuery.of(context).size.height * 0.02,
+                        MediaQuery.of(context).size.height *
+                            kCreateCommunityButtonHeightRatio)),
                     backgroundColor: MaterialStateProperty.resolveWith<Color?>(
                       (states) => (activated) ? Colors.blueAccent : Colors.grey,
                     ),
@@ -166,7 +177,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     'Create community',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: MediaQuery.of(context).size.height * kCreateCommunityButtonTextHeightRatio,
+                      fontSize: MediaQuery.of(context).size.height *
+                          kCreateCommunityButtonTextHeightRatio,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
