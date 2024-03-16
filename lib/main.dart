@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/screens/create_community_screen.dart';
 import 'screens/account_settings_screen.dart';
+import 'screens/notifications_screen.dart';
 
 
 void main() {
@@ -19,8 +20,9 @@ class RedditBElham extends StatelessWidget {
       routes: {
         "create_community_screen": (context) => const CreateCommunityScreen(),
         "account_settings_screen": (context) => const AccountSettingsScreen(),
+        "notification_settings_screen": (context) => NotificationSettingsScreen(),
       },
-      initialRoute: "create_community_screen",
+      initialRoute: "notification_settings_screen",
     );
   }
 }
