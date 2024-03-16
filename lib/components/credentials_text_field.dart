@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../constants.dart'; 
 
-class LoginTextField extends StatelessWidget {
+class credentialsTextfield extends StatelessWidget {
   final TextEditingController controller;
   final bool isFocused;
   final ValueChanged<String> onChanged;
@@ -10,7 +10,7 @@ class LoginTextField extends StatelessWidget {
   final Widget? suffixIcon;
   final bool isObscure;
 
-  const LoginTextField({
+  const credentialsTextfield({
     required this.controller,
     required this.isFocused,
     required this.onChanged,
