@@ -1,12 +1,13 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:reddit_bel_ham/screens/login_screen.dart';
 import 'screens/first_screen.dart';
 import 'utilities/screen_size_handler.dart';
 
 
 void main() {
-  runApp(MainApp());
+  runApp( MainApp());
 }
 
 class MainApp extends StatefulWidget {
@@ -29,6 +30,7 @@ class _MainAppState extends State<MainApp> {
         MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
 
     return MaterialApp( 
+      color: Colors.black,
       home: FirstScreen()
     );
   }
