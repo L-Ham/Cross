@@ -1,11 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
-import 'constants.dart';
-import 'components/login_text_field.dart';
-import 'components/continue_button.dart';
 import 'screens/first_screen.dart';
-import 'screens/login_screen.dart';
 
 void main() {
   runApp(MainApp());
