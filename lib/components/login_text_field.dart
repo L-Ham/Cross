@@ -1,6 +1,6 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import '../constants.dart'; 
+import '../utilities/screen_size_handler.dart';
+import '../constants.dart';
 
 class LoginTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -10,6 +10,7 @@ class LoginTextField extends StatelessWidget {
   final Widget? suffixIcon;
   final bool isObscure;
 
+  // ignore: use_key_in_widget_constructors
   const LoginTextField({
     required this.controller,
     required this.isFocused,
@@ -35,7 +36,9 @@ class LoginTextField extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
           ),
           labelText: text,
-          labelStyle: const TextStyle(color: kHintTextColor),
+          labelStyle: TextStyle(
+              color: kHintTextColor,
+              fontSize: ScreenSizeHandler.smaller * 0.035),
           fillColor: kFillingColor,
           filled: true,
           focusedBorder: OutlineInputBorder(
@@ -44,7 +47,10 @@ class LoginTextField extends StatelessWidget {
           ),
           suffixIcon: suffixIcon,
         ),
-        style: const TextStyle(color: Colors.white),
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: ScreenSizeHandler.smaller * 0.035,
+        ),
       ),
     );
   }

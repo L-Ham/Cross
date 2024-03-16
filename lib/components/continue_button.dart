@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constants.dart';
+import '../utilities/screen_size_handler.dart';
 
 class ContinueButton extends StatelessWidget {
   final VoidCallback onPress;
@@ -38,7 +39,7 @@ class ContinueButton extends StatelessWidget {
                   text,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: MediaQuery.of(context).size.width * 0.04,
+                    fontSize: ScreenSizeHandler.smaller * 0.035,
                   ),
                 ),
               ),

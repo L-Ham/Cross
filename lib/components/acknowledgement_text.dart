@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_bel_ham/constants.dart';
+import '../utilities/screen_size_handler.dart';
+
 class AcknowledgementText extends StatelessWidget {
   const AcknowledgementText({
     super.key,
@@ -8,13 +11,13 @@ class AcknowledgementText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width * 0.04,
-          vertical: MediaQuery.of(context).size.height * 0.02),
+          horizontal: ScreenSizeHandler.screenWidth * 0.04,
+          vertical: ScreenSizeHandler.screenHeight * 0.02),
       child: Text(
         'By continuing, you agree to our User Agreement and acknowlege that you understand the Privacy Policy',
         style: TextStyle(
-          fontSize: MediaQuery.of(context).size.width * 0.035,
-          color: Colors.white,
+          fontSize: ScreenSizeHandler.smaller * 0.03,
+          color: kHintTextColor,
         ),
         textAlign: TextAlign.center,
       ),
