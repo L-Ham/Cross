@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import '../components/acknowledgement_text.dart';
+import '../components/text_link.dart';
+import '../utilities/screen_size_handler.dart';
 import '../constants.dart';
 import '../components/credentials_text_field.dart';
 import '../components/continue_button.dart';
+import 'first_screen.dart';
+import '../components/logo_text_app_bar.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -18,6 +23,10 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isPassFocused = false;
   bool isButtonEnabled = false;
 
+  _LoginScreenState({
+    Key? key,
+  });
+
   void continueNavigation() {
     print('Continue button pressed');
   }
@@ -26,63 +35,109 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kBackgroundColor,
-      body: Stack(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ContinueButton(
-                onPress: () {
-                  print('Button pressed');
-                },
-                text: "Continue with phone number",
-                icon: const Icon(Icons.phone),
-              ),
-              ContinueButton(
-                onPress: () {
-                  print('Button pressed');
-                },
-                text: "Continue with Google",
-                icon: Image(
-                  image: const AssetImage('assets/images/google_logo.png'),
-                  height: MediaQuery.of(context).size.height * 0.03,
-                  width: MediaQuery.of(context).size.width * 0.05,
-                ),
-              ),
-              ContinueButton(
-                onPress: () {
-                  print('Button pressed');
-                },
-                text: "Continue with Apple",
-                icon: const Icon(Icons.apple),
-              ),
-              ContinueButton(
-                onPress: () {
-                  print('Button pressed');
-                },
-                text: "Continue with Email",
-                icon: const Icon(Icons.email),
-              ),
-              credentialsTextfield(
-                controller: nameController,
-                isObscure: false,
-                text: 'Email or username',
-                suffixIcon: isNameFocused
-                    ? IconButton(
-                        icon: Icon(Icons.clear_rounded),
-                        onPressed: () {
-                          setState(() {
-                            nameController.clear();
-                            isNameFocused = false;
-                          });
-                        },
-                      )
-                    : null,
-                isFocused: isNameFocused,
-                onChanged: (value) {
-                  setState(() {
-                    isNameFocused = value.isNotEmpty;
-                    if (value.isNotEmpty && passController.text.isNotEmpty) {
+          LogoTextAppBar(
+            text: 'Sign up',
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => FirstScreen()));
+            },
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: 1,
+              itemBuilder: (BuildContext context, int index) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Log in',
+                      style: TextStyle(
+                        fontSize: ScreenSizeHandler.smaller * 0.05,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        bottom: ScreenSizeHandler.screenHeight * 0.02,
+                      ),
+                      child: const AcknowledgementText(),
+                    ),
+                    ContinueButton(
+                      onPress: () {
+                        print('Button pressed');
+                      },
+                      text: "Continue with phone number",
+                      icon: const Icon(Icons.phone),
+                    ),
+                    ContinueButton(
+                      onPress: () {
+                        print('Button pressed');
+                      },
+                      text: "Continue with Google",
+                      icon: Image(
+                        image:
+                            const AssetImage('assets/images/google_logo.png'),
+                        height: ScreenSizeHandler.screenHeight * 0.03,
+                        width: ScreenSizeHandler.screenWidth * 0.05,
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.symmetric(
+                          horizontal: ScreenSizeHandler.screenWidth * 0.06,
+                          vertical: ScreenSizeHandler.screenHeight * 0.01),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Expanded(
+                            child: Divider(
+                              color: kHintTextColor,
+                            ),
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: Text(
+                              'OR',
+                              style: TextStyle(
+                                color: kHintTextColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize: ScreenSizeHandler.smaller * 0.025,
+                              ),
+                            ),
+                          ),
+                          const Expanded(
+                            child: Divider(
+                              color: kHintTextColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    CredentialsTextfield(
+                      controller: nameController,
+                      isObscure: false,
+                      text: 'Email or username',
+                      suffixIcon: isNameFocused
+                          ? IconButton(
+                              icon: Icon(Icons.clear_rounded),
+                              onPressed: () {
+                                setState(() {
+                                  nameController.clear();
+                                  isNameFocused = false;
+                                });
+                              },
+                            )
+                          : null,
+                      isFocused: isNameFocused,
+                      onChanged: (value) {
+                        setState(() {
+                          isNameFocused = value.isNotEmpty;
+                          if (value.isNotEmpty && passController.text.isNotEmpty) {
                       setState(() {
                         isButtonEnabled = true;
                       });
@@ -91,28 +146,28 @@ class _LoginScreenState extends State<LoginScreen> {
                         isButtonEnabled = false;
                       });
                     }
-                  });
-                },
-              ),
-              credentialsTextfield(
-                controller: passController,
-                isObscure: isPassObscure,
-                text: 'Password',
-                suffixIcon: isPassFocused
-                    ? IconButton(
-                        icon: Icon(Icons.visibility_rounded),
-                        onPressed: () {
-                          setState(() {
-                            isPassObscure = !isPassObscure;
-                          });
-                        },
-                      )
-                    : null,
-                isFocused: isPassFocused,
-                onChanged: (value) {
-                  setState(() {
-                    isPassFocused = value.isNotEmpty;
-                    if (value.isNotEmpty && nameController.text.isNotEmpty) {
+                        });
+                      },
+                    ),
+                    CredentialsTextfield(
+                      controller: passController,
+                      isObscure: isPassObscure,
+                      text: 'Password',
+                      suffixIcon: isPassFocused
+                          ? IconButton(
+                              icon: const Icon(Icons.visibility_rounded),
+                              onPressed: () {
+                                setState(() {
+                                  isPassObscure = !isPassObscure;
+                                });
+                              },
+                            )
+                          : null,
+                      isFocused: isPassFocused,
+                      onChanged: (value) {
+                        setState(() {
+                          isPassFocused = value.isNotEmpty;
+                          if (value.isNotEmpty && nameController.text.isNotEmpty) {
                       setState(() {
                         isButtonEnabled = true;
                       });
@@ -121,10 +176,27 @@ class _LoginScreenState extends State<LoginScreen> {
                         isButtonEnabled = false;
                       });
                     }
-                  });
-                },
-              ),
-            ],
+                        });
+                      },
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: ScreenSizeHandler.screenWidth * 0.03,
+                          vertical: ScreenSizeHandler.screenHeight * 0.01),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          TextLink(
+                            text: 'Forgot your password?',
+                            onTap: () {},
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                );
+              },
+            ),
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -139,6 +211,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     null;
                   }
                 },
+
+
               ),
             ],
           ),
