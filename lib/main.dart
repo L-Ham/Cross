@@ -3,7 +3,8 @@
 import 'package:flutter/material.dart';
 import 'screens/first_screen.dart';
 import 'utilities/screen_size_handler.dart';
-
+import 'package:reddit_bel_ham/screens/create_community_screen.dart';
+import 'screens/account_settings_screen.dart';
 
 void main() {
   runApp(MainApp());
@@ -30,6 +31,7 @@ class _MainAppState extends State<MainApp> {
 
     return MaterialApp( 
       home: FirstScreen()
+
     );
   }
 }
