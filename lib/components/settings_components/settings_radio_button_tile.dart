@@ -23,13 +23,17 @@ class SettingsRadioButtonTile extends StatelessWidget {
               value,
               style: TextStyle(color: Colors.white),
             ),
-            leading: Radio(
-              activeColor: Colors.white,
-              value: value,
-              groupValue: groupValue,
-              onChanged: (value) {
-                groupValueNotifier.value = value;
-              },
+            leading: Theme(
+              data: Theme.of(context)
+                  .copyWith(unselectedWidgetColor: Colors.white),
+              child: Radio(
+                activeColor: Colors.white,
+                value: value,
+                groupValue: groupValue,
+                onChanged: (value) {
+                  groupValueNotifier.value = value;
+                },
+              ),
             ),
           );
         },

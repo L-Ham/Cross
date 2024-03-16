@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/constants.dart';
+import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 
 class SettingsTileTrailingIcon extends StatelessWidget {
   const SettingsTileTrailingIcon({
@@ -13,7 +14,7 @@ class SettingsTileTrailingIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Icon(
       trailingIcon,
-      size: MediaQuery.of(context).size.height * kSettingsTrailingIconRatio,
+      size: ScreenSizeHandler.bigger * kSettingsTrailingIconRatio,
       color: Colors.white38,
     );
   }

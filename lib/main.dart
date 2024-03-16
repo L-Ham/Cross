@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/screens/create_community.dart';
+import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'screens/account_settings_screen.dart';
-
 
 void main() {
   runApp(const RedditBElham());
@@ -14,13 +14,15 @@ class RedditBElham extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ScreenSizeHandler.initialize(
+        MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: {
         "create_community_screen": (context) => const CreateCommunityScreen(),
         "account_settings_screen": (context) => const AccountSettingsScreen(),
       },
-      initialRoute: "create_community_screen",
+      initialRoute: "account_settings_screen",
     );
   }
 }

@@ -21,6 +21,7 @@ const double kSettingsSegmentTextRatio = 0.0187;
 
 const kPageTitleStyle = TextStyle(
   fontWeight: FontWeight.w500,
+  color: Colors.white
 );
 
 TextStyle kSettingsIconTextStyle = const TextStyle(
