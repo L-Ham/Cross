@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import './components/community_name_text_box.dart';
-import './components/custom_switch.dart';
-import './components/community_type_selector.dart';
+import 'components/create_community/community_name_text_box.dart';
+import 'components/create_community/custom_switch.dart';
+import 'components/create_community/community_type_selector.dart';
 import 'constants.dart';
 
 void main() => runApp(Myapp());
@@ -35,7 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String errorText = '';
 
   String validateInput(String value) {
-    if (value != null  && value.contains(new RegExp(r'[^\w\s]'))) {
+    if (value.contains(new RegExp(r'[^\w\s]'))) {
       return 'Community names must be between $kCommunityNameMinLength-$kCommunityNameMaxLength characters, and can only contain letters, numbers, and underscores';
     }
     return '';
