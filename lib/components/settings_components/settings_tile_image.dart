@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_bel_ham/constants.dart';
 
 class SettingsTileImage extends StatelessWidget {
   const SettingsTileImage({
