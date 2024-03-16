@@ -27,6 +27,7 @@ class LoginTextField extends StatelessWidget {
         vertical: MediaQuery.of(context).size.height * 0.01,
       ),
       child: TextField(
+        
         controller: controller,
         onChanged: onChanged,
         obscureText: isObscure,

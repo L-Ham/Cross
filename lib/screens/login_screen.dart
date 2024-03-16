@@ -1,6 +1,6 @@
  import 'package:flutter/material.dart';
 import '../constants.dart';
-import '../components/login_text_field.dart';
+import '../components/credentials_text_field.dart';
 import '../components/continue_button.dart';
  
  class LoginScreen extends StatefulWidget {
@@ -120,6 +120,7 @@ import '../components/continue_button.dart';
                           null;
                         }
                       },
+                      
                       text: "Continue",
                     ),
                   ],
