@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'components/create_community/community_name_text_box.dart';
-import 'components/create_community/custom_switch.dart';
-import 'components/create_community/community_type_selector.dart';
-import 'constants.dart';
+import '../components/create_community_components/community_name_text_box.dart';
+import '../components/create_community_components/custom_switch.dart';
+import '../components/create_community_components/community_type_selector.dart';
+import '../constants.dart';
 
-void main() => runApp(Myapp());
+void main() => runApp(CreateCommunityScreen());
 
-class Myapp extends StatelessWidget {
-  const Myapp({Key? key}) : super(key: key);
+class CreateCommunityScreen extends StatelessWidget {
+  const CreateCommunityScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
