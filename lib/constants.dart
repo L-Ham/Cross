@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 const kPageTitleFontSizeHeightRatio = 0.03;
+const kPageTtleTopBottomPadding =  20.0;
+const kErrorTextTopBottomPadding = 10.0;
+const kPageEdgesPadding = 9.0;
 const kPageSubtitleFontSizeHeightRatio = 0.02;
 const kCommunityNameMinLength = 3;
 const kCommunityNameMaxLength = 21;
@@ -8,6 +11,9 @@ const kCommunityTypeDescriptionHeightRatio = 0.018;
 const kCreateCommunityButtonTextHeightRatio = 0.033;
 const kCreateCommunityButtonHeightRatio = 0.075;
 const kErrorTextHeightRatio = 0.018;
+const kCommunityTypeShowModalMaxHeightRatio = 0.35;
+const kCommunityTypeArrowDownIconSize = 0.045;
+const kErrorDisplayDelayTimeMilliseconds = 300;
 
 const kNotificationSettingsPrivateMessagesSwitchIndex = 0;
 const kNotificationSettingsChatMessagesSwitchIndex = 1;
