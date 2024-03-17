@@ -19,8 +19,8 @@ class LogoTextAppBar extends StatelessWidget {
         tag: 'logo',
         child: Image(
           image: const AssetImage('assets/images/elham_final_logo.png'),
-          height: ScreenSizeHandler.screenHeight * 0.12,
-          width: ScreenSizeHandler.screenWidth * 0.12,
+          height: ScreenSizeHandler.screenHeight * 0.1,
+          width: ScreenSizeHandler.screenWidth * 0.1,
         ),
       ),
       flexibleSpace: SafeArea(
