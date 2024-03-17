@@ -1,8 +1,8 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'constants.dart';
-import 'components/empty_dog.dart';
+import '../constants.dart';
+import '../components/empty_dog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class BlockedAccount extends StatefulWidget {

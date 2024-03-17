@@ -14,12 +14,13 @@ class RedditBElham extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
       routes: {
         "create_community_screen": (context) => const CreateCommunityScreen(),
         "account_settings_screen": (context) => const AccountSettingsScreen(),
       },
-      initialRoute: "create_community_screen",
+      initialRoute: "account_settings_screen",
     );
   }
 }

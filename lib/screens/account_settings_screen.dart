@@ -6,6 +6,7 @@ import 'package:reddit_bel_ham/components/settings_components/settings_tile.dart
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_leading_icon.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_image.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_trailing_icon.dart';
+import '../screens/location_customization.dart';
 
 class AccountSettingsScreen extends StatefulWidget {
   const AccountSettingsScreen({super.key});
@@ -16,6 +17,7 @@ class AccountSettingsScreen extends StatefulWidget {
 
 class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
   String gender = "Male";
+  String location = "Egypt";
 
   @override
   Widget build(BuildContext context) {
@@ -81,10 +83,23 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                     leadingIcon: Icons.location_on_outlined,
                   ),
                   titleText: "Location Customization",
+                  subtitleText: location,
                   trailingWidget: const SettingsTileTrailingIcon(
                     trailingIcon: Icons.arrow_forward,
                   ),
-                  onTap: () {},
+                  onTap: () async {
+                    String newlocation = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LocationCustomization(
+                          initialValue: location,
+                        ),
+                      ),
+                    );
+                    setState(() {
+                      location = newlocation;
+                    });
+                  },
                 ),
                 const SettingsSegmentTitle(
                   titleText: "Connected Accounts",

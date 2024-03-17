@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import './components/community_name_text_box.dart';
-import './components/custom_switch.dart';
-import './components/community_type_selector.dart';
-import 'constants.dart';
+import '../components/create_community_components/community_name_text_box.dart';
+import '../components/create_community_components/community_type_selector.dart';
+import '../components/general_components/custom_switch.dart';
+import '../constants.dart';
 
 void main() => runApp(Myapp());
 
@@ -13,19 +13,19 @@ class Myapp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.dark(),
-      home: MyHomePage(),
+      home: CreateCommunityScreen(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+class CreateCommunityScreen extends StatefulWidget {
+  const CreateCommunityScreen({Key? key}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _CreateCommunityScreenState createState() => _CreateCommunityScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
   final TextEditingController _controller = TextEditingController();
   String communityType = 'Public';
   String communityTypeDescription =
