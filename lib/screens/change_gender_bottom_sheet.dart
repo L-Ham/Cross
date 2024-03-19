@@ -55,7 +55,7 @@ class _ChangeGenderBottomSheetState extends State<ChangeGenderBottomSheet> {
                     },
                     child: Text(
                       "Done",
-                      style: kSettingsConnectedAccountsTextStyle.copyWith(
+                      style: kInteractiveTextStyle.copyWith(
                           fontSize: ScreenSizeHandler.bigger * 0.022),
                     ),
                   )

@@ -5,15 +5,21 @@ class GradientButton extends StatelessWidget {
   const GradientButton({
     super.key,
     required this.isPassFocused,
+    required this.buttonTitle,
+    required this.onTap
   });
 
   final bool isPassFocused;
+  final String buttonTitle;
+  final Function onTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (isPassFocused) {}
+        if (isPassFocused) {
+          onTap();
+        }
       },
       child: Opacity(
         opacity: isPassFocused ? 1 : 0.5,
@@ -29,7 +35,7 @@ class GradientButton extends StatelessWidget {
           ),
           child: Center(
             child: Text(
-              'Confirm',
+              buttonTitle,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: ScreenSizeHandler.bigger * 0.025,

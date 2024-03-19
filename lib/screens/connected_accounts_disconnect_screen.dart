@@ -3,6 +3,8 @@ import 'package:reddit_bel_ham/components/credentials_text_field.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:reddit_bel_ham/components/general_components/gradient_button.dart';
+import 'package:reddit_bel_ham/components/general_components/interactive_text.dart';
+import 'package:reddit_bel_ham/components/settings_components/user_information_card.dart';
 
 class DisconnectScreen extends StatefulWidget {
   const DisconnectScreen({super.key});
@@ -15,13 +17,15 @@ class _DisconnectScreenState extends State<DisconnectScreen> {
   TextEditingController passController = TextEditingController();
   bool isPassObscure = true;
   bool isPassFocused = false;
+  String email = "daniel.gebraiel01@eng-st.cu.edu.eg";
+  String username = "DanielGebraiel";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kBackgroundColor,
       appBar: AppBar(
-        backgroundColor: kFillingColor,
+        backgroundColor: kBackgroundColor,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -44,48 +48,19 @@ class _DisconnectScreenState extends State<DisconnectScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: kFillingColor,
-                        radius: ScreenSizeHandler.bigger * 0.04,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: ScreenSizeHandler.smaller * 0.04,
-                                vertical: ScreenSizeHandler.bigger * 0.01),
-                            child: Text(
-                              "u/Daniel_Gebraiel",
-                              style: kDisconnectConnectedAccountsScreenTextStyle
-                                  .copyWith(
-                                      fontSize: ScreenSizeHandler.bigger * 0.019),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: ScreenSizeHandler.smaller * 0.04,
-                                vertical: ScreenSizeHandler.bigger * 0.01),
-                            child: Text(
-                              "daniel.gebraiel01@eng-st.cu.edu.eg",
-                              style: kDisconnectConnectedAccountsScreenTextStyle
-                                  .copyWith(
-                                      fontSize: ScreenSizeHandler.bigger * 0.019),
-                            ),
-                          )
-                        ],
-                      )
-                    ],
+                  UserInformationCard(
+                    email: email,
+                    username: username,
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(
                         vertical: ScreenSizeHandler.bigger * 0.022),
                     child: Text(
                       "For your security, confirm your password.",
-                      style: kDisconnectConnectedAccountsScreenTextStyle.copyWith(
-                          fontSize: ScreenSizeHandler.bigger * 0.019),
+                      style:
+                          kSettingsSubHeaderTextStyle.copyWith(
+                        fontSize: ScreenSizeHandler.bigger * 0.019,
+                      ),
                     ),
                   ),
                   CredentialsTextField(
@@ -112,12 +87,11 @@ class _DisconnectScreenState extends State<DisconnectScreen> {
                   Padding(
                     padding:
                         EdgeInsets.only(top: ScreenSizeHandler.bigger * 0.015),
-                    child: GestureDetector(
-                      onTap: () {},
-                      child: Text(
-                        "Forgot password?",
-                        style: kSettingsConnectedAccountsTextStyle,
-                      ),
+                    child: InteractiveText(
+                      text: "Forgot Password?",
+                      onTap: () {
+                        //TODO: Implement the forgot password functionality
+                      },
                     ),
                   ),
                 ],
@@ -128,7 +102,10 @@ class _DisconnectScreenState extends State<DisconnectScreen> {
                 vertical: ScreenSizeHandler.bigger * 0.02,
                 horizontal: ScreenSizeHandler.smaller * 0.04,
               ),
-              child: GradientButton(isPassFocused: isPassFocused),
+              child: GradientButton(
+                  isPassFocused: isPassFocused,
+                  buttonTitle: "Confirm",
+                  onTap: () {}),
             )
           ],
         ),
