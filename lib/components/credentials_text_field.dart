@@ -22,7 +22,6 @@ class CredentialsTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      
       controller: controller,
       onChanged: onChanged,
       obscureText: isObscure,
@@ -31,7 +30,8 @@ class CredentialsTextField extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
         ),
         labelText: text,
-        labelStyle: const TextStyle(color: kHintTextColor,fontSize: ScreenSizeHandler.smaller * 0.035),),
+        labelStyle: TextStyle(
+            color: kHintTextColor, fontSize: ScreenSizeHandler.smaller * 0.035),
         fillColor: kFillingColor,
         filled: true,
         focusedBorder: OutlineInputBorder(
@@ -40,8 +40,10 @@ class CredentialsTextField extends StatelessWidget {
         ),
         suffixIcon: suffixIcon,
       ),
-      style: const TextStyle(color: Colors.white,fontSize: ScreenSizeHandler.smaller * 0.035,),
+      style: TextStyle(
+        color: Colors.white,
+        fontSize: ScreenSizeHandler.smaller * 0.035,
+      ),
     );
   }
 }
-

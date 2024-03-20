@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_bel_ham/components/create_community_components/custom_switch.dart';
+import 'package:reddit_bel_ham/components/general_components/custom_switch.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'change_gender_bottom_sheet.dart';
@@ -154,7 +154,10 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                         trailingWidget: const SettingsTileTrailingIcon(
                           trailingIcon: Icons.arrow_forward,
                         ),
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.pushNamed(
+                              context, "notification_settings_screen");
+                        },
                       ),
                       const SettingsSegmentTitle(
                         titleText: "Blocking and Permissions",
