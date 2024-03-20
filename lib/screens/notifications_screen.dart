@@ -24,15 +24,15 @@ class _NotificationSettingsScreenState
     return Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: kBackgroundColor,
           title: Padding(
             padding: const EdgeInsets.only(top: kPageTtleTopBottomPadding, bottom: kPageTtleTopBottomPadding),
-            child: Center(
-              child: Text(
-                'Notification Settings',
-                style: TextStyle(
-                  fontSize: ScreenSizeHandler.bigger * kPageTitleFontSizeHeightRatio,
-                  fontWeight: FontWeight.w500,
-                ),
+            child: Text(
+              'Notification Settings',
+              style: TextStyle(
+                fontSize: ScreenSizeHandler.bigger * kAppBarTitleFontSizeRatio,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ),
