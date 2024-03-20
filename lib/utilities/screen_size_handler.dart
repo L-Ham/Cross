@@ -1,4 +1,5 @@
 class ScreenSizeHandler {
+
   static double _screenWidth = 0;
   static double _screenHeight = 0;
   static double _bigger = 0;

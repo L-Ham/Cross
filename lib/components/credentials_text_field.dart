@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../constants.dart'; 
+import '../utilities/screen_size_handler.dart';
+import '../constants.dart';
 
 class CredentialsTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -30,7 +31,7 @@ class CredentialsTextField extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
         ),
         labelText: text,
-        labelStyle: const TextStyle(color: kHintTextColor),
+        labelStyle: const TextStyle(color: kHintTextColor,fontSize: ScreenSizeHandler.smaller * 0.035),),
         fillColor: kFillingColor,
         filled: true,
         focusedBorder: OutlineInputBorder(
@@ -39,7 +40,8 @@ class CredentialsTextField extends StatelessWidget {
         ),
         suffixIcon: suffixIcon,
       ),
-      style: const TextStyle(color: Colors.white),
+      style: const TextStyle(color: Colors.white,fontSize: ScreenSizeHandler.smaller * 0.035,),
     );
   }
 }
+
