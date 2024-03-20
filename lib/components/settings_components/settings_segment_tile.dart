@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/constants.dart';
+import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 
 class SettingsSegmentTitle extends StatelessWidget {
   final String titleText;
@@ -12,11 +13,12 @@ class SettingsSegmentTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.02),
+      padding: EdgeInsets.all(ScreenSizeHandler.bigger * 0.02),
       child: Text(
         titleText,
         style: kSettingsSegmentTileTextStyle.copyWith(
-          fontSize: MediaQuery.of(context).size.height * kSettingsSegmentTextRatio,
+          fontSize:
+              ScreenSizeHandler.bigger * kSettingsSegmentTextRatio,
         ),
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/constants.dart';
+import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 
 class SettingsTile extends StatelessWidget {
   final Widget leadingIcon;
@@ -33,7 +34,7 @@ class SettingsTile extends StatelessWidget {
                 Text(
                   titleText,
                   style: kSettingsIconTextStyle.copyWith(
-                    fontSize: MediaQuery.of(context).size.height *
+                    fontSize: ScreenSizeHandler.bigger *
                         kSettingsTileTextRatio,
                   ),
                 ),
@@ -41,7 +42,7 @@ class SettingsTile extends StatelessWidget {
                   Text(
                     subtitleText!,
                     style: kSettingsIconTextStyle.copyWith(
-                      fontSize: MediaQuery.of(context).size.height *
+                      fontSize: ScreenSizeHandler.bigger *
                           kSettingsTileSubtextRatio,
                       color: Colors.grey,
                     ),

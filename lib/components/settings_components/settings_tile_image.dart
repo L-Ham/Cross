@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 
 class SettingsTileImage extends StatelessWidget {
   const SettingsTileImage({
@@ -12,14 +13,14 @@ class SettingsTileImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(
-        right: MediaQuery.of(context).size.width * 0.04,
+        right: ScreenSizeHandler.bigger * 0.04,
       ),
       child: Image(
         image: AssetImage(
           assetImageData,
         ),
-        width: MediaQuery.of(context).size.width * 0.06,
-        height: MediaQuery.of(context).size.height * 0.045,
+        width: ScreenSizeHandler.smaller * 0.06,
+        height: ScreenSizeHandler.bigger * 0.045,
       ),
     );
   }

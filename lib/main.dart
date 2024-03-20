@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_bel_ham/screens/connected_accounts_disconnect_screen.dart';
+import 'package:reddit_bel_ham/screens/update_email_address_screen.dart';
 import 'package:reddit_bel_ham/screens/create_community_screen.dart';
 import 'screens/account_settings_screen.dart';
 import 'utilities/screen_size_handler.dart';
@@ -27,9 +29,10 @@ class RedditByLham extends StatelessWidget {
         "create_community_screen": (context) => const CreateCommunityScreen(),
         "account_settings_screen": (context) => const AccountSettingsScreen(),
         "notification_settings_screen": (context) => const NotificationSettingsScreen(),
-
+        "connected_accounts_disconnect_screen": (context) => const DisconnectScreen(),
+        "update_email_address_screen": (context) => const UpdateEmailAddressScreen(),
       },
-      initialRoute: "notification_settings_screen",
+      initialRoute: "account_settings_screen",
     );
   }
 }
