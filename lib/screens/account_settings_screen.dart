@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/components/general_components/custom_switch.dart';
 import 'package:reddit_bel_ham/constants.dart';
-import 'package:reddit_bel_ham/screens/change_password_screen.dart';
+// import 'package:reddit_bel_ham/screens/change_password_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'change_gender_bottom_sheet.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_segment_tile.dart';
@@ -77,7 +77,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                         trailingIcon: Icons.arrow_forward,
                       ),
                       onTap: () {
-                        Navigator.pushNamed(context, ChangePasswordScreen.id);
+                        // Navigator.pushNamed(context, ChangePasswordScreen.id);
                       },
                     ),
                     SettingsTile(
