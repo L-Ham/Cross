@@ -12,6 +12,8 @@ import '../utilities/email_regex.dart';
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
 
+  static const String id = 'signup_screen';
+
   @override
   SignupScreenState createState() => SignupScreenState();
 }

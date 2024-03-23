@@ -101,6 +101,7 @@ class FirstScreen extends StatelessWidget {
                         ),
                         TextLink(
                           key: const Key('first_screen_log_in_text_link'),
+                            fontSizeRatio: ScreenSizeHandler.smaller * 0.035,
                             onTap: () {
                               Navigator.push(
                                   context,

@@ -40,8 +40,10 @@ class LoginScreenState extends State<LoginScreen> {
             key: const Key('login_screen_logo_text_app_bar'),
             text: 'Sign up',
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const SignupScreen()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const SignupScreen()));
             },
           ),
           Expanded(
@@ -126,8 +128,7 @@ class LoginScreenState extends State<LoginScreen> {
                                   setState(() {
                                     nameController.clear();
                                     isNameFocused = false;
-                                   isButtonEnabled = false;
-
+                                    isButtonEnabled = false;
                                   });
                                 },
                               )
@@ -152,8 +153,8 @@ class LoginScreenState extends State<LoginScreen> {
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(
-          horizontal: ScreenSizeHandler.screenWidth * 0.04,
-          vertical: ScreenSizeHandler.screenHeight * 0.01),
+                          horizontal: ScreenSizeHandler.screenWidth * 0.04,
+                          vertical: ScreenSizeHandler.screenHeight * 0.01),
                       child: CredentialsTextField(
                         key: const Key('login_screen_password_text_field'),
                         controller: passController,
@@ -196,10 +197,14 @@ class LoginScreenState extends State<LoginScreen> {
                         children: [
                           TextLink(
                             key: const Key('login_screen_forgot_password_text_link'),
+                            fontSizeRatio: ScreenSizeHandler.smaller * 0.035,
                             text: 'Forgot your password?',
                             onTap: () {
-                                            Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const ForgotPasswordScreen()));
                             },
                           ),
                         ],
@@ -223,7 +228,7 @@ class LoginScreenState extends State<LoginScreen> {
                         MaterialPageRoute(builder: (context) => HomePage()));
                   } else {
                     null;
-                  }                 
+                  }
                 },
                 color: Colors.orange[900],
               ),

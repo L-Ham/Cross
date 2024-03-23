@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:reddit_bel_ham/constants.dart';
 
 class SearchScreen extends StatelessWidget {
+  static const String id = 'search_screen';
   final List<String> searchHistory = [
     'Flutter',
     'Dart',
