@@ -21,18 +21,14 @@ class MainApp extends StatefulWidget {
 class _MainAppState extends State<MainApp> {
 
 
-  void continueNavigation(){
-    print('Continue button pressed');
-  }
-
   @override
   Widget build(BuildContext context) {
     ScreenSizeHandler.initialize(
         MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
 
-    return MaterialApp( 
+    return  MaterialApp( 
       color: Colors.black,
-      home: SignupScreen()
+      home: FirstScreen()
 
     );
   }
