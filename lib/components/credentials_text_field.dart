@@ -11,8 +11,9 @@ class CredentialsTextField extends StatelessWidget {
   final Widget? suffixIcon;
   final Widget? prefixIcon;
   final bool isObscure;
+  Key? key;
 
-  const CredentialsTextField({
+   CredentialsTextField({
     required this.controller,
     required this.isFocused,
     required this.onChanged,
@@ -21,7 +22,8 @@ class CredentialsTextField extends StatelessWidget {
     this.suffixIcon,
     this.prefixIcon,
     this.isValid = true,
-  });
+    this.key,
+  }): super(key: key);
 
   @override
   Widget build(BuildContext context) {
