@@ -1,4 +1,6 @@
+
 import 'package:flutter/material.dart';
+import 'package:reddit_bel_ham/screens/login_screen.dart';
 import '../components/acknowledgement_text.dart';
 import '../components/text_link.dart';
 import '../utilities/screen_size_handler.dart';
@@ -7,15 +9,16 @@ import '../components/credentials_text_field.dart';
 import '../components/continue_button.dart';
 import 'first_screen.dart';
 import '../components/logo_text_app_bar.dart';
+import '../utilities/email_regex.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({Key? key}) : super(key: key);
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _SignupScreenState createState() => _SignupScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignupScreenState extends State<SignupScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passController = TextEditingController();
   bool isPassObscure = true;
@@ -23,7 +26,10 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isPassFocused = false;
   bool isButtonEnabled = false;
 
-  void continueNavigation() {}
+
+
+  void continueNavigation() {
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +39,10 @@ class _LoginScreenState extends State<LoginScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           LogoTextAppBar(
-            text: 'Sign up',
+            text: 'Log in',
             onTap: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => FirstScreen()));
+                  MaterialPageRoute(builder: (context) => LoginScreen()));
             },
           ),
           Expanded(
@@ -47,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
-                      'Log in',
+                      'Hi new friend,\nWelcome to Reddit byLham!',
                       style: TextStyle(
                         fontSize: ScreenSizeHandler.smaller * 0.05,
                         fontWeight: FontWeight.bold,
@@ -61,53 +67,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       child: const AcknowledgementText(),
                     ),
-                    ContinueButton(
-                      onPress: () {},
-                      text: "Continue with Google",
-                      icon: Image(
-                        image:
-                            const AssetImage('assets/images/google_logo.png'),
-                        height: ScreenSizeHandler.screenHeight * 0.03,
-                        width: ScreenSizeHandler.screenWidth * 0.05,
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.symmetric(
-                          horizontal: ScreenSizeHandler.screenWidth * 0.06,
-                          vertical: ScreenSizeHandler.screenHeight * 0.01),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Expanded(
-                            child: Divider(
-                              color: kHintTextColor,
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal:
-                                    ScreenSizeHandler.screenWidth * 0.03),
-                            child: Text(
-                              'OR',
-                              style: TextStyle(
-                                color: kHintTextColor,
-                                fontWeight: FontWeight.bold,
-                                fontSize: ScreenSizeHandler.smaller * 0.025,
-                              ),
-                            ),
-                          ),
-                          const Expanded(
-                            child: Divider(
-                              color: kHintTextColor,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                     CredentialsTextField(
                       controller: nameController,
                       isObscure: false,
-                      text: 'Email or username',
+                      text: 'Email',
                       suffixIcon: isNameFocused
                           ? IconButton(
                               icon: const Icon(Icons.clear_rounded),
@@ -135,6 +98,17 @@ class _LoginScreenState extends State<LoginScreen> {
                           }
                         });
                       },
+                    ),
+                    Visibility(
+                      visible: !isNameFocused && isEmailValid(nameController.text),
+                      child: Text(
+                        'Please enter a valid email address',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: ScreenSizeHandler.smaller * 0.5,
+                        ),
+                        
+                      ),
                     ),
                     CredentialsTextField(
                       controller: passController,
@@ -167,20 +141,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         });
                       },
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: ScreenSizeHandler.screenWidth * 0.03,
-                          vertical: ScreenSizeHandler.screenHeight * 0.01),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          TextLink(
-                            text: 'Forgot your password?',
-                            onTap: () {},
-                          ),
-                        ],
-                      ),
-                    )
                   ],
                 );
               },
@@ -194,10 +154,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 isButtonEnabled: isButtonEnabled,
                 onPress: () {
                   if (isButtonEnabled) {
-                    continueNavigation(); //TODO
+                    continueNavigation();
                   } else {
                     null;
-                  }                 
+                  }
                 },
               ),
             ],
