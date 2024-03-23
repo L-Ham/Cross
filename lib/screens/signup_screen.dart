@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_bel_ham/screens/home_page_screen.dart';
 import 'package:reddit_bel_ham/screens/login_screen.dart';
 import '../components/acknowledgement_text.dart';
 import '../utilities/screen_size_handler.dart';
@@ -12,10 +13,10 @@ class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
 
   @override
-  _SignupScreenState createState() => _SignupScreenState();
+  SignupScreenState createState() => SignupScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
+class SignupScreenState extends State<SignupScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passController = TextEditingController();
   bool isPassObscure = true;
@@ -35,10 +36,11 @@ class _SignupScreenState extends State<SignupScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           LogoTextAppBar(
+            key: const Key('signup_screen_logo_text_app_bar_login_button'),
             text: 'Log in',
             onTap: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()));
+                  MaterialPageRoute(builder: (context) => const LoginScreen()));
             },
           ),
           Expanded(
@@ -68,6 +70,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           horizontal: ScreenSizeHandler.screenWidth * 0.04,
                           vertical: ScreenSizeHandler.screenHeight * 0.01),
                       child: CredentialsTextField(
+                        key: const Key('signup_screen_email_text_field'),
                         controller: nameController,
                         isObscure: false,
                         isValid: isValidEmail,
@@ -118,6 +121,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                     ),
                     Visibility(
+                      key: const Key('signup_screen_email_error_text'),
                       visible: !isValidEmail,
                       child: Padding(
                         padding: EdgeInsets.only(
@@ -139,6 +143,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           horizontal: ScreenSizeHandler.screenWidth * 0.04,
                           vertical: ScreenSizeHandler.screenHeight * 0.01),
                       child: CredentialsTextField(
+                        key: const Key('signup_screen_password_text_field'),
                         controller: passController,
                         isObscure: isPassObscure,
                         isValid: isValidPassword,
@@ -184,6 +189,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                     ),
                     Visibility(
+                      key: const Key('signup_screen_password_error_text'),
                       visible: !isValidPassword,
                       child: Padding(
                         padding: EdgeInsets.only(
@@ -209,11 +215,13 @@ class _SignupScreenState extends State<SignupScreen> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               ContinueButton(
+                key: const Key('signup_screen_continue_button'),
                 text: "Continue",
                 isButtonEnabled: isButtonEnabled,
                 onPress: () {
                   if (isButtonEnabled) {
-                    continueNavigation();
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => HomePage()));
                   } else {
                     null;
                   }

@@ -6,9 +6,9 @@ import '../utilities/screen_size_handler.dart';
 import '../constants.dart';
 import '../components/credentials_text_field.dart';
 import '../components/continue_button.dart';
-import 'first_screen.dart';
 import '../components/logo_text_app_bar.dart';
 import '../screens/forgot_password_screen.dart';
+import '../screens/home_page_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -16,10 +16,10 @@ class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  LoginScreenState createState() => LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class LoginScreenState extends State<LoginScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passController = TextEditingController();
   bool isPassObscure = true;
@@ -37,6 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           LogoTextAppBar(
+            key: const Key('login_screen_logo_text_app_bar'),
             text: 'Sign up',
             onTap: () {
               Navigator.push(context,
@@ -66,6 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: const AcknowledgementText(),
                     ),
                     ContinueButton(
+                      key: const Key('login_screen_continue_with_google_button'),
                       onPress: () {},
                       text: "Continue with Google",
                       icon: Image(
@@ -112,7 +114,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       padding: EdgeInsets.symmetric(
           horizontal: ScreenSizeHandler.screenWidth * 0.04,
           vertical: ScreenSizeHandler.screenHeight * 0.01),
-                      child: CredentialsTextField(
+                      child: CredentialsTextField( 
+                        key: const Key('login_screen_email_or_username_text_field'),
                         controller: nameController,
                         isObscure: false,
                         text: 'Email or username',
@@ -152,6 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
           horizontal: ScreenSizeHandler.screenWidth * 0.04,
           vertical: ScreenSizeHandler.screenHeight * 0.01),
                       child: CredentialsTextField(
+                        key: const Key('login_screen_password_text_field'),
                         controller: passController,
                         isObscure: isPassObscure,
                         text: 'Password',
@@ -191,6 +195,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           TextLink(
+                            key: const Key('login_screen_forgot_password_text_link'),
                             text: 'Forgot your password?',
                             onTap: () {
                                             Navigator.push(context,
@@ -209,11 +214,13 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               ContinueButton(
+                key: const Key('login_screen_continue_button'),
                 text: "Continue",
                 isButtonEnabled: isButtonEnabled,
                 onPress: () {
                   if (isButtonEnabled) {
-                    continueNavigation(); //TODO
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => HomePage()));
                   } else {
                     null;
                   }                 
