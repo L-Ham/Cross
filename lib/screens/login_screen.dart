@@ -120,6 +120,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   setState(() {
                                     nameController.clear();
                                     isNameFocused = false;
+                                   isButtonEnabled = false;
+
                                   });
                                 },
                               )
