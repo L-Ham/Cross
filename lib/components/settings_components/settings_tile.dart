@@ -21,7 +21,7 @@ class SettingsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      tileColor: kFillingColor,
+      tileColor: kBackgroundColor,
       visualDensity: VisualDensity.compact,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

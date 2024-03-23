@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_bel_ham/screens/circle_avatar_temp_screen.dart';
+// import 'package:reddit_bel_ham/screens/change_password_screen.dart';
 import 'package:reddit_bel_ham/screens/connected_accounts_disconnect_screen.dart';
 import 'package:reddit_bel_ham/screens/update_email_address_screen.dart';
 import 'package:reddit_bel_ham/screens/create_community_screen.dart';
@@ -7,6 +7,10 @@ import 'screens/account_settings_screen.dart';
 import 'utilities/screen_size_handler.dart';
 import 'screens/notifications_screen.dart';
 import 'screens/first_screen.dart';
+import 'screens/login_screen.dart';
+import 'screens/signup_screen.dart';
+import 'screens/forgot_password_screen.dart';
+import 'screens/home_page_screen.dart';
 
 
 void main() {
@@ -26,15 +30,20 @@ class RedditByLham extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
       routes: {
-        "first_screen": (context) => FirstScreen(),
-        "create_community_screen": (context) => const CreateCommunityScreen(),
-        "account_settings_screen": (context) => const AccountSettingsScreen(),
-        "notification_settings_screen": (context) => const NotificationSettingsScreen(),
-        "connected_accounts_disconnect_screen": (context) => const DisconnectScreen(),
-        "update_email_address_screen": (context) => const UpdateEmailAddressScreen(),
-        "temp_home_screen": (context) => const TempHomeScreen(),
+        FirstScreen.id: (context) => FirstScreen(),
+        CreateCommunityScreen.id: (context) => const CreateCommunityScreen(),
+        AccountSettingsScreen.id: (context) => const AccountSettingsScreen(),
+        NotificationSettingsScreen.id: (context) => const NotificationSettingsScreen(),
+        DisconnectScreen.id: (context) => const DisconnectScreen(),
+        UpdateEmailAddressScreen.id: (context) => const UpdateEmailAddressScreen(),
+        ChangePasswordScreen.id: (context) => const ChangePasswordScreen(),
+        SignupScreen.id: (context) => const SignupScreen(),
+        LoginScreen.id: (context) => const LoginScreen(),
+        ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
+        HomePageScreen.id: (context) => HomePageScreen(),
+        SearchScreen.id: (context) => SearchScreen(),
       },
-      initialRoute: "temp_home_screen",
+      initialRoute: FirstScreen.id,
     );
   }
 }
