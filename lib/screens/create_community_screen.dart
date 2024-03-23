@@ -53,17 +53,16 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Padding(
           padding: const EdgeInsets.only(
               top: kPageTtleTopBottomPadding,
               bottom: kPageTtleTopBottomPadding),
-          child: Center(
-            child: Text(
-              'Create a community',
-              style: kPageTitleStyle.copyWith(
-                fontSize:
-                    ScreenSizeHandler.bigger * kPageTitleFontSizeHeightRatio,
-              ),
+          child: Text(
+            'Create a community',
+            style: kPageTitleStyle.copyWith(
+              fontSize:
+                  ScreenSizeHandler.bigger * kPageTitleFontSizeHeightRatio,
             ),
           ),
         ),

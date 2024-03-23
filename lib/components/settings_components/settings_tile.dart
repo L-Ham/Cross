@@ -6,7 +6,7 @@ class SettingsTile extends StatelessWidget {
   final Widget leadingIcon;
   final String titleText;
   final String? subtitleText;
-  final Widget trailingWidget;
+  final Widget? trailingWidget;
   final VoidCallback? onTap;
 
   const SettingsTile({
@@ -14,7 +14,7 @@ class SettingsTile extends StatelessWidget {
     required this.leadingIcon,
     required this.titleText,
     this.subtitleText,
-    required this.trailingWidget,
+    this.trailingWidget,
     this.onTap,
   }) : super(key: key);
 
@@ -50,7 +50,7 @@ class SettingsTile extends StatelessWidget {
               ],
             ),
           ),
-          trailingWidget
+          if (trailingWidget != null) trailingWidget !,
         ],
       ),
       onTap: onTap,

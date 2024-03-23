@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 const kPageTitleFontSizeHeightRatio = 0.03;
-const kPageTtleTopBottomPadding =  20.0;
+const kPageTtleTopBottomPadding = 20.0;
 const kErrorTextTopBottomPadding = 10.0;
 const kPageEdgesPadding = 9.0;
 const kPageSubtitleFontSizeHeightRatio = 0.02;
@@ -27,7 +27,11 @@ const kNotificationSettingsNewFollowersSwitchIndex = 8;
 const kNotificationSettingsCakeDaySwitchIndex = 9;
 const kNotificationSettingsModNotificationsSwitchIndex = 10;
 
-
+const kOnlineStatusIconSize = 15.0;
+const kOnlineStatusFontSizeRatio = 0.03;
+const kSideBarCloseIconSizeRatio = 0.04;
+const kOnlineStatusColor = Color.fromARGB(255, 0, 204, 120);
+const kSideBarCircleAvatarRadiusRatio = 0.09;
 const Color kBackgroundColor = Color.fromARGB(255, 20, 20, 20);
 const Color kFillingColor = Color.fromARGB(255, 40, 40, 40);
 const Color kHintTextColor = Color.fromARGB(255, 122, 122, 122);
