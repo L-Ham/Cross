@@ -8,6 +8,7 @@ import '../components/credentials_text_field.dart';
 import '../components/continue_button.dart';
 import 'first_screen.dart';
 import '../components/logo_text_app_bar.dart';
+import '../screens/forgot_password_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -189,7 +190,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: [
                           TextLink(
                             text: 'Forgot your password?',
-                            onTap: () {},
+                            onTap: () {
+                                            Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()));
+                            },
                           ),
                         ],
                       ),

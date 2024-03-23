@@ -72,12 +72,14 @@ class _SignupScreenState extends State<SignupScreen> {
                       child: CredentialsTextField(
                         controller: nameController,
                         isObscure: false,
+                        isValid: isValidEmail,
                         text: 'Email',
                         prefixIcon: isValidEmail && isNameFocused
                             ?const Icon(
                                   Icons.check_rounded,
                                   color: Colors.green,
-                                ) 
+                                )
+                                
                             : null,
                         suffixIcon: isNameFocused
                             ? IconButton(
@@ -141,6 +143,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       child: CredentialsTextField(
                         controller: passController,
                         isObscure: isPassObscure,
+                        isValid: isValidPassword,
                         text: 'Password',
                     prefixIcon: isValidPassword && isPassFocused
                             ? const Icon(
