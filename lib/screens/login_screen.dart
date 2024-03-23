@@ -111,6 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     CredentialsTextField(
                       controller: nameController,
                       isObscure: false,
+                      // isValid: true,
                       text: 'Email or username',
                       suffixIcon: isNameFocused
                           ? IconButton(
@@ -119,6 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 setState(() {
                                   nameController.clear();
                                   isNameFocused = false;
+                                  isButtonEnabled = false;
                                 });
                               },
                             )
@@ -143,6 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     CredentialsTextField(
                       controller: passController,
                       isObscure: isPassObscure,
+                      // isValid: true,
                       text: 'Password',
                       suffixIcon: isPassFocused
                           ? IconButton(

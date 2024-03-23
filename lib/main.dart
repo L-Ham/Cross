@@ -6,6 +6,7 @@ import 'screens/account_settings_screen.dart';
 import 'utilities/screen_size_handler.dart';
 import 'screens/notifications_screen.dart';
 import 'screens/first_screen.dart';
+import 'screens/forgot_password_screen.dart';
 
 
 void main() {
@@ -26,13 +27,14 @@ class RedditByLham extends StatelessWidget {
       theme: ThemeData.dark(),
       routes: {
         "first_screen": (context) => FirstScreen(),
+        "forget_password_screen": (context) => const ForgotPasswordScreen(),
         "create_community_screen": (context) => const CreateCommunityScreen(),
         "account_settings_screen": (context) => const AccountSettingsScreen(),
         "notification_settings_screen": (context) => const NotificationSettingsScreen(),
         "connected_accounts_disconnect_screen": (context) => const DisconnectScreen(),
         "update_email_address_screen": (context) => const UpdateEmailAddressScreen(),
       },
-      initialRoute: "account_settings_screen",
+      initialRoute: "forget_password_screen",
     );
   }
 }
