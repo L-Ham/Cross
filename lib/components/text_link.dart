@@ -5,11 +5,13 @@ class TextLink extends StatelessWidget {
   const TextLink({
     Key? key,
     required this.onTap,
-    required this.text, // Add this line
+    required this.text, 
+    required this.fontSizeRatio,
   }) : super(key: key);
 
   final VoidCallback onTap;
-  final String text; // Add this line
+  final String text; 
+  final double? fontSizeRatio;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,7 @@ class TextLink extends StatelessWidget {
         child: Text(
           text,
           style: TextStyle(
-            fontSize: ScreenSizeHandler.smaller * 0.035,
+            fontSize: fontSizeRatio,
             color: Colors.blue,
           ),
         ),

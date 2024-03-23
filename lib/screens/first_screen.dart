@@ -97,6 +97,7 @@ class FirstScreen extends StatelessWidget {
                           ),
                         ),
                         TextLink(
+                            fontSizeRatio: ScreenSizeHandler.smaller * 0.035,
                             onTap: () {
                               Navigator.push(
                                   context,
