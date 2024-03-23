@@ -9,6 +9,8 @@ import 'package:reddit_bel_ham/components/settings_components/user_information_c
 class DisconnectScreen extends StatefulWidget {
   const DisconnectScreen({super.key});
 
+  static const String id = 'connected_accounts_disconnect_screen';
+
   @override
   State<DisconnectScreen> createState() => _DisconnectScreenState();
 }

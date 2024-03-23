@@ -26,15 +26,15 @@ class RedditByLham extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
       routes: {
-        "first_screen": (context) => FirstScreen(),
-        "create_community_screen": (context) => const CreateCommunityScreen(),
-        "account_settings_screen": (context) => const AccountSettingsScreen(),
-        "notification_settings_screen": (context) => const NotificationSettingsScreen(),
-        "connected_accounts_disconnect_screen": (context) => const DisconnectScreen(),
-        "update_email_address_screen": (context) => const UpdateEmailAddressScreen(),
+        FirstScreen.id: (context) => FirstScreen(),
+        CreateCommunityScreen.id: (context) => const CreateCommunityScreen(),
+        AccountSettingsScreen.id: (context) => const AccountSettingsScreen(),
+        NotificationSettingsScreen.id: (context) => const NotificationSettingsScreen(),
+        DisconnectScreen.id: (context) => const DisconnectScreen(),
+        UpdateEmailAddressScreen.id: (context) => const UpdateEmailAddressScreen(),
         ChangePasswordScreen.id: (context) => const ChangePasswordScreen(),
       },
-      initialRoute: "account_settings_screen",
+      initialRoute: AccountSettingsScreen.id,
     );
   }
 }

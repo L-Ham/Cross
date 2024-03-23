@@ -14,6 +14,8 @@ import 'package:reddit_bel_ham/components/general_components/interactive_text.da
 class AccountSettingsScreen extends StatefulWidget {
   const AccountSettingsScreen({super.key});
 
+  static const String id = 'account_settings_screen';
+
   @override
   State<AccountSettingsScreen> createState() => _AccountSettingsScreenState();
 }

@@ -9,6 +9,8 @@ import 'package:reddit_bel_ham/components/credentials_text_field.dart';
 class UpdateEmailAddressScreen extends StatefulWidget {
   const UpdateEmailAddressScreen({super.key});
 
+  static const String id = 'update_email_address_screen';
+
   @override
   State<UpdateEmailAddressScreen> createState() =>
       _UpdateEmailAddressScreenState();

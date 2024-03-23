@@ -10,6 +10,8 @@ import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 class NotificationSettingsScreen extends StatefulWidget {
   const NotificationSettingsScreen({super.key});
 
+  static const String id = 'notification_settings_screen';
+
   @override
   _NotificationSettingsScreenState createState() =>
       _NotificationSettingsScreenState();
