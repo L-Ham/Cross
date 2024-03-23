@@ -11,6 +11,8 @@ class FirstScreen extends StatelessWidget {
     super.key,
   });
 
+  static const String id = 'first_screen';
+
   bool isPressed = false;
 
   @override

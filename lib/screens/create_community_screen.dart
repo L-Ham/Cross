@@ -10,6 +10,8 @@ import '../constants.dart';
 class CreateCommunityScreen extends StatefulWidget {
   const CreateCommunityScreen({Key? key}) : super(key: key);
 
+  static const String id = 'create_community_screen';
+
   @override
   _CreateCommunityScreenState createState() => _CreateCommunityScreenState();
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_bel_ham/screens/change_password_screen.dart';
 import 'package:reddit_bel_ham/screens/connected_accounts_disconnect_screen.dart';
 import 'package:reddit_bel_ham/screens/home_page_screen.dart';
 import 'package:reddit_bel_ham/screens/home_page_seach_screen.dart';
@@ -27,16 +28,15 @@ class RedditByLham extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
       routes: {
-        "first_screen": (context) => FirstScreen(),
-        "home_page_screen": (context) => HomePage(),
-        "home_page_search_screen": (context) => SearchScreen(),
-        "create_community_screen": (context) => const CreateCommunityScreen(),
-        "account_settings_screen": (context) => const AccountSettingsScreen(),
-        "notification_settings_screen": (context) => const NotificationSettingsScreen(),
-        "connected_accounts_disconnect_screen": (context) => const DisconnectScreen(),
-        "update_email_address_screen": (context) => const UpdateEmailAddressScreen(),
+        FirstScreen.id: (context) => FirstScreen(),
+        CreateCommunityScreen.id: (context) => const CreateCommunityScreen(),
+        AccountSettingsScreen.id: (context) => const AccountSettingsScreen(),
+        NotificationSettingsScreen.id: (context) => const NotificationSettingsScreen(),
+        DisconnectScreen.id: (context) => const DisconnectScreen(),
+        UpdateEmailAddressScreen.id: (context) => const UpdateEmailAddressScreen(),
+        ChangePasswordScreen.id: (context) => const ChangePasswordScreen(),
       },
-      initialRoute: "home_page_screen",
+      initialRoute: AccountSettingsScreen.id,
     );
   }
 }
