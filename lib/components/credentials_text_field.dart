@@ -5,9 +5,11 @@ import '../constants.dart';
 class CredentialsTextField extends StatelessWidget {
   final TextEditingController controller;
   final bool isFocused;
+  final bool isValid;
   final ValueChanged<String> onChanged;
   final String text;
   final Widget? suffixIcon;
+  final Widget? prefixIcon;
   final bool isObscure;
 
   const CredentialsTextField({
@@ -17,6 +19,8 @@ class CredentialsTextField extends StatelessWidget {
     required this.text,
     required this.isObscure,
     this.suffixIcon,
+    this.prefixIcon,
+    this.isValid = true,
   });
 
   @override
@@ -26,19 +30,21 @@ class CredentialsTextField extends StatelessWidget {
       onChanged: onChanged,
       obscureText: isObscure,
       decoration: InputDecoration(
-        border: OutlineInputBorder(
+        enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
+          borderSide: BorderSide(color: isValid ? Colors.transparent : Colors.red[200]!),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: BorderSide(color: isValid ? Colors.white : Colors.red[200]!),
         ),
         labelText: text,
         labelStyle: TextStyle(
             color: kHintTextColor, fontSize: ScreenSizeHandler.smaller * 0.035),
         fillColor: kFillingColor,
         filled: true,
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-          borderSide: const BorderSide(color: Colors.white),
-        ),
         suffixIcon: suffixIcon,
+        prefixIcon: prefixIcon,
       ),
       style: TextStyle(
         color: Colors.white,

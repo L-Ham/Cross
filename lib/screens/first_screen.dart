@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_bel_ham/screens/signup_screen.dart';
 import '../screens/login_screen.dart';
 import '../constants.dart';
 import '../components/continue_button.dart';
@@ -71,9 +72,14 @@ class FirstScreen extends StatelessWidget {
                     ),
                   ),
                   ContinueButton(
-                    onPress: () {},
                     text: "Continue with Email",
                     icon: const Icon(Icons.email),
+                    onPress: () {
+                      Navigator.push( context,
+                          MaterialPageRoute(
+                              builder: (context) => const SignupScreen())
+                      );
+                    },
                   ),
                   const AcknowledgementText(),
                   Padding(
