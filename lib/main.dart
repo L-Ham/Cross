@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/screens/connected_accounts_disconnect_screen.dart';
+import 'package:reddit_bel_ham/screens/home_page_screen.dart';
+import 'package:reddit_bel_ham/screens/home_page_seach_screen.dart';
 import 'package:reddit_bel_ham/screens/update_email_address_screen.dart';
 import 'package:reddit_bel_ham/screens/create_community_screen.dart';
 import 'screens/account_settings_screen.dart';
@@ -26,13 +28,15 @@ class RedditByLham extends StatelessWidget {
       theme: ThemeData.dark(),
       routes: {
         "first_screen": (context) => FirstScreen(),
+        "home_page_screen": (context) => HomePage(),
+        "home_page_search_screen": (context) => SearchScreen(),
         "create_community_screen": (context) => const CreateCommunityScreen(),
         "account_settings_screen": (context) => const AccountSettingsScreen(),
         "notification_settings_screen": (context) => const NotificationSettingsScreen(),
         "connected_accounts_disconnect_screen": (context) => const DisconnectScreen(),
         "update_email_address_screen": (context) => const UpdateEmailAddressScreen(),
       },
-      initialRoute: "account_settings_screen",
+      initialRoute: "home_page_screen",
     );
   }
 }
