@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_bel_ham/screens/signup_screen.dart';
 import '../components/acknowledgement_text.dart';
 import '../components/text_link.dart';
 import '../utilities/screen_size_handler.dart';
@@ -36,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
             text: 'Sign up',
             onTap: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => FirstScreen()));
+                  MaterialPageRoute(builder: (context) => const SignupScreen()));
             },
           ),
           Expanded(
@@ -104,68 +105,78 @@ class _LoginScreenState extends State<LoginScreen> {
                         ],
                       ),
                     ),
-                    CredentialsTextField(
-                      controller: nameController,
-                      isObscure: false,
-                      text: 'Email or username',
-                      suffixIcon: isNameFocused
-                          ? IconButton(
-                              icon: const Icon(Icons.clear_rounded),
-                              onPressed: () {
-                                setState(() {
-                                  nameController.clear();
-                                  isNameFocused = false;
-                                });
-                              },
-                            )
-                          : null,
-                      isFocused: isNameFocused,
-                      onChanged: (value) {
-                        setState(() {
-                          isNameFocused = value.isNotEmpty;
-                          if (value.isNotEmpty &&
-                              passController.text.isNotEmpty) {
-                            setState(() {
-                              isButtonEnabled = true;
-                            });
-                          } else {
-                            setState(() {
-                              isButtonEnabled = false;
-                            });
-                          }
-                        });
-                      },
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+          horizontal: ScreenSizeHandler.screenWidth * 0.04,
+          vertical: ScreenSizeHandler.screenHeight * 0.01),
+                      child: CredentialsTextField(
+                        controller: nameController,
+                        isObscure: false,
+                        text: 'Email or username',
+                        suffixIcon: isNameFocused
+                            ? IconButton(
+                                icon: const Icon(Icons.clear_rounded),
+                                onPressed: () {
+                                  setState(() {
+                                    nameController.clear();
+                                    isNameFocused = false;
+                                  });
+                                },
+                              )
+                            : null,
+                        isFocused: isNameFocused,
+                        onChanged: (value) {
+                          setState(() {
+                            isNameFocused = value.isNotEmpty;
+                            if (value.isNotEmpty &&
+                                passController.text.isNotEmpty) {
+                              setState(() {
+                                isButtonEnabled = true;
+                              });
+                            } else {
+                              setState(() {
+                                isButtonEnabled = false;
+                              });
+                            }
+                          });
+                        },
+                      ),
                     ),
-                    CredentialsTextField(
-                      controller: passController,
-                      isObscure: isPassObscure,
-                      text: 'Password',
-                      suffixIcon: isPassFocused
-                          ? IconButton(
-                              icon: const Icon(Icons.visibility_rounded),
-                              onPressed: () {
-                                setState(() {
-                                  isPassObscure = !isPassObscure;
-                                });
-                              },
-                            )
-                          : null,
-                      isFocused: isPassFocused,
-                      onChanged: (value) {
-                        setState(() {
-                          isPassFocused = value.isNotEmpty;
-                          if (value.isNotEmpty &&
-                              nameController.text.isNotEmpty) {
-                            setState(() {
-                              isButtonEnabled = true;
-                            });
-                          } else {
-                            setState(() {
-                              isButtonEnabled = false;
-                            });
-                          }
-                        });
-                      },
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+          horizontal: ScreenSizeHandler.screenWidth * 0.04,
+          vertical: ScreenSizeHandler.screenHeight * 0.01),
+                      child: CredentialsTextField(
+                        controller: passController,
+                        isObscure: isPassObscure,
+                        text: 'Password',
+                        suffixIcon: isPassFocused
+                            ? IconButton(
+                                icon: const Icon(Icons.visibility_rounded),
+                                onPressed: () {
+                                  setState(() {
+                                    isPassObscure = !isPassObscure;
+                                  });
+                                },
+                              )
+                            : null,
+                        isFocused: isPassFocused,
+                        onChanged: (value) {
+                          setState(() {
+                            isPassFocused = value.isNotEmpty;
+                            if (value.isNotEmpty &&
+                                nameController.text.isNotEmpty) {
+                              setState(() {
+                                isButtonEnabled = true;
+                              });
+                            } else {
+                              setState(() {
+                                isButtonEnabled = false;
+                              });
+                            }
+                          });
+                        },
+                      ),
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(
@@ -199,6 +210,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     null;
                   }                 
                 },
+                color: Colors.orange[900],
               ),
             ],
           ),

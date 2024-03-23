@@ -9,6 +9,7 @@ class CredentialsTextField extends StatelessWidget {
   final String text;
   final Widget? suffixIcon;
   final bool isObscure;
+  final Widget? prefixIcon;
 
   const CredentialsTextField({
     required this.controller,
@@ -17,6 +18,8 @@ class CredentialsTextField extends StatelessWidget {
     required this.text,
     required this.isObscure,
     this.suffixIcon,
+    this.prefixIcon,
+
   });
 
   @override
@@ -38,6 +41,7 @@ class CredentialsTextField extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           borderSide: const BorderSide(color: Colors.white),
         ),
+        prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
       ),
       style: TextStyle(

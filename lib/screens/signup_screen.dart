@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/screens/login_screen.dart';
 import '../components/acknowledgement_text.dart';
@@ -25,11 +24,10 @@ class _SignupScreenState extends State<SignupScreen> {
   bool isNameFocused = false;
   bool isPassFocused = false;
   bool isButtonEnabled = false;
+  bool isValidEmail = true;
+  bool isValidPassword = true;
 
-
-
-  void continueNavigation() {
-  }
+  void continueNavigation() {}
 
   @override
   Widget build(BuildContext context) {
@@ -67,79 +65,145 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                       child: const AcknowledgementText(),
                     ),
-                    CredentialsTextField(
-                      controller: nameController,
-                      isObscure: false,
-                      text: 'Email',
-                      suffixIcon: isNameFocused
-                          ? IconButton(
-                              icon: const Icon(Icons.clear_rounded),
-                              onPressed: () {
-                                setState(() {
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: ScreenSizeHandler.screenWidth * 0.04,
+                          vertical: ScreenSizeHandler.screenHeight * 0.01),
+                      child: CredentialsTextField(
+                        controller: nameController,
+                        isObscure: false,
+                        text: 'Email',
+                        prefixIcon: isValidEmail && isNameFocused
+                            ? IconButton(
+                                icon: const Icon(
+                                  Icons.check_rounded,
+                                  color: Colors.green,
+                                ),
+                                onPressed: () {},
+                              )
+                            : null,
+                        suffixIcon: isNameFocused
+                            ? IconButton(
+                                icon: const Icon(
+                                  Icons.clear_rounded,
+                                ),
+                                onPressed: () {
                                   nameController.clear();
-                                  isNameFocused = false;
+                                  setState(() {
+                                    isButtonEnabled = false;
+                                    isNameFocused = false;
+                                  });
+                                },
+                              )
+                            : null,
+                        isFocused: isNameFocused,
+                        onChanged: (value) {
+                          setState(() {
+                            isValidEmail = isEmailValid(value);
+                            isNameFocused = value.isNotEmpty;
+                            if (value.isNotEmpty &&
+                                passController.text.isNotEmpty) {
+                              setState(() {
+                                isButtonEnabled = true;
+                              });
+                            } else {
+                              if (value.isEmpty) {
+                                setState(() {
+                                  isValidEmail = true;
                                 });
-                              },
-                            )
-                          : null,
-                      isFocused: isNameFocused,
-                      onChanged: (value) {
-                        setState(() {
-                          isNameFocused = value.isNotEmpty;
-                          if (value.isNotEmpty &&
-                              passController.text.isNotEmpty) {
-                            setState(() {
-                              isButtonEnabled = true;
-                            });
-                          } else {
-                            setState(() {
-                              isButtonEnabled = false;
-                            });
-                          }
-                        });
-                      },
-                    ),
-                    Visibility(
-                      visible: !isNameFocused && isEmailValid(nameController.text),
-                      child: Text(
-                        'Please enter a valid email address',
-                        style: TextStyle(
-                          color: Colors.red,
-                          fontSize: ScreenSizeHandler.smaller * 0.5,
-                        ),
-                        
+                              }
+                              setState(() {
+                                isButtonEnabled = false;
+                              });
+                            }
+                          });
+                        },
                       ),
                     ),
-                    CredentialsTextField(
-                      controller: passController,
-                      isObscure: isPassObscure,
-                      text: 'Password',
-                      suffixIcon: isPassFocused
-                          ? IconButton(
-                              icon: const Icon(Icons.visibility_rounded),
-                              onPressed: () {
+                    Visibility(
+                      visible: !isValidEmail,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            left: ScreenSizeHandler.smaller * 0.05),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Please enter a valid email address',
+                            style: TextStyle(
+                              color: Colors.red[200],
+                              fontSize: ScreenSizeHandler.smaller * 0.03,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: ScreenSizeHandler.screenWidth * 0.04,
+                          vertical: ScreenSizeHandler.screenHeight * 0.01),
+                      child: CredentialsTextField(
+                        controller: passController,
+                        isObscure: isPassObscure,
+                        text: 'Password',
+                    prefixIcon: isValidPassword && isPassFocused
+                            ? IconButton(
+                                icon: const Icon(
+                                  Icons.check_rounded,
+                                  color: Colors.green,
+                                ),
+                                onPressed: () {},
+                              )
+                            : null,
+                        suffixIcon: isPassFocused
+                            ? IconButton(
+                                icon: const Icon(Icons.visibility_rounded),
+                                onPressed: () {
+                                  setState(() {
+                                    isPassObscure = !isPassObscure;
+                                  });
+                                },
+                              )
+                            : null,
+                        isFocused: isPassFocused,
+                        onChanged: (value) {
+                          setState(() {
+                            isValidPassword = value.length >= 8;
+                            isPassFocused = value.isNotEmpty;
+                            if (value.isNotEmpty &&
+                                nameController.text.isNotEmpty) {
+                              setState(() {
+                                isButtonEnabled = true;
+                              });
+                            } else {
+                              if (value.isEmpty) {
                                 setState(() {
-                                  isPassObscure = !isPassObscure;
+                                  isValidPassword = true;
                                 });
-                              },
-                            )
-                          : null,
-                      isFocused: isPassFocused,
-                      onChanged: (value) {
-                        setState(() {
-                          isPassFocused = value.isNotEmpty;
-                          if (value.isNotEmpty &&
-                              nameController.text.isNotEmpty) {
-                            setState(() {
-                              isButtonEnabled = true;
-                            });
-                          } else {
-                            setState(() {
-                              isButtonEnabled = false;
-                            });
-                          }
-                        });
-                      },
+                              }
+                              setState(() {
+                                isButtonEnabled = false;
+                              });
+                            }
+                          });
+                        },
+                      ),
+                    ),
+                    Visibility(
+                      visible: !isValidPassword,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            left: ScreenSizeHandler.smaller * 0.05),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Password must be at least 8 characters',
+                            style: TextStyle(
+                              color: Colors.red[200],
+                              fontSize: ScreenSizeHandler.smaller * 0.03,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 );
@@ -159,6 +223,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     null;
                   }
                 },
+                color: Colors.orange[900],
               ),
             ],
           ),
