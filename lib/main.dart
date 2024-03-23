@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_bel_ham/components/settings_components/forget_password_text.dart';
 import 'package:reddit_bel_ham/screens/change_password_screen.dart';
 import 'package:reddit_bel_ham/screens/connected_accounts_disconnect_screen.dart';
 import 'package:reddit_bel_ham/screens/home_page_screen.dart';
@@ -42,6 +41,8 @@ class RedditByLham extends StatelessWidget {
         SignupScreen.id: (context) => const SignupScreen(),
         LoginScreen.id: (context) => const LoginScreen(),
         ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
+        HomePageScreen.id: (context) => HomePageScreen(),
+        SearchScreen.id: (context) => SearchScreen(),
       },
       initialRoute: FirstScreen.id,
     );
