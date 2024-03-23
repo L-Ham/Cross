@@ -30,19 +30,19 @@ class CredentialsTextField extends StatelessWidget {
       onChanged: onChanged,
       obscureText: isObscure,
       decoration: InputDecoration(
-        border: OutlineInputBorder(
+        enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(color: isFocused ? Colors.white : Colors.transparent),
+          borderSide: BorderSide(color: isValid ? Colors.transparent : Colors.red[200]!),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: BorderSide(color: isValid ? Colors.white : Colors.red[200]!),
         ),
         labelText: text,
         labelStyle: TextStyle(
             color: kHintTextColor, fontSize: ScreenSizeHandler.smaller * 0.035),
         fillColor: kFillingColor,
         filled: true,
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(color: isValid ? Colors.white : Colors.red[200]!),
-        ),
         suffixIcon: suffixIcon,
         prefixIcon: prefixIcon,
       ),

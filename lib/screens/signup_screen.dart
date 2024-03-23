@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/screens/login_screen.dart';
 import '../components/acknowledgement_text.dart';
-import '../components/text_link.dart';
 import '../utilities/screen_size_handler.dart';
 import '../constants.dart';
 import '../components/credentials_text_field.dart';
 import '../components/continue_button.dart';
-import 'first_screen.dart';
 import '../components/logo_text_app_bar.dart';
 import '../utilities/email_regex.dart';
 
@@ -79,7 +77,6 @@ class _SignupScreenState extends State<SignupScreen> {
                                   Icons.check_rounded,
                                   color: Colors.green,
                                 )
-                                
                             : null,
                         suffixIcon: isNameFocused
                             ? IconButton(
@@ -91,6 +88,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                   setState(() {
                                     isButtonEnabled = false;
                                     isNameFocused = false;
+                                    isValidEmail = true;
                                   });
                                 },
                               )

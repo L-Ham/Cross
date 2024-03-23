@@ -4,6 +4,7 @@ import '../constants.dart';
 import '../components/credentials_text_field.dart';
 import '../components/continue_button.dart';
 import '../components/logo_text_app_bar.dart';
+import '../utilities/email_regex.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({Key? key}) : super(key: key);
@@ -17,11 +18,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   bool isNameFocused = false;
   bool isButtonEnabled = false;
   bool isNameValid = true;
-  bool isEmailValid = true;
+  bool isMailValid = true;
   String errorMessage = '';
 
-  // void continueNavigation() {
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -33,9 +32,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           LogoTextAppBar(
             text: 'Help',
             onTap: () {
+              // TODO
               // a link that redirects the user to a help center
-              // Navigator.push(context,
-              //     MaterialPageRoute(builder: (context) => FirstScreen()));
             },
           ),
           Expanded(
@@ -62,8 +60,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       child: Text(
                         "Enter your email address or username and we'll send you a link to reset your password",
                         style: TextStyle(
-                          fontSize: ScreenSizeHandler.smaller * 0.045,
-                          fontWeight: FontWeight.bold,
+                          fontSize: ScreenSizeHandler.smaller * 0.04,
                           color: kHintTextColor,
                         ),
                         textAlign: TextAlign.center,
@@ -78,7 +75,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         controller: nameController,
                         isObscure: false,
                         isValid: isNameValid,
-                        prefixIcon: (isNameValid && isNameFocused || isEmailValid && isNameFocused)
+                        prefixIcon: (isNameValid && isNameFocused)
                             ? const Icon(Icons.check_rounded, color: Colors.green)
                             : null,
                         text: 'Email or username',
@@ -106,7 +103,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               });
                             } else {
                               if (value.contains('@')) {
-                                // check if the email is valid
+                                isMailValid = isEmailValid(value);
+                                if (isMailValid) {
+                                  setState(() {
+                                    isButtonEnabled = true;
+                                    isNameValid = true;
+                                  });
+                                } else {
+                                  setState(() {
+                                    isButtonEnabled = false;
+                                    isNameValid = false;
+                                    errorMessage = "Not a valid email address";
+                                  });
+                                }
                               } else if (value.length > 2 && value.length < 21) {
                                 setState(() {
                                   isButtonEnabled = true;
@@ -153,9 +162,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               ContinueButton(
                 text: "Reset Password",
                 isButtonEnabled: isButtonEnabled,
+                color: Colors.orange[900],
                 onPress: () {
                   if (isButtonEnabled) {
-                    // continueNavigation();
+                    // TODO 
                   } else {
                     null;
                   }
