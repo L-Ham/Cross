@@ -1,42 +1,46 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../components/create_community_components/community_name_text_box.dart';
 import '../components/general_components/custom_switch.dart';
 import '../components/create_community_components/community_type_selector.dart';
+import '../utilities/screen_size_handler.dart';
 import '../constants.dart';
 
-void main() => runApp(CreateCommunityScreen());
-
-class CreateCommunityScreen extends StatelessWidget {
+class CreateCommunityScreen extends StatefulWidget {
   const CreateCommunityScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData.dark(),
-      home: MyHomePage(),
-    );
-  }
+  _CreateCommunityScreenState createState() => _CreateCommunityScreenState();
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
+class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
   final TextEditingController _controller = TextEditingController();
   String communityType = 'Public';
   String communityTypeDescription =
       'Anyone can view, post and comment to this community';
   bool isSwitched = false;
   bool activated = false;
+  bool isCommunityNameTaken = false;
   String errorText = '';
 
   String validateInput(String value) {
-    if (value.contains(new RegExp(r'[^\w\s]'))) {
+    if (value.contains(RegExp(r'[^\w\s]')) ||
+        ((value.length < kCommunityNameMinLength) && value.isNotEmpty)) {
       return 'Community names must be between $kCommunityNameMinLength-$kCommunityNameMaxLength characters, and can only contain letters, numbers, and underscores';
+    }
+    //Check if the community name is already taken (LATER IMPLEMENTATION)
+    if (value == 'toto') {
+      isCommunityNameTaken = true;
+    } else {
+      isCommunityNameTaken = false;
+    }
+    if (value.length >= kCommunityNameMinLength && isCommunityNameTaken) {
+      return 'This community name is already taken';
+    }
+    if (value.isEmpty ||
+        (value.length >= kCommunityNameMinLength && !isCommunityNameTaken)) {
+      return '';
     }
     return '';
   }
@@ -49,48 +53,61 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(
-          child: Text(
-            'Create a community',
+        title: Padding(
+          padding: const EdgeInsets.only(
+              top: kPageTtleTopBottomPadding,
+              bottom: kPageTtleTopBottomPadding),
+          child: Center(
+            child: Text(
+              'Create a community',
               style: kPageTitleStyle.copyWith(
-              fontSize: MediaQuery.of(context).size.height * kPageTitleFontSizeHeightRatio,
+                fontSize:
+                    ScreenSizeHandler.bigger * kPageTitleFontSizeHeightRatio,
+              ),
             ),
           ),
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(9.0),
+        padding: const EdgeInsets.all(kPageEdgesPadding),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.005,
+                height: ScreenSizeHandler.screenHeight * 0.005,
               ),
               Text('Community name',
                   style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.height * kPageSubtitleFontSizeHeightRatio,
+                    fontSize: ScreenSizeHandler.bigger *
+                        kPageSubtitleFontSizeHeightRatio,
                   )),
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.01,
+                height: ScreenSizeHandler.screenHeight * 0.01,
               ),
               CommunityNameTextBox(
                 controller: _controller,
                 onChanged: (value) {
                   if (value.length > kCommunityNameMaxLength) {
                     setState(() {
-                      _controller.text = value.substring(0, kCommunityNameMaxLength);
+                      _controller.text =
+                          value.substring(0, kCommunityNameMaxLength);
                       _controller.selection = TextSelection.fromPosition(
                           TextPosition(offset: _controller.text.length));
                     });
                   }
-                  setState(() {
-                    errorText = validateInput(value);
-                    if (value.length >= kCommunityNameMinLength && errorText == '') {
-                      activated = true;
-                    } else {
-                      activated = false;
-                    }
+
+                  Future.delayed(const Duration(milliseconds: kErrorDisplayDelayTimeMilliseconds), () {
+                    setState(() {
+                        errorText = validateInput(value);
+                        if (value.length >= kCommunityNameMinLength &&
+                            errorText == '') {
+                          activated = true;
+                        } else {
+                          activated = false;
+                        }
+                      },
+                    );
                   });
                 },
                 onClear: () {
@@ -99,19 +116,26 @@ class _MyHomePageState extends State<MyHomePage> {
                   });
                 },
               ),
-              Text(
-                errorText,
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: MediaQuery.of(context).size.height * kErrorTextHeightRatio,
+              Visibility(
+                visible: errorText.isNotEmpty,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: kErrorTextTopBottomPadding),
+                  child: Text(
+                    errorText,
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: ScreenSizeHandler.bigger * kErrorTextHeightRatio,
+                    ),
+                  ),
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height * 0.01),
+                padding:
+                    EdgeInsets.only(top: ScreenSizeHandler.screenHeight * 0.02),
                 child: Text('Community type',
                     style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.height * kPageSubtitleFontSizeHeightRatio,
+                      fontSize: ScreenSizeHandler.bigger *
+                          kPageSubtitleFontSizeHeightRatio,
                     )),
               ),
               CommunityTypeSelector(
@@ -125,17 +149,19 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Text(communityTypeDescription,
                   style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.height * kCommunityTypeDescriptionHeightRatio,
+                    fontSize: ScreenSizeHandler.bigger *
+                        kCommunityTypeDescriptionHeightRatio,
                     color: Colors.grey,
                   )),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+              SizedBox(height: ScreenSizeHandler.screenHeight * 0.04),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     '18+ community',
                     style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.height * kPageTitleFontSizeHeightRatio,
+                      fontSize: ScreenSizeHandler.bigger *
+                          kPageTitleFontSizeHeightRatio,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -153,21 +179,27 @@ class _MyHomePageState extends State<MyHomePage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.025,
+                    height: ScreenSizeHandler.screenHeight * 0.025,
                   ),
                   ElevatedButton(
                     onPressed: (activated) ? createCommunity : null,
                     style: ButtonStyle(
-                      minimumSize: MaterialStateProperty.all(Size(MediaQuery.of(context).size.height*0.02, MediaQuery.of(context).size.height*kCreateCommunityButtonHeightRatio)),
-                      backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-                        (states) => (activated) ? Colors.blueAccent : Colors.grey,
+                      minimumSize: MaterialStateProperty.all(Size(
+                          ScreenSizeHandler.screenHeight * 0.02,
+                          ScreenSizeHandler.screenHeight *
+                              kCreateCommunityButtonHeightRatio)),
+                      backgroundColor:
+                          MaterialStateProperty.resolveWith<Color?>(
+                        (states) =>
+                            (activated) ? Colors.blueAccent : Colors.grey,
                       ),
                     ),
                     child: Text(
                       'Create community',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: MediaQuery.of(context).size.height * kCreateCommunityButtonTextHeightRatio,
+                        fontSize: ScreenSizeHandler.bigger *
+                            kCreateCommunityButtonTextHeightRatio,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

@@ -1,0 +1,153 @@
+import 'package:flutter/material.dart';
+import 'package:reddit_bel_ham/components/general_components/gradient_button.dart';
+import 'package:reddit_bel_ham/components/general_components/interactive_text.dart';
+import 'package:reddit_bel_ham/components/settings_components/user_information_card.dart';
+import 'package:reddit_bel_ham/constants.dart';
+import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
+import 'package:reddit_bel_ham/components/credentials_text_field.dart';
+
+class UpdateEmailAddressScreen extends StatefulWidget {
+  const UpdateEmailAddressScreen({super.key});
+
+  @override
+  State<UpdateEmailAddressScreen> createState() =>
+      _UpdateEmailAddressScreenState();
+}
+
+class _UpdateEmailAddressScreenState extends State<UpdateEmailAddressScreen> {
+  String username = "DanielGebraiel";
+  String email = "daniel.gebraiel01@eng-st.cu.edu.eg";
+  TextEditingController passwordController = TextEditingController();
+  bool isPasswordObscure = true;
+  bool isPasswordFocused = false;
+
+  TextEditingController emailController = TextEditingController();
+  bool isEmailFocused = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: kBackgroundColor,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: Text(
+          "Update email address",
+          style: kPageTitleStyle.copyWith(
+            fontSize: ScreenSizeHandler.bigger * kAppBarTitleFontSizeRatio,
+          ),
+        ),
+        centerTitle: true,
+      ),
+      backgroundColor: kBackgroundColor,
+      body: Padding(
+        padding: EdgeInsets.symmetric(
+            vertical: ScreenSizeHandler.screenHeight * 0.038,
+            horizontal: ScreenSizeHandler.screenWidth * 0.03),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(bottom: ScreenSizeHandler.bigger * 0.03),
+                child: UserInformationCard(username: username, email: email),
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: ScreenSizeHandler.bigger * 0.01),
+                child: Text(
+                  "Be sure to verify your new email address",
+                  style: kSettingsSubHeaderTextStyle.copyWith(
+                    fontSize: ScreenSizeHandler.bigger * kSettingsTextRatio,
+                  ),
+                ),
+              ),
+              Text(
+                "We'll send an email with a link to verity your update to your new email address.",
+                style: kSettingsBodyTextStyle.copyWith(
+                  fontSize: ScreenSizeHandler.bigger * kSettingsTextRatio,
+                ),
+              ),
+              Padding(
+                padding:
+                    EdgeInsets.only(top: ScreenSizeHandler.screenHeight * 0.02),
+                child: CredentialsTextField(
+                  controller: emailController,
+                  isObscure: isPasswordObscure,
+                  text: 'New email address',
+                  suffixIcon: isEmailFocused
+                      ? IconButton(
+                          icon: const Icon(Icons.cancel_rounded),
+                          onPressed: () {
+                            setState(() {
+                              emailController.clear();
+                            });
+                          },
+                        )
+                      : null,
+                  isFocused: isEmailFocused,
+                  onChanged: (value) {
+                    setState(() {
+                      isEmailFocused = value.isNotEmpty;
+                    });
+                  },
+                ),
+              ),
+              Padding(
+                padding:
+                    EdgeInsets.only(top: ScreenSizeHandler.screenHeight * 0.02),
+                child: CredentialsTextField(
+                  controller: passwordController,
+                  isObscure: isPasswordObscure,
+                  text: 'Password',
+                  suffixIcon: isPasswordFocused
+                      ? IconButton(
+                          icon: Icon(Icons.visibility_rounded),
+                          onPressed: () {
+                            setState(() {
+                              isPasswordObscure = !isPasswordObscure;
+                            });
+                          },
+                        )
+                      : null,
+                  isFocused: isPasswordFocused,
+                  onChanged: (value) {
+                    setState(() {
+                      isPasswordFocused = value.isNotEmpty;
+                    });
+                  },
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                    vertical: ScreenSizeHandler.screenHeight * 0.005),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: InteractiveText(
+                    text: "Forgot password?",
+                    onTap: () {
+                      //TODO: Implement the forgot password functionality
+                    },
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                    vertical: ScreenSizeHandler.screenHeight * 0.02),
+                child: GradientButton(
+                    isPassFocused: isEmailFocused && isPasswordFocused,
+                    buttonTitle: "Save",
+                    onTap: () {
+                      //TODO: Implement the send email functionality
+                    }),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
