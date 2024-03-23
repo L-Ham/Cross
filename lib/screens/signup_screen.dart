@@ -74,13 +74,10 @@ class _SignupScreenState extends State<SignupScreen> {
                         isObscure: false,
                         text: 'Email',
                         prefixIcon: isValidEmail && isNameFocused
-                            ? IconButton(
-                                icon: const Icon(
+                            ?const Icon(
                                   Icons.check_rounded,
                                   color: Colors.green,
-                                ),
-                                onPressed: () {},
-                              )
+                                ) 
                             : null,
                         suffixIcon: isNameFocused
                             ? IconButton(
@@ -146,13 +143,10 @@ class _SignupScreenState extends State<SignupScreen> {
                         isObscure: isPassObscure,
                         text: 'Password',
                     prefixIcon: isValidPassword && isPassFocused
-                            ? IconButton(
-                                icon: const Icon(
+                            ? const Icon(
                                   Icons.check_rounded,
                                   color: Colors.green,
-                                ),
-                                onPressed: () {},
-                              )
+                                )
                             : null,
                         suffixIcon: isPassFocused
                             ? IconButton(
