@@ -22,7 +22,7 @@ class _NotificationSettingsScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: kSettingsBackGroundColor,
         appBar: AppBar(
           centerTitle: true,
           backgroundColor: kBackgroundColor,
