@@ -39,8 +39,10 @@ class _LoginScreenState extends State<LoginScreen> {
           LogoTextAppBar(
             text: 'Sign up',
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const SignupScreen()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const SignupScreen()));
             },
           ),
           Expanded(
@@ -110,8 +112,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(
-          horizontal: ScreenSizeHandler.screenWidth * 0.04,
-          vertical: ScreenSizeHandler.screenHeight * 0.01),
+                          horizontal: ScreenSizeHandler.screenWidth * 0.04,
+                          vertical: ScreenSizeHandler.screenHeight * 0.01),
                       child: CredentialsTextField(
                         controller: nameController,
                         isObscure: false,
@@ -123,8 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   setState(() {
                                     nameController.clear();
                                     isNameFocused = false;
-                                   isButtonEnabled = false;
-
+                                    isButtonEnabled = false;
                                   });
                                 },
                               )
@@ -149,8 +150,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(
-          horizontal: ScreenSizeHandler.screenWidth * 0.04,
-          vertical: ScreenSizeHandler.screenHeight * 0.01),
+                          horizontal: ScreenSizeHandler.screenWidth * 0.04,
+                          vertical: ScreenSizeHandler.screenHeight * 0.01),
                       child: CredentialsTextField(
                         controller: passController,
                         isObscure: isPassObscure,
@@ -191,10 +192,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           TextLink(
+                            fontSizeRatio: ScreenSizeHandler.smaller * 0.035,
                             text: 'Forgot your password?',
                             onTap: () {
-                                            Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const ForgotPasswordScreen()));
                             },
                           ),
                         ],
@@ -216,7 +221,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     continueNavigation(); //TODO
                   } else {
                     null;
-                  }                 
+                  }
                 },
                 color: Colors.orange[900],
               ),

@@ -9,7 +9,7 @@ import 'package:reddit_bel_ham/components/settings_components/settings_tile.dart
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_leading_icon.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_image.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_trailing_icon.dart';
-import 'package:reddit_bel_ham/components/general_components/interactive_text.dart';
+import 'package:reddit_bel_ham/components/text_link.dart';
 
 class AccountSettingsScreen extends StatefulWidget {
   const AccountSettingsScreen({super.key});
@@ -131,18 +131,21 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       ),
                       titleText: "Google",
                       trailingWidget: isConnectedToGoogle
-                          ? InteractiveText(
+                          ? TextLink(
                               text: "Disconnect",
                               onTap: () {
                                 Navigator.pushNamed(context,
                                     'connected_accounts_disconnect_screen');
                               },
+                              fontSizeRatio: ScreenSizeHandler.smaller * 0.035,
                             )
-                          : InteractiveText(
-                              text: "Connect",
+                          :
+                          TextLink(
+                             text: "Connect",
                               onTap: () {
                                 //TODO: Implement the connect functionality
                               },
+                              fontSizeRatio: ScreenSizeHandler.smaller * 0.035,
                             ),
                       onTap: () {},
                     ),
