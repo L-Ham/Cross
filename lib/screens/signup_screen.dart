@@ -223,7 +223,7 @@ class SignupScreenState extends State<SignupScreen> {
                 onPress: () {
                   if (isButtonEnabled) {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => HomePage()));
+                        MaterialPageRoute(builder: (context) => HomePageScreen()));
                   } else {
                     null;
                   }
