@@ -27,16 +27,16 @@ jobs:
       - name: Run Flutter Test
         run: flutter test
 
-      - name: Send Email
+      - name: Sending Mail on success 
         if: always()
-        uses: hilarion5/send-mail@v1
+        uses: dawidd6/action-send-mail@v3
         with:
-           smtp-server: smtp.gmail.com
-           smtp-port: 465
-           smtp-secure: true
-           from-email: ${{ secrets.DEVOPS_EMAIL }}
-           to-email: ${{secrets.TEAM_LEADER }},${{secrets.SUB_TEAM_LEADER }}
-           username: ${{ secrets.DEVOPS_EMAIL }}
-           password: ${{ secrets.DEVOPS_PASSWORD }}
-           subject: "Mabrooookkk!! SOGHEL 10/10"
-           body: ${{ github.event_name }} event on ${{ github.repository }} triggered by ${{ github.actor }} at ${{ github.event.head_commit.timestamp }}
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.DEVOPS_EMAIL }}
+          password: ${{ secrets.DEVOPS_PASSWORD }}
+          from: ${{ secrets.DEVOPS_EMAIL }} # Specify the sender email here
+          subject: " env.Mabroooookkkkkk!!! kalam mawzoon "
+          body: ${{ github.event_name }} event on ${{ github.repository }} triggered by ${{ github.actor }} at ${{ github.event.head_commit.timestamp }}
+          to: ${{secrets.DEVOPS_EMAIL}}, ${{secrets.SUB_TEAM_LEADER}},${{secrets.TEAM_LEADER}}
+      
