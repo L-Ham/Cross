@@ -102,11 +102,11 @@ class SignupScreenState extends State<SignupScreen> {
                         onChanged: (value) {
                           setState(() {
                             isValidEmail = isEmailValid(value);
+                            isButtonEnabled = isValidEmail && isValidPassword && isPassFocused && isNameFocused;
                             isNameFocused = value.isNotEmpty;
                             if (value.isNotEmpty &&
                                 passController.text.isNotEmpty) {
                               setState(() {
-                                isButtonEnabled = true;
                               });
                             } else {
                               if (value.isEmpty) {
@@ -115,7 +115,7 @@ class SignupScreenState extends State<SignupScreen> {
                                 });
                               }
                               setState(() {
-                                isButtonEnabled = false;
+
                               });
                             }
                           });
@@ -171,10 +171,10 @@ class SignupScreenState extends State<SignupScreen> {
                           setState(() {
                             isValidPassword = value.length >= 8;
                             isPassFocused = value.isNotEmpty;
+                            isButtonEnabled = isValidEmail && isValidPassword && isPassFocused && isNameFocused;
                             if (value.isNotEmpty &&
                                 nameController.text.isNotEmpty) {
                               setState(() {
-                                isButtonEnabled = true;
                               });
                             } else {
                               if (value.isEmpty) {
@@ -183,7 +183,6 @@ class SignupScreenState extends State<SignupScreen> {
                                 });
                               }
                               setState(() {
-                                isButtonEnabled = false;
                               });
                             }
                           });
