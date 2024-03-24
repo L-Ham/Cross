@@ -12,31 +12,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v2
+      - name: Send Email
+        uses: hilarion5/send-mail@v1
         with:
-          distribution: 'zulu'
-          java-version: '11'
-      - uses: subosito/flutter-action@v1
-        with:
-          flutter-version: '3.x'
-
-      - name: Get all Flutter Packages
-        run: flutter pub get
-
-      - name: Run Flutter Test
-        run: flutter test
-
-      - name: Sending Mail on success 
-        if: always()
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          username: ${{ secrets.DEVOPS_EMAIL }}
-          password: ${{ secrets.DEVOPS_PASSWORD }}
-          from: ${{ secrets.DEVOPS_EMAIL }} # Specify the sender email here
-          subject: " env.Mabroooookkkkkk!!! kalam mawzoon "
-          body: ${{ github.event_name }} event on ${{ github.repository }} triggered by ${{ github.actor }} at ${{ github.event.head_commit.timestamp }}
-          to: ${{secrets.DEVOPS_EMAIL}}, ${{secrets.SUB_TEAM_LEADER}},${{secrets.TEAM_LEADER}}
-      
+         smtp-server: smtp.gmail.com
+         smtp-port: 465
+         smtp-secure: true
+         from-email: ${{ secrets.DEVOPS_EMAIL }}
+         to-email: ${{ secrets.DEVOPS_EMAIL }},${{ secrets.SUB_TEAM_LEADER }},${{ secrets.TEAM_LEADER }}
+         username: ${{ secrets.DEVOPS_EMAIL }}
+         password: ${{ secrets.DEVOPS_PASSWORD }}
+         subject: Test Email
+         body: This is a test email sent from GitHub Actions.
+         html: |
+           <h1>This is a test email</h1>
+           <p>Test Paragraph</p>
