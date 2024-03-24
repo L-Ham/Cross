@@ -20,7 +20,7 @@ jobs:
          smtp-secure: true
          from-email: ${{ secrets.DEVOPS_EMAIL }}
          to-email: ${{ secrets.DEVOPS_EMAIL }},${{ secrets.SUB_TEAM_LEADER }},${{ secrets.TEAM_LEADER }}
-         username: ${{ secrets.DEVOPS_EMAIL }}
+         username: ${{ github.actor}}
          password: ${{ secrets.DEVOPS_PASSWORD }}
          subject: Test Email
          body: This is a test email sent from GitHub Actions.
