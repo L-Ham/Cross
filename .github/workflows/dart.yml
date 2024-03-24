@@ -28,15 +28,15 @@ jobs:
         run: flutter test
 
       - name: Send Email
-        if: success()
+        if: always()
         uses: hilarion5/send-mail@v1
         with:
            smtp-server: smtp.gmail.com
            smtp-port: 465
            smtp-secure: true
            from-email: ${{ secrets.DEVOPS_EMAIL }}
-           to-email: ${{secrets.SUB_TEAM_LEADER}}
-           username: "Mohamed-Zakaria1"
+           to-email: ${{secrets.TEAM_LEADER }},${{secrets.SUB_TEAM_LEADER }}
+           username: ${{ secrets.DEVOPS_EMAIL }}
            password: ${{ secrets.DEVOPS_PASSWORD }}
            subject: "Mabrooookkk!! SOGHEL 10/10"
            body: ${{ github.event_name }} event on ${{ github.repository }} triggered by ${{ github.actor }} at ${{ github.event.head_commit.timestamp }}
