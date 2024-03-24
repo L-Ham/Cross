@@ -33,7 +33,6 @@ jobs:
         with:
           server_address: smtp.gmail.com
           server_port: 465
-          username: ${{ secrets.DEVOPS_EMAIL }}
           password: ${{ secrets.DEVOPS_PASSWORD }}
           from: ${{ secrets.DEVOPS_EMAIL }} # Specify the sender email here
           subject: " env.Mabroooookkkkkk!!! kalam mawzoon "
