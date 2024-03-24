@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'package:reddit_bel_ham/screens/change_password_screen.dart';
+import 'package:reddit_bel_ham/screens/change_password_screen.dart';
 import 'package:reddit_bel_ham/screens/connected_accounts_disconnect_screen.dart';
 import 'package:reddit_bel_ham/screens/update_email_address_screen.dart';
 import 'package:reddit_bel_ham/screens/create_community_screen.dart';
@@ -11,6 +11,7 @@ import 'screens/login_screen.dart';
 import 'screens/signup_screen.dart';
 import 'screens/forgot_password_screen.dart';
 import 'screens/home_page_screen.dart';
+// import 'screens/search_screen.dart';
 
 
 void main() {
@@ -41,7 +42,7 @@ class RedditByLham extends StatelessWidget {
         LoginScreen.id: (context) => const LoginScreen(),
         ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
         HomePageScreen.id: (context) => HomePageScreen(),
-        SearchScreen.id: (context) => SearchScreen(),
+        // SearchScreen.id: (context) => SearchScreen(),
       },
       initialRoute: FirstScreen.id,
     );
