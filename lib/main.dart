@@ -36,7 +36,7 @@ class RedditByLham extends StatelessWidget {
         "connected_accounts_disconnect_screen": (context) => const DisconnectScreen(),
         "update_email_address_screen": (context) => const UpdateEmailAddressScreen(),
       },
-      initialRoute: "home_page_screen",
+      initialRoute: "first_screen",
     );
   }
 }

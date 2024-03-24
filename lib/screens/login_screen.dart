@@ -198,7 +198,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 isButtonEnabled: isButtonEnabled,
                 onPress: () {
                   if (isButtonEnabled) {
-                    continueNavigation();
+                    //continueNavigation();
+                    Navigator.pushNamed(context, "home_page_screen");
                   } else {
                     null;
                   }
