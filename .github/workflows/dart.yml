@@ -26,3 +26,17 @@ jobs:
 
       - name: Run Flutter Test
         run: flutter test
+
+      - name: Send Email
+        if: success()
+        uses: hilarion5/send-mail@v1
+        with:
+           smtp-server: smtp.example.com
+           smtp-port: 465
+           smtp-secure: true
+           from-email: ${{ secrets.DEVOPS_EMAIL }}
+           to-email: ${{secrets.SUB_TEAM_LEADER}}
+           username: "Mohamed-Zakaria1"
+           password: ${{ secrets.DEVOPS_PASSWORD }}
+           subject: "Mabrooookkk!! SOGHEL 10/10"
+           body: ${{ github.event_name }} event on ${{ github.repository }} triggered by ${{ github.actor }} at ${{ github.event.head_commit.timestamp }}
