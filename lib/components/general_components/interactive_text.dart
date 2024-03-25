@@ -3,9 +3,14 @@ import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 
 class InteractiveText extends StatelessWidget {
-  const InteractiveText({super.key, required this.text, required this.onTap});
+  const InteractiveText(
+      {super.key,
+      required this.text,
+      required this.onTap,
+      this.fontSizeRatio = kInteractiveTextHeightRatio});
 
   final String text;
+  final double fontSizeRatio;
   final Function() onTap;
 
   @override
@@ -15,7 +20,7 @@ class InteractiveText extends StatelessWidget {
       child: Text(
         text,
         style: kInteractiveTextStyle.copyWith(
-          fontSize: ScreenSizeHandler.bigger * kInteractiveTextHeightRatio,
+          fontSize: ScreenSizeHandler.bigger * fontSizeRatio,
         ),
       ),
     );

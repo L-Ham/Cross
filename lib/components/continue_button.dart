@@ -7,6 +7,7 @@ class ContinueButton extends StatelessWidget {
   final String text;
   final Widget? icon;
   final bool isButtonEnabled;
+  final Color? color;
 
   const ContinueButton({
     Key? key,
@@ -14,6 +15,7 @@ class ContinueButton extends StatelessWidget {
     required this.text,
     this.icon,
     this.isButtonEnabled = true,
+    this.color,
   }) : super(key: key);
 
   @override
@@ -24,7 +26,7 @@ class ContinueButton extends StatelessWidget {
           vertical: ScreenSizeHandler.screenHeight * 0.01),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-            backgroundColor: isButtonEnabled ? kFillingColor : kDisabledButtonColor,
+            backgroundColor: !isButtonEnabled ?kDisabledButtonColor: color!=null?color: kFillingColor,
             foregroundColor: Colors.white,
             padding: EdgeInsets.symmetric(
               vertical: ScreenSizeHandler.screenHeight * 0.015,
