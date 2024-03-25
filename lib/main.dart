@@ -27,7 +27,6 @@ class RedditByLham extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(),
       routes: {
         FirstScreen.id: (context) => FirstScreen(),
         CreateCommunityScreen.id: (context) => const CreateCommunityScreen(),
@@ -43,7 +42,7 @@ class RedditByLham extends StatelessWidget {
         //Resolved
         // SearchScreen.id: (context) => SearchScreen(),
       },
-      initialRoute: AccountSettingsScreen.id,
+      initialRoute: FirstScreen.id,
     );
   }
 }
