@@ -33,6 +33,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
         backgroundColor: kBackgroundColor,
         toolbarHeight: ScreenSizeHandler.bigger * 0.06,
         leading: IconButton(
+            key: const Key("account_settings_back_button"),
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.pop(context);
@@ -55,6 +56,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                   children: [
                     const SettingsSegmentTitle(titleText: "Basic Settings"),
                     SettingsTile(
+                      key: const Key("update_email_address_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.settings_outlined,
                       ),
@@ -69,6 +71,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       },
                     ),
                     SettingsTile(
+                      key: const Key("change_password_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.settings_outlined,
                       ),
@@ -81,6 +84,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       },
                     ),
                     SettingsTile(
+                      key: const Key("change_gender_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.person,
                       ),
@@ -113,6 +117,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       },
                     ),
                     SettingsTile(
+                      key: const Key("location_customization_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.location_on_outlined,
                       ),
@@ -132,6 +137,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       titleText: "Google",
                       trailingWidget: isConnectedToGoogle
                           ? TextLink(
+                              key: const Key("disconnect_google_text_link"),
                               text: "Disconnect",
                               onTap: () {
                                 Navigator.pushNamed(context,
@@ -139,9 +145,9 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                               },
                               fontSizeRatio: ScreenSizeHandler.smaller * 0.035,
                             )
-                          :
-                          TextLink(
-                             text: "Connect",
+                          : TextLink(
+                              key: const Key("connect_google_text_link"),
+                              text: "Connect",
                               onTap: () {
                                 //TODO: Implement the connect functionality
                               },
@@ -153,6 +159,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       titleText: "Contact Settings",
                     ),
                     SettingsTile(
+                      key: const Key("manage_notifications_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.notifications_outlined,
                       ),
@@ -169,6 +176,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       titleText: "Blocking and Permissions",
                     ),
                     SettingsTile(
+                      key: const Key("manage_blocked_accounts_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.block_outlined,
                       ),
@@ -184,6 +192,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       ),
                       titleText: "Allow People to Follow You",
                       trailingWidget: CustomSwitch(
+                        key: const Key("allow_people_to_follow_you_switch"),
                         isSwitched: allowPeopleToFollowYou,
                         onChanged: (value) {
                           setState(() {

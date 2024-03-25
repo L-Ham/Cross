@@ -13,6 +13,7 @@ class CredentialsTextField extends StatelessWidget {
   final bool isObscure;
 
   const CredentialsTextField({
+    super.key,
     required this.controller,
     required this.isFocused,
     required this.onChanged,
