@@ -34,7 +34,7 @@ class RedditByLham extends StatelessWidget {
         NotificationSettingsScreen.id: (context) => const NotificationSettingsScreen(),
         DisconnectScreen.id: (context) => const DisconnectScreen(),
         UpdateEmailAddressScreen.id: (context) => const UpdateEmailAddressScreen(),
-        //ChangePasswordScreen.id: (context) => const ChangePasswordScreen(),
+        ChangePasswordScreen.id: (context) => const ChangePasswordScreen(),
         SignupScreen.id: (context) => const SignupScreen(),
         LoginScreen.id: (context) => const LoginScreen(),
         ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
@@ -42,7 +42,7 @@ class RedditByLham extends StatelessWidget {
         //Resolved
         // SearchScreen.id: (context) => SearchScreen(),
       },
-      initialRoute: FirstScreen.id,
+      initialRoute: AccountSettingsScreen.id,
     );
   }
 }

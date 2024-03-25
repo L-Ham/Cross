@@ -5,6 +5,7 @@ class SettingsRadioButtonTile extends StatelessWidget {
   final ValueNotifier<String?> groupValueNotifier;
 
   const SettingsRadioButtonTile({
+    super.key,
     required this.value,
     required this.groupValueNotifier,
   });
