@@ -11,9 +11,6 @@ import 'screens/login_screen.dart';
 import 'screens/signup_screen.dart';
 import 'screens/forgot_password_screen.dart';
 import 'screens/home_page_screen.dart';
-// import 'screens/search_screen.dart';
-
-
 void main() {
   runApp(const RedditByLham());
 }
@@ -42,6 +39,7 @@ class RedditByLham extends StatelessWidget {
         LoginScreen.id: (context) => const LoginScreen(),
         ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
         HomePageScreen.id: (context) => HomePageScreen(),
+        //Resolved
         // SearchScreen.id: (context) => SearchScreen(),
       },
       initialRoute: FirstScreen.id,
