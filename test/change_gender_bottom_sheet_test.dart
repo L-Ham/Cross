@@ -52,7 +52,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Tap the Done button to close the ChangeGenderBottomSheet
-    await tester.tap(find.byKey(const Key('done_button')),warnIfMissed: false);
+    await tester.tap(find.byKey(const Key('done_button')));
     await tester.pumpAndSettle();
   });
 }
