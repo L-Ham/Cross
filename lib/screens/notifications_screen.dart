@@ -19,14 +19,14 @@ class NotificationSettingsScreen extends StatefulWidget {
 
 class _NotificationSettingsScreenState
     extends State<NotificationSettingsScreen> {
-  late List<bool> switchStates;
+  late List<bool>? switchStates;
 
   
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     // Initialize arguments in initState
-    switchStates = ModalRoute.of(context)!.settings.arguments as List<bool>;
+    switchStates = (ModalRoute.of(context)!.settings.arguments ?? List.generate(11, (index) => false)) as List<bool>?;
   }
 
   @override
@@ -51,16 +51,16 @@ class _NotificationSettingsScreenState
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SettingsSegmentTitle(titleText: "MESSAGES"),
+              const SettingsSegmentTitle(titleText: "Messages"),
               SettingsTile(
                   leadingIcon: const SettingsTileLeadingIcon(
                       leadingIcon: Icons.mail_outline),
                   titleText: "Private messages",
                   trailingWidget: CustomSwitch(
-                      isSwitched: switchStates[kNotificationSettingsPrivateMessagesSwitchIndex],
+                      isSwitched: switchStates![kNotificationSettingsPrivateMessagesSwitchIndex],
                       onChanged: (value) {
                         setState(() {
-                          switchStates[kNotificationSettingsPrivateMessagesSwitchIndex] = value;
+                          switchStates![kNotificationSettingsPrivateMessagesSwitchIndex] = value;
                         });
                       })),
               SettingsTile(
@@ -68,10 +68,10 @@ class _NotificationSettingsScreenState
                       leadingIcon: FontAwesomeIcons.commentDots),
                   titleText: "Chat messages",
                   trailingWidget: CustomSwitch(
-                      isSwitched: switchStates[kNotificationSettingsChatMessagesSwitchIndex],
+                      isSwitched: switchStates![kNotificationSettingsChatMessagesSwitchIndex],
                       onChanged: (value) {
                         setState(() {
-                          switchStates[kNotificationSettingsChatMessagesSwitchIndex] = value;
+                          switchStates![kNotificationSettingsChatMessagesSwitchIndex] = value;
                         });
                       })),
               SettingsTile(
@@ -79,22 +79,22 @@ class _NotificationSettingsScreenState
                       leadingIcon: Icons.add_comment_outlined),
                   titleText: "Chat requests",
                   trailingWidget: CustomSwitch(
-                      isSwitched: switchStates[kNotificationSettingsChatRequestsSwitchIndex],
+                      isSwitched: switchStates![kNotificationSettingsChatRequestsSwitchIndex],
                       onChanged: (value) {
                         setState(() {
-                          switchStates[kNotificationSettingsChatRequestsSwitchIndex] = value;
+                          switchStates![kNotificationSettingsChatRequestsSwitchIndex] = value;
                         });
                       })),
-              const SettingsSegmentTitle(titleText: "ACTIVITY"),
+              const SettingsSegmentTitle(titleText: "Activity"),
               SettingsTile(
                   leadingIcon: const SettingsTileLeadingIcon(
                       leadingIcon: Icons.account_circle_outlined),
                   titleText: "Mentions of u/username",
                   trailingWidget:
-                      CustomSwitch(isSwitched: switchStates[kNotificationSettingsMentionsOfUsernameSwitchIndex],
+                      CustomSwitch(isSwitched: switchStates![kNotificationSettingsMentionsOfUsernameSwitchIndex],
                       onChanged: (value) {
                         setState(() {
-                          switchStates[kNotificationSettingsMentionsOfUsernameSwitchIndex] = value;
+                          switchStates![kNotificationSettingsMentionsOfUsernameSwitchIndex] = value;
                         });
                       })),
               SettingsTile(
@@ -102,10 +102,10 @@ class _NotificationSettingsScreenState
                       leadingIcon: Icons.mode_comment_outlined),
                   titleText: "Comments on your posts",
                   trailingWidget:
-                      CustomSwitch(isSwitched: switchStates[kNotificationSettingsCommentsOnYourPostsSwitchIndex],
+                      CustomSwitch(isSwitched: switchStates![kNotificationSettingsCommentsOnYourPostsSwitchIndex],
                       onChanged: (value) {
                         setState(() {
-                          switchStates[kNotificationSettingsCommentsOnYourPostsSwitchIndex] = value;
+                          switchStates![kNotificationSettingsCommentsOnYourPostsSwitchIndex] = value;
                         });
                       })),
               SettingsTile(
@@ -113,10 +113,10 @@ class _NotificationSettingsScreenState
                       leadingIcon: FontAwesomeIcons.arrowUp),
                   titleText: "Upvotes on your posts",
                   trailingWidget:
-                      CustomSwitch(isSwitched: switchStates[kNotificationSettingsUpvotesOnYourPostsSwitchIndex],
+                      CustomSwitch(isSwitched: switchStates![kNotificationSettingsUpvotesOnYourPostsSwitchIndex],
                       onChanged: (value) {
                         setState(() {
-                          switchStates[kNotificationSettingsUpvotesOnYourPostsSwitchIndex] = value;
+                          switchStates![kNotificationSettingsUpvotesOnYourPostsSwitchIndex] = value;
                         });
                       })),
               SettingsTile(
@@ -124,10 +124,10 @@ class _NotificationSettingsScreenState
                       leadingIcon: FontAwesomeIcons.arrowUp),
                   titleText: "Upvotes on your comments",
                   trailingWidget:
-                      CustomSwitch(isSwitched: switchStates[kNotificationSettingsUpvotesOnYourCommentsSwitchIndex],
+                      CustomSwitch(isSwitched: switchStates![kNotificationSettingsUpvotesOnYourCommentsSwitchIndex],
                       onChanged: (value) {
                         setState(() {
-                          switchStates[kNotificationSettingsUpvotesOnYourCommentsSwitchIndex] = value;
+                          switchStates![kNotificationSettingsUpvotesOnYourCommentsSwitchIndex] = value;
                         });
                       })),
               SettingsTile(
@@ -135,10 +135,10 @@ class _NotificationSettingsScreenState
                       const SettingsTileLeadingIcon(leadingIcon: Icons.reply),
                   titleText: "Replies to your comments",
                   trailingWidget:
-                      CustomSwitch(isSwitched: switchStates[kNotificationSettingsRepliesToYourCommentsSwitchIndex],
+                      CustomSwitch(isSwitched: switchStates![kNotificationSettingsRepliesToYourCommentsSwitchIndex],
                       onChanged: (value) {
                         setState(() {
-                          switchStates[kNotificationSettingsRepliesToYourCommentsSwitchIndex] = value;
+                          switchStates![kNotificationSettingsRepliesToYourCommentsSwitchIndex] = value;
                         });
                       })),
               SettingsTile(
@@ -146,34 +146,34 @@ class _NotificationSettingsScreenState
                       leadingIcon: Icons.supervisor_account_rounded),
                   titleText: "New followers",
                   trailingWidget:
-                      CustomSwitch(isSwitched: switchStates[kNotificationSettingsNewFollowersSwitchIndex],
+                      CustomSwitch(isSwitched: switchStates![kNotificationSettingsNewFollowersSwitchIndex],
                       onChanged: (value) {
                         setState(() {
-                          switchStates[kNotificationSettingsNewFollowersSwitchIndex] = value;
+                          switchStates![kNotificationSettingsNewFollowersSwitchIndex] = value;
                         });
                       })),
-              const SettingsSegmentTitle(titleText: "UPDATES"),
+              const SettingsSegmentTitle(titleText: "Updates"),
               SettingsTile(
                   leadingIcon: const SettingsTileLeadingIcon(
                       leadingIcon: FontAwesomeIcons.cakeCandles),
                   titleText: "Cake day",
                   trailingWidget:
-                      CustomSwitch(isSwitched: switchStates[kNotificationSettingsCakeDaySwitchIndex],
+                      CustomSwitch(isSwitched: switchStates![kNotificationSettingsCakeDaySwitchIndex],
                       onChanged: (value) {
                         setState(() {
-                          switchStates[kNotificationSettingsCakeDaySwitchIndex] = value;
+                          switchStates![kNotificationSettingsCakeDaySwitchIndex] = value;
                         });
                       })),
-              const SettingsSegmentTitle(titleText: "MODERATION"),
+              const SettingsSegmentTitle(titleText: "Moderation"),
               SettingsTile(
                   leadingIcon: const SettingsTileLeadingIcon(
                       leadingIcon: Icons.notifications_none_rounded),
                   titleText: "Mod notifications",
                   trailingWidget:
-                      CustomSwitch(isSwitched: switchStates[kNotificationSettingsModNotificationsSwitchIndex],
+                      CustomSwitch(isSwitched: switchStates![kNotificationSettingsModNotificationsSwitchIndex],
                       onChanged: (value) {
                         setState(() {
-                          switchStates[kNotificationSettingsModNotificationsSwitchIndex] = value;
+                          switchStates![kNotificationSettingsModNotificationsSwitchIndex] = value;
                         });
                       })),
             ],
