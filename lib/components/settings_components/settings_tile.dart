@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/constants.dart';
+import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 
 class SettingsTile extends StatelessWidget {
   final Widget leadingIcon;
   final String titleText;
   final String? subtitleText;
-  final Widget trailingWidget;
+  final Widget? trailingWidget;
   final VoidCallback? onTap;
 
   const SettingsTile({
@@ -13,14 +14,14 @@ class SettingsTile extends StatelessWidget {
     required this.leadingIcon,
     required this.titleText,
     this.subtitleText,
-    required this.trailingWidget,
+    this.trailingWidget,
     this.onTap,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      tileColor: kFillingColor,
+      tileColor: kBackgroundColor,
       visualDensity: VisualDensity.compact,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -33,7 +34,7 @@ class SettingsTile extends StatelessWidget {
                 Text(
                   titleText,
                   style: kSettingsIconTextStyle.copyWith(
-                    fontSize: MediaQuery.of(context).size.height *
+                    fontSize: ScreenSizeHandler.bigger *
                         kSettingsTileTextRatio,
                   ),
                 ),
@@ -41,7 +42,7 @@ class SettingsTile extends StatelessWidget {
                   Text(
                     subtitleText!,
                     style: kSettingsIconTextStyle.copyWith(
-                      fontSize: MediaQuery.of(context).size.height *
+                      fontSize: ScreenSizeHandler.bigger *
                           kSettingsTileSubtextRatio,
                       color: Colors.grey,
                     ),
@@ -49,7 +50,7 @@ class SettingsTile extends StatelessWidget {
               ],
             ),
           ),
-          trailingWidget
+          if (trailingWidget != null) trailingWidget !,
         ],
       ),
       onTap: onTap,

@@ -1,0 +1,55 @@
+name: Flutter Test
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+      - uses: subosito/flutter-action@v1
+        with:
+          flutter-version: '3.x'
+
+      - name: Get all Flutter Packages
+        run: flutter pub get
+
+      - name: Run Flutter Test
+        run: flutter test
+      - name: Send Email on success
+        if: success()
+        uses: hilarion5/send-mail@v1
+        with:
+         smtp-server: smtp.gmail.com
+         smtp-port: 465
+         smtp-secure: true
+         from-email: ${{ secrets.DEVOPS_EMAIL }}
+         to-email: ${{ secrets.DEVOPS_EMAIL }},${{ secrets.SUB_TEAM_LEADER }},${{secrets.SUB_TEAM_TESTING}},${{ secrets.TEAM_LEADER }},${{ secrets.TEAM_MEMBER_ONE}},${{ secrets.TEAM_MEMBER_TWO }},${{ secrets.TEAM_MEMBER_THREE }},${{ secrets.TEAM_MEMBER_FOUR }},${{ secrets.TEAM_MEMBER_FIVE }}
+         username: ${{ secrets.DEVOPS_EMAIL }}
+         password: ${{ secrets.DEVOPS_PASSWORD }}
+         subject: SHOGHEL FA5ER MN EL AKHER YA ${{ github.actor }}
+         body: ${{ github.event_name }} event on ${{ github.repository }} triggered by ${{ github.actor }} at ${{ github.event.head_commit.timestamp }}
+
+      - name : Send Email on failure
+        if: failure()
+        uses: hilarion5/send-mail@v1
+        with:
+         smtp-server: smtp.gmail.com
+         smtp-port: 465
+         smtp-secure: true
+         from-email: ${{ secrets.DEVOPS_EMAIL }}
+         to-email: ${{ secrets.DEVOPS_EMAIL }},${{ secrets.SUB_TEAM_LEADER }},${{secrets.SUB_TEAM_TESTING}},${{ secrets.TEAM_LEADER }},${{ secrets.TEAM_MEMBER_ONE}},${{ secrets.TEAM_MEMBER_TWO }},${{ secrets.TEAM_MEMBER_THREE }},${{ secrets.TEAM_MEMBER_FOUR }},${{ secrets.TEAM_MEMBER_FIVE }}
+         username: ${{ secrets.DEVOPS_EMAIL }}
+         password: ${{ secrets.DEVOPS_PASSWORD }}
+         subject: SO SO SO BAD FROM ${{ github.actor }}
+         body: ${{ github.event_name }} event on ${{ github.repository }} triggered by ${{ github.actor }} at ${{ github.event.head_commit.timestamp }}
