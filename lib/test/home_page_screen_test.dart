@@ -6,7 +6,7 @@ import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 void main() {
   testWidgets('HomePage widget test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(MaterialApp(home: HomePage()));
+    await tester.pumpWidget(MaterialApp(home: HomePageScreen()));
 
      // Scroll to the end of the list
     
