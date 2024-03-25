@@ -4,9 +4,12 @@ import 'package:flutter/material.dart';
 import '../constants.dart';
 import '../components/empty_dog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../utilities/screen_size_handler.dart';
 
 class BlockedAccount extends StatefulWidget {
   const BlockedAccount({Key? key}) : super(key: key);
+
+  static const String id = 'blocked_account_screen';
 
   @override
   _BlockedAccountState createState() => _BlockedAccountState();
@@ -44,14 +47,13 @@ class _BlockedAccountState extends State<BlockedAccount> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: kBackgroundColor,
       appBar: AppBar(
         title: Center(
           child: Text(
             'Blocked Accounts',
             style: kPageTitleStyle.copyWith(
-              fontSize: MediaQuery.of(context).size.height *
-                  kPageTitleFontSizeHeightRatio,
-            ),
+                fontSize: ScreenSizeHandler.bigger * kAppBarTitleFontSizeRatio),
           ),
         ),
       ),
@@ -76,24 +78,26 @@ class _BlockedAccountState extends State<BlockedAccount> {
                         contentPadding: EdgeInsets.only(
                             top: MediaQuery.of(context).size.height * 0.01),
                         filled: true,
-                        fillColor: Color.fromARGB(209, 43, 42, 42),
+                        fillColor: Color.fromARGB(199, 35, 35, 35),
                         border: OutlineInputBorder(
                           borderSide: BorderSide.none,
                         ),
                         prefixIcon: Icon(
                           Icons.search,
-                          color: const Color.fromARGB(255, 130, 129, 129),
+                          size: ScreenSizeHandler.bigger *
+                              kSettingsLeadingIconRatio,
+                          color: kHintTextColor,
                         ),
                         hintText: 'Block new account',
                         hintStyle: TextStyle(
-                            color: const Color.fromARGB(255, 130, 129, 129)),
+                            color: kHintTextColor,
+                            fontWeight: FontWeight.normal),
                         suffixIcon: _isTextFieldEmpty
                             ? null
                             : IconButton(
                                 icon: FaIcon(
                                   FontAwesomeIcons.circleXmark,
-                                  color:
-                                      const Color.fromARGB(255, 130, 129, 129),
+                                  color: kHintTextColor,
                                 ),
                                 onPressed: () {
                                   setState(() {
@@ -115,7 +119,7 @@ class _BlockedAccountState extends State<BlockedAccount> {
                     child: Text(
                       "Cancel",
                       style: TextStyle(
-                        color: Colors.grey,
+                        color: kHintTextColor,
                         fontSize: MediaQuery.of(context).size.height *
                             kPageSubtitleFontSizeHeightRatio,
                       ),
@@ -125,6 +129,25 @@ class _BlockedAccountState extends State<BlockedAccount> {
             ],
           ),
           if (_isBlockedAccountsEmpty) EmptyDog()
+          else
+          Column(
+            children: [
+              Row(
+                children: [
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        backgroundImage: ,
+                      )
+                    ],
+                  )
+                ],
+                
+              )
+
+            ],
+          )
+          
         ],
       ),
     );
