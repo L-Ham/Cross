@@ -50,6 +50,7 @@ class _ChangeGenderBottomSheetState extends State<ChangeGenderBottomSheet> {
                     ),
                   ),
                   GestureDetector(
+                    key: Key('done_button'),
                     onTap: () {
                       Navigator.pop(context, groupValueNotifier.value);
                     },
@@ -64,14 +65,17 @@ class _ChangeGenderBottomSheetState extends State<ChangeGenderBottomSheet> {
             ),
             const Divider(color: Colors.white),
             SettingsRadioButtonTile(
+              key: const Key('male_radio_button_tile'),
               groupValueNotifier: groupValueNotifier,
               value: "Male",
             ),
             SettingsRadioButtonTile(
+              key: const Key('female_radio_button_tile'),
               groupValueNotifier: groupValueNotifier,
               value: "Female",
             ),
             SettingsRadioButtonTile(
+              key: const Key('others_radio_button_tile'),
               groupValueNotifier: groupValueNotifier,
               value: "Others",
             )

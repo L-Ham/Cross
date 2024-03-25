@@ -5,6 +5,7 @@ class CustomSwitch extends StatelessWidget {
   final ValueChanged<bool> onChanged;
 
   const CustomSwitch({
+    super.key,
     required this.isSwitched,
     required this.onChanged,
   });

@@ -23,7 +23,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   bool isMailValid = true;
   String errorMessage = '';
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,6 +35,28 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             onTap: () {
               // TODO
               // a link that redirects the user to a help center
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text(
+                      "Sorry we can't help you :(",
+                      style: TextStyle(
+                          fontSize: ScreenSizeHandler.bigger * 0.028,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    content: const Text('We need someone who can help us!'),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text('Close'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
             },
           ),
           Expanded(
@@ -74,11 +95,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         horizontal: ScreenSizeHandler.screenWidth * 0.04,
                       ),
                       child: CredentialsTextField(
+                        key: const Key('forgot_password_screen_email_or_username_text_field'),
                         controller: nameController,
                         isObscure: false,
                         isValid: isNameValid,
                         prefixIcon: (isNameValid && isNameFocused)
-                            ? const Icon(Icons.check_rounded, color: Colors.green)
+                            ? const Icon(Icons.check_rounded,
+                                color: Colors.green)
                             : null,
                         text: 'Email or username',
                         suffixIcon: isNameFocused
@@ -118,7 +141,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                     errorMessage = "Not a valid email address";
                                   });
                                 }
-                              } else if (value.length > 2 && value.length < 21) {
+                              } else if (value.length > 2 &&
+                                  value.length < 21) {
                                 setState(() {
                                   isButtonEnabled = true;
                                   isNameValid = true;
@@ -127,7 +151,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                 setState(() {
                                   isButtonEnabled = false;
                                   isNameValid = false;
-                                  errorMessage = "There isn't a Reddit account with that username";
+                                  errorMessage =
+                                      "There isn't a Reddit account with that username";
                                 });
                               }
                             }
@@ -139,8 +164,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       visible: !isNameValid,
                       child: Padding(
                         padding: EdgeInsets.only(
-                            left: ScreenSizeHandler.smaller * 0.05
-                          ),
+                            left: ScreenSizeHandler.smaller * 0.05),
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
@@ -162,12 +186,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               ContinueButton(
+                 key: const Key('forgot_password_screen_reset_Password_button'),
                 text: "Reset Password",
                 isButtonEnabled: isButtonEnabled,
                 color: Colors.orange[900],
                 onPress: () {
                   if (isButtonEnabled) {
-                    // TODO 
+                    // TODO
                   } else {
                     null;
                   }
