@@ -16,8 +16,8 @@ class ChangePasswordScreen extends StatefulWidget {
 }
 
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
-  String email = "daniel.gebraiel01@eng-st.cu.edu.eg";
-  String username = "DanielGebraiel";
+  late String email;
+  late String username;
 
   TextEditingController currentPasswordController = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
@@ -30,6 +30,17 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   bool isNewPasswordObscure = true;
   bool isConfirmPasswordObscure = true;
   bool doPasswordsMatch = true;
+
+  
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    Map<String, String> args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, String>;
+    email = args['email'] as String;
+    username = args['username'] as String;
+  }
 
   @override
   Widget build(BuildContext context) {

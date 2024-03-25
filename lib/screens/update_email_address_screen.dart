@@ -17,14 +17,25 @@ class UpdateEmailAddressScreen extends StatefulWidget {
 }
 
 class _UpdateEmailAddressScreenState extends State<UpdateEmailAddressScreen> {
-  String username = "DanielGebraiel";
-  String email = "daniel.gebraiel01@eng-st.cu.edu.eg";
+  late String username;
+  late String email;
   TextEditingController passwordController = TextEditingController();
   bool isPasswordObscure = true;
   bool isPasswordFocused = false;
 
   TextEditingController emailController = TextEditingController();
   bool isEmailFocused = false;
+
+  
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    Map<String, String> args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, String>;
+    email = args['email'] as String;
+    username = args['username'] as String;
+  }
 
   @override
   Widget build(BuildContext context) {

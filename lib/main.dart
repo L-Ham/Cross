@@ -44,7 +44,7 @@ class RedditByLham extends StatelessWidget {
         HomePageScreen.id: (context) => HomePageScreen(),
         SearchScreen.id: (context) => SearchScreen(),
       },
-      initialRoute: FirstScreen.id,
+      initialRoute: AccountSettingsScreen.id,
     );
   }
 }

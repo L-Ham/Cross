@@ -19,8 +19,18 @@ class _DisconnectScreenState extends State<DisconnectScreen> {
   TextEditingController passController = TextEditingController();
   bool isPassObscure = true;
   bool isPassFocused = false;
-  String email = "daniel.gebraiel01@eng-st.cu.edu.eg";
-  String username = "DanielGebraiel";
+  late String email;
+  late String username;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    Map<String, String> args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, String>;
+    email = args['email'] as String;
+    username = args['username'] as String;
+  }
 
   @override
   Widget build(BuildContext context) {

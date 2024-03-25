@@ -19,7 +19,15 @@ class NotificationSettingsScreen extends StatefulWidget {
 
 class _NotificationSettingsScreenState
     extends State<NotificationSettingsScreen> {
-  List<bool> switchStates = List.generate(11, (index) => false);
+  late List<bool> switchStates;
+
+  
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Initialize arguments in initState
+    switchStates = ModalRoute.of(context)!.settings.arguments as List<bool>;
+  }
 
   @override
   Widget build(BuildContext context) {
