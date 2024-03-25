@@ -92,6 +92,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                         trailingIcon: Icons.arrow_forward,
                       ),
                       onTap: () {
+
                         Navigator.pushNamed(
                           context,
                           ChangePasswordScreen.id,
@@ -100,6 +101,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                             'username': username,
                           },
                         );
+
                       },
                     ),
                     SettingsTile(

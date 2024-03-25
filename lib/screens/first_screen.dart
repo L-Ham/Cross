@@ -34,6 +34,7 @@ class FirstScreen extends StatelessWidget {
                     child: Hero(
                       tag: 'logo',
                       child: Image(
+                        key: const Key('first_screen_logo_image'),
                         image: const AssetImage(
                             'assets/images/elham_final_logo.png'),
                         height: ScreenSizeHandler.screenHeight * 0.2,
@@ -61,6 +62,7 @@ class FirstScreen extends StatelessWidget {
                     height: ScreenSizeHandler.screenHeight * 0.15,
                   ),
                   ContinueButton(
+                    key: const Key('first_screen_continue_with_google_button'),
                     onPress: () {
                       
                     },
@@ -72,6 +74,7 @@ class FirstScreen extends StatelessWidget {
                     ),
                   ),
                   ContinueButton(
+                    key: const Key('first_screen_continue_with_email_button'),
                     text: "Continue with Email",
                     icon: const Icon(Icons.email),
                     onPress: () {
@@ -97,6 +100,7 @@ class FirstScreen extends StatelessWidget {
                           ),
                         ),
                         TextLink(
+                          key: const Key('first_screen_log_in_text_link'),
                             fontSizeRatio: ScreenSizeHandler.smaller * 0.035,
                             onTap: () {
                               Navigator.push(
