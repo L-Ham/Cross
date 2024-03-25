@@ -16,8 +16,13 @@ class ChangePasswordScreen extends StatefulWidget {
 }
 
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
+<<<<<<< HEAD
   late String email;
   late String username;
+=======
+  late String? email;
+  late String? username;
+>>>>>>> 86a01ab0bf84973fe2521ee962c86e03ec76cd59
 
   TextEditingController currentPasswordController = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
@@ -36,10 +41,17 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
+<<<<<<< HEAD
     Map<String, String> args =
         ModalRoute.of(context)!.settings.arguments as Map<String, String>;
     email = args['email'] as String;
     username = args['username'] as String;
+=======
+    Map<String?, String?> ?args =
+        ModalRoute.of(context)!.settings.arguments as Map<String?, String?>?;
+    email = args?['email'] ??"nardo@email.com";
+    username = args?['username'] ??"nardo";
+>>>>>>> 86a01ab0bf84973fe2521ee962c86e03ec76cd59
   }
 
   @override
@@ -70,7 +82,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   ),
                   child: Column(
                     children: [
+<<<<<<< HEAD
                       UserInformationCard(key: const Key('change_password_screen_user_info_card'), username: username, email: email),
+=======
+                    UserInformationCard(key: const Key('change_password_screen_user_info_card'), username: username!, email: email!),
+>>>>>>> 86a01ab0bf84973fe2521ee962c86e03ec76cd59
                       Padding(
                         padding: EdgeInsets.symmetric(
                             vertical: ScreenSizeHandler.screenHeight * 0.018),
