@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
+import 'package:reddit_bel_ham/components/settings_components/settings_tile.dart';
+import 'package:reddit_bel_ham/components/settings_components/settings_tile_leading_icon.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/home_page_seach_screen.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
+import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 
 class HomePageScreen extends StatefulWidget {
 
@@ -13,6 +16,14 @@ class HomePageScreen extends StatefulWidget {
 }
 
 class _HomePageScreenState extends State<HomePageScreen> {
+
+    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  String username = "peter_ashraf";
+  String onlineStatusString = "On";
+  bool onlineStatusToggle = true;
+  Color onlineStatusColor = kOnlineStatusColor;
+  double onlineStatusWidth = ScreenSizeHandler.smaller * 0.42;
+
   String selectedMenuItem = "Home";
   final List<String> menuItems = ['Home', 'Popular', 'Latest News'];
   final List<Post> posts = [
@@ -56,13 +67,19 @@ class _HomePageScreenState extends State<HomePageScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         leading: Padding(
           padding: const EdgeInsets.only(left: 8.0, right: 2.0),
-          child: Icon(
-            Icons.menu,
-            size: 30,
-            color: Colors.white,
+          child: GestureDetector(
+            onTap: () {
+              _scaffoldKey.currentState?.openDrawer();
+            },
+            child: Icon(
+              Icons.menu,
+              size: 30,
+              color: Colors.white,
+            ),
           ),
         ),
         title: Row(
