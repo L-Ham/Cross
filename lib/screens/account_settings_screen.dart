@@ -13,6 +13,7 @@ import 'package:reddit_bel_ham/components/settings_components/settings_tile_lead
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_image.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_trailing_icon.dart';
 import 'package:reddit_bel_ham/components/text_link.dart';
+import '../screens/location_customization.dart';
 
 class AccountSettingsScreen extends StatefulWidget {
   const AccountSettingsScreen({super.key});
@@ -81,6 +82,45 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                           },
                         );
                       },
+                    );
+                  },
+                ),
+                SettingsTile(
+                  leadingIcon: const SettingsTileLeadingIcon(
+                    leadingIcon: Icons.location_on_outlined,
+                  ),
+                  titleText: "Location Customization",
+                  subtitleText: location,
+                  trailingWidget: const SettingsTileTrailingIcon(
+                    trailingIcon: Icons.arrow_forward,
+                  ),
+                  onTap: () async {
+                    String newlocation = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LocationCustomization(
+                          initialValue: location,
+                        ),
+                      ),
+                    );
+                    setState(() {
+                      location = newlocation;
+                    });
+                  },
+                ),
+                const SettingsSegmentTitle(
+                  titleText: "Connected Accounts",
+                ),
+                SettingsTile(
+                  leadingIcon: const SettingsTileImage(
+                    assetImageData: 'assets/images/google_logo.png',
+                  ),
+                  titleText: "Google",
+                  trailingWidget: Text(
+                    "Disconnect",
+                    style: kSettingsConnectedAccountsTextStyle.copyWith(
+                      fontSize: MediaQuery.of(context).size.height *
+                          kSettingsTileTextRatio,
                     ),
                     SettingsTile(
                       key: const Key("change_password_tile"),

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import '../components/create_community_components/community_name_text_box.dart';
-import '../components/general_components/custom_switch.dart';
 import '../components/create_community_components/community_type_selector.dart';
 import '../utilities/screen_size_handler.dart';
 import '../constants.dart';
