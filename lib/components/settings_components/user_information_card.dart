@@ -18,6 +18,7 @@ class UserInformationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      key: key,
       children: [
         CircleAvatar(
           backgroundColor: kFillingColor,

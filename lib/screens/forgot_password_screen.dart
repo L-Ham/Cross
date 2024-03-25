@@ -95,6 +95,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         horizontal: ScreenSizeHandler.screenWidth * 0.04,
                       ),
                       child: CredentialsTextField(
+                        key: const Key('forgot_password_screen_email_or_username_text_field'),
                         controller: nameController,
                         isObscure: false,
                         isValid: isNameValid,
@@ -185,6 +186,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               ContinueButton(
+                 key: const Key('forgot_password_screen_reset_Password_button'),
                 text: "Reset Password",
                 isButtonEnabled: isButtonEnabled,
                 color: Colors.orange[900],
