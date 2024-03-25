@@ -25,6 +25,7 @@ class RedditByLham extends StatelessWidget {
       MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
       
     return MaterialApp(
+      // helpppppp
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
       routes: {
