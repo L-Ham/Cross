@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/components/general_components/custom_switch.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/change_password_screen.dart';
+import 'package:reddit_bel_ham/screens/connected_accounts_disconnect_screen.dart';
+import 'package:reddit_bel_ham/screens/notifications_screen.dart';
+import 'package:reddit_bel_ham/screens/update_email_address_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'change_gender_bottom_sheet.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_segment_tile.dart';
@@ -22,7 +25,10 @@ class AccountSettingsScreen extends StatefulWidget {
 
 class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
   String gender = "Male";
-  String connectedEmailAddress = "daniel.gebraiel01@eng-st.cu.edu.eg";
+  String connectedEmailAddress = "daniel@email.com";
+  String username = "dani";
+  String location = "Egypt";
+  List<bool> notificationsSwitchStates = List.generate(11, (index) => false);
   bool allowPeopleToFollowYou = false;
   bool isConnectedToGoogle = true;
 
@@ -33,6 +39,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
         backgroundColor: kBackgroundColor,
         toolbarHeight: ScreenSizeHandler.bigger * 0.06,
         leading: IconButton(
+            key: const Key("account_settings_back_button"),
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.pop(context);
@@ -55,6 +62,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                   children: [
                     const SettingsSegmentTitle(titleText: "Basic Settings"),
                     SettingsTile(
+                      key: const Key("update_email_address_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.settings_outlined,
                       ),
@@ -65,10 +73,17 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       subtitleText: connectedEmailAddress,
                       onTap: () {
                         Navigator.pushNamed(
-                            context, 'update_email_address_screen');
+                          context,
+                          UpdateEmailAddressScreen.id,
+                          arguments: {
+                            'email': connectedEmailAddress,
+                            'username': username,
+                          },
+                        );
                       },
                     ),
                     SettingsTile(
+                      key: const Key("change_password_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.settings_outlined,
                       ),
@@ -77,10 +92,19 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                         trailingIcon: Icons.arrow_forward,
                       ),
                       onTap: () {
-                        Navigator.pushNamed(context, ChangePasswordScreen.id);
+
+                        Navigator.pushNamed(
+                          context,
+                          ChangePasswordScreen.id,
+                          arguments: {
+                            'email': connectedEmailAddress,
+                            'username': username,
+                          },
+                        );
                       },
                     ),
                     SettingsTile(
+                      key: const Key("change_gender_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.person,
                       ),
@@ -113,6 +137,8 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       },
                     ),
                     SettingsTile(
+                      key: const Key("location_customization_tile"),
+                      subtitleText: location,
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.location_on_outlined,
                       ),
@@ -120,7 +146,9 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       trailingWidget: const SettingsTileTrailingIcon(
                         trailingIcon: Icons.arrow_forward,
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        //TODO: Implement the location customization functionality
+                      },
                     ),
                     const SettingsSegmentTitle(
                       titleText: "Connected Accounts",
@@ -132,16 +160,23 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       titleText: "Google",
                       trailingWidget: isConnectedToGoogle
                           ? TextLink(
+                              key: const Key("disconnect_google_text_link"),
                               text: "Disconnect",
                               onTap: () {
-                                Navigator.pushNamed(context,
-                                    'connected_accounts_disconnect_screen');
+                                Navigator.pushNamed(
+                                  context,
+                                  DisconnectScreen.id,
+                                  arguments: {
+                                    'email': connectedEmailAddress,
+                                    'username': username,
+                                  },
+                                );
                               },
                               fontSizeRatio: ScreenSizeHandler.smaller * 0.035,
                             )
-                          :
-                          TextLink(
-                             text: "Connect",
+                          : TextLink(
+                              key: const Key("connect_google_text_link"),
+                              text: "Connect",
                               onTap: () {
                                 //TODO: Implement the connect functionality
                               },
@@ -153,6 +188,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       titleText: "Contact Settings",
                     ),
                     SettingsTile(
+                      key: const Key("manage_notifications_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.notifications_outlined,
                       ),
@@ -162,13 +198,15 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       ),
                       onTap: () {
                         Navigator.pushNamed(
-                            context, "notification_settings_screen");
+                            context, NotificationSettingsScreen.id,
+                            arguments: notificationsSwitchStates);
                       },
                     ),
                     const SettingsSegmentTitle(
                       titleText: "Blocking and Permissions",
                     ),
                     SettingsTile(
+                      key: const Key("manage_blocked_accounts_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.block_outlined,
                       ),
@@ -184,6 +222,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       ),
                       titleText: "Allow People to Follow You",
                       trailingWidget: CustomSwitch(
+                        key: const Key("allow_people_to_follow_you_switch"),
                         isSwitched: allowPeopleToFollowYou,
                         onChanged: (value) {
                           setState(() {

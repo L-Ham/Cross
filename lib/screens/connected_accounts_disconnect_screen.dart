@@ -19,8 +19,18 @@ class _DisconnectScreenState extends State<DisconnectScreen> {
   TextEditingController passController = TextEditingController();
   bool isPassObscure = true;
   bool isPassFocused = false;
-  String email = "daniel.gebraiel01@eng-st.cu.edu.eg";
-  String username = "DanielGebraiel";
+  late String email;
+  late String username;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    Map<String, String> args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, String>;
+    email = args['email'] as String;
+    username = args['username'] as String;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +78,7 @@ class _DisconnectScreenState extends State<DisconnectScreen> {
                         ),
                       ),
                       CredentialsTextField(
+                        key: const Key("disconnect_screen_password_text_field"),
                         controller: passController,
                         isObscure: isPassObscure,
                         text: 'Password',
@@ -105,9 +116,12 @@ class _DisconnectScreenState extends State<DisconnectScreen> {
               horizontal: ScreenSizeHandler.smaller * 0.04,
             ),
             child: GradientButton(
+              key: const Key("disconnect_screen_confirm_button"),
               isPassFocused: isPassFocused,
               buttonTitle: "Confirm",
-              onTap: () {},
+              onTap: () {
+                //TODO: Implement the logic for disconnecting the account
+              },
             ),
           )
         ],
