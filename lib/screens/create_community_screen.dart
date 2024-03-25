@@ -10,6 +10,8 @@ import '../constants.dart';
 class CreateCommunityScreen extends StatefulWidget {
   const CreateCommunityScreen({Key? key}) : super(key: key);
 
+  static const String id = 'create_community_screen';
+
   @override
   _CreateCommunityScreenState createState() => _CreateCommunityScreenState();
 }
@@ -53,17 +55,16 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Padding(
           padding: const EdgeInsets.only(
               top: kPageTtleTopBottomPadding,
               bottom: kPageTtleTopBottomPadding),
-          child: Center(
-            child: Text(
-              'Create a community',
-              style: kPageTitleStyle.copyWith(
-                fontSize:
-                    ScreenSizeHandler.bigger * kPageTitleFontSizeHeightRatio,
-              ),
+          child: Text(
+            'Create a community',
+            style: kPageTitleStyle.copyWith(
+              fontSize:
+                  ScreenSizeHandler.bigger * kPageTitleFontSizeHeightRatio,
             ),
           ),
         ),

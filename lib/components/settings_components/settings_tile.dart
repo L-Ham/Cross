@@ -6,7 +6,7 @@ class SettingsTile extends StatelessWidget {
   final Widget leadingIcon;
   final String titleText;
   final String? subtitleText;
-  final Widget trailingWidget;
+  final Widget? trailingWidget;
   final VoidCallback? onTap;
 
   const SettingsTile({
@@ -14,14 +14,14 @@ class SettingsTile extends StatelessWidget {
     required this.leadingIcon,
     required this.titleText,
     this.subtitleText,
-    required this.trailingWidget,
+    this.trailingWidget,
     this.onTap,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      tileColor: kFillingColor,
+      tileColor: kBackgroundColor,
       visualDensity: VisualDensity.compact,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -50,7 +50,7 @@ class SettingsTile extends StatelessWidget {
               ],
             ),
           ),
-          trailingWidget
+          if (trailingWidget != null) trailingWidget !,
         ],
       ),
       onTap: onTap,

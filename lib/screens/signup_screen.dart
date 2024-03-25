@@ -1,31 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_bel_ham/screens/signup_screen.dart';
+import 'package:reddit_bel_ham/screens/home_page_screen.dart';
+import 'package:reddit_bel_ham/screens/login_screen.dart';
 import '../components/acknowledgement_text.dart';
-import '../components/text_link.dart';
 import '../utilities/screen_size_handler.dart';
 import '../constants.dart';
 import '../components/credentials_text_field.dart';
 import '../components/continue_button.dart';
 import '../components/logo_text_app_bar.dart';
-import '../screens/forgot_password_screen.dart';
-import '../screens/home_page_screen.dart';
+import '../utilities/email_regex.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({Key? key}) : super(key: key);
 
-  static const String id = 'login_screen';
+  static const String id = 'signup_screen';
 
   @override
-  LoginScreenState createState() => LoginScreenState();
+  SignupScreenState createState() => SignupScreenState();
 }
 
-class LoginScreenState extends State<LoginScreen> {
+class SignupScreenState extends State<SignupScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passController = TextEditingController();
   bool isPassObscure = true;
   bool isNameFocused = false;
   bool isPassFocused = false;
   bool isButtonEnabled = false;
+  bool isValidEmail = true;
+  bool isValidPassword = true;
 
   void continueNavigation() {}
 
@@ -37,13 +38,11 @@ class LoginScreenState extends State<LoginScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           LogoTextAppBar(
-            key: const Key('login_screen_logo_text_app_bar'),
-            text: 'Sign up',
+            key: const Key('signup_screen_logo_text_app_bar_login_button'),
+            text: 'Log in',
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const SignupScreen()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const LoginScreen()));
             },
           ),
           Expanded(
@@ -54,7 +53,7 @@ class LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
-                      'Log in',
+                      'Hi new friend,\nWelcome to Reddit byLham!',
                       style: TextStyle(
                         fontSize: ScreenSizeHandler.smaller * 0.05,
                         fontWeight: FontWeight.bold,
@@ -68,67 +67,33 @@ class LoginScreenState extends State<LoginScreen> {
                       ),
                       child: const AcknowledgementText(),
                     ),
-                    ContinueButton(
-                      key: const Key('login_screen_continue_with_google_button'),
-                      onPress: () {},
-                      text: "Continue with Google",
-                      icon: Image(
-                        image:
-                            const AssetImage('assets/images/google_logo.png'),
-                        height: ScreenSizeHandler.screenHeight * 0.03,
-                        width: ScreenSizeHandler.screenWidth * 0.05,
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.symmetric(
-                          horizontal: ScreenSizeHandler.screenWidth * 0.06,
-                          vertical: ScreenSizeHandler.screenHeight * 0.01),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Expanded(
-                            child: Divider(
-                              color: kHintTextColor,
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal:
-                                    ScreenSizeHandler.screenWidth * 0.03),
-                            child: Text(
-                              'OR',
-                              style: TextStyle(
-                                color: kHintTextColor,
-                                fontWeight: FontWeight.bold,
-                                fontSize: ScreenSizeHandler.smaller * 0.025,
-                              ),
-                            ),
-                          ),
-                          const Expanded(
-                            child: Divider(
-                              color: kHintTextColor,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                     Padding(
                       padding: EdgeInsets.symmetric(
-          horizontal: ScreenSizeHandler.screenWidth * 0.04,
-          vertical: ScreenSizeHandler.screenHeight * 0.01),
-                      child: CredentialsTextField( 
-                        key: const Key('login_screen_email_or_username_text_field'),
+                          horizontal: ScreenSizeHandler.screenWidth * 0.04,
+                          vertical: ScreenSizeHandler.screenHeight * 0.01),
+                      child: CredentialsTextField(
+                        key: const Key('signup_screen_email_text_field'),
                         controller: nameController,
                         isObscure: false,
-                        text: 'Email or username',
+                        isValid: isValidEmail,
+                        text: 'Email',
+                        prefixIcon: isValidEmail && isNameFocused
+                            ?const Icon(
+                                  Icons.check_rounded,
+                                  color: Colors.green,
+                                )
+                            : null,
                         suffixIcon: isNameFocused
                             ? IconButton(
-                                icon: const Icon(Icons.clear_rounded),
+                                icon: const Icon(
+                                  Icons.clear_rounded,
+                                ),
                                 onPressed: () {
+                                  nameController.clear();
                                   setState(() {
-                                    nameController.clear();
-                                    isNameFocused = false;
                                     isButtonEnabled = false;
+                                    isNameFocused = false;
+                                    isValidEmail = true;
                                   });
                                 },
                               )
@@ -136,19 +101,43 @@ class LoginScreenState extends State<LoginScreen> {
                         isFocused: isNameFocused,
                         onChanged: (value) {
                           setState(() {
+                            isValidEmail = isEmailValid(value);
+                            isButtonEnabled = isValidEmail && isValidPassword && isPassFocused && isNameFocused;
                             isNameFocused = value.isNotEmpty;
                             if (value.isNotEmpty &&
                                 passController.text.isNotEmpty) {
                               setState(() {
-                                isButtonEnabled = true;
                               });
                             } else {
+                              if (value.isEmpty) {
+                                setState(() {
+                                  isValidEmail = true;
+                                });
+                              }
                               setState(() {
-                                isButtonEnabled = false;
+
                               });
                             }
                           });
                         },
+                      ),
+                    ),
+                    Visibility(
+                      key: const Key('signup_screen_email_error_text'),
+                      visible: !isValidEmail,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            left: ScreenSizeHandler.smaller * 0.05),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Please enter a valid email address',
+                            style: TextStyle(
+                              color: Colors.red[200],
+                              fontSize: ScreenSizeHandler.smaller * 0.03,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                     Padding(
@@ -156,10 +145,17 @@ class LoginScreenState extends State<LoginScreen> {
                           horizontal: ScreenSizeHandler.screenWidth * 0.04,
                           vertical: ScreenSizeHandler.screenHeight * 0.01),
                       child: CredentialsTextField(
-                        key: const Key('login_screen_password_text_field'),
+                        key: const Key('signup_screen_password_text_field'),
                         controller: passController,
                         isObscure: isPassObscure,
+                        isValid: isValidPassword,
                         text: 'Password',
+                    prefixIcon: isValidPassword && isPassFocused
+                            ? const Icon(
+                                  Icons.check_rounded,
+                                  color: Colors.green,
+                                )
+                            : null,
                         suffixIcon: isPassFocused
                             ? IconButton(
                                 icon: const Icon(Icons.visibility_rounded),
@@ -173,43 +169,44 @@ class LoginScreenState extends State<LoginScreen> {
                         isFocused: isPassFocused,
                         onChanged: (value) {
                           setState(() {
+                            isValidPassword = value.length >= 8;
                             isPassFocused = value.isNotEmpty;
+                            isButtonEnabled = isValidEmail && isValidPassword && isPassFocused && isNameFocused;
                             if (value.isNotEmpty &&
                                 nameController.text.isNotEmpty) {
                               setState(() {
-                                isButtonEnabled = true;
                               });
                             } else {
+                              if (value.isEmpty) {
+                                setState(() {
+                                  isValidPassword = true;
+                                });
+                              }
                               setState(() {
-                                isButtonEnabled = false;
                               });
                             }
                           });
                         },
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: ScreenSizeHandler.screenWidth * 0.03,
-                          vertical: ScreenSizeHandler.screenHeight * 0.01),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          TextLink(
-                            key: const Key('login_screen_forgot_password_text_link'),
-                            fontSizeRatio: ScreenSizeHandler.smaller * 0.035,
-                            text: 'Forgot your password?',
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const ForgotPasswordScreen()));
-                            },
+                    Visibility(
+                      key: const Key('signup_screen_password_error_text'),
+                      visible: !isValidPassword,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            left: ScreenSizeHandler.smaller * 0.05),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Password must be at least 8 characters',
+                            style: TextStyle(
+                              color: Colors.red[200],
+                              fontSize: ScreenSizeHandler.smaller * 0.03,
+                            ),
                           ),
-                        ],
+                        ),
                       ),
-                    )
+                    ),
                   ],
                 );
               },
@@ -219,7 +216,7 @@ class LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               ContinueButton(
-                key: const Key('login_screen_continue_button'),
+                key: const Key('signup_screen_continue_button'),
                 text: "Continue",
                 isButtonEnabled: isButtonEnabled,
                 onPress: () {
