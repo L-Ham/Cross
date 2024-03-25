@@ -47,7 +47,7 @@ class RedditByLham extends StatelessWidget {
         //Resolved
         // SearchScreen.id: (context) => SearchScreen(),
       },
-      initialRoute: BlockedAccount.id,
+      initialRoute: FirstScreen.id,
     );
   }
 }
