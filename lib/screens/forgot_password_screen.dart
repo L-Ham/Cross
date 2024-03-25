@@ -9,6 +9,8 @@ import '../utilities/email_regex.dart';
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({Key? key}) : super(key: key);
 
+  static const String id = 'forgot_password_screen';
+
   @override
   _ForgotPasswordScreenState createState() => _ForgotPasswordScreenState();
 }
