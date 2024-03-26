@@ -13,6 +13,8 @@ import 'package:reddit_bel_ham/components/settings_components/settings_tile_lead
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_image.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_trailing_icon.dart';
 import 'package:reddit_bel_ham/components/general_components/text_link.dart';
+import 'package:reddit_bel_ham/screens/location_customization.dart';
+import 'package:reddit_bel_ham/screens/blocked_accounts.dart';
 
 class AccountSettingsScreen extends StatefulWidget {
   const AccountSettingsScreen({super.key});
@@ -62,7 +64,8 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                   children: [
                     const SettingsSegmentTitle(titleText: "Basic Settings"),
                     SettingsTile(
-                      key: const Key("account_settings_update_email_address_tile"),
+                      key: const Key(
+                          "account_settings_update_email_address_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.settings_outlined,
                       ),
@@ -92,7 +95,6 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                         trailingIcon: Icons.arrow_forward,
                       ),
                       onTap: () {
-
                         Navigator.pushNamed(
                           context,
                           ChangePasswordScreen.id,
@@ -137,17 +139,28 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       },
                     ),
                     SettingsTile(
-                      key: const Key("account_settings_location_customization_tile"),
-                      subtitleText: location,
+                      key: const Key(
+                          "account_settings_location_customization_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.location_on_outlined,
                       ),
                       titleText: "Location Customization",
+                      subtitleText: location,
                       trailingWidget: const SettingsTileTrailingIcon(
                         trailingIcon: Icons.arrow_forward,
                       ),
-                      onTap: () {
-                        //TODO: Implement the location customization functionality
+                      onTap: () async {
+                        String newlocation = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LocationCustomization(
+                              initialValue: location,
+                            ),
+                          ),
+                        );
+                        setState(() {
+                          location = newlocation;
+                        });
                       },
                     ),
                     const SettingsSegmentTitle(
@@ -160,7 +173,8 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       titleText: "Google",
                       trailingWidget: isConnectedToGoogle
                           ? TextLink(
-                              key: const Key("account_settings_disconnect_google_text_link"),
+                              key: const Key(
+                                  "account_settings_disconnect_google_text_link"),
                               text: "Disconnect",
                               onTap: () {
                                 Navigator.pushNamed(
@@ -175,7 +189,8 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                               fontSizeRatio: ScreenSizeHandler.smaller * 0.035,
                             )
                           : TextLink(
-                              key: const Key("account_settings_connect_google_text_link"),
+                              key: const Key(
+                                  "account_settings_connect_google_text_link"),
                               text: "Connect",
                               onTap: () {
                                 //TODO: Implement the connect functionality
@@ -188,7 +203,8 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       titleText: "Contact Settings",
                     ),
                     SettingsTile(
-                      key: const Key("account_settings_manage_notifications_tile"),
+                      key: const Key(
+                          "account_settings_manage_notifications_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.notifications_outlined,
                       ),
@@ -206,7 +222,8 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       titleText: "Blocking and Permissions",
                     ),
                     SettingsTile(
-                      key: const Key("account_settings_manage_blocked_accounts_tile"),
+                      key: const Key(
+                          "account_settings_manage_blocked_accounts_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.block_outlined,
                       ),
@@ -214,7 +231,9 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       trailingWidget: const SettingsTileTrailingIcon(
                         trailingIcon: Icons.arrow_forward,
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(context, BlockedAccount.id);
+                      },
                     ),
                     SettingsTile(
                       leadingIcon: const SettingsTileLeadingIcon(
@@ -222,7 +241,8 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       ),
                       titleText: "Allow People to Follow You",
                       trailingWidget: CustomSwitch(
-                        key: const Key("account_settings_allow_people_to_follow_you_switch"),
+                        key: const Key(
+                            "account_settings_allow_people_to_follow_you_switch"),
                         isSwitched: allowPeopleToFollowYou,
                         onChanged: (value) {
                           setState(() {
