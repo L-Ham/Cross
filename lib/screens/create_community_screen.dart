@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../components/create_community_components/community_name_text_box.dart';
+import '../components/general_components/continue_button.dart';
 import '../components/general_components/custom_switch.dart';
 import '../components/create_community_components/community_type_selector.dart';
 import '../utilities/screen_size_handler.dart';
@@ -187,29 +188,11 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                   SizedBox(
                     height: ScreenSizeHandler.screenHeight * 0.025,
                   ),
-                  ElevatedButton(
-                    onPressed: (activated) ? createCommunity : null,
-                    style: ButtonStyle(
-                      minimumSize: MaterialStateProperty.all(Size(
-                          ScreenSizeHandler.screenHeight * 0.02,
-                          ScreenSizeHandler.screenHeight *
-                              kCreateCommunityButtonHeightRatio)),
-                      backgroundColor:
-                          MaterialStateProperty.resolveWith<Color?>(
-                        (states) =>
-                            (activated) ? Colors.blueAccent : Colors.grey,
-                      ),
-                    ),
-                    child: Text(
-                      'Create community',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: ScreenSizeHandler.bigger *
-                            kCreateCommunityButtonTextHeightRatio,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+                  ContinueButton(
+                      onPress: () {},
+                      text: 'Create community',
+                      color: Colors.blue,
+                      isButtonEnabled: activated),
                 ],
               )
             ],
