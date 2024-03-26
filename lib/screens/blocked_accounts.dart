@@ -77,6 +77,7 @@ class _BlockedAccountState extends State<BlockedAccount> {
                   child: Container(
                     height: ScreenSizeHandler.screenHeight * 0.054,
                     child: TextFormField(
+                      key: const Key('blocked_accounts_screen_text_field'),
                       controller: _controller,
                       focusNode: _focusNode,
                       decoration: InputDecoration(
@@ -101,6 +102,8 @@ class _BlockedAccountState extends State<BlockedAccount> {
                         suffixIcon: _isTextFieldEmpty
                             ? null
                             : IconButton(
+                                key: const Key(
+                                    'blocked_accounts_screen_clear_button'),
                                 icon: FaIcon(
                                   FontAwesomeIcons.circleXmark,
                                   color: kHintTextColor,
@@ -140,18 +143,8 @@ class _BlockedAccountState extends State<BlockedAccount> {
             Column(
               children: [
                 BlockedAccountTile(
-                  imagePath: 'assets/images/avatarDaniel.png',
-                  username: 'Mr. Daniel',
-                  isAccountBlocked: _isBlockedAccountsEmpty,
-                ),
-                BlockedAccountTile(
                   imagePath: 'assets/images/reddit_logo.png',
                   username: 'TheKey119',
-                  isAccountBlocked: _isBlockedAccountsEmpty,
-                ),
-                BlockedAccountTile(
-                  imagePath: 'assets/images/elham_final_logo.png',
-                  username: 'PeterParker',
                   isAccountBlocked: _isBlockedAccountsEmpty,
                 ),
               ],
