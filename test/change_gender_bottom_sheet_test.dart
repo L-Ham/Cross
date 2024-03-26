@@ -33,6 +33,7 @@ void main() {
                   });
       
               // Check that the result is 'Female'
+              print("ifsajidfhiohdfisifhaohofdojfaojIjafooifjdaiojf: $result");
               expect(result, 'Female');
             },
             leadingIcon: const SettingsTileLeadingIcon(
