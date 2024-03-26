@@ -50,7 +50,7 @@ class _ChangeGenderBottomSheetState extends State<ChangeGenderBottomSheet> {
                     ),
                   ),
                   GestureDetector(
-                    key: Key('done_button'),
+                    key: const Key('done_button'),
                     onTap: () {
                       Navigator.pop(context, groupValueNotifier.value);
                     },
