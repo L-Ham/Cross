@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../utilities/screen_size_handler.dart';
-import '../constants.dart';
+import '../../utilities/screen_size_handler.dart';
+import '../../constants.dart';
 
 class CredentialsTextField extends StatelessWidget {
   final TextEditingController controller;

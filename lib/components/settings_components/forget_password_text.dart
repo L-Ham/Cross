@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/constants.dart';
-import 'package:reddit_bel_ham/components/text_link.dart';
+import 'package:reddit_bel_ham/components/general_components/text_link.dart';
 import 'package:reddit_bel_ham/screens/forgot_password_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../utilities/screen_size_handler.dart';
+import '../../utilities/screen_size_handler.dart';
 
 class TextLink extends StatelessWidget {
   const TextLink({

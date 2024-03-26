@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/screens/signup_screen.dart';
 import '../screens/login_screen.dart';
 import '../constants.dart';
-import '../components/continue_button.dart';
-import '../components/acknowledgement_text.dart';
-import '../components/text_link.dart';
+import '../components/general_components/continue_button.dart';
+import '../components/general_components/acknowledgement_text.dart';
+import '../components/general_components/text_link.dart';
 import '../utilities/screen_size_handler.dart';
 
 class FirstScreen extends StatelessWidget {
