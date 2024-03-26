@@ -6,35 +6,41 @@ void main() {
   testWidgets('Blocked Accounts screen UI test', (WidgetTester tester) async {
     await tester.pumpWidget(const MaterialApp(home: BlockedAccount()));
 
-    // Verify that the 'Block new account' text is displayed
     expect(find.text('Block new account'), findsOneWidget);
 
-    // Verify that the text field is displayed
     expect(find.byKey(const Key('blocked_accounts_screen_text_field')),
         findsOneWidget);
 
-    // Verify that the username 'TheKey119' is displayed
     expect(find.text('TheKey119'), findsOneWidget);
 
-    // Verify that the clear button is not initially displayed
-    expect(find.byKey(const Key('blocked_accounts_screen_clear_button')),
+    expect(find.text('Block'), findsOneWidget);
+
+    expect(
+        find.byKey(
+            const Key('blocked_accounts_screen_text_field_clear_button')),
         findsNothing);
 
-    // Enter text into the text field
+    expect(find.text('Cancel'), findsNothing);
+
     await tester.enterText(
-        find.byKey(const Key('blocked_accounts_screen_text_field')), 'zzzz');
+        find.byKey(const Key('blocked_accounts_screen_text_field')), 'x');
     await tester.pumpAndSettle();
 
-    // Verify that the clear button is displayed after text entry
-    expect(find.byKey(const Key('blocked_accounts_screen_clear_button')),
+    expect(
+        find.byKey(
+            const Key('blocked_accounts_screen_text_field_clear_button')),
         findsOneWidget);
 
-    // Tap the clear button
-    await tester
-        .tap(find.byKey(const Key('blocked_accounts_screen_clear_button')));
+    expect(find.text('Cancel'), findsOneWidget);
+
+    await tester.tap(find.text('Cancel'));
     await tester.pumpAndSettle();
 
-    // Check if the text field is empty after tapping the clear button
-    expect(find.text('zzzz'), findsNothing);
+    expect(
+        FocusManager.instance.primaryFocus,
+        isNot(equals(
+            find.byKey(const Key('blocked_accounts_screen_text_field')))));
+
+    expect(find.text('Cancel'), findsNothing);
   });
 }

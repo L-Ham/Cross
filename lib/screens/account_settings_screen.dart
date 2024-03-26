@@ -147,7 +147,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                         trailingIcon: Icons.arrow_forward,
                       ),
                       onTap: () async {
-                        String newlocation = await Navigator.push(
+                        String? newLocation = await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => LocationCustomization(
@@ -155,9 +155,11 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                             ),
                           ),
                         );
-                        setState(() {
-                          location = newlocation;
-                        });
+                        if (newLocation != null) {
+                          setState(() {
+                            location = newLocation;
+                          });
+                        }
                       },
                     ),
                     const SettingsSegmentTitle(

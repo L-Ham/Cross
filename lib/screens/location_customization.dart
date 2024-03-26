@@ -25,7 +25,9 @@ class _LocationCustomizationState extends State<LocationCustomization> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: kBackgroundColor,
       appBar: AppBar(
+        backgroundColor: kBackgroundColor,
         centerTitle: true,
         title: Text(
           'Select Location',

@@ -103,7 +103,7 @@ class _BlockedAccountState extends State<BlockedAccount> {
                             ? null
                             : IconButton(
                                 key: const Key(
-                                    'blocked_accounts_screen_clear_button'),
+                                    'blocked_accounts_screen_text_field_clear_button'),
                                 icon: FaIcon(
                                   FontAwesomeIcons.circleXmark,
                                   color: kHintTextColor,
