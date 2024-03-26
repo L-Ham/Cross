@@ -7,7 +7,7 @@ class CommunityTypeSelector extends StatelessWidget {
   final String communityType;
   final Function(String, String) onCommunityTypeChanged;
 
-  CommunityTypeSelector({
+  const CommunityTypeSelector({super.key, 
     required this.communityType,
     required this.onCommunityTypeChanged,
   });

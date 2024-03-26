@@ -5,7 +5,7 @@ class CommunityNameTextBox extends StatelessWidget {
   final Function(String) onChanged;
   final Function() onClear;
 
-  CommunityNameTextBox({
+  const CommunityNameTextBox({super.key, 
     required this.controller,
     required this.onChanged,
     required this.onClear,

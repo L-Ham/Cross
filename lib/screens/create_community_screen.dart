@@ -79,6 +79,7 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                 height: ScreenSizeHandler.screenHeight * 0.005,
               ),
               Text('Community name',
+                  key: const Key('community_name_text'),
                   style: TextStyle(
                     fontSize: ScreenSizeHandler.bigger *
                         kPageSubtitleFontSizeHeightRatio,
@@ -87,6 +88,7 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                 height: ScreenSizeHandler.screenHeight * 0.01,
               ),
               CommunityNameTextBox(
+                key: const Key('community_name_text_box'),
                 controller: _controller,
                 onChanged: (value) {
                   if (value.length > kCommunityNameMaxLength) {
@@ -146,6 +148,7 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                     )),
               ),
               CommunityTypeSelector(
+                key: const Key('community_type_selector'),
                 communityType: communityType,
                 onCommunityTypeChanged: (type, description) {
                   setState(() {
@@ -166,6 +169,7 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                 children: [
                   Text(
                     '18+ community',
+                    key: const Key('age_community_text'),
                     style: TextStyle(
                       fontSize: ScreenSizeHandler.bigger *
                           kPageTitleFontSizeHeightRatio,
@@ -173,6 +177,7 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                     ),
                   ),
                   CustomSwitch(
+                    key: const Key('age_switch'),
                     isSwitched: isSwitched,
                     onChanged: (value) {
                       setState(() {
@@ -190,6 +195,7 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                   ),
                   ContinueButton(
                       onPress: () {},
+                      key: const Key('create_community_button'),
                       text: 'Create community',
                       color: Colors.blue,
                       isButtonEnabled: activated),
