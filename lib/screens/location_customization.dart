@@ -26,6 +26,7 @@ class _LocationCustomizationState extends State<LocationCustomization> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: kBackgroundColor,
         centerTitle: true,
         title: Text(
           'Select Location',
@@ -33,6 +34,7 @@ class _LocationCustomizationState extends State<LocationCustomization> {
               fontSize: ScreenSizeHandler.bigger * kAppBarTitleFontSizeRatio),
         ),
       ),
+      backgroundColor: kBackgroundColor,
       body: SingleChildScrollView(
         child: Column(
           children: [

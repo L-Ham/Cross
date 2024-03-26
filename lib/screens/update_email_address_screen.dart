@@ -102,7 +102,7 @@ class _UpdateEmailAddressScreenState extends State<UpdateEmailAddressScreen> {
                         child: CredentialsTextField(
                           key: const Key('update_email_address_email_text_field'),
                           controller: emailController,
-                          isObscure: isPasswordObscure,
+                          isObscure: false,
                           text: 'New email address',
                           suffixIcon: isEmailFocused
                               ? IconButton(
