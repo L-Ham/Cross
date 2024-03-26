@@ -35,6 +35,7 @@ class _LocationCustomizationState extends State<LocationCustomization> {
               fontSize: ScreenSizeHandler.bigger * kAppBarTitleFontSizeRatio),
         ),
       ),
+      backgroundColor: kBackgroundColor,
       body: SingleChildScrollView(
         child: Column(
           children: [

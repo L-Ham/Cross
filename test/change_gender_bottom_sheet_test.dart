@@ -29,7 +29,7 @@ void main() {
     expect(find.text('Male'), findsOneWidget);
     expect(find.text('Female'), findsOneWidget);
     expect(find.text('Others'), findsOneWidget);
-    expect(find.byKey(Key('done_button')), findsOneWidget);
+    expect(find.byKey(const Key('change_gender_done_button')), findsOneWidget);
 
 
   });

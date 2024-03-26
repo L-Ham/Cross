@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
+import 'package:reddit_bel_ham/components/home_page_components/profile_icon_with_indicator.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_leading_icon.dart';
 import 'package:reddit_bel_ham/constants.dart';
@@ -7,18 +8,15 @@ import 'package:reddit_bel_ham/screens/home_page_seach_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 
 class HomePageScreen extends StatefulWidget {
-
   const HomePageScreen({super.key});
   static const id = 'home_page_screen';
-
 
   @override
   State<HomePageScreen> createState() => _HomePageScreenState();
 }
 
 class _HomePageScreenState extends State<HomePageScreen> {
-
-    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   String username = "peter_ashraf";
   String onlineStatusString = "On";
   bool onlineStatusToggle = true;
@@ -38,8 +36,6 @@ class _HomePageScreenState extends State<HomePageScreen> {
       type: "text",
       image: "",
       link: "https://www.instagram.com/p/CJ9J9J1h7Zz/",
-
-
     ),
     Post(
       username: "r/AnnieBakesCakes",
@@ -49,18 +45,18 @@ class _HomePageScreenState extends State<HomePageScreen> {
       upvotes: 20,
       comments: 35,
       type: "text",
-      image:"",
+      image: "",
       link: "",
     ),
     Post(
       username: "r/JohannaDoesYoga",
-      contentTitle: "Is instagram buggering up for anyone else? I can't post anything",
-      content:
-          "Check this page for more details",
+      contentTitle:
+          "Is instagram buggering up for anyone else? I can't post anything",
+      content: "Check this page for more details",
       upvotes: 90,
       comments: 35,
       type: "text",
-      image:"",
+      image: "",
       link: "",
     ),
   ];
@@ -119,14 +115,11 @@ class _HomePageScreenState extends State<HomePageScreen> {
           ),
           Padding(
             padding: const EdgeInsets.all(10.0),
-
             child: GestureDetector(
               onTap: () {
                 _scaffoldKey.currentState?.openEndDrawer();
               },
-              child: CircleAvatar(
-                radius: 25,
-              ),
+              child: ProfileIconWithIndicator(isOnline: onlineStatusToggle),
             ),
           ),
         ],
@@ -134,7 +127,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
       body: ListView.builder(
         itemCount: posts.length,
         itemBuilder: (context, index) {
-          return PostCard(post:posts[index]);
+          return PostCard(post: posts[index]);
         },
       ),
       drawer: Drawer(),
@@ -152,7 +145,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                   icon: Icon(
                     Icons.close,
                     color: Colors.white,
-                    size: ScreenSizeHandler.bigger*kSideBarCloseIconSizeRatio,
+                    size: ScreenSizeHandler.bigger * kSideBarCloseIconSizeRatio,
                   ),
                 ),
               ),
@@ -162,7 +155,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
                 child: CircleAvatar(
                   backgroundColor: Colors.white,
                   child: Text('A'),
-                  radius: ScreenSizeHandler.bigger * kSideBarCircleAvatarRadiusRatio,
+                  radius: ScreenSizeHandler.bigger *
+                      kSideBarCircleAvatarRadiusRatio,
                   foregroundImage: AssetImage('assets/images/reddit_logo.png'),
                 ),
               ),
@@ -196,10 +190,12 @@ class _HomePageScreenState extends State<HomePageScreen> {
                     height: ScreenSizeHandler.bigger * 0.04,
                     width: onlineStatusWidth,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20), // adjust the radius as needed
+                      borderRadius: BorderRadius.circular(
+                          20), // adjust the radius as needed
                       border: Border.all(
                         color: onlineStatusColor, // set border color
-                        width: ScreenSizeHandler.smaller*0.006, // set border width
+                        width: ScreenSizeHandler.smaller *
+                            0.006, // set border width
                       ),
                     ),
                     child: Center(
@@ -216,7 +212,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
                             'Online Status: $onlineStatusString',
                             style: TextStyle(
                                 color: onlineStatusColor,
-                                fontSize: ScreenSizeHandler.smaller * kOnlineStatusFontSizeRatio,
+                                fontSize: ScreenSizeHandler.smaller *
+                                    kOnlineStatusFontSizeRatio,
                                 fontWeight: FontWeight.bold),
                           ),
                         ],
@@ -333,20 +330,21 @@ class _HomePageScreenState extends State<HomePageScreen> {
                             });
                           },
                           child: Padding(
-                            padding: const EdgeInsets.only(left:8.0, right:8.0, top:3.0, bottom:4.0),
+                            padding: const EdgeInsets.only(
+                                left: 8.0, right: 8.0, top: 3.0, bottom: 4.0),
                             child: Row(
                               children: [
                                 Icon(
                                   Icons.arrow_upward,
-                                  color:
-                                      post.isUpvoted ? Colors.red : Colors.white,
-                                      size: 18.0,
+                                  color: post.isUpvoted
+                                      ? Colors.red
+                                      : Colors.white,
+                                  size: 18.0,
                                 ),
                                 Text(
                                   post.upvotes.toString(),
-                                  style: TextStyle(color: Colors.white, 
-                                  fontSize: 12.0),
-
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 12.0),
                                 )
                               ],
                             ),
@@ -355,7 +353,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
-                              post.isDownvoted ? post.upvotes++ : post.upvotes--;
+                              post.isDownvoted
+                                  ? post.upvotes++
+                                  : post.upvotes--;
                               post.isDownvoted = !post.isDownvoted;
                               post.isUpvoted = false;
                             });
@@ -369,7 +369,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                   color: post.isDownvoted
                                       ? const Color.fromARGB(255, 110, 85, 114)
                                       : Colors.white,
-                                      size: 18.0,
+                                  size: 18.0,
                                 ),
                               ],
                             ),
@@ -392,31 +392,32 @@ class _HomePageScreenState extends State<HomePageScreen> {
                             child: Row(
                               children: [
                                 Container(
-                                  decoration: BoxDecoration(
-                                    color: kBackgroundColor,
-                                    borderRadius: BorderRadius.circular(15.0),
-                                    border: Border.all(
-                                      color: kFillingColor,
+                                    decoration: BoxDecoration(
+                                      color: kBackgroundColor,
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      border: Border.all(
+                                        color: kFillingColor,
+                                      ),
                                     ),
-                                  ),
                                     child: Row(children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Icon(
-                                      Icons.comment,
-                                      size: 15,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(4.0),
-                                    child: Text(
-                                      post.comments.toString(),
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 12.0),
-                                    ),
-                                  )
-                                ])),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Icon(
+                                          Icons.comment,
+                                          size: 15,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: Text(
+                                          post.comments.toString(),
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12.0),
+                                        ),
+                                      )
+                                    ])),
                               ],
                             ),
                           ),
@@ -522,5 +523,3 @@ class _HomePageScreenState extends State<HomePageScreen> {
     );
   }
 }
-
-

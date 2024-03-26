@@ -9,12 +9,12 @@ void main() {
       home: AccountSettingsScreen(),
     ));
 
-    expect(find.byKey(const Key('update_email_address_tile')), findsOneWidget);
-    expect(find.byKey(const Key('change_password_tile')), findsOneWidget);
-    expect(find.byKey(const Key('change_gender_tile')), findsOneWidget);
-    expect(find.byKey(const Key('location_customization_tile')), findsOneWidget);
-    expect(find.byKey(const Key('manage_notifications_tile')), findsOneWidget);
-    expect(find.byKey(const Key('manage_blocked_accounts_tile')), findsOneWidget);
+    expect(find.byKey(const Key('account_settings_update_email_address_tile')), findsOneWidget);
+    expect(find.byKey(const Key('account_settings_change_password_tile')), findsOneWidget);
+    expect(find.byKey(const Key('account_settings_change_gender_tile')), findsOneWidget);
+    expect(find.byKey(const Key('account_settings_location_customization_tile')), findsOneWidget);
+    expect(find.byKey(const Key('account_settings_manage_notifications_tile')), findsOneWidget);
+    expect(find.byKey(const Key('account_settings_manage_blocked_accounts_tile')), findsOneWidget);
   });
 
   testWidgets('Tap update_email_address_tile redirects to UpdateEmailAddressScreen', (WidgetTester tester) async {
@@ -25,7 +25,7 @@ void main() {
       },
     ));
 
-    await tester.tap(find.byKey(Key('update_email_address_tile')));
+    await tester.tap(find.byKey(Key('account_settings_update_email_address_tile')));
     await tester.pumpAndSettle();
 
     expect(find.byType(UpdateEmailAddressScreen), findsOneWidget);
