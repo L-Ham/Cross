@@ -100,6 +100,7 @@ class _UpdateEmailAddressScreenState extends State<UpdateEmailAddressScreen> {
                         padding: EdgeInsets.only(
                             top: ScreenSizeHandler.screenHeight * 0.02),
                         child: CredentialsTextField(
+                          key: const Key('update_email_address_email_text_field'),
                           controller: emailController,
                           isObscure: isPasswordObscure,
                           text: 'New email address',
@@ -125,12 +126,13 @@ class _UpdateEmailAddressScreenState extends State<UpdateEmailAddressScreen> {
                         padding: EdgeInsets.only(
                             top: ScreenSizeHandler.screenHeight * 0.02),
                         child: CredentialsTextField(
+                          key: const Key('update_email_address_password_text_field'),
                           controller: passwordController,
                           isObscure: isPasswordObscure,
                           text: 'Password',
                           suffixIcon: isPasswordFocused
                               ? IconButton(
-                                  icon: Icon(Icons.visibility_rounded),
+                                  icon: const Icon(Icons.visibility_rounded),
                                   onPressed: () {
                                     setState(() {
                                       isPasswordObscure = !isPasswordObscure;
@@ -168,6 +170,7 @@ class _UpdateEmailAddressScreenState extends State<UpdateEmailAddressScreen> {
                 horizontal: kSettingsHorizontalPaddingHeightRatio *
                     ScreenSizeHandler.screenWidth),
             child: GradientButton(
+              key: const Key('update_email_address_save_button'),
                 isPassFocused: isEmailFocused && isPasswordFocused,
                 buttonTitle: "Save",
                 onTap: () {

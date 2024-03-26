@@ -57,7 +57,7 @@ class _ChangeGenderBottomSheetState extends State<ChangeGenderBottomSheet> {
                       "Done",
                       style: kInteractiveTextStyle.copyWith(
                           fontSize: ScreenSizeHandler.bigger * 0.022),
-                      key: const Key('done_button'),
+                      key: const Key('change_gender_done_button'),
                     ),
                   )
                 ],
@@ -65,17 +65,17 @@ class _ChangeGenderBottomSheetState extends State<ChangeGenderBottomSheet> {
             ),
             const Divider(color: Colors.white),
             SettingsRadioButtonTile(
-              key: const Key('male_radio_button_tile'),
+              key: const Key('change_gender_male_radio_button_tile'),
               groupValueNotifier: groupValueNotifier,
               value: "Male",
             ),
             SettingsRadioButtonTile(
-              key: const Key('female_radio_button_tile'),
+              key: const Key('change_gender_female_radio_button_tile'),
               groupValueNotifier: groupValueNotifier,
               value: "Female",
             ),
             SettingsRadioButtonTile(
-              key: const Key('others_radio_button_tile'),
+              key: const Key('change_gender_others_radio_button_tile'),
               groupValueNotifier: groupValueNotifier,
               value: "Others",
             )
