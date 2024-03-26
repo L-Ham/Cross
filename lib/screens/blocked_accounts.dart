@@ -5,6 +5,7 @@ import '../constants.dart';
 import '../components/empty_dog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../utilities/screen_size_handler.dart';
+import 'package:reddit_bel_ham/components/blocked_accounts_components/blocked_acoount_tile.dart';
 
 class BlockedAccount extends StatefulWidget {
   const BlockedAccount({Key? key}) : super(key: key);
@@ -19,8 +20,13 @@ class _BlockedAccountState extends State<BlockedAccount> {
   late FocusNode _focusNode;
   bool _isKeyboardVisible = false;
   bool _isTextFieldEmpty = true;
-  bool _isBlockedAccountsEmpty = true;
+  bool _isBlockedAccountsEmpty = false;
+
   final TextEditingController _controller = TextEditingController();
+
+  void printing() {
+    print('Unblock button pressed');
+  }
 
   @override
   void initState() {
@@ -49,36 +55,36 @@ class _BlockedAccountState extends State<BlockedAccount> {
     return Scaffold(
       backgroundColor: kBackgroundColor,
       appBar: AppBar(
-        title: Center(
-          child: Text(
-            'Blocked Accounts',
-            style: kPageTitleStyle.copyWith(
-                fontSize: ScreenSizeHandler.bigger * kAppBarTitleFontSizeRatio),
-          ),
+        centerTitle: true,
+        backgroundColor: kBackgroundColor,
+        title: Text(
+          'Blocked Accounts',
+          style: kPageTitleStyle.copyWith(
+              fontSize: ScreenSizeHandler.bigger * kAppBarTitleFontSizeRatio),
         ),
       ),
       body: Column(
         children: [
           SizedBox(
-            height: MediaQuery.of(context).size.height * 0.01,
+            height: ScreenSizeHandler.screenHeight * 0.02,
           ),
           Row(
             children: [
               Expanded(
                 flex: _isKeyboardVisible ? 6 : 7,
                 child: Padding(
-                  padding: EdgeInsets.all(
-                      MediaQuery.of(context).size.height * 0.006),
+                  padding: EdgeInsets.all(ScreenSizeHandler.bigger * 0.009),
                   child: Container(
-                    height: 40,
+                    height: ScreenSizeHandler.screenHeight * 0.054,
                     child: TextFormField(
                       controller: _controller,
                       focusNode: _focusNode,
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * 0.01),
+                          top: ScreenSizeHandler.bigger * 0.01,
+                        ),
                         filled: true,
-                        fillColor: Color.fromARGB(199, 35, 35, 35),
+                        fillColor: kFillingColor,
                         border: OutlineInputBorder(
                           borderSide: BorderSide.none,
                         ),
@@ -128,26 +134,28 @@ class _BlockedAccountState extends State<BlockedAccount> {
                 )
             ],
           ),
-          if (_isBlockedAccountsEmpty) EmptyDog()
+          if (_isBlockedAccountsEmpty)
+            EmptyDog()
           else
-          Column(
-            children: [
-              Row(
-                children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundImage: ,
-                      )
-                    ],
-                  )
-                ],
-                
-              )
-
-            ],
-          )
-          
+            Column(
+              children: [
+                BlockedAccountTile(
+                  imagePath: 'assets/images/avatarDaniel.png',
+                  username: 'Mr. Daniel',
+                  isAccountBlocked: _isBlockedAccountsEmpty,
+                ),
+                BlockedAccountTile(
+                  imagePath: 'assets/images/reddit_logo.png',
+                  username: 'TheKey119',
+                  isAccountBlocked: _isBlockedAccountsEmpty,
+                ),
+                BlockedAccountTile(
+                  imagePath: 'assets/images/elham_final_logo.png',
+                  username: 'PeterParker',
+                  isAccountBlocked: _isBlockedAccountsEmpty,
+                ),
+              ],
+            )
         ],
       ),
     );

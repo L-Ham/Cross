@@ -14,6 +14,7 @@ import 'package:reddit_bel_ham/components/settings_components/settings_tile_imag
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_trailing_icon.dart';
 import 'package:reddit_bel_ham/components/text_link.dart';
 import 'package:reddit_bel_ham/screens/location_customization.dart';
+import 'package:reddit_bel_ham/screens/blocked_accounts.dart';
 
 class AccountSettingsScreen extends StatefulWidget {
   const AccountSettingsScreen({super.key});
@@ -223,7 +224,9 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       trailingWidget: const SettingsTileTrailingIcon(
                         trailingIcon: Icons.arrow_forward,
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(context, BlockedAccount.id);
+                      },
                     ),
                     SettingsTile(
                       leadingIcon: const SettingsTileLeadingIcon(
