@@ -13,6 +13,8 @@ import 'package:reddit_bel_ham/components/settings_components/settings_tile_lead
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_image.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_trailing_icon.dart';
 import 'package:reddit_bel_ham/components/general_components/text_link.dart';
+import 'package:reddit_bel_ham/screens/location_customization.dart';
+import 'package:reddit_bel_ham/screens/blocked_accounts.dart';
 
 class AccountSettingsScreen extends StatefulWidget {
   const AccountSettingsScreen({super.key});
@@ -92,7 +94,6 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                         trailingIcon: Icons.arrow_forward,
                       ),
                       onTap: () {
-
                         Navigator.pushNamed(
                           context,
                           ChangePasswordScreen.id,
@@ -137,17 +138,26 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       },
                     ),
                     SettingsTile(
-                      key: const Key("location_customization_tile"),
-                      subtitleText: location,
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.location_on_outlined,
                       ),
                       titleText: "Location Customization",
+                      subtitleText: location,
                       trailingWidget: const SettingsTileTrailingIcon(
                         trailingIcon: Icons.arrow_forward,
                       ),
-                      onTap: () {
-                        //TODO: Implement the location customization functionality
+                      onTap: () async {
+                        String newlocation = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LocationCustomization(
+                              initialValue: location,
+                            ),
+                          ),
+                        );
+                        setState(() {
+                          location = newlocation;
+                        });
                       },
                     ),
                     const SettingsSegmentTitle(
@@ -214,7 +224,9 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       trailingWidget: const SettingsTileTrailingIcon(
                         trailingIcon: Icons.arrow_forward,
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(context, BlockedAccount.id);
+                      },
                     ),
                     SettingsTile(
                       leadingIcon: const SettingsTileLeadingIcon(

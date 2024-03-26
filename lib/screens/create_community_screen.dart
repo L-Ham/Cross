@@ -1,7 +1,7 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import '../components/create_community_components/community_name_text_box.dart';
+import '../components/general_components/custom_switch.dart';
 import '../components/create_community_components/community_type_selector.dart';
 import '../components/general_components/custom_switch.dart';
 import '../utilities/screen_size_handler.dart';
@@ -98,8 +98,12 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                     });
                   }
 
-                  Future.delayed(const Duration(milliseconds: kErrorDisplayDelayTimeMilliseconds), () {
-                    setState(() {
+                  Future.delayed(
+                      const Duration(
+                          milliseconds: kErrorDisplayDelayTimeMilliseconds),
+                      () {
+                    setState(
+                      () {
                         errorText = validateInput(value);
                         if (value.length >= kCommunityNameMinLength &&
                             errorText == '') {
@@ -120,12 +124,14 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
               Visibility(
                 visible: errorText.isNotEmpty,
                 child: Padding(
-                  padding: const EdgeInsets.only(top: kErrorTextTopBottomPadding),
+                  padding:
+                      const EdgeInsets.only(top: kErrorTextTopBottomPadding),
                   child: Text(
                     errorText,
                     style: TextStyle(
                       color: Colors.grey,
-                      fontSize: ScreenSizeHandler.bigger * kErrorTextHeightRatio,
+                      fontSize:
+                          ScreenSizeHandler.bigger * kErrorTextHeightRatio,
                     ),
                   ),
                 ),
