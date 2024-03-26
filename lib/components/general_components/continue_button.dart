@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../constants.dart';
-import '../utilities/screen_size_handler.dart';
+import '../../constants.dart';
+import '../../utilities/screen_size_handler.dart';
 
 class ContinueButton extends StatelessWidget {
   final VoidCallback onPress;
@@ -28,6 +28,9 @@ class ContinueButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
             backgroundColor: !isButtonEnabled ?kDisabledButtonColor: color!=null?color: kFillingColor,
             foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
             padding: EdgeInsets.symmetric(
               vertical: ScreenSizeHandler.screenHeight * 0.015,
               horizontal: ScreenSizeHandler.screenWidth * 0.04,
