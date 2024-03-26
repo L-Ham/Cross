@@ -55,6 +55,7 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: kBackgroundColor,
         centerTitle: true,
         title: Padding(
           padding: const EdgeInsets.only(
@@ -69,6 +70,7 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
           ),
         ),
       ),
+      backgroundColor: kBackgroundColor,
       body: Padding(
         padding: const EdgeInsets.all(kPageEdgesPadding),
         child: SingleChildScrollView(

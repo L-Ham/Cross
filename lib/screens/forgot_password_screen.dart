@@ -42,7 +42,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     title: Text(
                       "Sorry we can't help you :(",
                       style: TextStyle(
-                          fontSize: ScreenSizeHandler.bigger * 0.028,
+                          fontSize: ScreenSizeHandler.bigger * 0.027,
                           fontWeight: FontWeight.bold),
                     ),
                     content: const Text('We need someone who can help us!'),
