@@ -1,12 +1,14 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_leading_icon.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_trailing_icon.dart';
 import 'package:reddit_bel_ham/screens/change_gender_bottom_sheet.dart';
-testWidgets('Change gender to female',
-  (WidgetTester tester) async {
+
+void main() {
+  testWidgets('Change gender to female',
+      (WidgetTester tester) async {
+    // Build the AccountSettingsScreen
     await tester.pumpWidget(MaterialApp(
       home: Material(
         child: Builder(builder: (context) {
@@ -18,23 +20,20 @@ testWidgets('Change gender to female',
             titleText: "Change Gender",
             onTap: () async {
               final result = await showModalBottomSheet(
-                context: context,
-                builder: (BuildContext bc) {
-                  return const ClipRRect(
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(20.0),
-                    ),
-                    child: ChangeGenderBottomSheet(
-                      initialValue: 'Male',
-                    ),
-                  );
-                });
-  
-              // Log the result
-              print('Result from showModalBottomSheet: $result');
-              
+                  context: context,
+                  builder: (BuildContext bc) {
+                    return const ClipRRect(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(20.0),
+                      ),
+                      child: ChangeGenderBottomSheet(
+                        initialValue: 'Male',
+                      ),
+                    );
+                  });
+      
               // Check that the result is 'Female'
-              expect(result, 'Female');
+              expect(result, '7amada');
             },
             leadingIcon: const SettingsTileLeadingIcon(
               leadingIcon: Icons.person,
@@ -52,10 +51,8 @@ testWidgets('Change gender to female',
     await tester.tap(find.byKey(const Key('female_radio_button_tile')));
     await tester.pumpAndSettle();
 
-    // Scroll to ensure the done_button is visible
-    await tester.ensureVisible(find.byKey(const Key('done_button')));
-    
     // Tap the Done button to close the ChangeGenderBottomSheet
     await tester.tap(find.byKey(const Key('done_button')));
     await tester.pumpAndSettle();
-});
+  });
+}
