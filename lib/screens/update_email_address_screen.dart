@@ -4,7 +4,7 @@ import 'package:reddit_bel_ham/components/settings_components/user_information_c
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/components/settings_components/forget_password_text.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
-import 'package:reddit_bel_ham/components/credentials_text_field.dart';
+import 'package:reddit_bel_ham/components/general_components/credentials_text_field.dart';
 
 class UpdateEmailAddressScreen extends StatefulWidget {
   const UpdateEmailAddressScreen({super.key});

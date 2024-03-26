@@ -12,7 +12,7 @@ import 'package:reddit_bel_ham/components/settings_components/settings_tile.dart
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_leading_icon.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_image.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_trailing_icon.dart';
-import 'package:reddit_bel_ham/components/text_link.dart';
+import 'package:reddit_bel_ham/components/general_components/text_link.dart';
 import 'package:reddit_bel_ham/screens/location_customization.dart';
 import 'package:reddit_bel_ham/screens/blocked_accounts.dart';
 

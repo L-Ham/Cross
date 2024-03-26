@@ -5,7 +5,7 @@ import '../utilities/screen_size_handler.dart';
 import '../components/location_customaization_components/location_customaization_radio_button.dart';
 
 class LocationCustomization extends StatefulWidget {
-  const LocationCustomization({Key? key, required this.initialValue});
+  const LocationCustomization({super.key, required this.initialValue});
 
   final String initialValue;
 
