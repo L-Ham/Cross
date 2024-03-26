@@ -1,4 +1,10 @@
+
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:reddit_bel_ham/components/settings_components/settings_tile.dart';
+import 'package:reddit_bel_ham/components/settings_components/settings_tile_leading_icon.dart';
+import 'package:reddit_bel_ham/components/settings_components/settings_tile_trailing_icon.dart';
+import 'package:reddit_bel_ham/screens/change_gender_bottom_sheet.dart';
 testWidgets('Change gender to female',
   (WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(
