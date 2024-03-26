@@ -5,7 +5,7 @@ import 'package:reddit_bel_ham/screens/update_email_address_screen.dart';
 import 'package:reddit_bel_ham/screens/create_community_screen.dart';
 import 'screens/account_settings_screen.dart';
 import 'utilities/screen_size_handler.dart';
-import 'screens/notifications_screen.dart';
+import 'screens/notifications_settings_screen.dart';
 import 'screens/first_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/signup_screen.dart';
