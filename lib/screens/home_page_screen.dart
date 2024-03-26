@@ -5,14 +5,15 @@ import 'package:reddit_bel_ham/components/settings_components/settings_tile_lead
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/home_page_seach_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
-import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 
 class HomePageScreen extends StatefulWidget {
 
+  const HomePageScreen({super.key});
   static const id = 'home_page_screen';
 
+
   @override
-  _HomePageScreenState createState() => _HomePageScreenState();
+  State<HomePageScreen> createState() => _HomePageScreenState();
 }
 
 class _HomePageScreenState extends State<HomePageScreen> {

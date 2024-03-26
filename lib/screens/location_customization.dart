@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/constants.dart';
-import 'package:reddit_bel_ham/components/settings_components/settings_radio_button_tile.dart';
 import '../countries.dart';
 import '../components/location_customaization_components/location_customaization_radio_button.dart';
 
 class LocationCustomization extends StatefulWidget {
-  const LocationCustomization({Key? key, required this.initialValue});
+  const LocationCustomization({super.key, required this.initialValue});
 
   final String initialValue;
 

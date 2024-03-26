@@ -8,13 +8,12 @@ import '../components/general_components/text_link.dart';
 import '../utilities/screen_size_handler.dart';
 
 class FirstScreen extends StatelessWidget {
-  FirstScreen({
+  const FirstScreen({
     super.key,
   });
 
   static const String id = 'first_screen';
 
-  bool isPressed = false;
 
   @override
   Widget build(BuildContext context) {
