@@ -25,9 +25,8 @@ class RedditByLham extends StatelessWidget {
       MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
       
     return MaterialApp(
-      // helpppppp
-      debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
+      debugShowCheckedModeBanner: false,
       routes: {
         FirstScreen.id: (context) => FirstScreen(),
         CreateCommunityScreen.id: (context) => const CreateCommunityScreen(),
@@ -43,7 +42,7 @@ class RedditByLham extends StatelessWidget {
         //Resolved
         // SearchScreen.id: (context) => SearchScreen(),
       },
-      initialRoute: AccountSettingsScreen.id,
+      initialRoute: FirstScreen.id,
     );
   }
 }
