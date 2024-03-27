@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 const double kPageTitleFontSizeHeightRatio = 0.03;
-const double kPageTtleTopBottomPadding =  20.0;
+const double kPageTtleTopBottomPadding = 20.0;
 const double kErrorTextTopBottomPadding = 10.0;
 const double kPageEdgesPadding = 9.0;
 const double kPageSubtitleFontSizeHeightRatio = 0.02;
@@ -51,6 +51,7 @@ const Color kFillingColor = Color.fromARGB(255, 40, 40, 40);
 const Color kHintTextColor = Color.fromARGB(255, 122, 122, 122);
 
 const Color kDisabledButtonColor = Colors.grey;
+const Color kBlockButtonColor = Color(0xFF44A3F2);
 
 const kPageTitleStyle =
     TextStyle(fontWeight: FontWeight.w500, color: Colors.white);
@@ -75,3 +76,18 @@ TextStyle kSettingsSubHeaderTextStyle =
 
 TextStyle kSettingsBodyTextStyle =
     const TextStyle(color: Colors.white, fontWeight: FontWeight.w400);
+
+const kButtonHeightRatio = 0.01;
+const kButtonWidthRatio = 0.04;
+const kButtonSmallerFontRatio = 0.035;
+const kAcknowledgeTextHeightRatio = 0.02;
+const kAcknowledgeTextWidthRatio = 0.04;
+const kAcknowledgeTextSmallerFontRatio = 0.03;
+const kTextLinkPaddingRatio = 0.015;
+const kTextLinkFontSizeRatio = 0.03;
+const kAppBarTitleSmallerFontRatio = 0.04;
+const kErrorMessageSmallerFontRatio = 0.03;
+const kErrorMessageLeftPaddingRatio = 0.05;
+Color kErrorColor = Colors.red.shade200;
+Color kOrangeActivatedColor = Colors.orange.shade900;
+

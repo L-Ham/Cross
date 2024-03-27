@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_bel_ham/components/credentials_text_field.dart';
+import 'package:reddit_bel_ham/components/general_components/credentials_text_field.dart';
 import 'package:reddit_bel_ham/components/general_components/gradient_button.dart';
 import 'package:reddit_bel_ham/components/settings_components/forget_password_text.dart';
 import 'package:reddit_bel_ham/components/settings_components/user_information_card.dart';
@@ -184,8 +184,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                               child: Text(
                                 'Passwords do not match!',
                                 style: TextStyle(
-                                  color: Colors.red[200],
-                                  fontSize: ScreenSizeHandler.smaller * 0.03,
+                                  color: kErrorColor,
+                                  fontSize: ScreenSizeHandler.smaller * kErrorMessageSmallerFontRatio,
                                 ),
                               ),
                             ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../utilities/screen_size_handler.dart';
+import 'package:reddit_bel_ham/constants.dart';
+import '../../utilities/screen_size_handler.dart';
 
 class TextLink extends StatelessWidget {
   const TextLink({
@@ -18,7 +19,7 @@ class TextLink extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Padding(
-        padding: EdgeInsets.only(left: ScreenSizeHandler.smaller * 0.015),
+        padding: EdgeInsets.only(left: ScreenSizeHandler.smaller * kTextLinkPaddingRatio),
         child: Text(
           text,
           style: TextStyle(

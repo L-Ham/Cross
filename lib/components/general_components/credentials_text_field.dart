@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../utilities/screen_size_handler.dart';
-import '../constants.dart';
+import '../../utilities/screen_size_handler.dart';
+import '../../constants.dart';
 
 class CredentialsTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -11,10 +11,8 @@ class CredentialsTextField extends StatelessWidget {
   final Widget? suffixIcon;
   final Widget? prefixIcon;
   final bool isObscure;
-  Key? key;
 
-
-   CredentialsTextField({
+  const CredentialsTextField({
     required this.controller,
     required this.isFocused,
     required this.onChanged,
@@ -23,8 +21,8 @@ class CredentialsTextField extends StatelessWidget {
     this.suffixIcon,
     this.prefixIcon,
     this.isValid = true,
-    this.key,
-  }): super(key: key);
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,15 +33,17 @@ class CredentialsTextField extends StatelessWidget {
       decoration: InputDecoration(
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(color: isValid ? Colors.transparent : Colors.red[200]!),
+          borderSide: BorderSide(
+              color: isValid ? Colors.transparent : Colors.red[200]!),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(color: isValid ? Colors.white : Colors.red[200]!),
+          borderSide:
+              BorderSide(color: isValid ? Colors.white : Colors.red[200]!),
         ),
         labelText: text,
         labelStyle: TextStyle(
-            color: kHintTextColor, fontSize: ScreenSizeHandler.smaller * 0.035),
+            color: kHintTextColor, fontSize: ScreenSizeHandler.smaller * kButtonSmallerFontRatio),
         fillColor: kFillingColor,
         filled: true,
         suffixIcon: suffixIcon,
@@ -51,7 +51,7 @@ class CredentialsTextField extends StatelessWidget {
       ),
       style: TextStyle(
         color: Colors.white,
-        fontSize: ScreenSizeHandler.smaller * 0.035,
+        fontSize: ScreenSizeHandler.smaller * kButtonSmallerFontRatio,
       ),
     );
   }

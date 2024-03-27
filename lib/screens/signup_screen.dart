@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/screens/home_page_screen.dart';
 import 'package:reddit_bel_ham/screens/login_screen.dart';
-import '../components/acknowledgement_text.dart';
+import '../components/general_components/acknowledgement_text.dart';
 import '../utilities/screen_size_handler.dart';
 import '../constants.dart';
-import '../components/credentials_text_field.dart';
-import '../components/continue_button.dart';
-import '../components/logo_text_app_bar.dart';
+import '../components/general_components/credentials_text_field.dart';
+import '../components/general_components/continue_button.dart';
+import '../components/login_components/logo_text_app_bar.dart';
 import '../utilities/email_regex.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -69,8 +69,8 @@ class SignupScreenState extends State<SignupScreen> {
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(
-                          horizontal: ScreenSizeHandler.screenWidth * 0.04,
-                          vertical: ScreenSizeHandler.screenHeight * 0.01),
+                          horizontal: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+                          vertical: ScreenSizeHandler.screenHeight * kButtonHeightRatio),
                       child: CredentialsTextField(
                         key: const Key('signup_screen_email_text_field'),
                         controller: nameController,
@@ -127,14 +127,14 @@ class SignupScreenState extends State<SignupScreen> {
                       visible: !isValidEmail,
                       child: Padding(
                         padding: EdgeInsets.only(
-                            left: ScreenSizeHandler.smaller * 0.05),
+                            left: ScreenSizeHandler.screenWidth * kErrorMessageLeftPaddingRatio),
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
                             'Please enter a valid email address',
                             style: TextStyle(
-                              color: Colors.red[200],
-                              fontSize: ScreenSizeHandler.smaller * 0.03,
+                              color: kErrorColor,
+                              fontSize: ScreenSizeHandler.smaller * kErrorMessageSmallerFontRatio,
                             ),
                           ),
                         ),
@@ -142,8 +142,8 @@ class SignupScreenState extends State<SignupScreen> {
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(
-                          horizontal: ScreenSizeHandler.screenWidth * 0.04,
-                          vertical: ScreenSizeHandler.screenHeight * 0.01),
+                          horizontal: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+                          vertical: ScreenSizeHandler.screenHeight * kButtonHeightRatio),
                       child: CredentialsTextField(
                         key: const Key('signup_screen_password_text_field'),
                         controller: passController,
@@ -194,14 +194,14 @@ class SignupScreenState extends State<SignupScreen> {
                       visible: !isValidPassword,
                       child: Padding(
                         padding: EdgeInsets.only(
-                            left: ScreenSizeHandler.smaller * 0.05),
+                            left: ScreenSizeHandler.screenWidth * kErrorMessageLeftPaddingRatio),
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
                             'Password must be at least 8 characters',
                             style: TextStyle(
-                              color: Colors.red[200],
-                              fontSize: ScreenSizeHandler.smaller * 0.03,
+                              color: kErrorColor,
+                              fontSize: ScreenSizeHandler.smaller * kErrorMessageSmallerFontRatio,
                             ),
                           ),
                         ),
@@ -227,7 +227,7 @@ class SignupScreenState extends State<SignupScreen> {
                     null;
                   }
                 },
-                color: Colors.orange[900],
+                color: kOrangeActivatedColor,
               ),
             ],
           ),

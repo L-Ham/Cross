@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:reddit_bel_ham/screens/signup_screen.dart';
-import 'package:reddit_bel_ham/components/continue_button.dart';
+import 'package:reddit_bel_ham/components/general_components/continue_button.dart';
 
 void main() {
   testWidgets('Login screen UI test', (WidgetTester tester) async {

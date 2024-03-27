@@ -4,9 +4,13 @@ import 'package:flutter/material.dart';
 import '../constants.dart';
 import '../components/empty_dog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../utilities/screen_size_handler.dart';
+import 'package:reddit_bel_ham/components/blocked_accounts_components/blocked_acoount_tile.dart';
 
 class BlockedAccount extends StatefulWidget {
   const BlockedAccount({Key? key}) : super(key: key);
+
+  static const String id = 'blocked_account_screen';
 
   @override
   _BlockedAccountState createState() => _BlockedAccountState();
@@ -16,8 +20,13 @@ class _BlockedAccountState extends State<BlockedAccount> {
   late FocusNode _focusNode;
   bool _isKeyboardVisible = false;
   bool _isTextFieldEmpty = true;
-  bool _isBlockedAccountsEmpty = true;
+  bool _isBlockedAccountsEmpty = false;
+
   final TextEditingController _controller = TextEditingController();
+
+  void printing() {
+    print('Unblock button pressed');
+  }
 
   @override
   void initState() {
@@ -44,56 +53,60 @@ class _BlockedAccountState extends State<BlockedAccount> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: kBackgroundColor,
       appBar: AppBar(
-        title: Center(
-          child: Text(
-            'Blocked Accounts',
-            style: kPageTitleStyle.copyWith(
-              fontSize: MediaQuery.of(context).size.height *
-                  kPageTitleFontSizeHeightRatio,
-            ),
-          ),
+        centerTitle: true,
+        backgroundColor: kBackgroundColor,
+        title: Text(
+          'Blocked Accounts',
+          style: kPageTitleStyle.copyWith(
+              fontSize: ScreenSizeHandler.bigger * kAppBarTitleFontSizeRatio),
         ),
       ),
       body: Column(
         children: [
           SizedBox(
-            height: MediaQuery.of(context).size.height * 0.01,
+            height: ScreenSizeHandler.screenHeight * 0.02,
           ),
           Row(
             children: [
               Expanded(
                 flex: _isKeyboardVisible ? 6 : 7,
                 child: Padding(
-                  padding: EdgeInsets.all(
-                      MediaQuery.of(context).size.height * 0.006),
+                  padding: EdgeInsets.all(ScreenSizeHandler.bigger * 0.009),
                   child: Container(
-                    height: 40,
+                    height: ScreenSizeHandler.screenHeight * 0.054,
                     child: TextFormField(
+                      key: const Key('blocked_accounts_screen_text_field'),
                       controller: _controller,
                       focusNode: _focusNode,
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * 0.01),
+                          top: ScreenSizeHandler.bigger * 0.01,
+                        ),
                         filled: true,
-                        fillColor: Color.fromARGB(209, 43, 42, 42),
+                        fillColor: kFillingColor,
                         border: OutlineInputBorder(
                           borderSide: BorderSide.none,
                         ),
                         prefixIcon: Icon(
                           Icons.search,
-                          color: const Color.fromARGB(255, 130, 129, 129),
+                          size: ScreenSizeHandler.bigger *
+                              kSettingsLeadingIconRatio,
+                          color: kHintTextColor,
                         ),
                         hintText: 'Block new account',
                         hintStyle: TextStyle(
-                            color: const Color.fromARGB(255, 130, 129, 129)),
+                            color: kHintTextColor,
+                            fontWeight: FontWeight.normal),
                         suffixIcon: _isTextFieldEmpty
                             ? null
                             : IconButton(
+                                key: const Key(
+                                    'blocked_accounts_screen_text_field_clear_button'),
                                 icon: FaIcon(
                                   FontAwesomeIcons.circleXmark,
-                                  color:
-                                      const Color.fromARGB(255, 130, 129, 129),
+                                  color: kHintTextColor,
                                 ),
                                 onPressed: () {
                                   setState(() {
@@ -115,7 +128,7 @@ class _BlockedAccountState extends State<BlockedAccount> {
                     child: Text(
                       "Cancel",
                       style: TextStyle(
-                        color: Colors.grey,
+                        color: kHintTextColor,
                         fontSize: MediaQuery.of(context).size.height *
                             kPageSubtitleFontSizeHeightRatio,
                       ),
@@ -124,7 +137,18 @@ class _BlockedAccountState extends State<BlockedAccount> {
                 )
             ],
           ),
-          if (_isBlockedAccountsEmpty) EmptyDog()
+          if (_isBlockedAccountsEmpty)
+            EmptyDog()
+          else
+            Column(
+              children: [
+                BlockedAccountTile(
+                  imagePath: 'assets/images/reddit_logo.png',
+                  username: 'TheKey119',
+                  isAccountBlocked: _isBlockedAccountsEmpty,
+                ),
+              ],
+            )
         ],
       ),
     );

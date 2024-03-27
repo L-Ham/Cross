@@ -2,19 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/screens/signup_screen.dart';
 import '../screens/login_screen.dart';
 import '../constants.dart';
-import '../components/continue_button.dart';
-import '../components/acknowledgement_text.dart';
-import '../components/text_link.dart';
+import '../components/general_components/continue_button.dart';
+import '../components/general_components/acknowledgement_text.dart';
+import '../components/general_components/text_link.dart';
 import '../utilities/screen_size_handler.dart';
 
 class FirstScreen extends StatelessWidget {
-  FirstScreen({
+  const FirstScreen({
     super.key,
   });
 
   static const String id = 'first_screen';
 
-  bool isPressed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +44,8 @@ class FirstScreen extends StatelessWidget {
                   Center(
                     child: Padding(
                       padding: EdgeInsets.symmetric(
-                          horizontal: ScreenSizeHandler.screenWidth * 0.04,
-                          vertical: ScreenSizeHandler.screenHeight * 0.01),
+                          horizontal: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+                          vertical: ScreenSizeHandler.screenHeight * kButtonHeightRatio),
                       child: Text(
                         'Reddit byLham\n والهم مش راضي بينا',
                         style: TextStyle(
@@ -87,21 +86,21 @@ class FirstScreen extends StatelessWidget {
                   const AcknowledgementText(),
                   Padding(
                     padding: EdgeInsets.symmetric(
-                        horizontal: ScreenSizeHandler.screenWidth * 0.04,
-                        vertical: ScreenSizeHandler.screenHeight * 0.02),
+                        horizontal: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+                        vertical: ScreenSizeHandler.screenHeight * kButtonHeightRatio),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           'Already a redditor?',
                           style: TextStyle(
-                            fontSize: ScreenSizeHandler.smaller * 0.035,
+                            fontSize: ScreenSizeHandler.smaller * kButtonSmallerFontRatio,
                             color: Colors.white,
                           ),
                         ),
                         TextLink(
                           key: const Key('first_screen_log_in_text_link'),
-                            fontSizeRatio: ScreenSizeHandler.smaller * 0.035,
+                            fontSizeRatio: ScreenSizeHandler.smaller * kButtonSmallerFontRatio,
                             onTap: () {
                               Navigator.push(
                                   context,

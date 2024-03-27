@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '/constants.dart';
-import '../utilities/screen_size_handler.dart';
+import '../../utilities/screen_size_handler.dart';
 
 class LogoTextAppBar extends StatelessWidget {
   final String text;
@@ -36,7 +36,7 @@ class LogoTextAppBar extends StatelessWidget {
               child: Text(
                 text,
                 style: TextStyle(
-                  fontSize: ScreenSizeHandler.smaller * 0.04,
+                  fontSize: ScreenSizeHandler.smaller * kAppBarTitleSmallerFontRatio,
                   fontWeight: FontWeight.bold,
                   color: kHintTextColor,
                 ),

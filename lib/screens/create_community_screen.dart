@@ -1,9 +1,9 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import '../components/create_community_components/community_name_text_box.dart';
-import '../components/create_community_components/community_type_selector.dart';
+import '../components/general_components/continue_button.dart';
 import '../components/general_components/custom_switch.dart';
+import '../components/create_community_components/community_type_selector.dart';
 import '../utilities/screen_size_handler.dart';
 import '../constants.dart';
 
@@ -55,6 +55,7 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: kBackgroundColor,
         centerTitle: true,
         title: Padding(
           padding: const EdgeInsets.only(
@@ -69,6 +70,7 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
           ),
         ),
       ),
+      backgroundColor: kBackgroundColor,
       body: Padding(
         padding: const EdgeInsets.all(kPageEdgesPadding),
         child: SingleChildScrollView(
@@ -79,6 +81,7 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                 height: ScreenSizeHandler.screenHeight * 0.005,
               ),
               Text('Community name',
+                  key: const Key('community_name_text'),
                   style: TextStyle(
                     fontSize: ScreenSizeHandler.bigger *
                         kPageSubtitleFontSizeHeightRatio,
@@ -87,6 +90,7 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                 height: ScreenSizeHandler.screenHeight * 0.01,
               ),
               CommunityNameTextBox(
+                key: const Key('community_name_text_box'),
                 controller: _controller,
                 onChanged: (value) {
                   if (value.length > kCommunityNameMaxLength) {
@@ -98,8 +102,12 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                     });
                   }
 
-                  Future.delayed(const Duration(milliseconds: kErrorDisplayDelayTimeMilliseconds), () {
-                    setState(() {
+                  Future.delayed(
+                      const Duration(
+                          milliseconds: kErrorDisplayDelayTimeMilliseconds),
+                      () {
+                    setState(
+                      () {
                         errorText = validateInput(value);
                         if (value.length >= kCommunityNameMinLength &&
                             errorText == '') {
@@ -120,12 +128,14 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
               Visibility(
                 visible: errorText.isNotEmpty,
                 child: Padding(
-                  padding: const EdgeInsets.only(top: kErrorTextTopBottomPadding),
+                  padding:
+                      const EdgeInsets.only(top: kErrorTextTopBottomPadding),
                   child: Text(
                     errorText,
                     style: TextStyle(
                       color: Colors.grey,
-                      fontSize: ScreenSizeHandler.bigger * kErrorTextHeightRatio,
+                      fontSize:
+                          ScreenSizeHandler.bigger * kErrorTextHeightRatio,
                     ),
                   ),
                 ),
@@ -140,6 +150,7 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                     )),
               ),
               CommunityTypeSelector(
+                key: const Key('community_type_selector'),
                 communityType: communityType,
                 onCommunityTypeChanged: (type, description) {
                   setState(() {
@@ -160,6 +171,7 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                 children: [
                   Text(
                     '18+ community',
+                    key: const Key('age_community_text'),
                     style: TextStyle(
                       fontSize: ScreenSizeHandler.bigger *
                           kPageTitleFontSizeHeightRatio,
@@ -167,6 +179,7 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                     ),
                   ),
                   CustomSwitch(
+                    key: const Key('age_switch'),
                     isSwitched: isSwitched,
                     onChanged: (value) {
                       setState(() {
@@ -182,29 +195,12 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                   SizedBox(
                     height: ScreenSizeHandler.screenHeight * 0.025,
                   ),
-                  ElevatedButton(
-                    onPressed: (activated) ? createCommunity : null,
-                    style: ButtonStyle(
-                      minimumSize: MaterialStateProperty.all(Size(
-                          ScreenSizeHandler.screenHeight * 0.02,
-                          ScreenSizeHandler.screenHeight *
-                              kCreateCommunityButtonHeightRatio)),
-                      backgroundColor:
-                          MaterialStateProperty.resolveWith<Color?>(
-                        (states) =>
-                            (activated) ? Colors.blueAccent : Colors.grey,
-                      ),
-                    ),
-                    child: Text(
-                      'Create community',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: ScreenSizeHandler.bigger *
-                            kCreateCommunityButtonTextHeightRatio,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+                  ContinueButton(
+                      onPress: () {},
+                      key: const Key('create_community_button'),
+                      text: 'Create community',
+                      color: Colors.blue,
+                      isButtonEnabled: activated),
                 ],
               )
             ],

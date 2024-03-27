@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/constants.dart';
-import 'package:reddit_bel_ham/components/settings_components/settings_radio_button_tile.dart';
 import '../countries.dart';
+import '../utilities/screen_size_handler.dart';
 import '../components/location_customaization_components/location_customaization_radio_button.dart';
 
 class LocationCustomization extends StatefulWidget {
-  const LocationCustomization({Key? key, required this.initialValue});
+  const LocationCustomization({super.key, required this.initialValue});
 
   final String initialValue;
 
@@ -25,15 +25,14 @@ class _LocationCustomizationState extends State<LocationCustomization> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: kBackgroundColor,
       appBar: AppBar(
-        title: Center(
-          child: Text(
-            'Select Location',
-            style: kPageTitleStyle.copyWith(
-              fontSize: MediaQuery.of(context).size.height *
-                  kPageTitleFontSizeHeightRatio,
-            ),
-          ),
+        backgroundColor: kBackgroundColor,
+        centerTitle: true,
+        title: Text(
+          'Select Location',
+          style: kPageTitleStyle.copyWith(
+              fontSize: ScreenSizeHandler.bigger * kAppBarTitleFontSizeRatio),
         ),
       ),
       body: SingleChildScrollView(
