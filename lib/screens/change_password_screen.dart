@@ -184,8 +184,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                               child: Text(
                                 'Passwords do not match!',
                                 style: TextStyle(
-                                  color: Colors.red[200],
-                                  fontSize: ScreenSizeHandler.smaller * 0.03,
+                                  color: kErrorColor,
+                                  fontSize: ScreenSizeHandler.smaller * kErrorMessageSmallerFontRatio,
                                 ),
                               ),
                             ),

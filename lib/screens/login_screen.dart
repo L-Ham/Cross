@@ -153,8 +153,8 @@ class LoginScreenState extends State<LoginScreen> {
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(
-                          horizontal: ScreenSizeHandler.screenWidth * 0.04,
-                          vertical: ScreenSizeHandler.screenHeight * 0.01),
+                          horizontal: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+                          vertical: ScreenSizeHandler.screenHeight * kButtonHeightRatio),
                       child: CredentialsTextField(
                         key: const Key('login_screen_password_text_field'),
                         controller: passController,
@@ -197,7 +197,7 @@ class LoginScreenState extends State<LoginScreen> {
                         children: [
                           TextLink(
                             key: const Key('login_screen_forgot_password_text_link'),
-                            fontSizeRatio: ScreenSizeHandler.smaller * 0.035,
+                            fontSizeRatio: ScreenSizeHandler.smaller * kButtonSmallerFontRatio,
                             text: 'Forgot your password?',
                             onTap: () {
                               Navigator.push(
@@ -230,7 +230,7 @@ class LoginScreenState extends State<LoginScreen> {
                     null;
                   }
                 },
-                color: Colors.orange[900],
+                color: kOrangeActivatedColor,
               ),
             ],
           ),
