@@ -38,9 +38,9 @@ class _NotificationSettingsScreenState
         centerTitle: true,
         backgroundColor: kBackgroundColor,
         title: Padding(
-          padding: const EdgeInsets.only(
-              top: kPageTtleTopBottomPadding,
-              bottom: kPageTtleTopBottomPadding),
+          padding: EdgeInsets.only(
+              top: ScreenSizeHandler.screenHeight* kPageTtleTopBottomPaddingRatio,
+              bottom: ScreenSizeHandler.screenHeight* kPageTtleTopBottomPaddingRatio),
           child: Text(
             'Notification Settings',
             key: const Key('notification_settings_app_bar_title'),
