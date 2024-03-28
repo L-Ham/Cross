@@ -56,7 +56,7 @@ class LoginScreenState extends State<LoginScreen> {
                     Text(
                       'Log in',
                       style: TextStyle(
-                        fontSize: ScreenSizeHandler.smaller * 0.05,
+                        fontSize: ScreenSizeHandler.smaller * 0.07,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
@@ -218,19 +218,22 @@ class LoginScreenState extends State<LoginScreen> {
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              ContinueButton(
-                key: const Key('login_screen_continue_button'),
-                text: "Continue",
-                isButtonEnabled: isButtonEnabled,
-                onPress: () {
-                  if (isButtonEnabled) {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => HomePageScreen()));
-                  } else {
-                    null;
-                  }
-                },
-                color: kOrangeActivatedColor,
+              Padding(
+                padding: EdgeInsets.only(bottom: ScreenSizeHandler.screenHeight * kButtonWidthRatio),
+                child: ContinueButton(
+                  key: const Key('login_screen_continue_button'),
+                  text: "Continue",
+                  isButtonEnabled: isButtonEnabled,
+                  onPress: () {
+                    if (isButtonEnabled) {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => HomePageScreen()));
+                    } else {
+                      null;
+                    }
+                  },
+                  color: kOrangeActivatedColor,
+                ),
               ),
             ],
           ),

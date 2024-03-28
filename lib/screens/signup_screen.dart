@@ -179,7 +179,7 @@ class SignupScreenState extends State<SignupScreen> {
                             } else {
                               if (value.isEmpty) {
                                 setState(() {
-                                  isValidPassword = true;
+                                  // isValidPassword = true;
                                 });
                               }
                               setState(() {
@@ -191,7 +191,7 @@ class SignupScreenState extends State<SignupScreen> {
                     ),
                     Visibility(
                       key: const Key('signup_screen_password_error_text'),
-                      visible: !isValidPassword,
+                      visible: !isValidPassword || isPassFocused,
                       child: Padding(
                         padding: EdgeInsets.only(
                             left: ScreenSizeHandler.screenWidth * kErrorMessageLeftPaddingRatio),
@@ -200,7 +200,7 @@ class SignupScreenState extends State<SignupScreen> {
                           child: Text(
                             'Password must be at least 8 characters',
                             style: TextStyle(
-                              color: kErrorColor,
+                              color: isValidPassword? Colors.green: kErrorColor,
                               fontSize: ScreenSizeHandler.smaller * kErrorMessageSmallerFontRatio,
                             ),
                           ),
@@ -215,19 +215,22 @@ class SignupScreenState extends State<SignupScreen> {
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              ContinueButton(
-                key: const Key('signup_screen_continue_button'),
-                text: "Continue",
-                isButtonEnabled: isButtonEnabled,
-                onPress: () {
-                  if (isButtonEnabled) {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => HomePageScreen()));
-                  } else {
-                    null;
-                  }
-                },
-                color: kOrangeActivatedColor,
+              Padding(
+                padding: EdgeInsets.only(bottom: ScreenSizeHandler.screenHeight * kButtonWidthRatio),
+                child: ContinueButton(
+                  key: const Key('signup_screen_continue_button'),
+                  text: "Continue",
+                  isButtonEnabled: isButtonEnabled,
+                  onPress: () {
+                    if (isButtonEnabled) {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => HomePageScreen()));
+                    } else {
+                      null;
+                    }
+                  },
+                  color: kOrangeActivatedColor,
+                ),
               ),
             ],
           ),
