@@ -32,7 +32,7 @@ class ContinueButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(30),
             ),
             padding: EdgeInsets.symmetric(
-              vertical: ScreenSizeHandler.screenHeight * kButtonHeightRatio,
+              vertical: ScreenSizeHandler.screenHeight * 0.015,
               horizontal: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
             )),
         onPressed: onPress,
