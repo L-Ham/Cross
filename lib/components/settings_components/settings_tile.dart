@@ -20,40 +20,47 @@ class SettingsTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      tileColor: kBackgroundColor,
-      visualDensity: VisualDensity.compact,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          leadingIcon,
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  titleText,
-                  style: kSettingsIconTextStyle.copyWith(
-                    fontSize: ScreenSizeHandler.bigger *
-                        kSettingsTileTextRatio,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        color: kBackgroundColor,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: ScreenSizeHandler.screenWidth * 0.04, vertical: ScreenSizeHandler.screenHeight*0.008),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              leadingIcon,
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(right: ScreenSizeHandler.screenWidth*0.03),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        titleText,
+                        style: kSettingsIconTextStyle.copyWith(
+                          fontSize: ScreenSizeHandler.bigger *
+                              kSettingsTileTextRatio,
+                        ),
+                      ),
+                      if (subtitleText != null)
+                        Text(
+                          subtitleText!,
+                          style: kSettingsIconTextStyle.copyWith(
+                            fontSize: ScreenSizeHandler.bigger *
+                                kSettingsTileSubtextRatio,
+                            color: Colors.grey,
+                          ),
+                        ),
+                    ],
                   ),
                 ),
-                if (subtitleText != null)
-                  Text(
-                    subtitleText!,
-                    style: kSettingsIconTextStyle.copyWith(
-                      fontSize: ScreenSizeHandler.bigger *
-                          kSettingsTileSubtextRatio,
-                      color: Colors.grey,
-                    ),
-                  ),
-              ],
-            ),
+              ),
+              if (trailingWidget != null) trailingWidget !,
+            ],
           ),
-          if (trailingWidget != null) trailingWidget !,
-        ],
+        ),
       ),
-      onTap: onTap,
     );
   }
 }

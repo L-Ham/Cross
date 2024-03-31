@@ -13,7 +13,7 @@ class SettingsSegmentTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(ScreenSizeHandler.bigger * 0.02),
+      padding: EdgeInsets.symmetric(horizontal: ScreenSizeHandler.screenWidth * 0.04, vertical: ScreenSizeHandler.screenHeight*0.014),
       child: Text(
         titleText,
         style: kSettingsSegmentTileTextStyle.copyWith(
