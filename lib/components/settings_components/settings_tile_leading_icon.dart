@@ -14,12 +14,12 @@ class SettingsTileLeadingIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(
-        right: ScreenSizeHandler.bigger * 0.04,
+        right: ScreenSizeHandler.screenWidth * 0.04,
       ),
       child: Icon(
         leadingIcon,
         size: ScreenSizeHandler.bigger* kSettingsLeadingIconRatio,
-        color: Colors.white38,
+        color: Colors.grey,
       ),
     );
   }

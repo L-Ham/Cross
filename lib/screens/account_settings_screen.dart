@@ -26,7 +26,7 @@ class AccountSettingsScreen extends StatefulWidget {
 }
 
 class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
-  String gender = "Male";
+  String gender = "Man";
   String connectedEmailAddress = "daniel@email.com";
   String username = "dani";
   String location = "Egypt";
@@ -39,7 +39,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kBackgroundColor,
-        toolbarHeight: ScreenSizeHandler.bigger * 0.06,
+        toolbarHeight: ScreenSizeHandler.bigger * 0.055,
         leading: IconButton(
             key: const Key("account_settings_back_button"),
             icon: const Icon(Icons.arrow_back),
@@ -49,7 +49,8 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
         title: Text(
           "Account Settings",
           style: kPageTitleStyle.copyWith(
-              fontSize: ScreenSizeHandler.bigger * kAppBarTitleFontSizeRatio),
+              fontSize:
+                  ScreenSizeHandler.smaller * kAppBarTitleSmallerFontRatio),
         ),
         centerTitle: true,
       ),
@@ -62,7 +63,12 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SettingsSegmentTitle(titleText: "Basic Settings"),
+                    Padding(
+                      padding: EdgeInsets.only(
+                          top: ScreenSizeHandler.screenHeight * 0.03),
+                      child: const SettingsSegmentTitle(
+                          titleText: "Basic Settings"),
+                    ),
                     SettingsTile(
                       key: const Key(
                           "account_settings_update_email_address_tile"),
@@ -145,7 +151,8 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                         leadingIcon: Icons.location_on_outlined,
                       ),
                       titleText: "Location Customization",
-                      subtitleText: location,
+                      subtitleText: 
+                          "\n$location\n\nSpecify a location to customize your recommendations and feed. Reddit does not track your precise geolocation data.",
                       trailingWidget: const SettingsTileTrailingIcon(
                         trailingIcon: Icons.arrow_forward,
                       ),
@@ -242,6 +249,8 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                         leadingIcon: Icons.people,
                       ),
                       titleText: "Allow People to Follow You",
+                      subtitleText:
+                          "Followers will be notified about posts you make to your profile and see them in their home feed.",
                       trailingWidget: CustomSwitch(
                         key: const Key(
                             "account_settings_allow_people_to_follow_you_switch"),

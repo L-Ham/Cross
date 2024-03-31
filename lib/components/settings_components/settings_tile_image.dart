@@ -13,13 +13,13 @@ class SettingsTileImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(
-        right: ScreenSizeHandler.bigger * 0.04,
+        right: ScreenSizeHandler.screenWidth * 0.04,
       ),
       child: Image(
         image: AssetImage(
           assetImageData,
         ),
-        width: ScreenSizeHandler.smaller * 0.06,
+        width: ScreenSizeHandler.smaller * 0.045,
         height: ScreenSizeHandler.bigger * 0.045,
       ),
     );

@@ -30,6 +30,7 @@ class LocationCustomizationRadioButtonTile extends StatelessWidget {
               groupValue: groupValue,
               onChanged: (value) {
                 groupValueNotifier.value = value;
+                Navigator.pop(context, value);
               },
             ),
           );
