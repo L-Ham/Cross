@@ -48,7 +48,7 @@ class _DisconnectScreenState extends State<DisconnectScreen> {
           "Confirm your password",
           style: TextStyle(
               color: Colors.white,
-              fontSize: ScreenSizeHandler.bigger * kAppBarTitleFontSizeRatio),
+              fontSize: ScreenSizeHandler.smaller * kAppBarTitleSmallerFontRatio),
         ),
         centerTitle: true,
       ),
@@ -73,7 +73,7 @@ class _DisconnectScreenState extends State<DisconnectScreen> {
                         child: Text(
                           "For your security, confirm your password.",
                           style: kSettingsSubHeaderTextStyle.copyWith(
-                            fontSize: ScreenSizeHandler.bigger * 0.019,
+                            fontSize: ScreenSizeHandler.bigger * 0.016,
                           ),
                         ),
                       ),

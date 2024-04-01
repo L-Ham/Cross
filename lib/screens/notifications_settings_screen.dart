@@ -45,7 +45,7 @@ class _NotificationSettingsScreenState
             'Notification Settings',
             key: const Key('notification_settings_app_bar_title'),
             style: TextStyle(
-              fontSize: ScreenSizeHandler.bigger * kAppBarTitleFontSizeRatio,
+              fontSize: ScreenSizeHandler.screenWidth * kAppBarTitleSmallerFontRatio,
               fontWeight: FontWeight.w500,
             ),
           ),

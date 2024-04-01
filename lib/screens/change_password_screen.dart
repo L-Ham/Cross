@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/components/general_components/credentials_text_field.dart';
-import 'package:reddit_bel_ham/components/general_components/gradient_button.dart';
 import 'package:reddit_bel_ham/components/settings_components/forget_password_text.dart';
+import 'package:reddit_bel_ham/components/settings_components/settings_save_button.dart';
 import 'package:reddit_bel_ham/components/settings_components/user_information_card.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
@@ -51,9 +51,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         title: Text(
           'Reset Password',
           style: kPageTitleStyle.copyWith(
-              fontSize: ScreenSizeHandler.bigger * kAppBarTitleFontSizeRatio),
+              fontSize: ScreenSizeHandler.screenWidth * kAppBarTitleSmallerFontRatio),
         ),
         backgroundColor: kBackgroundColor,
+        actions: [
+          SettingsSaveButton(onPressed: (){
+            //TODO: Implement the save button functionality
+          })
+        ],
       ),
       body: Column(
         children: [
@@ -198,27 +203,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               },
             ),
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(
-                vertical: ScreenSizeHandler.screenHeight * kBottomButtonPadding,
-                horizontal: kSettingsHorizontalPaddingHeightRatio *
-                    ScreenSizeHandler.screenWidth),
-            child: GradientButton(
-              key: const Key('change_password_screen_save_button'),
-                isPassFocused: (isConfirmPasswordFocused &&
-                        isCurrentPasswordFocused &&
-                        isNewPasswordFocused) &&
-                    newPasswordController.text ==
-                        confirmPasswordController.text,
-                buttonTitle: 'Save',
-                onTap: () {
-                  // if (newPasswordController.text ==
-                  //     confirmPasswordController.text) {
-                    // print('yes');
-                    // TODO
-                  // }
-                }),
-          )
         ],
       ),
     );
