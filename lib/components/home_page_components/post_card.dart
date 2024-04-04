@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/components/home_page_components/share_to_post_card.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Post {
   final String username;
@@ -37,6 +38,7 @@ class PostCard extends StatefulWidget {
   _PostCardState createState() => _PostCardState();
 }
 
+
 class _PostCardState extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
@@ -47,6 +49,11 @@ class _PostCardState extends State<PostCard> {
     return buildPostCard(
         widget.post, isTypeImage, isTypeText, isTypeLink, isOwner, context);
   }
+  Future<void>_launchURL(String url) async {
+ if(!await launchUrl(Uri.parse(url))){
+    throw 'Could not launch $url';
+ }
+}
 
   Widget buildPostCard(Post post, bool isTypeImage, bool isTypeText,
       bool isTypeLink, bool isOwner, BuildContext context) {
@@ -83,10 +90,13 @@ class _PostCardState extends State<PostCard> {
                           color: const Color.fromARGB(255, 133, 132, 132),
                           fontWeight: FontWeight.normal),
                     ),
-                  if (isTypeImage) Image.asset('assets/images/${post.image}'),
+                  if (isTypeImage) Image.asset(post.image),
                   if (isTypeLink)
                     GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          _launchURL(post.link);
+
+                        },
                         child: Text(post.link,
                             style: TextStyle(color: Colors.white)))
                 ],
