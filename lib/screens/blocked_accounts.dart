@@ -66,7 +66,7 @@ class _BlockedAccountState extends State<BlockedAccount> {
       body: Column(
         children: [
           SizedBox(
-            height: ScreenSizeHandler.screenHeight * 0.02,
+            height: ScreenSizeHandler.screenHeight * 0.01,
           ),
           Row(
             children: [
@@ -85,7 +85,7 @@ class _BlockedAccountState extends State<BlockedAccount> {
                           top: ScreenSizeHandler.bigger * 0.01,
                         ),
                         filled: true,
-                        fillColor: kFillingColor,
+                        fillColor: Color.fromARGB(74, 40, 40, 40),
                         border: OutlineInputBorder(
                           borderSide: BorderSide.none,
                         ),
@@ -98,6 +98,7 @@ class _BlockedAccountState extends State<BlockedAccount> {
                         hintText: 'Block new account',
                         hintStyle: TextStyle(
                             color: kHintTextColor,
+                            fontSize: ScreenSizeHandler.bigger * 0.02,
                             fontWeight: FontWeight.normal),
                         suffixIcon: _isTextFieldEmpty
                             ? null
@@ -140,15 +141,28 @@ class _BlockedAccountState extends State<BlockedAccount> {
           if (_isBlockedAccountsEmpty)
             EmptyDog()
           else
-            Column(
-              children: [
-                BlockedAccountTile(
-                  imagePath: 'assets/images/reddit_logo.png',
-                  username: 'TheKey119',
-                  isAccountBlocked: _isBlockedAccountsEmpty,
-                ),
-              ],
-            )
+            SizedBox(
+              height: ScreenSizeHandler.screenHeight * 0.035,
+            ),
+          Column(
+            children: [
+              BlockedAccountTile(
+                imagePath: 'assets/images/reddit_logo.png',
+                username: 'TheKey119',
+                isAccountBlocked: _isBlockedAccountsEmpty,
+              ),
+              BlockedAccountTile(
+                imagePath: 'assets/images/reddit_logo.png',
+                username: 'PeterParker',
+                isAccountBlocked: _isBlockedAccountsEmpty,
+              ),
+              BlockedAccountTile(
+                imagePath: 'assets/images/reddit_logo.png',
+                username: 'Daniii',
+                isAccountBlocked: _isBlockedAccountsEmpty,
+              ),
+            ],
+          )
         ],
       ),
     );

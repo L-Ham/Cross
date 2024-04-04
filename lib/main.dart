@@ -12,6 +12,7 @@ import 'screens/signup_screen.dart';
 import 'screens/forgot_password_screen.dart';
 import 'screens/home_page_screen.dart';
 import 'screens/blocked_accounts.dart';
+import 'screens/subreddit_screen.dart';
 
 void main() {
   runApp(const RedditByLham());
@@ -44,6 +45,7 @@ class RedditByLham extends StatelessWidget {
         ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
         HomePageScreen.id: (context) => HomePageScreen(),
         BlockedAccount.id: (context) => const BlockedAccount(),
+        SubredditScreen.id: (context) => const SubredditScreen(),
         //Resolved
         // SearchScreen.id: (context) => SearchScreen(),
       },

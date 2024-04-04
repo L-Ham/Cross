@@ -22,12 +22,14 @@ class BlockedAccountTile extends StatefulWidget {
 class _BlockedAccountTileState extends State<BlockedAccountTile> {
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Padding(
-          padding: EdgeInsets.all(ScreenSizeHandler.screenWidth * 0.04),
-          child: Row(
+    return Padding(
+      padding: EdgeInsets.symmetric(
+          horizontal: ScreenSizeHandler.screenWidth * 0.035,
+          vertical: ScreenSizeHandler.screenHeight * 0.012),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
             children: [
               CircleAvatar(
                 radius: ScreenSizeHandler.bigger * 0.0165,
@@ -46,63 +48,66 @@ class _BlockedAccountTileState extends State<BlockedAccountTile> {
               )
             ],
           ),
-        ),
-        if (widget.isAccountBlocked)
-          SizedBox(
-            height: ScreenSizeHandler.screenHeight * 0.035,
-            child: OutlinedButton(
-              onPressed: () {
-                setState(() {
-                  widget.isAccountBlocked = false;
-                });
-              },
-              style: ButtonStyle(
-                fixedSize: MaterialStateProperty.all(Size(
-                  ScreenSizeHandler.screenWidth * 0.25,
-                  0,
-                )),
-                side: MaterialStateBorderSide.resolveWith((states) {
-                  return BorderSide(
-                      color: kBlockButtonColor,
-                      width: ScreenSizeHandler.screenWidth * 0.004);
-                }),
-              ),
-              child: Text(
-                'Unblock',
-                style: TextStyle(
-                  color: kBlockButtonColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: ScreenSizeHandler.bigger * 0.0165,
+          if (widget.isAccountBlocked)
+            SizedBox(
+              height: ScreenSizeHandler.screenHeight * 0.035,
+              child: OutlinedButton(
+                onPressed: () {
+                  setState(() {
+                    widget.isAccountBlocked = false;
+                  });
+                },
+                style: ButtonStyle(
+                  fixedSize: MaterialStateProperty.all(Size(
+                    ScreenSizeHandler.screenWidth * 0.25,
+                    0,
+                  )),
+                  side: MaterialStateBorderSide.resolveWith((states) {
+                    return BorderSide(
+                        color: kBlockButtonColor,
+                        width: ScreenSizeHandler.screenWidth * 0.004);
+                  }),
+                ),
+                child: Text(
+                  'Unblock',
+                  style: TextStyle(
+                    color: kBlockButtonColor,
+                    fontWeight: FontWeight.w500,
+                    fontSize: ScreenSizeHandler.bigger * 0.0165,
+                  ),
                 ),
               ),
             ),
-          ),
-        if (!widget.isAccountBlocked)
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                widget.isAccountBlocked = true;
-              });
-            },
-            style: ButtonStyle(
-              minimumSize: MaterialStateProperty.all(Size(
-                ScreenSizeHandler.screenWidth * 0.22,
-                ScreenSizeHandler.screenHeight * 0.035,
-              )),
-              backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-                (states) => kBlockButtonColor,
+          if (!widget.isAccountBlocked)
+            SizedBox(
+              height: ScreenSizeHandler.screenHeight * 0.035,
+              child: ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    widget.isAccountBlocked = true;
+                  });
+                },
+                style: ButtonStyle(
+                  fixedSize: MaterialStateProperty.all(Size(
+                    ScreenSizeHandler.screenWidth * 0.24,
+                    0,
+                  )),
+                  backgroundColor: MaterialStateProperty.resolveWith<Color?>(
+                    (states) => kBlockButtonColor,
+                  ),
+                ),
+                child: Text(
+                  'Block',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: ScreenSizeHandler.bigger * 0.017,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
-            child: Text(
-              'Block',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: ScreenSizeHandler.bigger * 0.017,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 }
