@@ -36,7 +36,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
       comments: 141,
       type: "text",
       image: "",
-      link: "https://www.instagram.com/p/CJ9J9J1h7Zz/",
+      link: "https://www.instagram.com",
+
     ),
     Post(
       username: "r/AnnieBakesCakes",
@@ -45,8 +46,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
           "Hey foodies! I've been pondering tellow fthe world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. It's incredible how much competition there is out there, right? I mean, everyone's snapping pics of their avocado toast and artisanal burgers. So, what are your go-to tips for making our food shots pop? Dood lovers! I've been diving deep into the world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. Ihe art of curating culinary moments on Instagram latelto learn from your experien",
       upvotes: 20,
       comments: 35,
-      type: "text",
-      image: "",
+
+      type: "image",
+      image:"assets/images/elham_logo.png",
       link: "",
     ),
     Post(
@@ -56,9 +58,10 @@ class _HomePageScreenState extends State<HomePageScreen> {
       content: "Check this page for more details",
       upvotes: 90,
       comments: 35,
-      type: "text",
-      image: "",
-      link: "",
+      type: "link",
+      image:"",
+      link: "https://www.instagram.com",
+
     ),
   ];
 

@@ -7,18 +7,22 @@ environment:
   sdk: '>=3.0.6 <4.0.0'
 
 dependencies:
+  any_link_preview: ^3.0.1
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.6  
+
+  flutter_link_previewer: ^3.2.2
   font_awesome_flutter: ^10.7.0
+  url_launcher: ^6.0.9
+  cupertino_icons: ^1.0.6  
   http: ^0.13.3
-
-
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
   flutter_launcher_icons: ^0.13.1
+  
 
 flutter_icons:
   android: "launcher_icon"
