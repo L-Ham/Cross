@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../utilities/screen_size_handler.dart';
 import '../../constants.dart';
 
@@ -27,6 +28,8 @@ class CredentialsTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      inputFormatters: [
+    FilteringTextInputFormatter.deny(RegExp(r'\s')),],
       controller: controller,
       onChanged: onChanged,
       obscureText: isObscure,

@@ -8,6 +8,7 @@ class ContinueButton extends StatelessWidget {
   final Widget? icon;
   final bool isButtonEnabled;
   final Color? color;
+  final Color? textColor;
 
   const ContinueButton({
     Key? key,
@@ -16,6 +17,7 @@ class ContinueButton extends StatelessWidget {
     this.icon,
     this.isButtonEnabled = true,
     this.color,
+    this.textColor
   }) : super(key: key);
 
   @override
@@ -27,7 +29,7 @@ class ContinueButton extends StatelessWidget {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
             backgroundColor: !isButtonEnabled ?kDisabledButtonColor: color!=null?color: kFillingColor,
-            foregroundColor: Colors.white,
+            foregroundColor: textColor!=null? textColor:Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30),
             ),

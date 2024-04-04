@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_bel_ham/screens/create_username_screen.dart';
 import 'package:reddit_bel_ham/screens/home_page_screen.dart';
 import 'package:reddit_bel_ham/screens/login_screen.dart';
 import '../components/general_components/acknowledgement_text.dart';
@@ -224,7 +225,7 @@ class SignupScreenState extends State<SignupScreen> {
                   onPress: () {
                     if (isButtonEnabled) {
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => HomePageScreen()));
+                          MaterialPageRoute(builder: (context) => CreateUsernameScreen()));
                     } else {
                       null;
                     }
