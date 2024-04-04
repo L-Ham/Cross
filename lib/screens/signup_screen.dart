@@ -224,8 +224,7 @@ class SignupScreenState extends State<SignupScreen> {
                   isButtonEnabled: isButtonEnabled,
                   onPress: () {
                     if (isButtonEnabled) {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => CreateUsernameScreen()));
+                      Navigator.pushNamed(context,CreateUsernameScreen.id, arguments: {'email': nameController.text, 'password': passController.text, 'username': ''});
                     } else {
                       null;
                     }

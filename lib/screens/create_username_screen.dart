@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/screens/about_you_screen.dart';
-import 'package:reddit_bel_ham/screens/home_page_screen.dart';
 import '../utilities/screen_size_handler.dart';
 import '../constants.dart';
 import '../components/general_components/credentials_text_field.dart';
@@ -16,7 +15,18 @@ class CreateUsernameScreen extends StatefulWidget {
   CreateUsernameScreenState createState() => CreateUsernameScreenState();
 }
 
+
 class CreateUsernameScreenState extends State<CreateUsernameScreen> {
+  late String email;
+  late String password;
+  late String? username;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    Map<String,String> args=ModalRoute.of(context)!.settings.arguments as Map<String,String>;
+    email=args['email'] as String;
+    password=args['password'] as String;
+  }
   TextEditingController nameController = TextEditingController();
   TextEditingController passController = TextEditingController();
   bool isNameFocused = false;
@@ -38,7 +48,7 @@ class CreateUsernameScreenState extends State<CreateUsernameScreen> {
         children: [
           LogoTextAppBar(
             key: const Key(
-                'create_username_screen_logo_text_app_bar_login_button'),
+                'create_username_screen_logo_text_app_bar'),
             text: '',
             onTap: () {},
           ),
@@ -285,10 +295,10 @@ class CreateUsernameScreenState extends State<CreateUsernameScreen> {
                   isButtonEnabled: isButtonEnabled,
                   onPress: () {
                     if (isButtonEnabled) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AboutYouScreen()));
+                      setState(() {
+                        username=nameController.text;
+                      });
+                      Navigator.pushNamed(context, AboutYouScreen.id, arguments: {'email': email, 'password': password, 'username': username});
                     } else {
                       null;
                     }

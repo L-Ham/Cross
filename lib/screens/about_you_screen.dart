@@ -1,3 +1,4 @@
+import '../services/api_services.dart';
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/screens/home_page_screen.dart';
 import '../utilities/screen_size_handler.dart';
@@ -5,11 +6,13 @@ import '../constants.dart';
 import '../components/general_components/credentials_text_field.dart';
 import '../components/general_components/continue_button.dart';
 import '../components/login_components/logo_text_app_bar.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class AboutYouScreen extends StatefulWidget {
   const AboutYouScreen({Key? key}) : super(key: key);
 
-  static const String id = 'create_username_screen';
+  static const String id = 'about_you_screen';
 
   @override
   AboutYouScreenState createState() => AboutYouScreenState();
@@ -17,6 +20,59 @@ class AboutYouScreen extends StatefulWidget {
 
 class AboutYouScreenState extends State<AboutYouScreen> {
   String gender = 'None';
+  late String username, email, password;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)!.settings.arguments as Map;
+    username = args['username'];
+    email = args['email'];
+    password = args['password'];
+  }
+
+  Future<void> signUp(
+      String userName, String email, String password, String gender) async {
+    final url = Uri.parse('http://reddit-bylham.me:5000/auth/signUp');
+
+    final Map<String, dynamic> requestData = {
+      'userName': userName,
+      'email': email,
+      'password': password,
+      'gender': gender,
+    };
+    late final response;
+    try {
+      response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(requestData),
+      );
+      if (response.statusCode == 200) {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => HomePageScreen()));
+      }
+    } catch (e) {
+      print('Failed to sign up.');
+      showDialog(context: context, builder:
+          (BuildContext context) {
+        return AlertDialog(
+          title: Text('Failed to sign up'),
+          content: Text('Please try again later.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('OK'),
+            )
+          ],
+        );
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,10 +133,11 @@ class AboutYouScreenState extends State<AboutYouScreen> {
                         ContinueButton(
                           onPress: () {
                             gender = 'Male';
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => HomePageScreen()));
+                            signUp(username, email, password, gender);
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) => HomePageScreen()));
                           },
                           text: 'Woman',
                           textColor: Colors.blue,
@@ -88,20 +145,22 @@ class AboutYouScreenState extends State<AboutYouScreen> {
                         ContinueButton(
                           onPress: () {
                             gender = 'Female';
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => HomePageScreen()));
+                            signUp(username, email, password, gender);
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) => HomePageScreen()));
                           },
                           text: 'Man',
                           textColor: Colors.blue,
                         ),
                         ContinueButton(
                           onPress: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => HomePageScreen()));
+                            signUp(username, email, password, gender);
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) => HomePageScreen()));
                           },
                           text: 'I prefer not to say',
                           textColor: Colors.blue,

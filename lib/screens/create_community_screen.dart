@@ -89,8 +89,8 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
               Text('Community name',
                   key: const Key('community_name_text'),
                   style: TextStyle(
-                    fontSize: ScreenSizeHandler.bigger *
-                        kPageSubtitleFontSizeHeightRatio,
+                    fontSize: ScreenSizeHandler.smaller *
+                        kAcknowledgeTextWidthRatio,
                   )),
               SizedBox(
                 height: ScreenSizeHandler.screenHeight * 0.01,
@@ -183,8 +183,8 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                     '18+ community',
                     key: const Key('age_community_text'),
                     style: TextStyle(
-                      fontSize: ScreenSizeHandler.bigger *
-                          kPageTitleFontSizeHeightRatio,
+                      fontSize: ScreenSizeHandler.smaller *
+                          kButtonSmallerFontRatio,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
