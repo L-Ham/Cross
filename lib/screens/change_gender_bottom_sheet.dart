@@ -22,13 +22,14 @@ class _ChangeGenderBottomSheetState extends State<ChangeGenderBottomSheet> {
     groupValueNotifier.value = widget.initialValue;
   }
 
+  bool isChanged = false;
+
   @override
   Widget build(BuildContext context) {
     return Container(
       color: kFillingColor,
       child: SingleChildScrollView(
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
               padding: EdgeInsets.only(
@@ -46,7 +47,7 @@ class _ChangeGenderBottomSheetState extends State<ChangeGenderBottomSheet> {
                   Text(
                     "Select Gender",
                     style: kPageTitleStyle.copyWith(
-                      fontSize: ScreenSizeHandler.bigger * 0.028,
+                      fontSize: ScreenSizeHandler.bigger * 0.023,
                     ),
                   ),
                   GestureDetector(
@@ -55,27 +56,35 @@ class _ChangeGenderBottomSheetState extends State<ChangeGenderBottomSheet> {
                     },
                     child: Text(
                       "Done",
-                      style: kInteractiveTextStyle.copyWith(
-                          fontSize: ScreenSizeHandler.bigger * 0.022),
-                      key: const Key('done_button'),
+                      style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: ScreenSizeHandler.bigger * 0.0215,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline),
+                      key: const Key('change_gender_done_button'),
                     ),
                   )
                 ],
               ),
             ),
-            const Divider(color: Colors.white),
-            SettingsRadioButtonTile(
-              key: const Key('male_radio_button_tile'),
-              groupValueNotifier: groupValueNotifier,
-              value: "Male",
+            const Divider(color: Colors.grey),
+            Text(
+              "This information may be used to improve your recommendations and ads",
+              style: TextStyle(color: Colors.grey, fontSize: ScreenSizeHandler.bigger*0.017),
+              textAlign: TextAlign.center,
             ),
             SettingsRadioButtonTile(
-              key: const Key('female_radio_button_tile'),
+              key: const Key('change_gender_woman_radio_button_tile'),
               groupValueNotifier: groupValueNotifier,
-              value: "Female",
+              value: "Woman",
             ),
             SettingsRadioButtonTile(
-              key: const Key('others_radio_button_tile'),
+              key: const Key('change_gender_man_radio_button_tile'),
+              groupValueNotifier: groupValueNotifier,
+              value: "Man",
+            ),
+            SettingsRadioButtonTile(
+              key: const Key('change_gender_others_radio_button_tile'),
               groupValueNotifier: groupValueNotifier,
               value: "Others",
             )

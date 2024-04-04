@@ -3,7 +3,7 @@ import 'package:reddit_bel_ham/components/general_components/custom_switch.dart'
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/change_password_screen.dart';
 import 'package:reddit_bel_ham/screens/connected_accounts_disconnect_screen.dart';
-import 'package:reddit_bel_ham/screens/notifications_screen.dart';
+import 'package:reddit_bel_ham/screens/notifications_settings_screen.dart';
 import 'package:reddit_bel_ham/screens/update_email_address_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'change_gender_bottom_sheet.dart';
@@ -13,6 +13,8 @@ import 'package:reddit_bel_ham/components/settings_components/settings_tile_lead
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_image.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_trailing_icon.dart';
 import 'package:reddit_bel_ham/components/general_components/text_link.dart';
+import 'package:reddit_bel_ham/screens/location_customization.dart';
+import 'package:reddit_bel_ham/screens/blocked_accounts.dart';
 
 class AccountSettingsScreen extends StatefulWidget {
   const AccountSettingsScreen({super.key});
@@ -24,7 +26,7 @@ class AccountSettingsScreen extends StatefulWidget {
 }
 
 class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
-  String gender = "Male";
+  String gender = "Man";
   String connectedEmailAddress = "daniel@email.com";
   String username = "dani";
   String location = "Egypt";
@@ -37,7 +39,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kBackgroundColor,
-        toolbarHeight: ScreenSizeHandler.bigger * 0.06,
+        toolbarHeight: ScreenSizeHandler.bigger * 0.055,
         leading: IconButton(
             key: const Key("account_settings_back_button"),
             icon: const Icon(Icons.arrow_back),
@@ -47,7 +49,8 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
         title: Text(
           "Account Settings",
           style: kPageTitleStyle.copyWith(
-              fontSize: ScreenSizeHandler.bigger * kAppBarTitleFontSizeRatio),
+              fontSize:
+                  ScreenSizeHandler.smaller * kAppBarTitleSmallerFontRatio),
         ),
         centerTitle: true,
       ),
@@ -60,9 +63,15 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SettingsSegmentTitle(titleText: "Basic Settings"),
+                    Padding(
+                      padding: EdgeInsets.only(
+                          top: ScreenSizeHandler.screenHeight * 0.03),
+                      child: const SettingsSegmentTitle(
+                          titleText: "Basic Settings"),
+                    ),
                     SettingsTile(
-                      key: const Key("update_email_address_tile"),
+                      key: const Key(
+                          "account_settings_update_email_address_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.settings_outlined,
                       ),
@@ -83,7 +92,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       },
                     ),
                     SettingsTile(
-                      key: const Key("change_password_tile"),
+                      key: const Key("account_settings_change_password_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.settings_outlined,
                       ),
@@ -92,7 +101,6 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                         trailingIcon: Icons.arrow_forward,
                       ),
                       onTap: () {
-
                         Navigator.pushNamed(
                           context,
                           ChangePasswordScreen.id,
@@ -104,7 +112,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       },
                     ),
                     SettingsTile(
-                      key: const Key("change_gender_tile"),
+                      key: const Key("account_settings_change_gender_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.person,
                       ),
@@ -137,17 +145,31 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       },
                     ),
                     SettingsTile(
-                      key: const Key("location_customization_tile"),
-                      subtitleText: location,
+                      key: const Key(
+                          "account_settings_location_customization_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.location_on_outlined,
                       ),
                       titleText: "Location Customization",
+                      subtitleText: 
+                          "\n$location\n\nSpecify a location to customize your recommendations and feed. Reddit does not track your precise geolocation data.",
                       trailingWidget: const SettingsTileTrailingIcon(
                         trailingIcon: Icons.arrow_forward,
                       ),
-                      onTap: () {
-                        //TODO: Implement the location customization functionality
+                      onTap: () async {
+                        String? newLocation = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LocationCustomization(
+                              initialValue: location,
+                            ),
+                          ),
+                        );
+                        if (newLocation != null) {
+                          setState(() {
+                            location = newLocation;
+                          });
+                        }
                       },
                     ),
                     const SettingsSegmentTitle(
@@ -160,7 +182,8 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       titleText: "Google",
                       trailingWidget: isConnectedToGoogle
                           ? TextLink(
-                              key: const Key("disconnect_google_text_link"),
+                              key: const Key(
+                                  "account_settings_disconnect_google_text_link"),
                               text: "Disconnect",
                               onTap: () {
                                 Navigator.pushNamed(
@@ -175,7 +198,8 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                               fontSizeRatio: ScreenSizeHandler.smaller * 0.035,
                             )
                           : TextLink(
-                              key: const Key("connect_google_text_link"),
+                              key: const Key(
+                                  "account_settings_connect_google_text_link"),
                               text: "Connect",
                               onTap: () {
                                 //TODO: Implement the connect functionality
@@ -188,7 +212,8 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       titleText: "Contact Settings",
                     ),
                     SettingsTile(
-                      key: const Key("manage_notifications_tile"),
+                      key: const Key(
+                          "account_settings_manage_notifications_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.notifications_outlined,
                       ),
@@ -206,7 +231,8 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       titleText: "Blocking and Permissions",
                     ),
                     SettingsTile(
-                      key: const Key("manage_blocked_accounts_tile"),
+                      key: const Key(
+                          "account_settings_manage_blocked_accounts_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.block_outlined,
                       ),
@@ -214,15 +240,20 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       trailingWidget: const SettingsTileTrailingIcon(
                         trailingIcon: Icons.arrow_forward,
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(context, BlockedAccount.id);
+                      },
                     ),
                     SettingsTile(
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.people,
                       ),
                       titleText: "Allow People to Follow You",
+                      subtitleText:
+                          "Followers will be notified about posts you make to your profile and see them in their home feed.",
                       trailingWidget: CustomSwitch(
-                        key: const Key("allow_people_to_follow_you_switch"),
+                        key: const Key(
+                            "account_settings_allow_people_to_follow_you_switch"),
                         isSwitched: allowPeopleToFollowYou,
                         onChanged: (value) {
                           setState(() {

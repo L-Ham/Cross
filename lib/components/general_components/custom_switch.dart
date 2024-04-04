@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_bel_ham/constants.dart';
+import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 
 class CustomSwitch extends StatelessWidget {
   final bool isSwitched;
@@ -12,11 +14,31 @@ class CustomSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Switch(
-      value: isSwitched,
-      thumbColor: MaterialStateProperty.all(Colors.white),
-      activeColor: Colors.blueAccent,
-      onChanged: onChanged,
+    return GestureDetector(
+      onTap: () {
+        onChanged(!isSwitched);
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: switchAnimationTime),
+        width: ScreenSizeHandler.smaller*switchWidthRatio,
+        height: ScreenSizeHandler.smaller*switchHeightRatio,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(ScreenSizeHandler.smaller*switchBorderRadiusRatio),
+          color: isSwitched ? switchOnColor : switchOffColor,
+        ),
+        child: AnimatedAlign(
+          duration: const Duration(milliseconds: switchAnimationTime),
+          alignment: isSwitched ? Alignment.centerRight : Alignment.centerLeft,
+          child: Container(
+            width: ScreenSizeHandler.smaller*switchCircleSizeRatio,
+            height: ScreenSizeHandler.smaller*switchCircleSizeRatio,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

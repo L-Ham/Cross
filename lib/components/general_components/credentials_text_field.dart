@@ -42,8 +42,13 @@ class CredentialsTextField extends StatelessWidget {
               BorderSide(color: isValid ? Colors.white : Colors.red[200]!),
         ),
         labelText: text,
+        contentPadding: EdgeInsets.symmetric(
+            vertical: ScreenSizeHandler.smaller * kButtonWidthRatio,
+            horizontal: ScreenSizeHandler.smaller * kButtonWidthRatio),
         labelStyle: TextStyle(
-            color: kHintTextColor, fontSize: ScreenSizeHandler.smaller * 0.035),
+          color: kHintTextColor,
+          fontSize: ScreenSizeHandler.smaller * kButtonSmallerFontRatio,
+        ),
         fillColor: kFillingColor,
         filled: true,
         suffixIcon: suffixIcon,
@@ -51,7 +56,7 @@ class CredentialsTextField extends StatelessWidget {
       ),
       style: TextStyle(
         color: Colors.white,
-        fontSize: ScreenSizeHandler.smaller * 0.035,
+        fontSize: ScreenSizeHandler.smaller * kButtonSmallerFontRatio,
       ),
     );
   }
