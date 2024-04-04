@@ -3,6 +3,7 @@ import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 import 'package:reddit_bel_ham/components/home_page_components/profile_icon_with_indicator.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_leading_icon.dart';
+import 'package:reddit_bel_ham/components/settings_components/settings_segment_tile.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/home_page_seach_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
@@ -130,7 +131,37 @@ class _HomePageScreenState extends State<HomePageScreen> {
           return PostCard(post: posts[index]);
         },
       ),
-      drawer: Drawer(),
+      drawer: Drawer(
+        backgroundColor: kBackgroundColor,
+        child: SafeArea(
+          child: Column(
+            children: [
+              ListTile(
+                title: Row(
+                  children: [
+                    Text('Recently Visited',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold)),
+                    Spacer(),
+                    GestureDetector(
+                      onTap: () {
+                        // Code to open the second drawer goes here
+
+                      },
+                      child: Text("See all"),
+                    ),
+                  ],
+                ),
+              ),
+              ListTile(
+                title: Text('Tile 2'),
+                trailing: Icon(Icons.arrow_forward),
+              ),
+              Divider(color: Colors.grey, thickness: 0.5),
+            ],
+          ),
+        ),
+      ),
       endDrawer: Drawer(
         backgroundColor: kBackgroundColor,
         child: SafeArea(
