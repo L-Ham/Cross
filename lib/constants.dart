@@ -50,13 +50,13 @@ const Color kSettingsBackGroundColor = Colors.black;
 const Color kFillingColor = Color.fromARGB(255, 40, 40, 40);
 const Color kHintTextColor = Color.fromARGB(255, 122, 122, 122);
 
-const int switchAnimationTime = 150;
-const Color switchOnColor = Color.fromARGB(255, 46, 100, 182);
-const Color switchOffColor = Color.fromARGB(255, 66, 66, 66);
-const double switchWidthRatio = 0.12;
-const double switchHeightRatio = 0.072;
-const double switchCircleSizeRatio = 0.065;
-const double switchBorderRadiusRatio = 0.05;
+const int kSwitchAnimationTime = 150;
+const Color kSwitchOnColor = Color.fromARGB(255, 46, 100, 182);
+const Color kSwitchOffColor = Color.fromARGB(255, 66, 66, 66);
+const double kSwitchWidthRatio = 0.12;
+const double kSwitchHeightRatio = 0.072;
+const double kSwitchCircleSizeRatio = 0.065;
+const double kSwitchBorderRadiusRatio = 0.05;
 
 const Color kDisabledButtonColor = Colors.grey;
 const Color kBlockButtonColor = Color(0xFF44A3F2);

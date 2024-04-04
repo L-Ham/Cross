@@ -19,19 +19,19 @@ class CustomSwitch extends StatelessWidget {
         onChanged(!isSwitched);
       },
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: switchAnimationTime),
-        width: ScreenSizeHandler.smaller*switchWidthRatio,
-        height: ScreenSizeHandler.smaller*switchHeightRatio,
+        duration: const Duration(milliseconds: kSwitchAnimationTime),
+        width: ScreenSizeHandler.smaller*kSwitchWidthRatio,
+        height: ScreenSizeHandler.smaller*kSwitchHeightRatio,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(ScreenSizeHandler.smaller*switchBorderRadiusRatio),
-          color: isSwitched ? switchOnColor : switchOffColor,
+          borderRadius: BorderRadius.circular(ScreenSizeHandler.smaller*kSwitchBorderRadiusRatio),
+          color: isSwitched ? kSwitchOnColor : kSwitchOffColor,
         ),
         child: AnimatedAlign(
-          duration: const Duration(milliseconds: switchAnimationTime),
+          duration: const Duration(milliseconds: kSwitchAnimationTime),
           alignment: isSwitched ? Alignment.centerRight : Alignment.centerLeft,
           child: Container(
-            width: ScreenSizeHandler.smaller*switchCircleSizeRatio,
-            height: ScreenSizeHandler.smaller*switchCircleSizeRatio,
+            width: ScreenSizeHandler.smaller*kSwitchCircleSizeRatio,
+            height: ScreenSizeHandler.smaller*kSwitchCircleSizeRatio,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
               color: Colors.white,
