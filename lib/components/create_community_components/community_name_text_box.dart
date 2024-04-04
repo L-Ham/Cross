@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:reddit_bel_ham/constants.dart';
+import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 
 class CommunityNameTextBox extends StatelessWidget {
   final TextEditingController controller;
@@ -26,6 +28,10 @@ class CommunityNameTextBox extends StatelessWidget {
         contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
         prefixText: 'r/',
         hintText: 'Community_name',
+        hintStyle: TextStyle(
+          color: Colors.grey,
+          fontSize: ScreenSizeHandler.smaller*kButtonSmallerFontRatio,
+        ),
         suffixText: '${21 - controller.text.length}',
         suffixIcon: controller.text.isEmpty
             ? null
