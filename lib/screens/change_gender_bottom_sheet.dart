@@ -50,7 +50,6 @@ class _ChangeGenderBottomSheetState extends State<ChangeGenderBottomSheet> {
                     ),
                   ),
                   GestureDetector(
-                    key: Key('done_button'),
                     onTap: () {
                       Navigator.pop(context, groupValueNotifier.value);
                     },
@@ -58,6 +57,7 @@ class _ChangeGenderBottomSheetState extends State<ChangeGenderBottomSheet> {
                       "Done",
                       style: kInteractiveTextStyle.copyWith(
                           fontSize: ScreenSizeHandler.bigger * 0.022),
+                      key: const Key('done_button'),
                     ),
                   )
                 ],

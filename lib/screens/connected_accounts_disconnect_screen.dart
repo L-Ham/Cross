@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_bel_ham/components/credentials_text_field.dart';
+import 'package:reddit_bel_ham/components/general_components/credentials_text_field.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/components/settings_components/forget_password_text.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
@@ -122,8 +122,8 @@ class _DisconnectScreenState extends State<DisconnectScreen> {
               onTap: () {
                 //TODO: Implement the logic for disconnecting the account
               },
-            ),
           )
+          ),
         ],
       ),
     );
