@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-const double kPageTitleFontSizeHeightRatio = 0.03;
-const double kPageTtleTopBottomPadding = 20.0;
+const double kPageTitleFontSizeHeightRatio = 0.026;
+const double kPageTtleTopBottomPaddingRatio = 0.02;
 const double kErrorTextTopBottomPadding = 10.0;
 const double kPageEdgesPadding = 9.0;
 const double kPageSubtitleFontSizeHeightRatio = 0.02;

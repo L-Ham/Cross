@@ -27,12 +27,16 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
   String errorText = '';
 
   String validateInput(String value) {
-    if (value.contains(RegExp(r'[^\w\s]')) ||
-        ((value.length < kCommunityNameMinLength) && value.isNotEmpty)) {
-      return 'Community names must be between $kCommunityNameMinLength-$kCommunityNameMaxLength characters, and can only contain letters, numbers, and underscores';
+    String trimmedValue = value.trim();
+
+    if (trimmedValue.contains(RegExp(r'[^\w\s]')) ||
+        trimmedValue.contains(' ') ||
+        ((trimmedValue.length < kCommunityNameMinLength) && value.isNotEmpty) ||
+        (trimmedValue.isEmpty && value.isNotEmpty)) {
+      return 'Community names must be be tween $kCommunityNameMinLength-$kCommunityNameMaxLength characters, and can only contain letters, numbers, and underscores';
     }
     //Check if the community name is already taken (LATER IMPLEMENTATION)
-    if (value == 'toto') {
+    if (trimmedValue == 'toto') {
       isCommunityNameTaken = true;
     } else {
       isCommunityNameTaken = false;
@@ -58,9 +62,11 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
         backgroundColor: kBackgroundColor,
         centerTitle: true,
         title: Padding(
-          padding: const EdgeInsets.only(
-              top: kPageTtleTopBottomPadding,
-              bottom: kPageTtleTopBottomPadding),
+          padding: EdgeInsets.only(
+              top: ScreenSizeHandler.screenHeight *
+                  kPageTtleTopBottomPaddingRatio,
+              bottom: ScreenSizeHandler.screenHeight *
+                  kPageTtleTopBottomPaddingRatio),
           child: Text(
             'Create a community',
             style: kPageTitleStyle.copyWith(
@@ -109,7 +115,10 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                     setState(
                       () {
                         errorText = validateInput(value);
-                        if (value.length >= kCommunityNameMinLength &&
+                        if (errorText == 'Empty') {
+                          errorText = '';
+                          activated = false;
+                        } else if (value.length >= kCommunityNameMinLength &&
                             errorText == '') {
                           activated = true;
                         } else {
@@ -122,6 +131,7 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                 onClear: () {
                   setState(() {
                     _controller.clear();
+                    activated = false;
                   });
                 },
               ),
@@ -193,7 +203,7 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   SizedBox(
-                    height: ScreenSizeHandler.screenHeight * 0.025,
+                    height: ScreenSizeHandler.screenHeight * 0.02,
                   ),
                   ContinueButton(
                       onPress: () {},
