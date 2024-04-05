@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_bel_ham/screens/about_you_screen.dart';
 import 'package:reddit_bel_ham/screens/change_password_screen.dart';
 import 'package:reddit_bel_ham/screens/connected_accounts_disconnect_screen.dart';
+import 'package:reddit_bel_ham/screens/create_username_screen.dart';
 import 'package:reddit_bel_ham/screens/update_email_address_screen.dart';
 import 'package:reddit_bel_ham/screens/create_community_screen.dart';
 import 'screens/account_settings_screen.dart';
@@ -12,8 +14,12 @@ import 'screens/signup_screen.dart';
 import 'screens/forgot_password_screen.dart';
 import 'screens/home_page_screen.dart';
 import 'screens/blocked_accounts.dart';
+// import 'package:firebase_core/firebase_core.dart';
+// import 'firebase_options.dart';
 
 void main() {
+  // WidgetsFlutterBinding.ensureInitialized();
+  // await Firebase.initializeApp();
   runApp(const RedditByLham());
 }
 
@@ -25,7 +31,6 @@ class RedditByLham extends StatelessWidget {
   Widget build(BuildContext context) {
     ScreenSizeHandler.initialize(
         MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
-
     return MaterialApp(
       theme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
@@ -44,10 +49,12 @@ class RedditByLham extends StatelessWidget {
         ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
         HomePageScreen.id: (context) => HomePageScreen(),
         BlockedAccount.id: (context) => const BlockedAccount(),
+        CreateUsernameScreen.id: (context) => const CreateUsernameScreen(),
+        AboutYouScreen.id: (context) => const AboutYouScreen(),
         //Resolved
         // SearchScreen.id: (context) => SearchScreen(),
       },
-      initialRoute: HomePageScreen.id,
+      initialRoute: FirstScreen.id,
     );
   }
 }

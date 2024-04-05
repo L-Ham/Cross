@@ -86,12 +86,12 @@ TextStyle kSettingsBodyTextStyle =
 
 const kButtonHeightRatio = 0.01;
 const kButtonWidthRatio = 0.04;
-const kButtonSmallerFontRatio = 0.035;
+const kButtonSmallerFontRatio = 0.038;
 const kAcknowledgeTextHeightRatio = 0.02;
 const kAcknowledgeTextWidthRatio = 0.04;
 const kAcknowledgeTextSmallerFontRatio = 0.03;
 const kTextLinkPaddingRatio = 0.015;
-const kTextLinkFontSizeRatio = 0.03;
+const kTextLinkFontSizeRatio = 0.032;
 const kAppBarTitleSmallerFontRatio = 0.04;
 const kErrorMessageSmallerFontRatio = 0.03;
 const kErrorMessageLeftPaddingRatio = 0.05;
