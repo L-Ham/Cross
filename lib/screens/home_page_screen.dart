@@ -3,7 +3,6 @@ import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 import 'package:reddit_bel_ham/components/home_page_components/profile_icon_with_indicator.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_leading_icon.dart';
-import 'package:reddit_bel_ham/components/settings_components/settings_segment_tile.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/home_page_seach_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
@@ -36,8 +35,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
       comments: 141,
       type: "text",
       image: "",
-      link: "https://www.instagram.com",
-
+      link: "https://www.instagram.com/p/CJ9J9J1h7Zz/",
     ),
     Post(
       username: "r/AnnieBakesCakes",
@@ -46,9 +44,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
           "Hey foodies! I've been pondering tellow fthe world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. It's incredible how much competition there is out there, right? I mean, everyone's snapping pics of their avocado toast and artisanal burgers. So, what are your go-to tips for making our food shots pop? Dood lovers! I've been diving deep into the world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. Ihe art of curating culinary moments on Instagram latelto learn from your experien",
       upvotes: 20,
       comments: 35,
-
-      type: "image",
-      image:"assets/images/elham_logo.png",
+      type: "text",
+      image: "",
       link: "",
     ),
     Post(
@@ -58,10 +55,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
       content: "Check this page for more details",
       upvotes: 90,
       comments: 35,
-      type: "link",
-      image:"",
-      link: "https://www.instagram.com",
-
+      type: "text",
+      image: "",
+      link: "",
     ),
   ];
 
@@ -86,49 +82,6 @@ class _HomePageScreenState extends State<HomePageScreen> {
             ),
           ),
           title: Row(
-        ],
-      ),
-      body: ListView.builder(
-        itemCount: posts.length,
-        itemBuilder: (context, index) {
-          return PostCard(post: posts[index]);
-        },
-      ),
-      drawer: Drawer(
-        backgroundColor: kBackgroundColor,
-        child: SafeArea(
-          child: Column(
-            children: [
-              ListTile(
-                title: Row(
-                  children: [
-                    Text('Recently Visited',
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold)),
-                    Spacer(),
-                    GestureDetector(
-                      onTap: () {
-                        // Code to open the second drawer goes here
-
-                      },
-                      child: Text("See all"),
-                    ),
-                  ],
-                ),
-              ),
-              ListTile(
-                title: Text('Tile 2'),
-                trailing: Icon(Icons.arrow_forward),
-              ),
-              Divider(color: Colors.grey, thickness: 0.5),
-            ],
-          ),
-        ),
-      ),
-      endDrawer: Drawer(
-        backgroundColor: kBackgroundColor,
-        child: SafeArea(
-          child: Column(
             children: [
               Text(
                 selectedMenuItem,
