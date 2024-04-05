@@ -17,13 +17,8 @@ dependencies:
   # google_sign_in: ^6.2.1
   # firebase_auth: ^3.11.2
   # provider: ^6.1.2
-
-
   flutter_link_previewer: ^3.2.2
-  font_awesome_flutter: ^10.7.0
   url_launcher: ^6.0.9
-  cupertino_icons: ^1.0.6  
-  http: ^1.2.1
   
 dev_dependencies:
   flutter_test:
