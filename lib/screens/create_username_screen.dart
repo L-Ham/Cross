@@ -90,7 +90,7 @@ class CreateUsernameScreenState extends State<CreateUsernameScreen> {
                               kButtonHeightRatio),
                       child: CredentialsTextField(
                         key: const Key(
-                            'create_username_screen_email_text_field'),
+                            'create_username_screen_text_field'),
                         controller: nameController,
                         isObscure: false,
                         isValid: isValidName,
@@ -128,7 +128,7 @@ class CreateUsernameScreenState extends State<CreateUsernameScreen> {
                       ),
                     ),
                     Visibility(
-                      key: const Key('create_username_screen_email_error_text'),
+                      key: const Key('create_username_screen_error_text'),
                       visible: isNameFocused,
                       child: Padding(
                         padding: EdgeInsets.only(

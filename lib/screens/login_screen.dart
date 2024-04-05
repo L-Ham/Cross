@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/screens/signup_screen.dart';
-import 'package:reddit_bel_ham/services/auth_service.dart';
+// import 'package:reddit_bel_ham/services/auth_service.dart';
 import '../components/general_components/acknowledgement_text.dart';
 import '../components/general_components/text_link.dart';
 import '../utilities/screen_size_handler.dart';
@@ -71,7 +71,7 @@ class LoginScreenState extends State<LoginScreen> {
                     ),
                     ContinueButton(
                       key: const Key('login_screen_continue_with_google_button'),
-                      onPress: () => AuthService().signInWithGoogle(),
+                      onPress: (){},// => AuthService().signInWithGoogle(),
                       text: "Continue with Google",
                       icon: Image(
                         image:
