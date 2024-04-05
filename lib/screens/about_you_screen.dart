@@ -31,8 +31,8 @@ class AboutYouScreenState extends State<AboutYouScreen> {
   }
 
   Future<void> signUp(
-      String userName, String email, String password, String gender) async {
-    final url = Uri.parse('http://reddit-bylham.me:5000/auth/signUp');
+    String userName, String email, String password, String gender) async {
+    final url = Uri.parse('https://reddit-bylham.me/api/auth/signUp');
 
     final Map<String, dynamic> requestData = {
       'userName': userName,
@@ -50,9 +50,24 @@ class AboutYouScreenState extends State<AboutYouScreen> {
         body: jsonEncode(requestData),
       );
       if (response.statusCode == 200) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => HomePageScreen()));
+        Navigator.pushNamed(context, HomePageScreen.id, arguments: {'token: ${jsonDecode(response.body)['token']}'});
       }
+      showDialog(context: context, builder:
+          (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Signup successful'),
+          content: Text(response.body.toString()),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('OK'),
+            )
+          ],
+        );
+      });
+
     } catch (e) {
       print('Failed to sign up.');
       showDialog(context: context, builder:
@@ -131,9 +146,9 @@ class AboutYouScreenState extends State<AboutYouScreen> {
                           ),
                         ),
                         ContinueButton(
-                          onPress: () {
-                            gender = 'Male';
-                            signUp(username, email, password, gender);
+                          onPress: () async {
+                            gender = 'Female';
+                            await signUp(username, email, password, gender);
                             // Navigator.push(
                             //     context,
                             //     MaterialPageRoute(
@@ -143,9 +158,9 @@ class AboutYouScreenState extends State<AboutYouScreen> {
                           textColor: Colors.blue,
                         ),
                         ContinueButton(
-                          onPress: () {
-                            gender = 'Female';
-                            signUp(username, email, password, gender);
+                          onPress: () async {
+                            gender = 'Male';
+                            await signUp(username, email, password, gender);
                             // Navigator.push(
                             //     context,
                             //     MaterialPageRoute(
@@ -155,8 +170,8 @@ class AboutYouScreenState extends State<AboutYouScreen> {
                           textColor: Colors.blue,
                         ),
                         ContinueButton(
-                          onPress: () {
-                            signUp(username, email, password, gender);
+                          onPress: () async {
+                            await signUp(username, email, password, gender);
                             // Navigator.push(
                             //     context,
                             //     MaterialPageRoute(

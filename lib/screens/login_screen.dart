@@ -10,6 +10,8 @@ import '../components/general_components/continue_button.dart';
 import '../components/login_components/logo_text_app_bar.dart';
 import '../screens/forgot_password_screen.dart';
 import '../screens/home_page_screen.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -29,6 +31,64 @@ class LoginScreenState extends State<LoginScreen> {
   bool isButtonEnabled = false;
 
   void continueNavigation() {}
+
+  Future<void> login(
+    String userName,String password) async {
+    final url = Uri.parse('https://reddit-bylham.me/api/auth/login');
+
+    final Map<String, dynamic> requestData = {
+      'userName': userName,
+      'password': password,
+    };
+    late final response;
+    String message='Login failed.';
+    try {
+      response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(requestData),
+      );
+      if (response.statusCode == 200) {
+        Navigator.pushNamed(context, HomePageScreen.id, arguments: {'token: ${jsonDecode(response.body)['token']}'});
+        message='Login successful.';
+      }
+      showDialog(context: context, builder:
+          (BuildContext context) {
+        return AlertDialog(
+          title: Text(message),
+          content: Text(response.body.toString()),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('OK'),
+            )
+          ],
+        );
+      });
+
+    } catch (e) {
+      print('Failed to login.');
+      showDialog(context: context, builder:
+          (BuildContext context) {
+        return AlertDialog(
+          title: Text('Failed to login'),
+          content: Text('Please try again later.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('OK'),
+            )
+          ],
+        );
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -225,10 +285,9 @@ class LoginScreenState extends State<LoginScreen> {
                   key: const Key('login_screen_continue_button'),
                   text: "Continue",
                   isButtonEnabled: isButtonEnabled,
-                  onPress: () {
+                  onPress: () async {
                     if (isButtonEnabled) {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => HomePageScreen()));
+                      login(nameController.text, passController.text);
                     } else {
                       null;
                     }
