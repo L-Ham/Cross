@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_bel_ham/components/home_page_components/share_bottom_sheet.dart';
 import 'package:reddit_bel_ham/constants.dart';
-import 'package:reddit_bel_ham/components/home_page_components/share_to_post_card.dart';
+import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'package:flutter_link_previewer/flutter_link_previewer.dart';
 
 class Post {
   final String username;
@@ -48,6 +52,12 @@ class _PostCardState extends State<PostCard> {
         widget.post, isTypeImage, isTypeText, isTypeLink, isOwner, context);
   }
 
+  Future<void> _launchURL(String url) async {
+    if (!await launchUrl(Uri.parse(url))) {
+      throw 'Could not launch $url';
+    }
+  }
+
   Widget buildPostCard(Post post, bool isTypeImage, bool isTypeText,
       bool isTypeLink, bool isOwner, BuildContext context) {
     return Container(
@@ -63,7 +73,7 @@ class _PostCardState extends State<PostCard> {
               title: Text(post.username, style: TextStyle(color: Colors.white)),
             ),
             Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(ScreenSizeHandler.screenWidth * 0.01),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -75,7 +85,7 @@ class _PostCardState extends State<PostCard> {
                       fontSize: 16.0,
                     ),
                   ),
-                  SizedBox(height: 8.0),
+                  SizedBox(height: ScreenSizeHandler.screenHeight * 0.02),
                   if (isTypeText)
                     Text(
                       post.content,
@@ -83,16 +93,22 @@ class _PostCardState extends State<PostCard> {
                           color: const Color.fromARGB(255, 133, 132, 132),
                           fontWeight: FontWeight.normal),
                     ),
-                  if (isTypeImage) Image.asset('assets/images/${post.image}'),
+                  if (isTypeImage) Image.asset(post.image),
                   if (isTypeLink)
                     GestureDetector(
-                        onTap: () {},
-                        child: Text(post.link,
-                            style: TextStyle(color: Colors.white)))
+                        onTap: () {
+                          _launchURL(post.link);
+                        },
+                        child: Text(
+                          post.link,
+                          style: TextStyle(
+                              color: Colors.blue,
+                              fontWeight: FontWeight.normal),
+                        )),
                 ],
               ),
             ),
-             Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
@@ -125,8 +141,12 @@ class _PostCardState extends State<PostCard> {
                               });
                             },
                             child: Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 8.0, right: 8.0, top: 2.0, bottom: 2.0),
+                              padding: EdgeInsets.only(
+                                  left: ScreenSizeHandler.screenWidth * 0.02,
+                                  right: ScreenSizeHandler.screenWidth * 0.02,
+                                  top: ScreenSizeHandler.screenWidth * 0.001,
+                                  bottom:
+                                      ScreenSizeHandler.screenWidth * 0.001),
                               child: Row(
                                 children: [
                                   Icon(
@@ -148,10 +168,10 @@ class _PostCardState extends State<PostCard> {
                           GestureDetector(
                             onTap: () {
                               setState(() {
-                                if (post.isDownvoted){
+                                if (post.isDownvoted) {
                                   post.upvotes++;
                                   post.isDownvoted = !post.isDownvoted;
-                                } else if (post.isUpvoted){
+                                } else if (post.isUpvoted) {
                                   post.upvotes -= 2;
                                   post.isDownvoted = true;
                                   post.isUpvoted = false;
@@ -159,17 +179,18 @@ class _PostCardState extends State<PostCard> {
                                   post.upvotes--;
                                   post.isDownvoted = !post.isDownvoted;
                                 }
-                               
                               });
                             },
                             child: Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: EdgeInsets.all(
+                                  ScreenSizeHandler.screenWidth * 0.01),
                               child: Row(
                                 children: [
                                   Icon(
                                     Icons.arrow_downward,
                                     color: post.isDownvoted
-                                        ? const Color.fromARGB(255, 110, 85, 114)
+                                        ? const Color.fromARGB(
+                                            255, 110, 85, 114)
                                         : Colors.white,
                                     size: 18.0,
                                   ),
@@ -181,50 +202,52 @@ class _PostCardState extends State<PostCard> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {
-                  
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(right: 10.0, left: 10.0),
-                              child: Row(
-                                children: [
-                                  Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.black,
-                                        borderRadius: BorderRadius.circular(15.0),
-                                        border: Border.all(
-                                          color: kFillingColor,
+                      onTap: () {},
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(
+                                right: ScreenSizeHandler.screenWidth * 0.02,
+                                left: ScreenSizeHandler.screenWidth * 0.02),
+                            child: Row(
+                              children: [
+                                Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.black,
+                                      borderRadius: BorderRadius.circular(18.0),
+                                      border: Border.all(
+                                        color: kFillingColor,
+                                      ),
+                                    ),
+                                    child: Row(children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Icon(
+                                          Icons.comment,
+                                          size: 15,
+                                          color: Colors.white,
                                         ),
                                       ),
-                                      child: Row(children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Icon(
-                                            Icons.comment,
-                                            size: 15,
-                                            color: Colors.white,
-                                          ),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left:
+                                                ScreenSizeHandler.screenWidth *
+                                                    0.01,
+                                            right:
+                                                ScreenSizeHandler.screenWidth *
+                                                    0.02),
+                                        child: Text(
+                                          post.comments.toString(),
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12.0),
                                         ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(4.0),
-                                          child: Text(
-                                            post.comments.toString(),
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12.0),
-                                          ),
-                                        )
-                                      ])),
-                                ],
-                              ),
+                                      )
+                                    ])),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -233,121 +256,25 @@ class _PostCardState extends State<PostCard> {
                   onTap: () {
                     showModalBottomSheet(
                       context: context,
-                      builder: (BuildContext context) {
-                        return SafeArea(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: kBackgroundColor,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(20.0),
-                                topRight: Radius.circular(20.0),
-                              ),
-                            ),
-                            padding: EdgeInsets.all(16.0),
-                            constraints: BoxConstraints(
-                              maxHeight:
-                                  MediaQuery.of(context).size.height * 0.35,
-                            ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Share to...",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18.0,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 12.0, bottom: .0),
-                                  child: sharetoPostCard(post: post),
-                                ), // Use the widget here
-                                Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.9,
-                                    child: Divider(
-                                      color: Color.fromARGB(255, 72, 71, 71),
-                                      thickness: 1.0,
-                                    )),
-        
-                                SizedBox(height: 16.0),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Expanded(
-                                      child: Column(
-                                        children: [
-                                          Icon(Icons.account_circle_outlined,
-                                              color: Colors.white),
-                                          Text('Profile',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 10.0)),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Column(
-                                        children: [
-                                          Icon(Icons.groups_2_outlined,
-                                              color: Colors.white),
-                                          Text('Community',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 10.0)),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Column(
-                                        children: [
-                                          Icon(Icons.folder_copy_outlined,
-                                              color: Colors.white),
-                                          Text('Save',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 10.0)),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Column(
-                                        children: [
-                                          Icon(Icons.more_horiz,
-                                              color: Colors.white),
-                                          Text('More',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 10.0)),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
+                      builder: (BuildContext context) =>
+                          buildPostModalBottomSheet(context, widget.post),
                     );
                   },
                   child: Container(
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15.0),
+                        borderRadius: BorderRadius.circular(18.0),
                         border: Border.all(
                           color: kFillingColor,
                         ),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(3.0),
+                        padding: EdgeInsets.all(
+                            ScreenSizeHandler.screenWidth * 0.007),
                         child: Row(
                           children: [
                             Padding(
-                              padding: const EdgeInsets.all(3.0),
+                              padding: EdgeInsets.all(
+                                  ScreenSizeHandler.screenWidth * 0.006),
                               child: Icon(
                                 Icons.share,
                                 size: 12,
@@ -355,7 +282,8 @@ class _PostCardState extends State<PostCard> {
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.all(5.0),
+                              padding: EdgeInsets.all(
+                                  ScreenSizeHandler.screenWidth * 0.01),
                               child: Text("147",
                                   style: TextStyle(
                                     color: Colors.white,

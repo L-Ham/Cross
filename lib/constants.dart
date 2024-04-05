@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-
 const double kPageTitleFontSizeHeightRatio = 0.026;
 const double kPageTtleTopBottomPaddingRatio = 0.02;
 const double kErrorTextTopBottomPadding = 10.0;
-const double kPageEdgesPadding = 9.0;
+const double kPageEdgesPaddingWidthRatio = 0.035;
 const double kPageSubtitleFontSizeHeightRatio = 0.02;
 const int kCommunityNameMinLength = 3;
 const int kCommunityNameMaxLength = 21;
