@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-
-const double kPageTitleFontSizeHeightRatio = 0.03;
-const double kPageTtleTopBottomPadding = 20.0;
+const double kPageTitleFontSizeHeightRatio = 0.026;
+const double kPageTtleTopBottomPaddingRatio = 0.02;
 const double kErrorTextTopBottomPadding = 10.0;
-const double kPageEdgesPadding = 9.0;
+const double kPageEdgesPaddingWidthRatio = 0.035;
 const double kPageSubtitleFontSizeHeightRatio = 0.02;
 const int kCommunityNameMinLength = 3;
 const int kCommunityNameMaxLength = 21;
@@ -87,12 +86,12 @@ TextStyle kSettingsBodyTextStyle =
 
 const kButtonHeightRatio = 0.01;
 const kButtonWidthRatio = 0.04;
-const kButtonSmallerFontRatio = 0.035;
+const kButtonSmallerFontRatio = 0.038;
 const kAcknowledgeTextHeightRatio = 0.02;
 const kAcknowledgeTextWidthRatio = 0.04;
 const kAcknowledgeTextSmallerFontRatio = 0.03;
 const kTextLinkPaddingRatio = 0.015;
-const kTextLinkFontSizeRatio = 0.03;
+const kTextLinkFontSizeRatio = 0.032;
 const kAppBarTitleSmallerFontRatio = 0.04;
 const kErrorMessageSmallerFontRatio = 0.03;
 const kErrorMessageLeftPaddingRatio = 0.05;

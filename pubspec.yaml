@@ -7,10 +7,18 @@ environment:
   sdk: '>=3.0.6 <4.0.0'
 
 dependencies:
+  any_link_preview: ^3.0.0
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.6  
   font_awesome_flutter: ^10.7.0
+  firebase_core: ^1.10.0
+  # google_sign_in: ^6.2.1
+  # firebase_auth: ^3.11.2
+  # provider: ^6.1.2
+  flutter_link_previewer: ^3.2.2
+  url_launcher: ^6.0.9
+  
   http: ^1.2.1
   timer_count_down: ^2.2.0
 
@@ -19,6 +27,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^2.0.0
   flutter_launcher_icons: ^0.13.1
+  
 
 flutter_icons:
   android: "launcher_icon"
