@@ -3,7 +3,6 @@ import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 import 'package:reddit_bel_ham/components/home_page_components/profile_icon_with_indicator.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_leading_icon.dart';
-import 'package:reddit_bel_ham/components/settings_components/settings_segment_tile.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/home_page_seach_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
@@ -36,8 +35,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
       comments: 141,
       type: "text",
       image: "",
-      link: "https://www.instagram.com",
-
+      link: "https://www.instagram.com/p/CJ9J9J1h7Zz/",
     ),
     Post(
       username: "r/AnnieBakesCakes",
@@ -65,243 +63,216 @@ class _HomePageScreenState extends State<HomePageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 8.0, right: 2.0),
-          child: GestureDetector(
-            onTap: () {
-              _scaffoldKey.currentState?.openDrawer();
-            },
-            child: Icon(
-              Icons.menu,
-              size: 30,
-              color: Colors.white,
-            ),
-          ),
-        ),
-        title: Row(
-          children: [
-            Text(
-              selectedMenuItem,
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
-            ),
-            Icon(
-              Icons.arrow_drop_down,
-              size: 30,
-              color: Colors.white,
-            ),
-          ],
-        ),
-        backgroundColor: Colors.black,
-        actions: [
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SearchScreen()),
-              );
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(2.0),
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBar(
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 8.0, right: 2.0),
+            child: GestureDetector(
+              onTap: () {
+                _scaffoldKey.currentState?.openDrawer();
+              },
               child: Icon(
-                Icons.search,
-                size: 35,
+                Icons.menu,
+                size: 30,
                 color: Colors.white,
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: GestureDetector(
+          title: Row(
+            children: [
+              Text(
+                selectedMenuItem,
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+              ),
+              Icon(
+                Icons.arrow_drop_down,
+                size: 30,
+                color: Colors.white,
+              ),
+            ],
+          ),
+          backgroundColor: Colors.black,
+          actions: [
+            GestureDetector(
               onTap: () {
-                _scaffoldKey.currentState?.openEndDrawer();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SearchScreen()),
+                );
               },
-              child: ProfileIconWithIndicator(isOnline: onlineStatusToggle),
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Icon(
+                  Icons.search,
+                  size: 35,
+                  color: Colors.white,
+                ),
+              ),
             ),
-          ),
-        ],
-      ),
-      body: ListView.builder(
-        itemCount: posts.length,
-        itemBuilder: (context, index) {
-          return PostCard(post: posts[index]);
-        },
-      ),
-      drawer: Drawer(
-        backgroundColor: kBackgroundColor,
-        child: SafeArea(
-          child: Column(
-            children: [
-              ListTile(
-                title: Row(
-                  children: [
-                    Text('Recently Visited',
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold)),
-                    Spacer(),
-                    GestureDetector(
-                      onTap: () {
-                        // Code to open the second drawer goes here
-
-                      },
-                      child: Text("See all"),
-                    ),
-                  ],
-                ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: GestureDetector(
+                onTap: () {
+                  _scaffoldKey.currentState?.openEndDrawer();
+                },
+                child: ProfileIconWithIndicator(isOnline: onlineStatusToggle),
               ),
-              ListTile(
-                title: Text('Tile 2'),
-                trailing: Icon(Icons.arrow_forward),
-              ),
-              Divider(color: Colors.grey, thickness: 0.5),
-            ],
-          ),
+            ),
+          ],
         ),
-      ),
-      endDrawer: Drawer(
-        backgroundColor: kBackgroundColor,
-        child: SafeArea(
-          child: Column(
-            children: [
-              Align(
-                alignment: Alignment.topRight,
-                child: IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
+        body: ListView.builder(
+          itemCount: posts.length,
+          itemBuilder: (context, index) {
+            return PostCard(post: posts[index]);
+          },
+        ),
+        drawer: Drawer(),
+        endDrawer: Drawer(
+          backgroundColor: kBackgroundColor,
+          child: SafeArea(
+            child: Column(
+              children: [
+                Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(
+                      Icons.close,
+                      color: Colors.white,
+                      size: ScreenSizeHandler.bigger * kSideBarCloseIconSizeRatio,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                      bottom: ScreenSizeHandler.screenHeight * 0.02),
+                  child: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    child: Text('A'),
+                    radius: ScreenSizeHandler.bigger *
+                        kSideBarCircleAvatarRadiusRatio,
+                    foregroundImage: AssetImage('assets/images/reddit_logo.png'),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                      bottom: ScreenSizeHandler.screenHeight * 0.015),
+                  child: Text('u/$username',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: ScreenSizeHandler.bigger * 0.026,
+                          fontWeight: FontWeight.bold)),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      onlineStatusToggle = !onlineStatusToggle;
+                      if (onlineStatusToggle) {
+                        onlineStatusString = "On";
+                        onlineStatusColor = Color.fromARGB(255, 0, 204, 120);
+                        onlineStatusWidth = ScreenSizeHandler.smaller * 0.42;
+                      } else {
+                        onlineStatusString = "Off";
+                        onlineStatusColor = Colors.grey;
+                        onlineStatusWidth = ScreenSizeHandler.screenWidth * 0.38;
+                      }
+                    });
                   },
-                  icon: Icon(
-                    Icons.close,
-                    color: Colors.white,
-                    size: ScreenSizeHandler.bigger * kSideBarCloseIconSizeRatio,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                    bottom: ScreenSizeHandler.screenHeight * 0.02),
-                child: CircleAvatar(
-                  backgroundColor: Colors.white,
-                  child: Text('A'),
-                  radius: ScreenSizeHandler.bigger *
-                      kSideBarCircleAvatarRadiusRatio,
-                  foregroundImage: AssetImage('assets/images/reddit_logo.png'),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                    bottom: ScreenSizeHandler.screenHeight * 0.015),
-                child: Text('u/$username',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: ScreenSizeHandler.bigger * 0.026,
-                        fontWeight: FontWeight.bold)),
-              ),
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    onlineStatusToggle = !onlineStatusToggle;
-                    if (onlineStatusToggle) {
-                      onlineStatusString = "On";
-                      onlineStatusColor = Color.fromARGB(255, 0, 204, 120);
-                      onlineStatusWidth = ScreenSizeHandler.smaller * 0.42;
-                    } else {
-                      onlineStatusString = "Off";
-                      onlineStatusColor = Colors.grey;
-                      onlineStatusWidth = ScreenSizeHandler.screenWidth * 0.38;
-                    }
-                  });
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 15.0),
-                  child: Container(
-                    height: ScreenSizeHandler.bigger * 0.04,
-                    width: onlineStatusWidth,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(
-                          20), // adjust the radius as needed
-                      border: Border.all(
-                        color: onlineStatusColor, // set border color
-                        width: ScreenSizeHandler.smaller *
-                            0.006, // set border width
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 15.0),
+                    child: Container(
+                      height: ScreenSizeHandler.bigger * 0.04,
+                      width: onlineStatusWidth,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                            20), // adjust the radius as needed
+                        border: Border.all(
+                          color: onlineStatusColor, // set border color
+                          width: ScreenSizeHandler.smaller *
+                              0.006, // set border width
+                        ),
                       ),
-                    ),
-                    child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          if (onlineStatusToggle)
-                            Icon(
-                              Icons.circle,
-                              color: onlineStatusColor,
-                              size: kOnlineStatusIconSize,
-                            ),
-                          Text(
-                            'Online Status: $onlineStatusString',
-                            style: TextStyle(
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            if (onlineStatusToggle)
+                              Icon(
+                                Icons.circle,
                                 color: onlineStatusColor,
-                                fontSize: ScreenSizeHandler.smaller *
-                                    kOnlineStatusFontSizeRatio,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
+                                size: kOnlineStatusIconSize,
+                              ),
+                            Text(
+                              'Online Status: $onlineStatusString',
+                              style: TextStyle(
+                                  color: onlineStatusColor,
+                                  fontSize: ScreenSizeHandler.smaller *
+                                      kOnlineStatusFontSizeRatio,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: ListView(
-                  scrollDirection: Axis.vertical,
-                  children: [
-                    SettingsTile(
-                      leadingIcon: const SettingsTileLeadingIcon(
-                        leadingIcon: Icons.account_circle_outlined,
+                Expanded(
+                  child: ListView(
+                    scrollDirection: Axis.vertical,
+                    children: [
+                      SettingsTile(
+                        leadingIcon: const SettingsTileLeadingIcon(
+                          leadingIcon: Icons.account_circle_outlined,
+                        ),
+                        titleText: "Profile",
+                        onTap: () {},
                       ),
-                      titleText: "Profile",
-                      onTap: () {},
-                    ),
-                    SettingsTile(
-                      leadingIcon: const SettingsTileLeadingIcon(
-                        leadingIcon: Icons.groups_rounded,
+                      SettingsTile(
+                        leadingIcon: const SettingsTileLeadingIcon(
+                          leadingIcon: Icons.groups_rounded,
+                        ),
+                        titleText: "Create a community",
+                        onTap: () {
+                          Navigator.pushNamed(context, 'create_community_screen');
+                        },
                       ),
-                      titleText: "Create a community",
-                      onTap: () {
-                        Navigator.pushNamed(context, 'create_community_screen');
-                      },
-                    ),
-                    SettingsTile(
-                      leadingIcon: const SettingsTileLeadingIcon(
-                        leadingIcon: Icons.bookmarks_outlined,
+                      SettingsTile(
+                        leadingIcon: const SettingsTileLeadingIcon(
+                          leadingIcon: Icons.bookmarks_outlined,
+                        ),
+                        titleText: "Saved",
+                        onTap: () {},
                       ),
-                      titleText: "Saved",
-                      onTap: () {},
-                    ),
-                    SettingsTile(
-                      leadingIcon: const SettingsTileLeadingIcon(
-                        leadingIcon: Icons.access_time_rounded,
+                      SettingsTile(
+                        leadingIcon: const SettingsTileLeadingIcon(
+                          leadingIcon: Icons.access_time_rounded,
+                        ),
+                        titleText: "History",
+                        onTap: () {},
                       ),
-                      titleText: "History",
-                      onTap: () {},
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              SettingsTile(
-                leadingIcon: const SettingsTileLeadingIcon(
-                  leadingIcon: Icons.settings_outlined,
+                SettingsTile(
+                  leadingIcon: const SettingsTileLeadingIcon(
+                    leadingIcon: Icons.settings_outlined,
+                  ),
+                  titleText: "Settings",
+                  trailingWidget: Icon(Icons.nights_stay_sharp, size: 25),
+                  onTap: () {
+                    Navigator.pushNamed(context, 'account_settings_screen');
+                  },
                 ),
-                titleText: "Settings",
-                trailingWidget: Icon(Icons.nights_stay_sharp, size: 25),
-                onTap: () {
-                  Navigator.pushNamed(context, 'account_settings_screen');
-                },
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
