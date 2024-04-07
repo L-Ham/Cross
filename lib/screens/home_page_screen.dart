@@ -256,26 +256,26 @@ class _HomePageScreenState extends State<HomePageScreen> {
                         leadingIcon: const SettingsTileLeadingIcon(
                           leadingIcon: Icons.access_time_rounded,
                         ),
-                        titleText: "History",
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
+                         titleText: "History",
+                      onTap: () {},
+                    ),
+                  ],
                 ),
-                SettingsTile(
-                  leadingIcon: const SettingsTileLeadingIcon(
-                    leadingIcon: Icons.settings_outlined,
-                  ),
-                  titleText: "Settings",
-                  trailingWidget: Icon(Icons.nights_stay_sharp, size: 25),
-                  onTap: () {
-                    Navigator.pushNamed(context, 'account_settings_screen');
-                  },
+              ),
+              SettingsTile(
+                leadingIcon: const SettingsTileLeadingIcon(
+                  leadingIcon: Icons.settings_outlined,
                 ),
-              ],
-            ),
+                titleText: "Settings",
+                trailingWidget: Icon(Icons.nights_stay_sharp, size: 25),
+                onTap: () {
+                  Navigator.pushNamed(context, SettingsScreen.id );
+                },
+              ),
+            ],
           ),
         ),
+      ),
       ),
     );
   }
