@@ -33,13 +33,27 @@ class ApiService {
     }
   }
 
-  Future<dynamic> createCommunity(Map<String, dynamic> data) {
-    return request('/subreddit/createCommunity',
-        method: 'POST',
-        headers: {
-          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjVmOGEzZTRiZGNlYWU5YmNiODJkYWUwIiwidHlwZSI6Im5vcm1hbCJ9LCJpYXQiOjE3MTEzMDMyNTEsImV4cCI6NTAxNzExMzAzMjUxfQ.h0qBRBJXuerCcd-tVJx0yWDCSm5oyOrRIshgXy-38Ug',
-          'Content-Type': 'application/json'
+  Future<dynamic> createCommunity(Map<String, dynamic> data) async {
+    try {
+      String token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjVmOGEzZTRiZGNlYWU5YmNiODJkYWUwIiwidHlwZSI6Im5vcm1hbCJ9LCJpYXQiOjE3MTEzMDMyNTEsImV4cCI6NTAxNzExMzAzMjUxfQ.h0qBRBJXuerCcd-tVJx0yWDCSm5oyOrRIshgXy-38Ug';
+      final response = await http.post(
+        Uri.parse('https://reddit-bylham.me/api/subreddit/createCommunity'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization':
+              'Bearer $token',
         },
-        body: data);
+        body: jsonEncode(data),
+      );
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        throw Exception('Failed to create community');
+      }
+    } catch (e) {
+      print('Exception occurred: $e');
+      throw e;
+    }
   }
 }
