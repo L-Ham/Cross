@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/screens/change_password_screen.dart';
 import 'package:reddit_bel_ham/screens/connected_accounts_disconnect_screen.dart';
+import 'package:reddit_bel_ham/screens/settings_screen.dart';
 import 'package:reddit_bel_ham/screens/update_email_address_screen.dart';
 import 'package:reddit_bel_ham/screens/create_community_screen.dart';
 import 'screens/account_settings_screen.dart';
@@ -27,12 +28,14 @@ class RedditByLham extends StatelessWidget {
         MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
 
     return MaterialApp(
+      title: 'HTTP',
       theme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
       routes: {
         FirstScreen.id: (context) => FirstScreen(),
         CreateCommunityScreen.id: (context) => const CreateCommunityScreen(),
         AccountSettingsScreen.id: (context) => const AccountSettingsScreen(),
+        SettingsScreen.id:(context) => const SettingsScreen(),
         NotificationSettingsScreen.id: (context) =>
             const NotificationSettingsScreen(),
         DisconnectScreen.id: (context) => const DisconnectScreen(),
@@ -47,7 +50,7 @@ class RedditByLham extends StatelessWidget {
         //Resolved
         // SearchScreen.id: (context) => SearchScreen(),
       },
-      initialRoute: AccountSettingsScreen.id,
+      initialRoute: FirstScreen.id,
     );
   }
 }
