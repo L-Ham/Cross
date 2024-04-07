@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 import 'package:reddit_bel_ham/components/home_page_components/profile_icon_with_indicator.dart';
@@ -83,13 +84,15 @@ class _HomePageScreenState extends State<HomePageScreen> {
           ),
           title: Row(
             children: [
-              Text(
-                selectedMenuItem,
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
+             Text(
+                  selectedMenuItem,
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                ),
+              
+      
               Icon(
                 Icons.arrow_drop_down,
                 size: 30,

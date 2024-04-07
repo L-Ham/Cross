@@ -4,8 +4,6 @@ import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:flutter_link_previewer/flutter_link_previewer.dart';
-
 class Post {
   final String username;
   final String content;
@@ -58,6 +56,8 @@ class _PostCardState extends State<PostCard> {
     }
   }
 
+  bool isExpanded = false;
+
   Widget buildPostCard(Post post, bool isTypeImage, bool isTypeText,
       bool isTypeLink, bool isOwner, BuildContext context) {
     return Container(
@@ -87,11 +87,20 @@ class _PostCardState extends State<PostCard> {
                   ),
                   SizedBox(height: ScreenSizeHandler.screenHeight * 0.02),
                   if (isTypeText)
-                    Text(
-                      post.content,
-                      style: TextStyle(
-                          color: const Color.fromARGB(255, 133, 132, 132),
-                          fontWeight: FontWeight.normal),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isExpanded = !isExpanded;
+                        });
+                      },
+                      child: Text(
+                        post.content,
+                        maxLines: isExpanded ? 100:3,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            color: const Color.fromARGB(255, 133, 132, 132),
+                            fontWeight: FontWeight.normal),
+                      ),
                     ),
                   if (isTypeImage) Image.asset(post.image),
                   if (isTypeLink)
@@ -223,7 +232,7 @@ class _PostCardState extends State<PostCard> {
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Icon(
-                                          Icons.comment,
+                                          Icons.mode_comment_outlined,
                                           size: 15,
                                           color: Colors.white,
                                         ),
