@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 import 'package:reddit_bel_ham/components/home_page_components/profile_icon_with_indicator.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile.dart';
@@ -6,9 +7,11 @@ import 'package:reddit_bel_ham/components/settings_components/settings_tile_lead
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/home_page_seach_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePageScreen extends StatefulWidget {
-  const HomePageScreen({super.key});
+  final token; 
+  const HomePageScreen({@required this.token,super.key});
   static const id = 'home_page_screen';
 
   @override
@@ -22,7 +25,14 @@ class _HomePageScreenState extends State<HomePageScreen> {
   bool onlineStatusToggle = true;
   Color onlineStatusColor = kOnlineStatusColor;
   double onlineStatusWidth = ScreenSizeHandler.smaller * 0.42;
-
+  late String email;
+  late String token;
+  @override
+  void initState()
+  {
+    super.initState();
+    Map<String,dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
+  }
   String selectedMenuItem = "Home";
   final List<String> menuItems = ['Home', 'Popular', 'Latest News'];
   final List<Post> posts = [

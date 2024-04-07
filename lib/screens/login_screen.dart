@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/screens/signup_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:reddit_bel_ham/services/auth_service.dart';
 import '../components/general_components/acknowledgement_text.dart';
 import '../components/general_components/text_link.dart';
@@ -29,8 +30,17 @@ class LoginScreenState extends State<LoginScreen> {
   bool isNameFocused = false;
   bool isPassFocused = false;
   bool isButtonEnabled = false;
+  late SharedPreferences prefs;
 
-  void continueNavigation() {}
+  @override
+  void initState() {
+    super.initState();
+    initSharedPrefs();
+  }
+
+  void initSharedPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+  }
 
   Future<void> login(
     String userName,String password) async {
@@ -51,8 +61,13 @@ class LoginScreenState extends State<LoginScreen> {
         body: jsonEncode(requestData),
       );
       if (response.statusCode == 200) {
-        Navigator.pushNamed(context, HomePageScreen.id, arguments: {'token: ${jsonDecode(response.body)['token']}'});
         message='Login successful.';
+        var token = jsonDecode(response.body)['token'];
+        prefs.setString('token', token);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => HomePageScreen(token: token)));
       }
       showDialog(context: context, builder:
           (BuildContext context) {
