@@ -26,7 +26,7 @@ class _SearchScreenState extends State<SearchScreen> {
           controller: _searchController,
           style: TextStyle(color: Colors.white),
           autofocus: true,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             hintText: 'Search...',
             border: InputBorder.none,
             hintStyle: TextStyle(color: kHintTextColor),
@@ -39,8 +39,10 @@ class _SearchScreenState extends State<SearchScreen> {
             },
             child: Padding(
               padding: EdgeInsets.only(right:ScreenSizeHandler.screenWidth * 0.05),
-              child: Text('Cancel',
-                  style: TextStyle(color: Color.fromARGB(255, 81, 81, 81))),
+              child: const Center(
+                child: Text('Cancel',
+                    style: TextStyle(color: Color.fromARGB(255, 81, 81, 81))),
+              ),
             ),
           ),
         ],

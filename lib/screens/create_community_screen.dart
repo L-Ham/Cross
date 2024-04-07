@@ -1,9 +1,9 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import '../components/create_community_components/community_name_text_box.dart';
-import '../components/create_community_components/community_type_selector.dart';
+import '../components/general_components/continue_button.dart';
 import '../components/general_components/custom_switch.dart';
+import '../components/create_community_components/community_type_selector.dart';
 import '../utilities/screen_size_handler.dart';
 import '../constants.dart';
 
@@ -27,12 +27,16 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
   String errorText = '';
 
   String validateInput(String value) {
-    if (value.contains(RegExp(r'[^\w\s]')) ||
-        ((value.length < kCommunityNameMinLength) && value.isNotEmpty)) {
-      return 'Community names must be between $kCommunityNameMinLength-$kCommunityNameMaxLength characters, and can only contain letters, numbers, and underscores';
+    String trimmedValue = value.trim();
+
+    if (trimmedValue.contains(RegExp(r'[^\w\s]')) ||
+        trimmedValue.contains(' ') ||
+        ((trimmedValue.length < kCommunityNameMinLength) && value.isNotEmpty) ||
+        (trimmedValue.isEmpty && value.isNotEmpty)) {
+      return 'Community names must be be tween $kCommunityNameMinLength-$kCommunityNameMaxLength characters, and can only contain letters, numbers, and underscores';
     }
     //Check if the community name is already taken (LATER IMPLEMENTATION)
-    if (value == 'toto') {
+    if (trimmedValue == 'toto') {
       isCommunityNameTaken = true;
     } else {
       isCommunityNameTaken = false;
@@ -55,11 +59,14 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: kBackgroundColor,
         centerTitle: true,
         title: Padding(
-          padding: const EdgeInsets.only(
-              top: kPageTtleTopBottomPadding,
-              bottom: kPageTtleTopBottomPadding),
+          padding: EdgeInsets.only(
+              top: ScreenSizeHandler.screenHeight *
+                  kPageTtleTopBottomPaddingRatio,
+              bottom: ScreenSizeHandler.screenHeight *
+                  kPageTtleTopBottomPaddingRatio),
           child: Text(
             'Create a community',
             style: kPageTitleStyle.copyWith(
@@ -69,6 +76,7 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
           ),
         ),
       ),
+      backgroundColor: kBackgroundColor,
       body: Padding(
         padding: const EdgeInsets.all(kPageEdgesPadding),
         child: SingleChildScrollView(
@@ -79,6 +87,7 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                 height: ScreenSizeHandler.screenHeight * 0.005,
               ),
               Text('Community name',
+                  key: const Key('community_name_text'),
                   style: TextStyle(
                     fontSize: ScreenSizeHandler.bigger *
                         kPageSubtitleFontSizeHeightRatio,
@@ -87,6 +96,7 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                 height: ScreenSizeHandler.screenHeight * 0.01,
               ),
               CommunityNameTextBox(
+                key: const Key('community_name_text_box'),
                 controller: _controller,
                 onChanged: (value) {
                   if (value.length > kCommunityNameMaxLength) {
@@ -98,10 +108,17 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                     });
                   }
 
-                  Future.delayed(const Duration(milliseconds: kErrorDisplayDelayTimeMilliseconds), () {
-                    setState(() {
+                  Future.delayed(
+                      const Duration(
+                          milliseconds: kErrorDisplayDelayTimeMilliseconds),
+                      () {
+                    setState(
+                      () {
                         errorText = validateInput(value);
-                        if (value.length >= kCommunityNameMinLength &&
+                        if (errorText == 'Empty') {
+                          errorText = '';
+                          activated = false;
+                        } else if (value.length >= kCommunityNameMinLength &&
                             errorText == '') {
                           activated = true;
                         } else {
@@ -114,18 +131,21 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                 onClear: () {
                   setState(() {
                     _controller.clear();
+                    activated = false;
                   });
                 },
               ),
               Visibility(
                 visible: errorText.isNotEmpty,
                 child: Padding(
-                  padding: const EdgeInsets.only(top: kErrorTextTopBottomPadding),
+                  padding:
+                      const EdgeInsets.only(top: kErrorTextTopBottomPadding),
                   child: Text(
                     errorText,
                     style: TextStyle(
                       color: Colors.grey,
-                      fontSize: ScreenSizeHandler.bigger * kErrorTextHeightRatio,
+                      fontSize:
+                          ScreenSizeHandler.bigger * kErrorTextHeightRatio,
                     ),
                   ),
                 ),
@@ -140,6 +160,7 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                     )),
               ),
               CommunityTypeSelector(
+                key: const Key('community_type_selector'),
                 communityType: communityType,
                 onCommunityTypeChanged: (type, description) {
                   setState(() {
@@ -160,6 +181,7 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                 children: [
                   Text(
                     '18+ community',
+                    key: const Key('age_community_text'),
                     style: TextStyle(
                       fontSize: ScreenSizeHandler.bigger *
                           kPageTitleFontSizeHeightRatio,
@@ -167,6 +189,7 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                     ),
                   ),
                   CustomSwitch(
+                    key: const Key('age_switch'),
                     isSwitched: isSwitched,
                     onChanged: (value) {
                       setState(() {
@@ -180,31 +203,14 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   SizedBox(
-                    height: ScreenSizeHandler.screenHeight * 0.025,
+                    height: ScreenSizeHandler.screenHeight * 0.02,
                   ),
-                  ElevatedButton(
-                    onPressed: (activated) ? createCommunity : null,
-                    style: ButtonStyle(
-                      minimumSize: MaterialStateProperty.all(Size(
-                          ScreenSizeHandler.screenHeight * 0.02,
-                          ScreenSizeHandler.screenHeight *
-                              kCreateCommunityButtonHeightRatio)),
-                      backgroundColor:
-                          MaterialStateProperty.resolveWith<Color?>(
-                        (states) =>
-                            (activated) ? Colors.blueAccent : Colors.grey,
-                      ),
-                    ),
-                    child: Text(
-                      'Create community',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: ScreenSizeHandler.bigger *
-                            kCreateCommunityButtonTextHeightRatio,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+                  ContinueButton(
+                      onPress: () {},
+                      key: const Key('create_community_button'),
+                      text: 'Create community',
+                      color: Colors.blue,
+                      isButtonEnabled: activated),
                 ],
               )
             ],

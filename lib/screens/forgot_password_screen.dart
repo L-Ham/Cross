@@ -42,7 +42,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     title: Text(
                       "Sorry we can't help you :(",
                       style: TextStyle(
-                          fontSize: ScreenSizeHandler.bigger * 0.028,
+                          fontSize: ScreenSizeHandler.bigger * 0.027,
                           fontWeight: FontWeight.bold),
                     ),
                     content: const Text('We need someone who can help us!'),
@@ -91,8 +91,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(
-                        vertical: ScreenSizeHandler.screenHeight * 0.01,
-                        horizontal: ScreenSizeHandler.screenWidth * 0.04,
+                        vertical: ScreenSizeHandler.screenHeight * kButtonHeightRatio,
+                        horizontal: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
                       ),
                       child: CredentialsTextField(
                         key: const Key('forgot_password_screen_email_or_username_text_field'),
@@ -164,14 +164,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       visible: !isNameValid,
                       child: Padding(
                         padding: EdgeInsets.only(
-                            left: ScreenSizeHandler.smaller * 0.05),
+                            left: ScreenSizeHandler.screenWidth * kErrorMessageLeftPaddingRatio),
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
                             errorMessage,
                             style: TextStyle(
-                              color: Colors.red[200],
-                              fontSize: ScreenSizeHandler.smaller * 0.03,
+                              color: kErrorColor,
+                              fontSize: ScreenSizeHandler.smaller * kErrorMessageSmallerFontRatio,
                             ),
                           ),
                         ),
@@ -189,7 +189,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                  key: const Key('forgot_password_screen_reset_Password_button'),
                 text: "Reset Password",
                 isButtonEnabled: isButtonEnabled,
-                color: Colors.orange[900],
+                color: kOrangeActivatedColor,
                 onPress: () {
                   if (isButtonEnabled) {
                     // TODO
