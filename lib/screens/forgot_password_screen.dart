@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../utilities/screen_size_handler.dart';
 import '../constants.dart';
@@ -5,6 +6,8 @@ import '../components/general_components/credentials_text_field.dart';
 import '../components/general_components/continue_button.dart';
 import '../components/login_components/logo_text_app_bar.dart';
 import '../utilities/email_regex.dart';
+import 'package:http/http.dart' as http;
+import 'check_your_inbox.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({Key? key}) : super(key: key);
@@ -22,6 +25,25 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   bool isNameValid = true;
   bool isMailValid = true;
   String errorMessage = '';
+  String _response = '';
+  String UesrnameOrEmail = '';
+
+  Future<void> ForgotPasswordRequest(String username) async {
+    try {
+      final response = await http.post(
+        Uri.parse('https://reddit-bylham.me/api/auth/forgotPassword'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization':
+              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjVmNzNlY2Q5OGZlZWIyZmRjNWVjYzkwIiwidHlwZSI6Im5vcm1hbCJ9LCJpYXQiOjE3MTA3OTExNjIsImV4cCI6NTAxNzEwNzkxMTYyfQ.Io0wcsk6LS8juXEJOOdFq7qPvjxFzrN_nrwhbYIMoBQ'
+        },
+        body: json.encode({"email": username}),
+      );
+      _response = 'POST Response: ${response.body}';
+    } catch (e) {
+      _response = 'Error: $e';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,11 +113,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(
-                        vertical: ScreenSizeHandler.screenHeight * kButtonHeightRatio,
-                        horizontal: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+                        vertical:
+                            ScreenSizeHandler.screenHeight * kButtonHeightRatio,
+                        horizontal:
+                            ScreenSizeHandler.screenWidth * kButtonWidthRatio,
                       ),
                       child: CredentialsTextField(
-                        key: const Key('forgot_password_screen_email_or_username_text_field'),
+                        key: const Key(
+                            'forgot_password_screen_email_or_username_text_field'),
                         controller: nameController,
                         isObscure: false,
                         isValid: isNameValid,
@@ -152,7 +177,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                   isButtonEnabled = false;
                                   isNameValid = false;
                                   errorMessage =
-                                      "There isn't a Reddit account with that username";
+                                    "There isn't a Reddit account with that username";
                                 });
                               }
                             }
@@ -164,14 +189,16 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       visible: !isNameValid,
                       child: Padding(
                         padding: EdgeInsets.only(
-                            left: ScreenSizeHandler.screenWidth * kErrorMessageLeftPaddingRatio),
+                            left: ScreenSizeHandler.screenWidth *
+                                kErrorMessageLeftPaddingRatio),
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
                             errorMessage,
                             style: TextStyle(
                               color: kErrorColor,
-                              fontSize: ScreenSizeHandler.smaller * kErrorMessageSmallerFontRatio,
+                              fontSize: ScreenSizeHandler.smaller *
+                                  kErrorMessageSmallerFontRatio,
                             ),
                           ),
                         ),
@@ -186,13 +213,44 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               ContinueButton(
-                 key: const Key('forgot_password_screen_reset_Password_button'),
+                key: const Key('forgot_password_screen_reset_Password_button'),
                 text: "Reset Password",
                 isButtonEnabled: isButtonEnabled,
                 color: kOrangeActivatedColor,
-                onPress: () {
+                onPress: () async {
                   if (isButtonEnabled) {
-                    // TODO
+                    UesrnameOrEmail = nameController.text;
+                    String toNextScreen = nameController.text.contains('@')
+                        ? nameController.text
+                        : "the email associated with your $UesrnameOrEmail account";
+                    await ForgotPasswordRequest(UesrnameOrEmail);
+                  
+                    if(_response.contains('Email sent'))
+                    {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                            CheckYourInboxScreen(username: toNextScreen)));
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Error'),
+                            content: Text(_response),
+                            actions: <Widget>[
+                              TextButton(
+                                child: const Text('Close'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
                   } else {
                     null;
                   }

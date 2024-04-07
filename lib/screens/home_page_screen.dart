@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_bel_ham/screens/settings_screen.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 import 'package:reddit_bel_ham/components/home_page_components/profile_icon_with_indicator.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile.dart';
@@ -255,26 +256,26 @@ class _HomePageScreenState extends State<HomePageScreen> {
                         leadingIcon: const SettingsTileLeadingIcon(
                           leadingIcon: Icons.access_time_rounded,
                         ),
-                        titleText: "History",
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
+                         titleText: "History",
+                      onTap: () {},
+                    ),
+                  ],
                 ),
-                SettingsTile(
-                  leadingIcon: const SettingsTileLeadingIcon(
-                    leadingIcon: Icons.settings_outlined,
-                  ),
-                  titleText: "Settings",
-                  trailingWidget: Icon(Icons.nights_stay_sharp, size: 25),
-                  onTap: () {
-                    Navigator.pushNamed(context, 'account_settings_screen');
-                  },
+              ),
+              SettingsTile(
+                leadingIcon: const SettingsTileLeadingIcon(
+                  leadingIcon: Icons.settings_outlined,
                 ),
-              ],
-            ),
+                titleText: "Settings",
+                trailingWidget: Icon(Icons.nights_stay_sharp, size: 25),
+                onTap: () {
+                  Navigator.pushNamed(context, SettingsScreen.id );
+                },
+              ),
+            ],
           ),
         ),
+      ),
       ),
     );
   }
