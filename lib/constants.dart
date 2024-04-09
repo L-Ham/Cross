@@ -28,6 +28,7 @@ const double kBottomButtonPadding = 0.02;
 const double kForgetPasswordTextHeightRatio = 0.0185;
 const double kTagTextSizeRatio = 0.02;
 const double kTagSpacingWidthRatio = 0.035;
+const double kCancelAppbarIconSizeRatio = 0.04;
 
 const kNotificationSettingsPrivateMessagesSwitchIndex = 0;
 const kNotificationSettingsChatMessagesSwitchIndex = 1;
