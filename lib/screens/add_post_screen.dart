@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/components/general_components/interactive_text.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/community_rules_screen.dart';
+import 'package:reddit_bel_ham/screens/post_to_screen.dart';
 import 'package:reddit_bel_ham/utilities/is_valid_url.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:image_picker/image_picker.dart';
@@ -264,7 +265,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                                   left: ScreenSizeHandler.screenWidth * 0.045),
                               child: GestureDetector(
                                 onTap: () {
-                                  //TODO:SHOW POST TO
+                                  Navigator.pushNamed(context, PostToScreen.id);
                                 },
                                 child: Row(
                                   children: [
@@ -285,7 +286,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
                               text: "RULES",
                               fontSizeRatio: 0.018,
                               onTap: () {
-                                Navigator.pushNamed(context, CommunityRulesScreen.id);
+                                Navigator.pushNamed(
+                                    context, CommunityRulesScreen.id);
                               },
                               isUnderlined: true,
                             )
