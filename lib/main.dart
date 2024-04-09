@@ -62,7 +62,7 @@ class RedditByLham extends StatelessWidget {
         CommunityRulesScreen.id: (context) => const CommunityRulesScreen(),
         PostToScreen.id: (context) => const PostToScreen(),
       },
-      initialRoute: AddPostScreen.id,
+      initialRoute: FirstScreen.id,
     );
   }
 }

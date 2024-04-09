@@ -15,6 +15,7 @@ import 'package:reddit_bel_ham/components/settings_components/settings_tile_trai
 import 'package:reddit_bel_ham/components/general_components/text_link.dart';
 import 'package:reddit_bel_ham/screens/location_customization.dart';
 import 'package:reddit_bel_ham/screens/blocked_accounts.dart';
+import 'package:reddit_bel_ham/services/api_service.dart';
 
 class AccountSettingsScreen extends StatefulWidget {
   const AccountSettingsScreen({super.key});
@@ -26,6 +27,7 @@ class AccountSettingsScreen extends StatefulWidget {
 }
 
 class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
+  ApiService apiService = ApiService('toto');
   String gender = "Man";
   String connectedEmailAddress = "daniel@email.com";
   String username = "dani";
@@ -33,6 +35,24 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
   List<bool> notificationsSwitchStates = List.generate(11, (index) => false);
   bool allowPeopleToFollowYou = false;
   bool isConnectedToGoogle = true;
+  bool isLoading = true;
+
+  void getUserData() async {
+    Map<String, dynamic> data = await apiService.getUserAccountSettings();
+    setState(() {
+      gender = data['accountSettings']['gender'];
+      connectedEmailAddress = data['accountSettings']['email'];
+      isConnectedToGoogle = data['accountSettings']['connectedToGoogle'];
+      isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    getUserData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +75,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
         centerTitle: true,
       ),
       backgroundColor: kSettingsBackGroundColor,
-      body: SafeArea(
+      body: isLoading? const Center(child: CircularProgressIndicator()) : SafeArea(
         child: Column(
           children: [
             Expanded(
@@ -151,7 +171,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                         leadingIcon: Icons.location_on_outlined,
                       ),
                       titleText: "Location Customization",
-                      subtitleText: 
+                      subtitleText:
                           "\n$location\n\nSpecify a location to customize your recommendations and feed. Reddit does not track your precise geolocation data.",
                       trailingWidget: const SettingsTileTrailingIcon(
                         trailingIcon: Icons.arrow_forward,
