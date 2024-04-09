@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:timer_count_down/timer_controller.dart';
 import 'package:timer_count_down/timer_count_down.dart';
+// import 'package:reddit_bel_ham/components/general_components/count_down_timer.dart';
 import '../utilities/screen_size_handler.dart';
 import '../constants.dart';
 import '../components/general_components/continue_button.dart';
@@ -9,17 +10,17 @@ import '../components/login_components/logo_text_app_bar.dart';
 
 class CheckYourInboxScreen extends StatefulWidget {
   final String username;
-  const CheckYourInboxScreen({Key? key, required this.username}) : super(key: key);
+  const CheckYourInboxScreen({Key? key, required this.username})
+      : super(key: key);
 
   static const String id = 'check_your_inox_screen';
-  
 
   @override
   _CheckYourInboxScreenState createState() => _CheckYourInboxScreenState();
 }
 
-class _CheckYourInboxScreenState extends State<CheckYourInboxScreen> {
-  
+class _CheckYourInboxScreenState extends State<CheckYourInboxScreen>
+    with WidgetsBindingObserver {
   TextEditingController nameController = TextEditingController();
   bool isNameFocused = false;
   bool isButtonEnabled = false;
@@ -27,10 +28,37 @@ class _CheckYourInboxScreenState extends State<CheckYourInboxScreen> {
   bool isMailValid = true;
   bool didTimerFinish = false;
   String errorMessage = '';
-  CountdownController timerController  = CountdownController();
+  CountdownController timerController = CountdownController();
   // String userEmail = "test@gmail.com";
-  // String userEmail = ;
-  
+  String snackBarText = '';
+
+  @override
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      snackBarText = widget.username.contains('@')
+          ? ("Email sent to ${widget.username}")
+          : 'Email sent';
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(snackBarText),
+          backgroundColor: Colors.white,
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 3),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+        ),
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this as WidgetsBindingObserver);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +134,8 @@ class _CheckYourInboxScreenState extends State<CheckYourInboxScreen> {
                             ScreenSizeHandler.screenWidth * kButtonWidthRatio,
                       ),
                       child: Image(
-                        image: const AssetImage('assets/images/thinking_avatar.png'),
+                        image: const AssetImage(
+                            'assets/images/thinking_avatar.png'),
                         height: ScreenSizeHandler.screenHeight * 0.22,
                         width: ScreenSizeHandler.screenWidth * 0.22,
                       ),
@@ -125,37 +154,47 @@ class _CheckYourInboxScreenState extends State<CheckYourInboxScreen> {
                   Text(
                     "Didn't get an email? ",
                     style: TextStyle(
-                      fontSize: ScreenSizeHandler.smaller * kButtonSmallerFontRatio,
+                      fontSize:
+                          ScreenSizeHandler.smaller * kButtonSmallerFontRatio,
                       color: Colors.grey,
                     ),
                   ),
                   Visibility(
                     visible: !didTimerFinish,
-                    child: Countdown(
-                      controller: timerController,
-                      seconds: 10,
-                      build: (BuildContext context, double time) {
-                        return Text(
-                          "Resend in 00:${time.toInt()}",
-                          style: TextStyle(
-                            fontSize: ScreenSizeHandler.smaller * kButtonSmallerFontRatio,
-                            color: const Color.fromARGB(255, 104, 102, 102),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        );
-                      },
-                      onFinished: () {
-                      //TODO
-                      //replace the text and timer with a text resend link that sends the email again
-                        didTimerFinish = true;
-                      }
-                    ),
+                    child:
+                        Countdown(
+                          controller: timerController,
+                          seconds: 10,
+                          build: (BuildContext context, double time) {
+                            return Text(
+                              "Resend in 00:${time.toInt()}",
+                              style: TextStyle(
+                                fontSize: ScreenSizeHandler.smaller * kButtonSmallerFontRatio,
+                                color: const Color.fromARGB(255, 104, 102, 102),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            );
+                          },
+                          onFinished: () {
+                          //TODO
+                          //replace the text and timer with a text resend link that sends the email again
+                            didTimerFinish = true;
+                          }
+                        ),
+                    //     CountdownTimer(
+                    //   seconds: 10,
+                    //   onTimerEnd: () {
+                    //      didTimerFinish = true;
+                    //     // print('Timer ended');
+                    //   },
+                    // ),
                   ),
                   Visibility(
                     visible: didTimerFinish,
                     child: TextLink(
-                      // key: const Key('first_screen_log_in_text_link'),
-                        fontSizeRatio: ScreenSizeHandler.smaller * kButtonSmallerFontRatio,
+                        // key: const Key('first_screen_log_in_text_link'),
+                        fontSizeRatio:
+                            ScreenSizeHandler.smaller * kButtonSmallerFontRatio,
                         onTap: () {
                           // Navigator.push(
                           //     context,
