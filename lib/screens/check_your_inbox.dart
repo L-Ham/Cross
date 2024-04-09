@@ -13,7 +13,7 @@ class CheckYourInboxScreen extends StatefulWidget {
   const CheckYourInboxScreen({Key? key, required this.username})
       : super(key: key);
 
-  static const String id = 'check_your_inox_screen';
+  static const String id = 'check_your_inbox_screen';
 
   @override
   _CheckYourInboxScreenState createState() => _CheckYourInboxScreenState();
@@ -23,13 +23,12 @@ class _CheckYourInboxScreenState extends State<CheckYourInboxScreen>
     with WidgetsBindingObserver {
   TextEditingController nameController = TextEditingController();
   bool isNameFocused = false;
-  bool isButtonEnabled = false;
   bool isNameValid = true;
   bool isMailValid = true;
   bool didTimerFinish = false;
+  bool isSnackBarVisible = true;
   String errorMessage = '';
   CountdownController timerController = CountdownController();
-  // String userEmail = "test@gmail.com";
   String snackBarText = '';
 
   @override
@@ -52,6 +51,7 @@ class _CheckYourInboxScreenState extends State<CheckYourInboxScreen>
         ),
       );
     });
+
   }
 
   @override
@@ -161,38 +161,30 @@ class _CheckYourInboxScreenState extends State<CheckYourInboxScreen>
                   ),
                   Visibility(
                     visible: !didTimerFinish,
-                    child:
-                        Countdown(
-                          controller: timerController,
-                          seconds: 10,
-                          build: (BuildContext context, double time) {
-                            return Text(
-                              "Resend in 00:${time.toInt()}",
-                              style: TextStyle(
-                                fontSize: ScreenSizeHandler.smaller * kButtonSmallerFontRatio,
-                                color: const Color.fromARGB(255, 104, 102, 102),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            );
-                          },
-                          onFinished: () {
-                          //TODO
-                          //replace the text and timer with a text resend link that sends the email again
-                            didTimerFinish = true;
-                          }
+                    child: Countdown(
+                      seconds: 60,
+                      build: (BuildContext context, double time) => Text(
+                        "Resend in 00:${time.toInt()}",
+                        style: TextStyle(
+                          fontSize: ScreenSizeHandler.smaller *
+                              kButtonSmallerFontRatio,
+                          color: const Color.fromARGB(255, 104, 102, 102),
+                          fontWeight: FontWeight.bold,
                         ),
-                    //     CountdownTimer(
-                    //   seconds: 10,
-                    //   onTimerEnd: () {
-                    //      didTimerFinish = true;
-                    //     // print('Timer ended');
-                    //   },
-                    // ),
+                      ),
+                      interval: const Duration(milliseconds: 100),
+                      onFinished: () {
+                        setState(() {
+                          didTimerFinish = true;
+                        });
+                      },
+                    ),
                   ),
                   Visibility(
                     visible: didTimerFinish,
                     child: TextLink(
-                        // key: const Key('first_screen_log_in_text_link'),
+                        key: const Key(
+                            'check_your_inbox_screen_resend_text_link'),
                         fontSizeRatio:
                             ScreenSizeHandler.smaller * kButtonSmallerFontRatio,
                         onTap: () {
@@ -201,18 +193,44 @@ class _CheckYourInboxScreenState extends State<CheckYourInboxScreen>
                           //     MaterialPageRoute(
                           //         builder: (context) => const LoginScreen()));
                         },
-                        text: 'Resend'),
+                        text: 'Resend',
+                        color: Colors.white,
+                        isBold: true),
                   ),
                 ],
               ),
-              ContinueButton(
-                key: const Key('check_your_inbox_screen_open_email_app_button'),
-                text: "Open Email App",
-                isButtonEnabled: true,
-                color: kOrangeActivatedColor,
-                onPress: () {
-                  //TODO
-                },
+              Stack(
+                children: [
+                  // Visibility(
+                  //   visible: isSnackBarVisible,
+                  //   child: SnackBar(
+                  //     content: Padding(
+                  //       padding: EdgeInsets.symmetric(
+                  //           horizontal: ScreenSizeHandler.screenWidth *
+                  //               kButtonWidthRatio,
+                  //           vertical: ScreenSizeHandler.screenHeight *
+                  //               kButtonHeightRatio),
+                  //       child: Text(snackBarText),
+                  //     ),
+                  //     backgroundColor: Colors.white,
+                  //     behavior: SnackBarBehavior.floating,
+                  //     duration: const Duration(seconds: 4),
+                  //     shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(30.0),
+                  //     ),
+                  //   ),
+                  // ),
+                  ContinueButton(
+                    key: const Key(
+                        'check_your_inbox_screen_open_email_app_button'),
+                    text: "Open Email App",
+                    isButtonEnabled: true,
+                    color: kOrangeActivatedColor,
+                    onPress: () {
+                      //TODO
+                    },
+                  ),
+                ],
               ),
             ],
           ),
