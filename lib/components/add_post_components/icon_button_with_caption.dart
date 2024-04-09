@@ -13,6 +13,7 @@ class IconButtonWithCaption extends StatelessWidget {
     this.iconRadiusRatio = 0.026,
     this.isIconEnabled = false,
     this.isIconChosen = false,
+    this.hasCaption = true,
     super.key,
   });
 
@@ -23,6 +24,7 @@ class IconButtonWithCaption extends StatelessWidget {
   final double iconRadiusRatio;
   final bool isIconEnabled;
   final bool isIconChosen;
+  final bool hasCaption;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,7 @@ class IconButtonWithCaption extends StatelessWidget {
       child: Column(
         children: [
           CircleAvatar(
-            radius: ScreenSizeHandler.screenHeight * iconRadiusRatio,
+            radius: ScreenSizeHandler.bigger * iconRadiusRatio,
             backgroundColor: isIconChosen ? kSwitchOnColor : backgroundColor,
             child: Icon(
               icon,
@@ -40,8 +42,10 @@ class IconButtonWithCaption extends StatelessWidget {
                   : isIconEnabled
                       ? Colors.grey[100]
                       : Colors.grey[700],
+                      size: ScreenSizeHandler.bigger*iconRadiusRatio*1.45,
             ),
           ),
+          if (hasCaption)
           Padding(
             padding:
                 EdgeInsets.only(top: ScreenSizeHandler.screenHeight * 0.005),

@@ -1,13 +1,18 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:reddit_bel_ham/components/general_components/custom_switch.dart';
 import 'package:reddit_bel_ham/components/general_components/interactive_text.dart';
+import 'package:reddit_bel_ham/components/settings_components/settings_tile.dart';
+import 'package:reddit_bel_ham/components/settings_components/settings_tile_leading_icon.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/utilities/is_valid_url.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
+import '../components/add_post_components/add_post_tags_row.dart';
 import '../components/add_post_components/add_post_text_field.dart';
+import '../components/add_post_components/add_tags_bottom_sheet.dart';
 import '../components/add_post_components/change_post_type_bottom_sheet.dart';
 import '../components/add_post_components/icon_button_with_caption.dart';
 import '../components/add_post_components/image_edit_viewer.dart';
@@ -48,6 +53,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
   String pollDays = "3 days";
   int numOfPollOptions = 2;
   List<TextEditingController>? controllers;
+  bool isSpoiler = false;
+  bool isBrandAffiliate = false;
 
   void addURL() {
     isLinkFieldVisible = true;
@@ -165,6 +172,18 @@ class _AddPostScreenState extends State<AddPostScreen> {
     chosenImages = newList;
   }
 
+  void setIsSpoilerCallback(bool newVal) {
+    setState(() {
+      isSpoiler = newVal;
+    });
+  }
+
+  void setIsBrandAffiliateCallback(bool newVal) {
+    setState(() {
+      isBrandAffiliate = newVal;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -189,10 +208,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
         ),
         actions: <Widget>[
           IconButton(
-              onPressed: () {
-                //TODO: SHOW BOTTOM SHEET
-              },
-              icon: const Icon(Icons.more_horiz_sharp)),
+              onPressed: () {}, icon: const Icon(Icons.more_horiz_sharp)),
           Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: ScreenSizeHandler.screenWidth * 0.02,
@@ -230,62 +246,82 @@ class _AddPostScreenState extends State<AddPostScreen> {
                   ),
                   child: Column(
                     children: <Widget>[
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            radius: ScreenSizeHandler.screenHeight * 0.013,
-                            child: Image(
-                              //TODO: Make the image dynamic
-                              image:
-                                  AssetImage('assets/images/reddit_logo.png'),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: ScreenSizeHandler.screenWidth * 0.045),
-                            child: GestureDetector(
-                              onTap: () {
-                                //TODO:SHOW POST TO
-                              },
-                              child: Row(
-                                children: [
-                                  Text(
-                                    "r/redditBelham",
-                                    style: TextStyle(
-                                        fontSize:
-                                            ScreenSizeHandler.bigger * 0.022,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  const Icon(Icons.arrow_drop_down_outlined),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const Expanded(child: SizedBox()),
-                          InteractiveText(
-                            text: "RULES",
-                            fontSizeRatio: 0.018,
-                            onTap: () {
-                              //TODO: show rules sheet
-                            },
-                            isUnderlined: true,
-                          )
-                        ],
-                      ),
                       Padding(
                         padding: EdgeInsets.only(
-                            top: ScreenSizeHandler.screenHeight * 0.01),
-                        child: const AddPostTextField(
-                          hintText: "Title",
-                          fontSizeRatio: 0.032,
-                          isTitle: true,
+                            bottom: ScreenSizeHandler.screenHeight * 0.01),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              radius: ScreenSizeHandler.screenHeight * 0.013,
+                              child: Image(
+                                //TODO: Make the image dynamic
+                                image:
+                                    AssetImage('assets/images/reddit_logo.png'),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  left: ScreenSizeHandler.screenWidth * 0.045),
+                              child: GestureDetector(
+                                onTap: () {
+                                  //TODO:SHOW POST TO
+                                },
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "r/redditBelham",
+                                      style: TextStyle(
+                                          fontSize:
+                                              ScreenSizeHandler.bigger * 0.022,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const Icon(Icons.arrow_drop_down_outlined),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const Expanded(child: SizedBox()),
+                            InteractiveText(
+                              text: "RULES",
+                              fontSizeRatio: 0.018,
+                              onTap: () {
+                                //TODO: show rules sheet
+                              },
+                              isUnderlined: true,
+                            )
+                          ],
                         ),
+                      ),
+                      AddPostTagsRow(
+                          isSpoiler: isSpoiler,
+                          isBrandAffiliate: isBrandAffiliate),
+                      const AddPostTextField(
+                        hintText: "Title",
+                        fontSizeRatio: 0.032,
+                        isTitle: true,
                       ),
                       Align(
                         alignment: Alignment.centerLeft,
                         child: RoundedButton(
-                          onTap: () {
-                            //TODO: SHOW TAGS SHEET
+                          onTap: () async {
+                            final result = await showModalBottomSheet(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AddTagsBottomSheet(
+                                  isSpoiler: isSpoiler,
+                                  isBrandAffiliate: isBrandAffiliate,
+                                  setIsBrandAffiliate:
+                                      setIsBrandAffiliateCallback,
+                                  setIsSpoiler: setIsSpoilerCallback,
+                                );
+                              },
+                            );
+                            if (result != null) {
+                              setState(() {
+                                isSpoiler = result['isSpoiler']!;
+                                isBrandAffiliate = result['isBrandAffiliate']!;
+                              });
+                            }
                           },
                           buttonColor: kFillingColor,
                           buttonHeightRatio: 0.038,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_bel_ham/constants.dart';
 
 import '../../utilities/screen_size_handler.dart';
 import 'add_post_clear_button.dart';
@@ -50,8 +51,7 @@ class _PollEditState extends State<PollEdit> {
                 const Text(
                   "Poll ends in  ",
                   style: TextStyle(
-                      color: Color.fromARGB(255, 144, 178, 185),
-                      fontWeight: FontWeight.w500),
+                      color: kGreenGrayColor, fontWeight: FontWeight.w500),
                 ),
                 GestureDetector(
                   onTap: () async {
