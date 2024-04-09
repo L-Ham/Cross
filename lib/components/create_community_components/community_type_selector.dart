@@ -79,7 +79,7 @@ class CommunityTypeSelector extends StatelessWidget {
         Text(
           communityType,
           style: TextStyle(
-            fontSize: ScreenSizeHandler.bigger * kPageTitleFontSizeHeightRatio,
+            fontSize: ScreenSizeHandler.smaller * kButtonSmallerFontRatio *1.2,
             fontWeight: FontWeight.w500,
           ),
         ),
