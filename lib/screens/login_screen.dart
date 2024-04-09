@@ -47,6 +47,7 @@ class LoginScreenState extends State<LoginScreen> {
     final url = Uri.parse('https://reddit-bylham.me/api/auth/login');
 
     final Map<String, dynamic> requestData = {
+      'email': userName,
       'userName': userName,
       'password': password,
     };

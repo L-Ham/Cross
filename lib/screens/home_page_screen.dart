@@ -30,11 +30,15 @@ class _HomePageScreenState extends State<HomePageScreen> {
   double onlineStatusWidth = ScreenSizeHandler.smaller * 0.42;
   late String email;
   late String token;
+  late String jwt;
   @override
   void initState()
   {
     super.initState();
     Map<String,dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
+    jwt = jwtDecodedToken.toString();
+    username = jwtDecodedToken['user']['userName'];
+    email = jwtDecodedToken['user']['email'];
   }
   String selectedMenuItem = "Home";
   final List<String> menuItems = ['Home', 'Popular', 'Latest News'];
