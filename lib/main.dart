@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 import 'package:reddit_bel_ham/screens/add_post_screen.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:reddit_bel_ham/screens/about_you_screen.dart';
 import 'package:reddit_bel_ham/screens/change_password_screen.dart';
 import 'package:reddit_bel_ham/screens/community_rules_screen.dart';
@@ -21,17 +21,18 @@ import 'screens/home_page_screen.dart';
 import 'screens/blocked_accounts.dart';
 // import 'package:firebase_core/firebase_core.dart';
 // import 'firebase_options.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
-  // WidgetsFlutterBinding.ensureInitialized();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
   // await Firebase.initializeApp();
-  runApp(const RedditByLham());
+  runApp(RedditByLham(token: prefs.getString('token')));
 }
 
 class RedditByLham extends StatelessWidget {
-  const RedditByLham({
-    super.key,
-  });
+  final token;
+  const RedditByLham({@required this.token, Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     ScreenSizeHandler.initialize(
@@ -54,7 +55,7 @@ class RedditByLham extends StatelessWidget {
         SignupScreen.id: (context) => const SignupScreen(),
         LoginScreen.id: (context) => const LoginScreen(),
         ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
-        HomePageScreen.id: (context) => HomePageScreen(),
+        HomePageScreen.id: (context) => HomePageScreen(token: token),
         BlockedAccount.id: (context) => const BlockedAccount(),
         AddPostScreen.id: (context) => const AddPostScreen(),
         CreateUsernameScreen.id: (context) => const CreateUsernameScreen(),
@@ -62,7 +63,7 @@ class RedditByLham extends StatelessWidget {
         CommunityRulesScreen.id: (context) => const CommunityRulesScreen(),
         PostToScreen.id: (context) => const PostToScreen(),
       },
-      initialRoute: FirstScreen.id,
+      initialRoute: (token==null)?FirstScreen.id: (JwtDecoder.isExpired(token)) ? LoginScreen.id : HomePageScreen.id,
     );
   }
 }

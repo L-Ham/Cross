@@ -26,6 +26,9 @@ dependencies:
   flutter_link_previewer: ^3.2.2
   url_launcher: ^6.0.9
 
+  shared_preferences:
+  jwt_decoder:
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
