@@ -23,7 +23,8 @@ class InteractiveText extends StatelessWidget {
         text,
         style: kInteractiveTextStyle.copyWith(
           fontSize: ScreenSizeHandler.bigger * fontSizeRatio,
-          decoration: isUnderlined? TextDecoration.underline: TextDecoration.none
+          decoration: isUnderlined? TextDecoration.underline: TextDecoration.none,
+          decorationColor: Colors.blue
         ),
       ),
     );
