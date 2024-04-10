@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import '../utilities/screen_size_handler.dart';
 import '../constants.dart';
