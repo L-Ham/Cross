@@ -276,7 +276,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                                               ScreenSizeHandler.bigger * 0.022,
                                           fontWeight: FontWeight.bold),
                                     ),
-                                    const Icon(Icons.arrow_drop_down_outlined),
+                                    const Icon(Icons.keyboard_arrow_down),
                                   ],
                                 ),
                               ),
@@ -599,7 +599,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                           FocusScope.of(context).unfocus();
                         });
                       },
-                      icon: const Icon(Icons.arrow_drop_down_outlined),
+                      icon: const Icon(Icons.keyboard_arrow_down),
                     )
                   ],
                 ),

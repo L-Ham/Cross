@@ -79,7 +79,7 @@ class _PollEditState extends State<PollEdit> {
                             decoration: TextDecoration.underline,
                             decorationThickness: 1.5),
                       ),
-                      const Icon(Icons.arrow_drop_down),
+                      const Icon(Icons.keyboard_arrow_down),
                     ],
                   ),
                 ),
