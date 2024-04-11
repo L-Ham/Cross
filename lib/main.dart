@@ -25,9 +25,9 @@ import 'services/google_sign_in.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
-//   await Firebase.initializeApp(
-//   options: DefaultFirebaseOptions.currentPlatform,
-// );
+  await Firebase.initializeApp(
+  options: DefaultFirebaseOptions.currentPlatform,
+);
   runApp(RedditByLham(token: prefs.getString('token')));
   // runApp(RedditByLham(token: 'token'));
 }

@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'home_page_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 class FirstScreen extends StatefulWidget {
   const FirstScreen({
     super.key,
@@ -37,6 +38,7 @@ class _FirstScreenState extends State<FirstScreen> {
 
   Future<void> signUpWithGoogle(
     String token) async {
+    print(token);
     final url = Uri.parse('https://reddit-bylham.me/api/auth/signUp');
 
     final Map<String, dynamic> requestData = {
@@ -144,14 +146,11 @@ class _FirstScreenState extends State<FirstScreen> {
                   ContinueButton(
                     key: const Key('first_screen_continue_with_google_button'),
                     onPress: () async{
-                      await AuthService().signOutWithGoogle();
-                      final token = await AuthService().signInWithGoogle();
-                      print(token);
-                      await signUpWithGoogle(token);
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => HomePageScreen(token: token)));
+                      if (FirebaseAuth.instance.currentUser != null) {
+                        await AuthService().signOutWithGoogle();
+                      }
+                      await AuthService().signInWithGoogle();
+                      FirebaseAuth.instance.currentUser!.getIdToken().then((value) => signUpWithGoogle(value!));
                       
                     },
                     text: "Continue with Google",
