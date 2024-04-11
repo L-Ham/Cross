@@ -4,7 +4,7 @@ import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 import 'package:reddit_bel_ham/components/subreddit_components/subreddit_navbar_icon.dart';
-
+import 'package:reddit_bel_ham/screens/subreddit_search_screen.dart';
 import '../constants.dart';
 
 class SubredditScreen extends StatefulWidget {
@@ -135,7 +135,13 @@ class _SubredditScreenState extends State<SubredditScreen> {
               SubredditNavbarIcon(
                 iconSize: 0.025,
                 icon: FaIcon(FontAwesomeIcons.magnifyingGlass),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SubredditSearchScreen()),
+                  );
+                },
               ),
               SubredditNavbarIcon(
                 iconSize: 0.023,

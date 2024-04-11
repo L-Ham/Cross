@@ -13,6 +13,7 @@ import 'screens/forgot_password_screen.dart';
 import 'screens/home_page_screen.dart';
 import 'screens/blocked_accounts.dart';
 import 'screens/subreddit_screen.dart';
+import 'screens/subreddit_search_screen.dart';
 
 void main() {
   runApp(const RedditByLham());
@@ -48,8 +49,9 @@ class RedditByLham extends StatelessWidget {
         SubredditScreen.id: (context) => const SubredditScreen(),
         //Resolved
         // SearchScreen.id: (context) => SearchScreen(),
+        SubredditSearchScreen.id: (context) => const SubredditSearchScreen(),
       },
-      initialRoute: FirstScreen.id,
+      initialRoute: SubredditScreen.id,
     );
   }
 }
