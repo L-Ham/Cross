@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "622354436571",
+    "project_id": "reddit-bylham",
+    "storage_bucket": "reddit-bylham.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:622354436571:android:8693a3637362d01ecc17fe",
+        "android_client_info": {
+          "package_name": "com.example.reddit_bel_ham"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "622354436571-0csk237en702ap7l52lrn8qdv9cnm9k8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.reddit_bel_ham",
+            "certificate_hash": "a7e0234be041907f27db04925a8f30b4a932f0ac"
+          }
+        },
+        {
+          "client_id": "622354436571-d47r4rsurpgnugr2on9nmf6i6qutb5ph.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVAMHZLmNU6gh6bXieoroLNq6B-H4MOY8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "622354436571-d47r4rsurpgnugr2on9nmf6i6qutb5ph.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

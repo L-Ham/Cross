@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:provider/provider.dart';
 import 'package:reddit_bel_ham/screens/about_you_screen.dart';
 import 'package:reddit_bel_ham/screens/change_password_screen.dart';
 import 'package:reddit_bel_ham/screens/connected_accounts_disconnect_screen.dart';
@@ -16,15 +17,19 @@ import 'screens/signup_screen.dart';
 import 'screens/forgot_password_screen.dart';
 import 'screens/home_page_screen.dart';
 import 'screens/blocked_accounts.dart';
-// import 'package:firebase_core/firebase_core.dart';
-// import 'firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'firebase_options.dart';
+import 'services/google_sign_in.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  // await Firebase.initializeApp();
+//   await Firebase.initializeApp(
+//   options: DefaultFirebaseOptions.currentPlatform,
+// );
   runApp(RedditByLham(token: prefs.getString('token')));
+  // runApp(RedditByLham(token: 'token'));
 }
 
 class RedditByLham extends StatelessWidget {
@@ -59,7 +64,7 @@ class RedditByLham extends StatelessWidget {
         //Resolved
         // SearchScreen.id: (context) => SearchScreen(),
       },
-      initialRoute: (token==null)?FirstScreen.id: (JwtDecoder.isExpired(token)) ? LoginScreen.id : HomePageScreen.id,
+      initialRoute: FirstScreen.id//(token==null)?FirstScreen.id: (JwtDecoder.isExpired(token)) ? LoginScreen.id : HomePageScreen.id,
     );
   }
 }

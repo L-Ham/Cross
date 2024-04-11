@@ -6,15 +6,96 @@ import '../components/general_components/continue_button.dart';
 import '../components/general_components/acknowledgement_text.dart';
 import '../components/general_components/text_link.dart';
 import '../utilities/screen_size_handler.dart';
-
-class FirstScreen extends StatelessWidget {
+import '../services/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'home_page_screen.dart';
+class FirstScreen extends StatefulWidget {
   const FirstScreen({
     super.key,
   });
 
   static const String id = 'first_screen';
 
+  @override
+  State<FirstScreen> createState() => _FirstScreenState();
+}
 
+class _FirstScreenState extends State<FirstScreen> {
+    late SharedPreferences prefs;
+
+  @override
+  void initState() {
+    super.initState();
+    initSharedPrefs();
+  }
+
+  void initSharedPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+  }
+
+  Future<void> signUpWithGoogle(
+    String token) async {
+    final url = Uri.parse('https://reddit-bylham.me/api/auth/signUp');
+
+    final Map<String, dynamic> requestData = {
+      'token': token
+    };
+    late final response;
+    String message='Signup failed.';
+    try {
+      response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(requestData),
+      );
+      if (response.statusCode == 200) {
+        message='Signup successful.';
+        var token = jsonDecode(response.body)['token'];
+        prefs.setString('token', token);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => HomePageScreen(token: token)));
+      }
+      showDialog(context: context, builder:
+          (BuildContext context) {
+        return AlertDialog(
+          title: Text(message),
+          content: Text(response.body.toString()),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('OK'),
+            )
+          ],
+        );
+      });
+
+    } catch (e) {
+      print('Failed to signup.');
+      showDialog(context: context, builder:
+          (BuildContext context) {
+        return AlertDialog(
+          title: Text('Failed to login'),
+          content: Text('Please try again later.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('OK'),
+            )
+          ],
+        );
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,7 +143,15 @@ class FirstScreen extends StatelessWidget {
                   ),
                   ContinueButton(
                     key: const Key('first_screen_continue_with_google_button'),
-                    onPress: () {
+                    onPress: () async{
+                      await AuthService().signOutWithGoogle();
+                      final token = await AuthService().signInWithGoogle();
+                      print(token);
+                      await signUpWithGoogle(token);
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => HomePageScreen(token: token)));
                       
                     },
                     text: "Continue with Google",
