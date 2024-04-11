@@ -6,15 +6,13 @@ import 'package:reddit_bel_ham/components/settings_components/settings_tile_lead
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/home_page_seach_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
+import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:reddit_bel_ham/screens/settings_screen.dart';
 
-
-
 class HomePageScreen extends StatefulWidget {
-  final token; 
-  const HomePageScreen({@required this.token,super.key});
+  const HomePageScreen({super.key});
   static const id = 'home_page_screen';
 
   @override
@@ -29,17 +27,13 @@ class _HomePageScreenState extends State<HomePageScreen> {
   Color onlineStatusColor = kOnlineStatusColor;
   double onlineStatusWidth = ScreenSizeHandler.smaller * 0.42;
   late String email;
-  late String token;
-  late String jwt;
   @override
-  void initState()
-  {
+  void initState() {
     super.initState();
-    Map<String,dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
-    jwt = jwtDecodedToken.toString();
-    username = jwtDecodedToken['user']['userName'];
-    email = jwtDecodedToken['user']['email'];
+    username = TokenDecoder.username;
+    email = TokenDecoder.email;
   }
+
   String selectedMenuItem = "Home";
   final List<String> menuItems = ['Home', 'Popular', 'Latest News'];
   final List<Post> posts = [
@@ -164,7 +158,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
                     icon: Icon(
                       Icons.close,
                       color: Colors.white,
-                      size: ScreenSizeHandler.bigger * kSideBarCloseIconSizeRatio,
+                      size:
+                          ScreenSizeHandler.bigger * kSideBarCloseIconSizeRatio,
                     ),
                   ),
                 ),
@@ -176,7 +171,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
                     child: Text('A'),
                     radius: ScreenSizeHandler.bigger *
                         kSideBarCircleAvatarRadiusRatio,
-                    foregroundImage: AssetImage('assets/images/reddit_logo.png'),
+                    foregroundImage:
+                        AssetImage('assets/images/reddit_logo.png'),
                   ),
                 ),
                 Padding(
@@ -199,7 +195,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
                       } else {
                         onlineStatusString = "Off";
                         onlineStatusColor = Colors.grey;
-                        onlineStatusWidth = ScreenSizeHandler.screenWidth * 0.38;
+                        onlineStatusWidth =
+                            ScreenSizeHandler.screenWidth * 0.38;
                       }
                     });
                   },
@@ -258,7 +255,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
                         ),
                         titleText: "Create a community",
                         onTap: () {
-                          Navigator.pushNamed(context, 'create_community_screen');
+                          Navigator.pushNamed(
+                              context, 'create_community_screen');
                         },
                       ),
                       SettingsTile(
@@ -272,26 +270,26 @@ class _HomePageScreenState extends State<HomePageScreen> {
                         leadingIcon: const SettingsTileLeadingIcon(
                           leadingIcon: Icons.access_time_rounded,
                         ),
-                         titleText: "History",
-                      onTap: () {},
-                    ),
-                  ],
+                        titleText: "History",
+                        onTap: () {},
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              SettingsTile(
-                leadingIcon: const SettingsTileLeadingIcon(
-                  leadingIcon: Icons.settings_outlined,
+                SettingsTile(
+                  leadingIcon: const SettingsTileLeadingIcon(
+                    leadingIcon: Icons.settings_outlined,
+                  ),
+                  titleText: "Settings",
+                  trailingWidget: Icon(Icons.nights_stay_sharp, size: 25),
+                  onTap: () {
+                    Navigator.pushNamed(context, SettingsScreen.id);
+                  },
                 ),
-                titleText: "Settings",
-                trailingWidget: Icon(Icons.nights_stay_sharp, size: 25),
-                onTap: () {
-                  Navigator.pushNamed(context, SettingsScreen.id );
-                },
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
       ),
     );
   }

@@ -9,7 +9,8 @@ import '../constants.dart';
 import '../services/api_service.dart';
 
 class CreateCommunityScreen extends StatefulWidget {
-  const CreateCommunityScreen({Key? key}) : super(key: key);
+  const CreateCommunityScreen({Key? key})
+      : super(key: key);
 
   static const String id = 'create_community_screen';
 
@@ -52,18 +53,19 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
     return '';
   }
 
-Future<void> createCommunity() async {
-  ApiService apiService = ApiService('https://reddit-bylham.me/api/subreddit/createCommunit');
-  print(_controller.text);
-  print(communityType);
-  print(isSwitched);
-  Map<String, dynamic> data = {
-    "name": _controller.text,
-    "privacy": communityType,
-    "ageRestriction": isSwitched
-  };
-  await apiService.createCommunity(data);
-}
+  Future<void> createCommunity() async {
+    ApiService apiService =
+        ApiService();
+    print(_controller.text);
+    print(communityType);
+    print(isSwitched);
+    Map<String, dynamic> data = {
+      "name": _controller.text,
+      "privacy": communityType,
+      "ageRestriction": isSwitched
+    };
+    await apiService.createCommunity(data);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -218,13 +220,13 @@ Future<void> createCommunity() async {
                     height: ScreenSizeHandler.screenHeight * 0.02,
                   ),
                   ContinueButton(
-                    onPress: () async{
+                    onPress: () async {
                       if (activated) {
                         try {
-                        // Store the values you want to pass to the next screen
-                        // String value1 = 'example value 1';
-                        // int value2 = 123;
-                        await createCommunity();
+                          // Store the values you want to pass to the next screen
+                          // String value1 = 'example value 1';
+                          // int value2 = 123;
+                          await createCommunity();
                         } catch (e) {
                           print('Exception occurred: $e');
                         }

@@ -1,13 +1,17 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:reddit_bel_ham/constants.dart';
+import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 
-const String serverName = "https://reddit-bylham.me/api";
+const String baseURL = "https://reddit-bylham.me/api";
 
 class ApiService {
-  final String baseURL;
-
-  ApiService(this.baseURL);
+  String token = TokenDecoder.token;
+  final Map<String, String> headerWithToken = {
+    'Content-Type': 'application/json; charset=UTF-8',
+    'Authorization': 'Bearer ${TokenDecoder.token}',
+  };
 
   Future<dynamic> request(String endpoint,
       {String method = 'GET',
@@ -16,32 +20,37 @@ class ApiService {
     var url = Uri.parse(baseURL + endpoint);
     http.Response response;
 
-    switch (method) {
-      case 'GET':
-        response = await http.get(url, headers: headers);
-        break;
-      case 'POST':
-        response =
-            await http.post(url, headers: headers, body: jsonEncode(body));
-        break;
-      // Add other methods as needed
-      default:
-        throw Exception('HTTP method $method not implemented');
-    }
+    try {
+      switch (method) {
+        case 'GET':
+          response = await http.get(url, headers: headers);
+          break;
+        case 'POST':
+          response =
+              await http.post(url, headers: headers, body: jsonEncode(body));
+          break;
+        case 'PATCH':
+          response =
+              await http.patch(url, headers: headers, body: jsonEncode(body));
+          break;
+        default:
+          throw Exception('HTTP method $method not implemented');
+      }
 
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception('Failed to load data');
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        throw Exception('Failed to load data with error code ${response.body}');
+      }
+    } catch (e) {
+      debugPrint("Exception occured: $e");
     }
   }
 
   Future<dynamic> createCommunity(Map<String, dynamic> data) async {
     try {
-      String token =
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjVmOGEzZTRiZGNlYWU5YmNiODJkYWUwIiwidHlwZSI6Im5vcm1hbCJ9LCJpYXQiOjE3MTEzMDMyNTEsImV4cCI6NTAxNzExMzAzMjUxfQ.h0qBRBJXuerCcd-tVJx0yWDCSm5oyOrRIshgXy-38Ug';
       final response = await http.post(
-        Uri.parse('$serverName/subreddit/createCommunity'),
+        Uri.parse('$baseURL/subreddit/createCommunity'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token',
@@ -61,23 +70,59 @@ class ApiService {
   }
 
   Future<dynamic> getUserAccountSettings() async {
-    try {
-      String token =
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjYwZmU5ZmRiYmM0ODI1NzI4ZDA1OWM5IiwidXNlck5hbWUiOiJmb2ZhIiwiZW1haWwiOiJmYXJpZGF5YXNzZXI0NUBnbWFpbC5jb20iLCJ0eXBlIjoibm9ybWFsIn0sImlhdCI6MTcxMjY4ODk0NSwiZXhwIjoxNzEyNjk5NzQ1fQ.elaT8jEaH5V0tnyyp4JTwPKFEbRicl4S1YxLjvEXG9E";
-      final response = await http.get(
-        Uri.parse("$serverName/user/accountSettings"),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization': 'Bearer $token',
-        },
-      );
-      if (response.statusCode == 200) {
-        return jsonDecode(response.body);
-      } else {
-        throw Exception('Failed to get account settings');
-      }
-    } catch (e) {
-      debugPrint("Exception occured: $e");
-    }
+    var result = await request('/user/accountSettings',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+
+  Future<dynamic> patchNotificationSettings(List<bool> switchStates) async {
+    var result = await request('/user/notificationsSettings',
+        headers: headerWithToken,
+        method: 'PATCH',
+        body: {
+          "inboxMessage":
+              switchStates[kNotificationSettingsPrivateMessagesSwitchIndex],
+          "chatMessages":
+              switchStates[kNotificationSettingsChatMessagesSwitchIndex],
+          "chatRequest":
+              switchStates[kNotificationSettingsChatRequestsSwitchIndex],
+          "mentions":
+              switchStates[kNotificationSettingsMentionsOfUsernameSwitchIndex],
+          "comments":
+              switchStates[kNotificationSettingsCommentsOnYourPostsSwitchIndex],
+          "upvotesToPosts":
+              switchStates[kNotificationSettingsUpvotesOnYourPostsSwitchIndex],
+          "upvotesToComments": switchStates[
+              kNotificationSettingsUpvotesOnYourCommentsSwitchIndex],
+          "repliesToComments": switchStates[
+              kNotificationSettingsRepliesToYourCommentsSwitchIndex],
+          "newFollowers":
+              switchStates[kNotificationSettingsNewFollowersSwitchIndex],
+          "modNotifications":
+              switchStates[kNotificationSettingsModNotificationsSwitchIndex]
+        });
+    return result;
+  }
+
+  Future<dynamic> getNotificationSettings() async {
+    var result = await request('/user/notificationsSettings',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+
+  Future<dynamic> getProfileSettings() async {
+    var result = await request('/user/profileSettings',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+
+  Future<dynamic> patchProfileSettings(
+      Map<String, dynamic> profileSettings) async {
+    Map<String, dynamic> sentData;
+    sentData = profileSettings['profileSettings'];
+    sentData.remove('socialLinks');
+    var result = await request('/user/profileSettings',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
   }
 }
