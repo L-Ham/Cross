@@ -90,6 +90,7 @@ class AboutYouScreenState extends State<AboutYouScreen> {
       });
 
     } catch (e) {
+      print('Error: $e');
       print('Failed to signup.');
       showDialog(context: context, builder:
           (BuildContext context) {
