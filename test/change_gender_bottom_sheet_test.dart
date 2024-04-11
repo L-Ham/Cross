@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
-import 'package:reddit_bel_ham/screens/change_gender_bottom_sheet.dart';
+import 'package:reddit_bel_ham/components/settings_components/change_gender_bottom_sheet.dart';
 
 void main() {
   testWidgets('ChangeGenderBottomSheet Test', (WidgetTester tester) async {

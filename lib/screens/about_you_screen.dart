@@ -1,6 +1,7 @@
 // import '../services/api_services.dart';
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/screens/home_page_screen.dart';
+import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import '../utilities/screen_size_handler.dart';
 import '../constants.dart';
 import '../components/general_components/credentials_text_field.dart';
@@ -66,10 +67,11 @@ class AboutYouScreenState extends State<AboutYouScreen> {
         message='Signup successful.';
         var token = jsonDecode(response.body)['token'];
         prefs.setString('token', token);
+        TokenDecoder.updateToken(token);
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => HomePageScreen(token: token)));
+                builder: (context) => HomePageScreen()));
       }
       showDialog(context: context, builder:
           (BuildContext context) {
