@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_radio_button_tile.dart';
+import 'package:reddit_bel_ham/services/api_service.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
+import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 
 class ChangeGenderBottomSheet extends StatefulWidget {
   const ChangeGenderBottomSheet({super.key, required this.initialValue});
@@ -51,8 +53,10 @@ class _ChangeGenderBottomSheetState extends State<ChangeGenderBottomSheet> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () async {
                       Navigator.pop(context, groupValueNotifier.value);
+                      ApiService apiService = ApiService(TokenDecoder.token);
+                      apiService.patchGender(groupValueNotifier.value!);
                     },
                     child: Text(
                       "Done",
@@ -70,24 +74,27 @@ class _ChangeGenderBottomSheetState extends State<ChangeGenderBottomSheet> {
             const Divider(color: Colors.grey),
             Text(
               "This information may be used to improve your recommendations and ads",
-              style: TextStyle(color: Colors.grey, fontSize: ScreenSizeHandler.bigger*0.017),
+              style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: ScreenSizeHandler.bigger * 0.017),
               textAlign: TextAlign.center,
             ),
             SettingsRadioButtonTile(
-              key: const Key('change_gender_female_radio_button_tile'),
+              key: const Key('change_gender_Female_radio_button_tile'),
               groupValueNotifier: groupValueNotifier,
-              value: "female",
+              value: "Female",
             ),
             SettingsRadioButtonTile(
-              key: const Key('change_gender_male_radio_button_tile'),
+              key: const Key('change_gender_Male_radio_button_tile'),
               groupValueNotifier: groupValueNotifier,
-              value: "male",
+              value: "Male",
             ),
             SettingsRadioButtonTile(
-              key: const Key('change_gender_others_radio_button_tile'),
+              key: const Key(
+                  'change_gender_I_prefer_not_to_say_radio_button_tile'),
               groupValueNotifier: groupValueNotifier,
-              value: "others",
-            )
+              value: "I prefer not to say",
+            ),
           ],
         ),
       ),

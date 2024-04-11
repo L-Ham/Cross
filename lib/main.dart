@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/screens/add_post_screen.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:reddit_bel_ham/screens/about_you_screen.dart';
 import 'package:reddit_bel_ham/screens/change_password_screen.dart';
 import 'package:reddit_bel_ham/screens/community_rules_screen.dart';

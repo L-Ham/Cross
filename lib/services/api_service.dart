@@ -121,6 +121,12 @@ class ApiService {
     return result;
   }
 
+  Future<dynamic> patchGender(String newGender) async {
+    var result = await request('/user/gender',
+        headers: headerWithToken, method: 'PATCH', body: {"gender": newGender});
+    return result;
+  }
+
   Future<dynamic> patchProfileSettings(
       Map<String, dynamic> profileSettings) async {
     Map<String, dynamic> sentData;
