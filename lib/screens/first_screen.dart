@@ -61,7 +61,7 @@ class _FirstScreenState extends State<FirstScreen> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => HomePageScreen(token: token)));
+                builder: (context) => HomePageScreen()));
       }
       showDialog(context: context, builder:
           (BuildContext context) {
@@ -149,8 +149,14 @@ class _FirstScreenState extends State<FirstScreen> {
                       if (FirebaseAuth.instance.currentUser != null) {
                         await AuthService().signOutWithGoogle();
                       }
-                      await AuthService().signInWithGoogle();
+                      var check=await AuthService().signInWithGoogle();
+                      if (check == null) {
+                        return;
+                      }
+                      else {
+                        print('User signed in with Google');
                       FirebaseAuth.instance.currentUser!.getIdToken().then((value) => signUpWithGoogle(value!));
+                      }
                       
                     },
                     text: "Continue with Google",
