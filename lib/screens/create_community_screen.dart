@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import '../components/create_community_components/community_name_text_box.dart';
 import '../components/general_components/continue_button.dart';
 import '../components/general_components/custom_switch.dart';
@@ -55,7 +56,7 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
 
   Future<void> createCommunity() async {
     ApiService apiService =
-        ApiService();
+        ApiService(TokenDecoder.token);
     print(_controller.text);
     print(communityType);
     print(isSwitched);

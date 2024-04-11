@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
+import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 
 class NotificationSettingsScreen extends StatefulWidget {
   const NotificationSettingsScreen({super.key});
@@ -43,7 +44,7 @@ class _NotificationSettingsScreenState
   @override
   void initState() {
     super.initState();
-    apiService = ApiService();
+    apiService = ApiService(TokenDecoder.token);
     getNotificationsSettings();
   }
 
