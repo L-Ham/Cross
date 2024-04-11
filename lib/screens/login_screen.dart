@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/screens/signup_screen.dart';
+import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:reddit_bel_ham/services/auth_service.dart';
 import '../components/general_components/acknowledgement_text.dart';
@@ -65,10 +66,11 @@ class LoginScreenState extends State<LoginScreen> {
         message='Login successful.';
         var token = jsonDecode(response.body)['token'];
         prefs.setString('token', token);
+        TokenDecoder.updateToken(token);
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => HomePageScreen(token: token)));
+                builder: (context) => const HomePageScreen()));
       }
       showDialog(context: context, builder:
           (BuildContext context) {
