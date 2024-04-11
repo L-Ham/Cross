@@ -46,10 +46,10 @@ class RedditByLham extends StatelessWidget {
       theme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
       routes: {
-        FirstScreen.id: (context) => FirstScreen(),
+        FirstScreen.id: (context) => const FirstScreen(),
         CreateCommunityScreen.id: (context) => const CreateCommunityScreen(),
         AccountSettingsScreen.id: (context) => const AccountSettingsScreen(),
-        SettingsScreen.id: (context) => SettingsScreen(),
+        SettingsScreen.id: (context) => const SettingsScreen(),
         NotificationSettingsScreen.id: (context) =>
             const NotificationSettingsScreen(),
         DisconnectScreen.id: (context) => const DisconnectScreen(),
@@ -72,7 +72,7 @@ class RedditByLham extends StatelessWidget {
       //     : (JwtDecoder.isExpired(token))
       //         ? LoginScreen.id
       //         : HomePageScreen.id,
-      initialRoute: AddPostScreen.id,
+      initialRoute: FirstScreen.id,
     );
   }
 }

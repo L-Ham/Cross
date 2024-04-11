@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_bel_ham/components/add_post_components/add_post_search_bar.dart';
 import 'package:reddit_bel_ham/components/general_components/interactive_text.dart';
 import 'package:reddit_bel_ham/components/general_components/rounded_button.dart';
 import 'package:reddit_bel_ham/constants.dart';
 
+import '../components/add_post_components/post_to_subreddit_tile.dart';
 import '../utilities/screen_size_handler.dart';
 
 class PostToScreen extends StatefulWidget {
@@ -116,7 +118,7 @@ class _PostToScreenState extends State<PostToScreen> {
               child: Row(
                 children: [
                   Expanded(
-                    child: SearchBar(isSearchFocused: searchFocus),
+                    child: AddPostSearchBar(isSearchFocused: searchFocus),
                   ),
                   if (isSearchFocused)
                     Padding(
@@ -203,123 +205,6 @@ class _PostToScreenState extends State<PostToScreen> {
                   ),
                 ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class PostToSubredditTile extends StatelessWidget {
-  const PostToSubredditTile(
-      {super.key,
-      required this.subredditName,
-      required this.selectedSubredditName,
-      required this.subredditImage,
-      required this.numOfOnlineUsers,
-      required this.onTap});
-
-  final String subredditName;
-  final String selectedSubredditName;
-  final String subredditImage;
-  final int numOfOnlineUsers;
-  final Function() onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pop(context,
-            {"subredditName": subredditName, "subredditImage": subredditImage});
-      },
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-            vertical: ScreenSizeHandler.screenHeight * 0.013),
-        child: Row(
-          children: [
-            CircleAvatar(
-              radius: ScreenSizeHandler.bigger * 0.032,
-              backgroundColor: Colors.grey,
-            ),
-            Padding(
-              padding:
-                  EdgeInsets.only(left: ScreenSizeHandler.screenWidth * 0.02),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "r/$subredditName",
-                    style: TextStyle(
-                        fontSize: ScreenSizeHandler.bigger * 0.02,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        "$numOfOnlineUsers online",
-                        style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: ScreenSizeHandler.bigger * 0.016),
-                      ),
-                      if (subredditImage != selectedSubredditName)
-                        Text(
-                          " \u00B7 recently visited",
-                          style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: ScreenSizeHandler.bigger * 0.016),
-                        ),
-                    ],
-                  )
-                ],
-              ),
-            ),
-            const Spacer(),
-            if (subredditName == selectedSubredditName)
-              Icon(
-                Icons.check,
-                color: Colors.green,
-                size: ScreenSizeHandler.bigger * 0.0275,
-              )
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class SearchBar extends StatelessWidget {
-  const SearchBar({
-    super.key,
-    required this.isSearchFocused,
-  });
-
-  final FocusNode isSearchFocused;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: ScreenSizeHandler.bigger * 0.055,
-      child: TextField(
-        focusNode: isSearchFocused,
-        cursorColor: Colors.blue,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(top: ScreenSizeHandler.bigger * 0.01),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide.none,
-          ),
-          fillColor: Colors.grey[800],
-          filled: true,
-          hintText: 'Search for a community',
-          hintStyle: TextStyle(
-            color: Colors.grey,
-            fontSize: ScreenSizeHandler.bigger * 0.018,
-          ),
-          prefixIcon: Icon(
-            Icons.search,
-            color: Colors.grey,
-            size: ScreenSizeHandler.bigger * 0.03,
           ),
         ),
       ),
