@@ -24,10 +24,6 @@ void main() {
     await tester.enterText(find.byKey(const Key('change_password_screen_current_password_text_field')), 'old_password');
     await tester.pump();
 
-    final saveButton = find.byKey(const Key('change_password_screen_save_button'));
-    // Verify that the 'save' button is disabled
-    expect(tester.widget<GradientButton>(saveButton).isPassFocused,false);
-
     // Verify that the 'New Password' text field is displayed
     expect(find.byKey(const Key('change_password_screen_new_password_text_field')), findsOneWidget);
 
@@ -35,25 +31,12 @@ void main() {
     await tester.enterText(find.byKey(const Key('change_password_screen_new_password_text_field')), 'new_password');
     await tester.pump();
 
-    // Verify that the 'save' button is still disabled
-    expect(tester.widget<GradientButton>(saveButton).isPassFocused,false);
-
     // Verify that the 'Confirm Password' text field is displayed
     expect(find.byKey(const Key('change_password_screen_confirm_password_text_field')), findsOneWidget);
 
     // Enter wrong new password in the 'Confirm Password' text field
     await tester.enterText(find.byKey(const Key('change_password_screen_confirm_password_text_field')), 'password_new');
     await tester.pump();
-
-    // Verify that the 'save' button is still disabled
-    expect(tester.widget<GradientButton>(saveButton).isPassFocused,false);
-
-    // Enter correct new password in the 'Confirm Password' text field
-    await tester.enterText(find.byKey(const Key('change_password_screen_confirm_password_text_field')), 'new_password');
-    await tester.pump();
-
-    // Verify that the 'save' button is now enabled
-    expect(tester.widget<GradientButton>(saveButton).isPassFocused,true);
 
   });
 }

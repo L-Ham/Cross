@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/screens/signup_screen.dart';
+import 'package:reddit_bel_ham/utilities/token_decoder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:reddit_bel_ham/services/auth_service.dart';
 import '../components/general_components/acknowledgement_text.dart';
 import '../components/general_components/text_link.dart';
 import '../utilities/screen_size_handler.dart';
@@ -9,6 +12,8 @@ import '../components/general_components/continue_button.dart';
 import '../components/login_components/logo_text_app_bar.dart';
 import '../screens/forgot_password_screen.dart';
 import '../screens/home_page_screen.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -26,8 +31,82 @@ class LoginScreenState extends State<LoginScreen> {
   bool isNameFocused = false;
   bool isPassFocused = false;
   bool isButtonEnabled = false;
+  late SharedPreferences prefs;
 
-  void continueNavigation() {}
+  @override
+  void initState() {
+    super.initState();
+    initSharedPrefs();
+  }
+
+  void initSharedPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+  }
+
+  Future<void> login(
+    String userName,String password) async {
+    final url = Uri.parse('https://reddit-bylham.me/api/auth/login');
+
+    final Map<String, dynamic> requestData = {
+      'email': userName,
+      'userName': userName,
+      'password': password,
+    };
+    late final response;
+    String message='Login failed.';
+    try {
+      response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(requestData),
+      );
+      if (response.statusCode == 200) {
+        message='Login successful.';
+        var token = jsonDecode(response.body)['token'];
+        prefs.setString('token', token);
+        TokenDecoder.updateToken(token);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const HomePageScreen()));
+      }
+      showDialog(context: context, builder:
+          (BuildContext context) {
+        return AlertDialog(
+          title: Text(message),
+          content: Text(response.body.toString()),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('OK'),
+            )
+          ],
+        );
+      });
+
+    } catch (e) {
+      print('Failed to login.');
+      showDialog(context: context, builder:
+          (BuildContext context) {
+        return AlertDialog(
+          title: Text('Failed to login'),
+          content: Text('Please try again later.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('OK'),
+            )
+          ],
+        );
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +135,7 @@ class LoginScreenState extends State<LoginScreen> {
                     Text(
                       'Log in',
                       style: TextStyle(
-                        fontSize: ScreenSizeHandler.smaller * 0.05,
+                        fontSize: ScreenSizeHandler.smaller * 0.07,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
@@ -70,7 +149,7 @@ class LoginScreenState extends State<LoginScreen> {
                     ),
                     ContinueButton(
                       key: const Key('login_screen_continue_with_google_button'),
-                      onPress: () {},
+                      onPress: (){},// => AuthService().signInWithGoogle(),
                       text: "Continue with Google",
                       icon: Image(
                         image:
@@ -153,8 +232,8 @@ class LoginScreenState extends State<LoginScreen> {
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(
-                          horizontal: ScreenSizeHandler.screenWidth * 0.04,
-                          vertical: ScreenSizeHandler.screenHeight * 0.01),
+                          horizontal: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+                          vertical: ScreenSizeHandler.screenHeight * kButtonHeightRatio),
                       child: CredentialsTextField(
                         key: const Key('login_screen_password_text_field'),
                         controller: passController,
@@ -197,7 +276,7 @@ class LoginScreenState extends State<LoginScreen> {
                         children: [
                           TextLink(
                             key: const Key('login_screen_forgot_password_text_link'),
-                            fontSizeRatio: ScreenSizeHandler.smaller * 0.035,
+                            fontSizeRatio: ScreenSizeHandler.smaller * kButtonSmallerFontRatio,
                             text: 'Forgot your password?',
                             onTap: () {
                               Navigator.push(
@@ -218,19 +297,21 @@ class LoginScreenState extends State<LoginScreen> {
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              ContinueButton(
-                key: const Key('login_screen_continue_button'),
-                text: "Continue",
-                isButtonEnabled: isButtonEnabled,
-                onPress: () {
-                  if (isButtonEnabled) {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => HomePageScreen()));
-                  } else {
-                    null;
-                  }
-                },
-                color: Colors.orange[900],
+              Padding(
+                padding: EdgeInsets.only(bottom: ScreenSizeHandler.screenHeight * kButtonWidthRatio),
+                child: ContinueButton(
+                  key: const Key('login_screen_continue_button'),
+                  text: "Continue",
+                  isButtonEnabled: isButtonEnabled,
+                  onPress: () async {
+                    if (isButtonEnabled) {
+                      login(nameController.text, passController.text);
+                    } else {
+                      null;
+                    }
+                  },
+                  color: kOrangeActivatedColor,
+                ),
               ),
             ],
           ),

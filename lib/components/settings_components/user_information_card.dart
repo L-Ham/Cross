@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 
@@ -21,7 +20,7 @@ class UserInformationCard extends StatelessWidget {
       children: [
         CircleAvatar(
           backgroundColor: kFillingColor,
-          radius: ScreenSizeHandler.bigger * 0.04,
+          radius: ScreenSizeHandler.bigger * 0.032,
           backgroundImage: imageUrl != null ? NetworkImage(imageUrl!) : null,
         ),
         Flexible(

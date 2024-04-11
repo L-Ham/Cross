@@ -36,7 +36,7 @@ class LogoTextAppBar extends StatelessWidget {
               child: Text(
                 text,
                 style: TextStyle(
-                  fontSize: ScreenSizeHandler.smaller * 0.04,
+                  fontSize: ScreenSizeHandler.smaller * kAppBarTitleSmallerFontRatio,
                   fontWeight: FontWeight.bold,
                   color: kHintTextColor,
                 ),

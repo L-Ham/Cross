@@ -8,6 +8,7 @@ class ContinueButton extends StatelessWidget {
   final Widget? icon;
   final bool isButtonEnabled;
   final Color? color;
+  final Color? textColor;
 
   const ContinueButton({
     Key? key,
@@ -16,24 +17,25 @@ class ContinueButton extends StatelessWidget {
     this.icon,
     this.isButtonEnabled = true,
     this.color,
+    this.textColor
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(
-          horizontal: ScreenSizeHandler.screenWidth * 0.04,
-          vertical: ScreenSizeHandler.screenHeight * 0.01),
+          horizontal: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+          vertical: ScreenSizeHandler.screenHeight * kButtonHeightRatio),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
             backgroundColor: !isButtonEnabled ?kDisabledButtonColor: color!=null?color: kFillingColor,
-            foregroundColor: Colors.white,
+            foregroundColor: textColor!=null? textColor:Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30),
             ),
             padding: EdgeInsets.symmetric(
               vertical: ScreenSizeHandler.screenHeight * 0.015,
-              horizontal: ScreenSizeHandler.screenWidth * 0.04,
+              horizontal: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
             )),
         onPressed: onPress,
         child: Row(
@@ -46,7 +48,7 @@ class ContinueButton extends StatelessWidget {
                   text,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: ScreenSizeHandler.smaller * 0.035,
+                    fontSize: ScreenSizeHandler.smaller * kButtonSmallerFontRatio,
                   ),
                 ),
               ),

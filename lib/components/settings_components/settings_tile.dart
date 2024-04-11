@@ -8,6 +8,8 @@ class SettingsTile extends StatelessWidget {
   final String? subtitleText;
   final Widget? trailingWidget;
   final VoidCallback? onTap;
+  final FontWeight titleFontWeight;
+  final FontWeight subtitileFontWeight;
 
   const SettingsTile({
     Key? key,
@@ -16,44 +18,54 @@ class SettingsTile extends StatelessWidget {
     this.subtitleText,
     this.trailingWidget,
     this.onTap,
+    this.titleFontWeight = FontWeight.w500,
+    this.subtitileFontWeight = FontWeight.w500,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      tileColor: kBackgroundColor,
-      visualDensity: VisualDensity.compact,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          leadingIcon,
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  titleText,
-                  style: kSettingsIconTextStyle.copyWith(
-                    fontSize: ScreenSizeHandler.bigger *
-                        kSettingsTileTextRatio,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        color: kBackgroundColor,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: ScreenSizeHandler.screenWidth * 0.04, vertical: ScreenSizeHandler.screenHeight*0.008),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              leadingIcon,
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(right: ScreenSizeHandler.screenWidth*0.03),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        titleText,
+                        style: kSettingsIconTextStyle.copyWith(
+                          fontSize: ScreenSizeHandler.bigger *
+                              kSettingsTileTextRatio, fontWeight: titleFontWeight
+                        ),
+                      ),
+                      if (subtitleText != null)
+                        Text(
+                          subtitleText!,
+                          style: kSettingsIconTextStyle.copyWith(
+                            fontSize: ScreenSizeHandler.bigger *
+                                kSettingsTileSubtextRatio,
+                            color: Colors.grey,
+                            fontWeight: subtitileFontWeight
+                          ),
+                        ),
+                    ],
                   ),
                 ),
-                if (subtitleText != null)
-                  Text(
-                    subtitleText!,
-                    style: kSettingsIconTextStyle.copyWith(
-                      fontSize: ScreenSizeHandler.bigger *
-                          kSettingsTileSubtextRatio,
-                      color: Colors.grey,
-                    ),
-                  ),
-              ],
-            ),
+              ),
+              if (trailingWidget != null) trailingWidget !,
+            ],
           ),
-          if (trailingWidget != null) trailingWidget !,
-        ],
+        ),
       ),
-      onTap: onTap,
     );
   }
 }

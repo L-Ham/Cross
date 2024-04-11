@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-
-const double kPageTitleFontSizeHeightRatio = 0.03;
-const double kPageTtleTopBottomPadding = 20.0;
+const double kPageTitleFontSizeHeightRatio = 0.026;
+const double kPageTtleTopBottomPaddingRatio = 0.02;
 const double kErrorTextTopBottomPadding = 10.0;
-const double kPageEdgesPadding = 9.0;
+const double kPageEdgesPaddingWidthRatio = 0.035;
 const double kPageSubtitleFontSizeHeightRatio = 0.02;
 const int kCommunityNameMinLength = 3;
 const int kCommunityNameMaxLength = 21;
@@ -15,18 +14,21 @@ const double kCommunityTypeShowModalMaxHeightRatio = 0.35;
 const double kCommunityTypeArrowDownIconSize = 0.045;
 const int kErrorDisplayDelayTimeMilliseconds = 300;
 
-const double kSettingsLeadingIconRatio = 0.035;
-const double kSettingsTileTextRatio = 0.0205;
-const double kSettingsTileSubtextRatio = 0.0175;
-const double kSettingsTrailingIconRatio = 0.041;
-const double kSettingsSegmentTextRatio = 0.0187;
+const double kSettingsLeadingIconRatio = 0.028;
+const double kSettingsTileTextRatio = 0.0175;
+const double kSettingsTileSubtextRatio = 0.015;
+const double kSettingsTrailingIconRatio = 0.032;
+const double kSettingsSegmentTextRatio = 0.0155;
 const double kAppBarTitleFontSizeRatio = 0.025;
-const double kSettingsTextRatio = 0.019;
+const double kSettingsTextRatio = 0.0155;
 const double kInteractiveTextHeightRatio = 0.02;
 const double kSettingsVerticalPaddingHeightRatio = 0.038;
 const double kSettingsHorizontalPaddingHeightRatio = 0.03;
 const double kBottomButtonPadding = 0.02;
 const double kForgetPasswordTextHeightRatio = 0.0185;
+const double kTagTextSizeRatio = 0.02;
+const double kTagSpacingWidthRatio = 0.035;
+const double kCancelAppbarIconSizeRatio = 0.04;
 
 const kNotificationSettingsPrivateMessagesSwitchIndex = 0;
 const kNotificationSettingsChatMessagesSwitchIndex = 1;
@@ -49,6 +51,15 @@ const Color kBackgroundColor = Color.fromARGB(255, 20, 20, 20);
 const Color kSettingsBackGroundColor = Colors.black;
 const Color kFillingColor = Color.fromARGB(255, 40, 40, 40);
 const Color kHintTextColor = Color.fromARGB(255, 122, 122, 122);
+const Color kGreenGrayColor = Color.fromARGB(255, 144, 178, 185);
+
+const int kSwitchAnimationTime = 150;
+const Color kSwitchOnColor = Color.fromARGB(255, 46, 100, 182);
+const Color kSwitchOffColor = Color.fromARGB(255, 66, 66, 66);
+const double kSwitchWidthRatio = 0.12;
+const double kSwitchHeightRatio = 0.072;
+const double kSwitchCircleSizeRatio = 0.065;
+const double kSwitchBorderRadiusRatio = 0.05;
 
 const Color kDisabledButtonColor = Colors.grey;
 const Color kBlockButtonColor = Color(0xFF44A3F2);
@@ -58,7 +69,7 @@ const kPageTitleStyle =
     TextStyle(fontWeight: FontWeight.w500, color: Colors.white);
 
 TextStyle kSettingsIconTextStyle = const TextStyle(
-  fontWeight: FontWeight.w600,
+  fontWeight: FontWeight.w500,
   color: Colors.white,
 );
 TextStyle kInteractiveTextStyle = const TextStyle(
@@ -69,7 +80,12 @@ TextStyle kInteractiveTextStyle = const TextStyle(
 
 TextStyle kSettingsSegmentTileTextStyle = const TextStyle(
   fontWeight: FontWeight.bold,
-  color: Colors.white38,
+  color: Colors.grey,
+);
+
+TextStyle kTagsTextStyle = const TextStyle(
+  color: Colors.white,
+  fontWeight: FontWeight.w500,
 );
 
 TextStyle kSettingsSubHeaderTextStyle =
@@ -77,3 +93,18 @@ TextStyle kSettingsSubHeaderTextStyle =
 
 TextStyle kSettingsBodyTextStyle =
     const TextStyle(color: Colors.white, fontWeight: FontWeight.w400);
+
+const kButtonHeightRatio = 0.01;
+const kButtonWidthRatio = 0.04;
+const kButtonSmallerFontRatio = 0.038;
+const kAcknowledgeTextHeightRatio = 0.02;
+const kAcknowledgeTextWidthRatio = 0.04;
+const kAcknowledgeTextSmallerFontRatio = 0.03;
+const kTextLinkPaddingRatio = 0.015;
+const kTextLinkFontSizeRatio = 0.032;
+const kAppBarTitleSmallerFontRatio = 0.04;
+const kErrorMessageSmallerFontRatio = 0.03;
+const kErrorMessageLeftPaddingRatio = 0.05;
+Color kErrorColor = Colors.red.shade200;
+Color kOrangeActivatedColor = Colors.orange.shade900;
+

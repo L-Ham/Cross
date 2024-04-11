@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../utilities/screen_size_handler.dart';
 import '../../constants.dart';
 
@@ -27,6 +28,8 @@ class CredentialsTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      inputFormatters: [
+    FilteringTextInputFormatter.deny(RegExp(r'\s')),],
       controller: controller,
       onChanged: onChanged,
       obscureText: isObscure,
@@ -42,8 +45,13 @@ class CredentialsTextField extends StatelessWidget {
               BorderSide(color: isValid ? Colors.white : Colors.red[200]!),
         ),
         labelText: text,
+        contentPadding: EdgeInsets.symmetric(
+            vertical: ScreenSizeHandler.smaller * kButtonWidthRatio,
+            horizontal: ScreenSizeHandler.smaller * kButtonWidthRatio),
         labelStyle: TextStyle(
-            color: kHintTextColor, fontSize: ScreenSizeHandler.smaller * 0.035),
+          color: kHintTextColor,
+          fontSize: ScreenSizeHandler.smaller * kButtonSmallerFontRatio,
+        ),
         fillColor: kFillingColor,
         filled: true,
         suffixIcon: suffixIcon,
@@ -51,7 +59,7 @@ class CredentialsTextField extends StatelessWidget {
       ),
       style: TextStyle(
         color: Colors.white,
-        fontSize: ScreenSizeHandler.smaller * 0.035,
+        fontSize: ScreenSizeHandler.smaller * kButtonSmallerFontRatio,
       ),
     );
   }

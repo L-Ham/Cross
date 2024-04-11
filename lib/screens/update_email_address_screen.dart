@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_bel_ham/components/general_components/gradient_button.dart';
 import 'package:reddit_bel_ham/components/settings_components/user_information_card.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/components/settings_components/forget_password_text.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:reddit_bel_ham/components/general_components/credentials_text_field.dart';
+
+import '../components/settings_components/settings_save_button.dart';
 
 class UpdateEmailAddressScreen extends StatefulWidget {
   const UpdateEmailAddressScreen({super.key});
@@ -26,7 +27,6 @@ class _UpdateEmailAddressScreenState extends State<UpdateEmailAddressScreen> {
   TextEditingController emailController = TextEditingController();
   bool isEmailFocused = false;
 
-  
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -51,10 +51,17 @@ class _UpdateEmailAddressScreenState extends State<UpdateEmailAddressScreen> {
         title: Text(
           "Update email address",
           style: kPageTitleStyle.copyWith(
-            fontSize: ScreenSizeHandler.bigger * kAppBarTitleFontSizeRatio,
+            fontSize: ScreenSizeHandler.smaller * kAppBarTitleSmallerFontRatio,
           ),
         ),
         centerTitle: true,
+        actions: [
+          SettingsSaveButton(
+            onPressed: () {
+              //TODO: Implement the save button functionality
+            },
+          ),
+        ],
       ),
       backgroundColor: kBackgroundColor,
       body: Column(
@@ -100,8 +107,10 @@ class _UpdateEmailAddressScreenState extends State<UpdateEmailAddressScreen> {
                         padding: EdgeInsets.only(
                             top: ScreenSizeHandler.screenHeight * 0.02),
                         child: CredentialsTextField(
+                          key: const Key(
+                              'update_email_address_email_text_field'),
                           controller: emailController,
-                          isObscure: isPasswordObscure,
+                          isObscure: false,
                           text: 'New email address',
                           suffixIcon: isEmailFocused
                               ? IconButton(
@@ -125,12 +134,14 @@ class _UpdateEmailAddressScreenState extends State<UpdateEmailAddressScreen> {
                         padding: EdgeInsets.only(
                             top: ScreenSizeHandler.screenHeight * 0.02),
                         child: CredentialsTextField(
+                          key: const Key(
+                              'update_email_address_password_text_field'),
                           controller: passwordController,
                           isObscure: isPasswordObscure,
                           text: 'Password',
                           suffixIcon: isPasswordFocused
                               ? IconButton(
-                                  icon: Icon(Icons.visibility_rounded),
+                                  icon: const Icon(Icons.visibility_rounded),
                                   onPressed: () {
                                     setState(() {
                                       isPasswordObscure = !isPasswordObscure;
@@ -162,18 +173,6 @@ class _UpdateEmailAddressScreenState extends State<UpdateEmailAddressScreen> {
               },
             ),
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(
-                vertical: ScreenSizeHandler.screenHeight * kBottomButtonPadding,
-                horizontal: kSettingsHorizontalPaddingHeightRatio *
-                    ScreenSizeHandler.screenWidth),
-            child: GradientButton(
-                isPassFocused: isEmailFocused && isPasswordFocused,
-                buttonTitle: "Save",
-                onTap: () {
-                  //TODO: Implement the send email functionality
-                }),
-          )
         ],
       ),
     );
