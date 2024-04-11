@@ -6,6 +6,8 @@ import '../components/empty_dog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../utilities/screen_size_handler.dart';
 import 'package:reddit_bel_ham/components/blocked_accounts_components/blocked_acoount_tile.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class BlockedAccount extends StatefulWidget {
   const BlockedAccount({Key? key}) : super(key: key);
@@ -21,11 +23,54 @@ class _BlockedAccountState extends State<BlockedAccount> {
   bool _isKeyboardVisible = false;
   bool _isTextFieldEmpty = true;
   bool _isBlockedAccountsEmpty = false;
+  String authToken =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjYwMDczMTU4NzBiMmY5OWQzZDNlZmFjIiwidHlwZSI6Im5vcm1hbCJ9LCJpYXQiOjE3MTI1MjYzODAsImV4cCI6NTAxNzEyNTI2MzgwfQ.UCh8pA6PaGGHCpEhxffFpj46iWpBtNSuVeOIad9NPiE';
+  List<BlockedUser> blockedUsers = [];
 
   final TextEditingController _controller = TextEditingController();
 
   void printing() {
     print('Unblock button pressed');
+  }
+
+  void parseBlockedUsers(String responseBody) {
+    final parsed = json.decode(responseBody);
+
+    // Extract blockedUsers array from the parsed JSON
+    final blockedUsersList = parsed['blockedUsers'] as List<dynamic>;
+
+    // Convert each item in the blockedUsersList to BlockedUser object
+    blockedUsers =
+        blockedUsersList.map((json) => BlockedUser.fromJson(json)).toList();
+  }
+
+  Future<void> getAllBlockedUsers(String authToken) async {
+    final url = Uri.parse('http://localhost:5000/user/getAllBlockedUsers');
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization':
+              'Bearer $authToken', // Include the authorization token here
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // Successful GET request
+        print('Response body: ${response.body}');
+        parseBlockedUsers(response.body);
+        // You can parse and handle the response data here
+      } else {
+        // Error handling
+        print('Failed to get blocked users: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
+    } catch (e) {
+      // Exception handling
+      print('Exception occurred while getting blocked users: $e');
+    }
   }
 
   @override
@@ -42,6 +87,10 @@ class _BlockedAccountState extends State<BlockedAccount> {
         _isTextFieldEmpty = _controller.text.isEmpty;
       });
     });
+    getAllBlockedUsers(authToken);
+    if (blockedUsers.isEmpty) {
+      _isBlockedAccountsEmpty = true;
+    }
   }
 
   @override
@@ -146,25 +195,37 @@ class _BlockedAccountState extends State<BlockedAccount> {
             ),
           Column(
             children: [
-              BlockedAccountTile(
-                imagePath: 'assets/images/reddit_logo.png',
-                username: 'TheKey119',
-                isAccountBlocked: _isBlockedAccountsEmpty,
-              ),
-              BlockedAccountTile(
-                imagePath: 'assets/images/reddit_logo.png',
-                username: 'PeterParker',
-                isAccountBlocked: _isBlockedAccountsEmpty,
-              ),
-              BlockedAccountTile(
-                imagePath: 'assets/images/reddit_logo.png',
-                username: 'Daniii',
-                isAccountBlocked: _isBlockedAccountsEmpty,
-              ),
+              if (_isTextFieldEmpty)
+                for (BlockedUser blockedUser in blockedUsers)
+                  BlockedAccountTile(
+                    imagePath: 'assets/images/reddit_logo.png',
+                    username: blockedUser.userName,
+                    isAccountBlocked: true,
+                  ),
             ],
           )
         ],
       ),
+    );
+  }
+}
+
+class BlockedUser {
+  final String id;
+  final String userName;
+  final String? avatarImage;
+
+  BlockedUser({
+    required this.id,
+    required this.userName,
+    this.avatarImage,
+  });
+
+  factory BlockedUser.fromJson(Map<String, dynamic> json) {
+    return BlockedUser(
+      id: json['id'],
+      userName: json['userName'],
+      avatarImage: json['avatarImage'],
     );
   }
 }
