@@ -10,16 +10,12 @@ class GradientButton extends StatelessWidget {
 
   final bool isPassFocused;
   final String buttonTitle;
-  final Function onTap;
+  final Function() onTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        if (isPassFocused) {
-          onTap();
-        }
-      },
+      onTap: onTap,
       child: Opacity(
         opacity: isPassFocused ? 1 : 0.5,
         child: Container(

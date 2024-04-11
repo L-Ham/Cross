@@ -236,6 +236,14 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                                     isUnderlined: true,
                                     onTap: () {
                                       //TODO: Implement the connect functionality
+                                      Navigator.pushNamed(
+                                        context,
+                                        DisconnectScreen.id,
+                                        arguments: {
+                                          'email': connectedEmailAddress,
+                                          'username': username,
+                                        },
+                                      );
                                     },
                                     fontSizeRatio: 0.018,
                                   ),

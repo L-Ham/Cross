@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:reddit_bel_ham/components/general_components/interactive_text.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/community_rules_screen.dart';
@@ -33,11 +35,11 @@ class AddPostScreen extends StatefulWidget {
 
 class _AddPostScreenState extends State<AddPostScreen> {
   bool isPostButtonActivated = false;
-  bool isFromSubreddit = true;
-  bool isLinkFieldVisible = false;
+  bool isSubredditSelected = false;
   FocusNode urlFocus = FocusNode();
   List<XFile> chosenImages = [];
   final ImagePicker _picker = ImagePicker();
+  TextEditingController titleController = TextEditingController();
   bool isLinkEnabled = true;
   bool isImageEnabled = true;
   bool isVideoEnabled = true;
@@ -54,9 +56,10 @@ class _AddPostScreenState extends State<AddPostScreen> {
   List<TextEditingController>? controllers;
   bool isSpoiler = false;
   bool isBrandAffiliate = false;
+  String subredditName = "";
+  String subredditImage = "";
 
   void addURL() {
-    isLinkFieldVisible = true;
     isLinkChosen = true;
     setAllIcons(false);
     urlFocus.requestFocus();
@@ -114,7 +117,6 @@ class _AddPostScreenState extends State<AddPostScreen> {
   void removeURL() {
     setState(() {
       showLinkError = false;
-      isLinkFieldVisible = false;
       setAllIcons(true);
       isLinkChosen = false;
       urlFocus.unfocus();
@@ -188,6 +190,11 @@ class _AddPostScreenState extends State<AddPostScreen> {
     urlFocus.addListener(() {
       setState(() {});
     });
+    titleController.addListener(() {
+      setState(() {
+        isPostButtonActivated = titleController.text.isNotEmpty;
+      });
+    });
   }
 
   @override
@@ -215,14 +222,28 @@ class _AddPostScreenState extends State<AddPostScreen> {
                 vertical: ScreenSizeHandler.screenHeight * 0.013),
             child: RoundedButton(
               buttonHeightRatio: 0.05,
-              buttonWidthRatio: 0.085,
-              onTap: () {
-                //TODO: CONTINUE
+              buttonWidthRatio: 0.08,
+              onTap: () async {
+                if (!isSubredditSelected) {
+                  final result = await Navigator.pushNamed(
+                          context, PostToScreen.id,
+                          arguments: {"subredditName": subredditName})
+                      as Map<String, String>?;
+                  if (result != null) {
+                    setState(() {
+                      subredditName = result['subredditName']!;
+                      subredditImage = result['subredditImage']!;
+                      isSubredditSelected = true;
+                    });
+                  }
+                } else {
+                  //TODO: POST HERE
+                }
               },
               buttonColor:
                   isPostButtonActivated ? kSwitchOnColor : Colors.grey[900]!,
               child: Text(
-                isFromSubreddit ? "Post" : "Next",
+                isSubredditSelected ? "Post" : "Next",
                 style: TextStyle(
                   fontSize: ScreenSizeHandler.screenHeight * 0.019,
                   fontWeight: FontWeight.bold,
@@ -240,122 +261,162 @@ class _AddPostScreenState extends State<AddPostScreen> {
             child: Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: ScreenSizeHandler.screenHeight * 0.015,
-                    horizontal: ScreenSizeHandler.screenHeight * 0.026,
+                  padding: EdgeInsets.only(
+                    bottom: ScreenSizeHandler.screenHeight * 0.015,
+                    left: ScreenSizeHandler.screenHeight * 0.026,
+                    right: ScreenSizeHandler.screenHeight * 0.026,
                   ),
                   child: Column(
                     children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(
-                            bottom: ScreenSizeHandler.screenHeight * 0.01),
-                        child: Row(
-                          children: [
-                            CircleAvatar(
-                              radius: ScreenSizeHandler.screenHeight * 0.013,
-                              child: Image(
-                                //TODO: Make the image dynamic
-                                image:
-                                    AssetImage('assets/images/reddit_logo.png'),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  left: ScreenSizeHandler.screenWidth * 0.045),
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.pushNamed(context, PostToScreen.id);
-                                },
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      "r/redditBelham",
-                                      style: TextStyle(
-                                          fontSize:
-                                              ScreenSizeHandler.bigger * 0.022,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    const Icon(Icons.keyboard_arrow_down),
-                                  ],
+                      Visibility(
+                        visible: isSubredditSelected,
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                              bottom: ScreenSizeHandler.screenHeight * 0.01),
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                radius: ScreenSizeHandler.screenHeight * 0.013,
+                                child: Image(
+                                  //TODO: Make the image dynamic
+                                  image: AssetImage(
+                                      'assets/images/reddit_logo.png'),
                                 ),
                               ),
-                            ),
-                            const Expanded(child: SizedBox()),
-                            InteractiveText(
-                              text: "RULES",
-                              fontSizeRatio: 0.018,
-                              onTap: () {
-                                Navigator.pushNamed(
-                                    context, CommunityRulesScreen.id);
-                              },
-                              isUnderlined: true,
-                            )
-                          ],
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    left:
+                                        ScreenSizeHandler.screenWidth * 0.045),
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    final result = await Navigator.pushNamed(
+                                        context, PostToScreen.id, arguments: {
+                                      "subredditName": subredditName
+                                    }) as Map<String, String>?;
+                                    if (result != null) {
+                                      setState(() {
+                                        subredditName =
+                                            result['subredditName']!;
+                                        subredditImage =
+                                            result['subredditImage']!;
+                                      });
+                                    }
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        "r/$subredditName",
+                                        style: TextStyle(
+                                            fontSize: ScreenSizeHandler.bigger *
+                                                0.022,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const Icon(Icons.keyboard_arrow_down),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const Expanded(child: SizedBox()),
+                              InteractiveText(
+                                text: "RULES",
+                                fontSizeRatio: 0.018,
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                      context, CommunityRulesScreen.id);
+                                },
+                                isUnderlined: true,
+                              )
+                            ],
+                          ),
                         ),
                       ),
                       AddPostTagsRow(
                           isSpoiler: isSpoiler,
                           isBrandAffiliate: isBrandAffiliate),
-                      const AddPostTextField(
+                      AddPostTextField(
+                        controller: titleController,
                         hintText: "Title",
                         fontSizeRatio: 0.032,
                         isTitle: true,
                       ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: RoundedButton(
-                          onTap: () async {
-                            final result = await showModalBottomSheet(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AddTagsBottomSheet(
-                                  isSpoiler: isSpoiler,
-                                  isBrandAffiliate: isBrandAffiliate,
-                                  setIsBrandAffiliate:
-                                      setIsBrandAffiliateCallback,
-                                  setIsSpoiler: setIsSpoilerCallback,
+                      Visibility(
+                        visible: isSubredditSelected,
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                              top: ScreenSizeHandler.screenHeight * 0.01),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: RoundedButton(
+                              onTap: () async {
+                                final result = await showModalBottomSheet(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AddTagsBottomSheet(
+                                      isSpoiler: isSpoiler,
+                                      isBrandAffiliate: isBrandAffiliate,
+                                      setIsBrandAffiliate:
+                                          setIsBrandAffiliateCallback,
+                                      setIsSpoiler: setIsSpoilerCallback,
+                                    );
+                                  },
                                 );
+                                if (result != null) {
+                                  setState(() {
+                                    isSpoiler = result['isSpoiler']!;
+                                    isBrandAffiliate =
+                                        result['isBrandAffiliate']!;
+                                    isSubredditSelected = true;
+                                  });
+                                }
                               },
-                            );
-                            if (result != null) {
-                              setState(() {
-                                isSpoiler = result['isSpoiler']!;
-                                isBrandAffiliate = result['isBrandAffiliate']!;
-                              });
-                            }
-                          },
-                          buttonColor: kFillingColor,
-                          buttonHeightRatio: 0.038,
-                          buttonWidthRatio: 0.17,
-                          child: Text(
-                            'Add tags (optional)',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: ScreenSizeHandler.bigger * 0.015,
-                                fontWeight: FontWeight.w500),
+                              buttonColor: kFillingColor,
+                              buttonHeightRatio: 0.038,
+                              buttonWidthRatio: 0.17,
+                              child: Text(
+                                'Add tags (optional)',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: ScreenSizeHandler.bigger * 0.015,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
                           ),
                         ),
                       ),
                       Visibility(
-                        visible: isLinkFieldVisible,
-                        child: AddPostTextField(
-                          focusNode: urlFocus,
-                          hintText: "URL",
-                          hasClearButton: true,
-                          onClearTap: () {
-                            setState(() {
-                              removeURL();
-                            });
-                          },
-                          onChanged: (p0) {
-                            setState(() {
-                              if (isValidUrl(p0) || p0.isEmpty) {
-                                showLinkError = false;
-                              } else {
-                                showLinkError = true;
-                              }
-                            });
-                          },
+                        visible: isLinkChosen,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: SizedBox(
+                                child: AddPostTextField(
+                                  focusNode: urlFocus,
+                                  hintText: "URL",
+                                  onChanged: (p0) {
+                                    setState(() {
+                                      if (isValidUrl(p0) || p0.isEmpty) {
+                                        showLinkError = false;
+                                      } else {
+                                        showLinkError = true;
+                                      }
+                                    });
+                                  },
+                                ),
+                              ),
+                            ),
+                            IconButtonWithCaption(
+                              icon: Icons.clear,
+                              onTap: () {
+                                setState(() {
+                                  removeURL();
+                                });
+                              },
+                              backgroundColor: kFillingColor,
+                              iconRadiusRatio: 0.018,
+                              isIconEnabled: true,
+                              hasCaption: false,
+                            )
+                          ],
                         ),
                       ),
                       Visibility(
@@ -612,6 +673,10 @@ class _AddPostScreenState extends State<AddPostScreen> {
   @override
   void dispose() {
     urlFocus.dispose();
+    super.dispose();
+    titleController.removeListener(() {});
+    titleController.dispose();
+
     super.dispose();
   }
 }

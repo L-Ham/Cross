@@ -18,9 +18,29 @@ class DisconnectScreen extends StatefulWidget {
 class _DisconnectScreenState extends State<DisconnectScreen> {
   TextEditingController passController = TextEditingController();
   bool isPassObscure = true;
-  bool isPassFocused = false;
+  bool isPassNotEmpty = false;
   late String email;
   late String username;
+
+  void showSnackBar(BuildContext context, String message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    passController.addListener(() {
+      setState(() {
+        isPassNotEmpty = passController.text.isNotEmpty;
+      });
+    });
+  }
 
   @override
   void didChangeDependencies() {
@@ -117,10 +137,13 @@ class _DisconnectScreenState extends State<DisconnectScreen> {
               ),
               child: GradientButton(
                 key: const Key("disconnect_screen_confirm_button"),
-                isPassFocused: isPassFocused,
+                isPassFocused: isPassNotEmpty,
                 buttonTitle: "Confirm",
                 onTap: () {
                   //TODO: Implement the logic for disconnecting the account
+                  if (isPassNotEmpty) {
+                    showSnackBar(context, "Invalid username or password");
+                  }
                 },
               )),
         ],
