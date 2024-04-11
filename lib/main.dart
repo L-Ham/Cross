@@ -32,29 +32,27 @@ void main() async {
   await Firebase.initializeApp(
   options: DefaultFirebaseOptions.currentPlatform,
 );
-  runApp(RedditByLham(token: prefs.getString('token')));
-  // runApp(RedditByLham(token: 'token'));
+  String? token = prefs.getString('token');
+  if (token != null) {
+    TokenDecoder.updateToken(token);
+  }
+  runApp(RedditByLham(token: token));
 }
 
 class RedditByLham extends StatelessWidget {
-  final token;
+  final String? token;
   const RedditByLham({@required this.token, Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     ScreenSizeHandler.initialize(
         MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
-
-    if (token != null) {
-      TokenDecoder.updateToken(token!);
-    }
     return MaterialApp(
       title: 'HTTP',
       theme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
       routes: {
         FirstScreen.id: (context) => FirstScreen(),
-        CreateCommunityScreen.id: (context) =>
-            const CreateCommunityScreen(),
+        CreateCommunityScreen.id: (context) => const CreateCommunityScreen(),
         AccountSettingsScreen.id: (context) => const AccountSettingsScreen(),
         SettingsScreen.id: (context) => SettingsScreen(),
         NotificationSettingsScreen.id: (context) =>
@@ -74,11 +72,12 @@ class RedditByLham extends StatelessWidget {
         CommunityRulesScreen.id: (context) => const CommunityRulesScreen(),
         PostToScreen.id: (context) => const PostToScreen(),
       },
-      initialRoute: (token == null)
-          ? FirstScreen.id
-          : (JwtDecoder.isExpired(token))
-              ? LoginScreen.id
-              : HomePageScreen.id,
+      // initialRoute: (token == null)
+      //     ? FirstScreen.id
+      //     : (JwtDecoder.isExpired(token))
+      //         ? LoginScreen.id
+      //         : HomePageScreen.id,
+      initialRoute: FirstScreen.id,
     );
   }
 }

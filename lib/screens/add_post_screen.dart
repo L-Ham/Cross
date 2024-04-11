@@ -143,7 +143,6 @@ class _AddPostScreenState extends State<AddPostScreen> {
       isVideoChosen = false;
       _controller.pause();
       setAllIcons(true);
-      debugPrint(isVideoChosen.toString());
     });
   }
 

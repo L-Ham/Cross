@@ -7,11 +7,16 @@ import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 const String baseURL = "https://reddit-bylham.me/api";
 
 class ApiService {
-  String token = TokenDecoder.token;
-  final Map<String, String> headerWithToken = {
-    'Content-Type': 'application/json; charset=UTF-8',
-    'Authorization': 'Bearer ${TokenDecoder.token}',
-  };
+  String token;
+  late Map<String, String> headerWithToken;
+
+  ApiService(this.token) {
+    token = TokenDecoder.token;
+    headerWithToken = {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer $token',
+    };
+  }
 
   Future<dynamic> request(String endpoint,
       {String method = 'GET',

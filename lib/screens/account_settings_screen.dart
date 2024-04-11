@@ -29,7 +29,7 @@ class AccountSettingsScreen extends StatefulWidget {
 }
 
 class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
-  ApiService? apiService;
+  ApiService apiService = ApiService(TokenDecoder.token);
   String gender = "Man";
   String connectedEmailAddress = "daniel@email.com";
   String username = "dani";
@@ -40,8 +40,8 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
   Map<String, dynamic> profileSettings = {};
 
   void getUserData() async {
-    Map<String, dynamic> data = await apiService!.getUserAccountSettings();
-    profileSettings = await apiService!.getProfileSettings();
+    Map<String, dynamic> data = await apiService.getUserAccountSettings();
+    profileSettings = await apiService.getProfileSettings();
     setState(() {
       gender = data['accountSettings']['gender'];
       connectedEmailAddress = data['accountSettings']['email'];
@@ -56,7 +56,6 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
   @override
   void initState() {
     super.initState();
-    apiService = ApiService();
     getUserData();
   }
 
@@ -296,7 +295,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                                 });
                                 profileSettings['profileSettings']
                                     ['allowFollow'] = allowPeopleToFollowYou;
-                                apiService!
+                                apiService
                                     .patchProfileSettings(profileSettings);
                               },
                             ),
