@@ -58,8 +58,9 @@ class RedditByLham extends StatelessWidget {
         ChangePasswordScreen.id: (context) => const ChangePasswordScreen(),
         SignupScreen.id: (context) => const SignupScreen(),
         LoginScreen.id: (context) => const LoginScreen(),
-        ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
-        HomePageScreen.id: (context) => const HomePageScreen(),
+        ForgotPasswordScreen.id: (context) =>
+            const ForgotPasswordScreen(username: ''),
+        HomePageScreen.id: (context) => HomePageScreen(),
         BlockedAccount.id: (context) => const BlockedAccount(),
         AddPostScreen.id: (context) => const AddPostScreen(),
         CreateUsernameScreen.id: (context) => const CreateUsernameScreen(),
@@ -67,6 +68,7 @@ class RedditByLham extends StatelessWidget {
         CommunityRulesScreen.id: (context) => const CommunityRulesScreen(),
         PostToScreen.id: (context) => const PostToScreen(),
       },
+
       // initialRoute: (token == null)
       //     ? FirstScreen.id
       //     : (JwtDecoder.isExpired(token))
