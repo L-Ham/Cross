@@ -6,7 +6,7 @@ import 'package:reddit_bel_ham/screens/forgot_password_screen.dart';
 void main() {
   testWidgets('Forget password screen UI test', (WidgetTester tester) async {
     
-    await tester.pumpWidget(const MaterialApp(home: ForgotPasswordScreen()));
+    await tester.pumpWidget(const MaterialApp(home: ForgotPasswordScreen(username: '',)));
 
     // Verify that the 'Forgot Password?' text is displayed
     expect(find.text('Forgot Password?'), findsOneWidget);

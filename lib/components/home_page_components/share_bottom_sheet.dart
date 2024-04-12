@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/components/home_page_components/share_to_post_card.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
+import 'package:clipboard/clipboard.dart';
+import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 
 Widget buildPostModalBottomSheet(BuildContext context, Post post) {
   return SafeArea(
@@ -34,7 +36,7 @@ Widget buildPostModalBottomSheet(BuildContext context, Post post) {
             child: sharetoPostCard(post: post),
           ),
           Container(
-            width: MediaQuery.of(context).size.width * 0.9,
+            width: ScreenSizeHandler.screenWidth * 0.9,
             child: Divider(
               color: Color.fromARGB(255, 72, 71, 71),
               thickness: 1.0,
@@ -72,6 +74,35 @@ Widget buildPostModalBottomSheet(BuildContext context, Post post) {
                     Icon(Icons.folder_copy_outlined, color: Colors.white),
                     Text(
                       'Save',
+                      style: TextStyle(color: Colors.white, fontSize: 10.0),
+                    ),
+                  ],
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                  FlutterClipboard.copy(post.link).then((result) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 10.0),
+                            child: Text(
+                              'Link copied to clipboard',
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50.0),
+                            )),
+                      ),
+                    );
+
+                  });
+                },
+                child: Column(
+                  children: [
+                    Icon(Icons.copy_outlined, color: Colors.white),
+                    Text(
+                      'Copy Link',
                       style: TextStyle(color: Colors.white, fontSize: 10.0),
                     ),
                   ],

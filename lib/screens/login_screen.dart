@@ -45,8 +45,7 @@ class LoginScreenState extends State<LoginScreen> {
     prefs = await SharedPreferences.getInstance();
   }
 
-  Future<void> login(
-    String userName,String password) async {
+  Future<void> login(String userName, String password) async {
     final url = Uri.parse('https://reddit-bylham.me/api/auth/login');
 
     final Map<String, dynamic> requestData = {
@@ -55,7 +54,7 @@ class LoginScreenState extends State<LoginScreen> {
       'password': password,
     };
     late final response;
-    String message='Login failed.';
+    String message = 'Login failed.';
     try {
       response = await http.post(
         url,
@@ -74,39 +73,40 @@ class LoginScreenState extends State<LoginScreen> {
             MaterialPageRoute(
                 builder: (context) => const HomePageScreen()));
       }
-      showDialog(context: context, builder:
-          (BuildContext context) {
-        return AlertDialog(
-          title: Text(message),
-          content: Text(response.body.toString()),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('OK'),
-            )
-          ],
-        );
-      });
-
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(message),
+              content: Text(response.body.toString()),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('OK'),
+                )
+              ],
+            );
+          });
     } catch (e) {
       print('Failed to login.');
-      showDialog(context: context, builder:
-          (BuildContext context) {
-        return AlertDialog(
-          title: Text('Failed to login'),
-          content: Text('Please try again later.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('OK'),
-            )
-          ],
-        );
-      });
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Failed to login'),
+              content: Text('Please try again later.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('OK'),
+                )
+              ],
+            );
+          });
     }
   }
   Future<void> loginWithGoogle(
@@ -270,10 +270,11 @@ class LoginScreenState extends State<LoginScreen> {
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(
-          horizontal: ScreenSizeHandler.screenWidth * 0.04,
-          vertical: ScreenSizeHandler.screenHeight * 0.01),
-                      child: CredentialsTextField( 
-                        key: const Key('login_screen_email_or_username_text_field'),
+                          horizontal: ScreenSizeHandler.screenWidth * 0.04,
+                          vertical: ScreenSizeHandler.screenHeight * 0.01),
+                      child: CredentialsTextField(
+                        key: const Key(
+                            'login_screen_email_or_username_text_field'),
                         controller: nameController,
                         isObscure: false,
                         text: 'Email or username',
@@ -309,8 +310,10 @@ class LoginScreenState extends State<LoginScreen> {
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(
-                          horizontal: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
-                          vertical: ScreenSizeHandler.screenHeight * kButtonHeightRatio),
+                          horizontal:
+                              ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+                          vertical: ScreenSizeHandler.screenHeight *
+                              kButtonHeightRatio),
                       child: CredentialsTextField(
                         key: const Key('login_screen_password_text_field'),
                         controller: passController,
@@ -352,15 +355,18 @@ class LoginScreenState extends State<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           TextLink(
-                            key: const Key('login_screen_forgot_password_text_link'),
-                            fontSizeRatio: ScreenSizeHandler.smaller * kButtonSmallerFontRatio,
+                            key: const Key(
+                                'login_screen_forgot_password_text_link'),
+                            fontSizeRatio: ScreenSizeHandler.smaller *
+                                kButtonSmallerFontRatio,
                             text: 'Forgot your password?',
                             onTap: () {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          const ForgotPasswordScreen()));
+                                          ForgotPasswordScreen(
+                                              username: nameController.text)));
                             },
                           ),
                         ],
@@ -375,7 +381,8 @@ class LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Padding(
-                padding: EdgeInsets.only(bottom: ScreenSizeHandler.screenHeight * kButtonWidthRatio),
+                padding: EdgeInsets.only(
+                    bottom: ScreenSizeHandler.screenHeight * kButtonWidthRatio),
                 child: ContinueButton(
                   key: const Key('login_screen_continue_button'),
                   text: "Continue",
