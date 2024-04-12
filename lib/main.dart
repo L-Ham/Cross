@@ -72,7 +72,7 @@ class RedditByLham extends StatelessWidget {
       //     : (JwtDecoder.isExpired(token))
       //         ? LoginScreen.id
       //         : HomePageScreen.id,
-      initialRoute: AddPostScreen.id,
+      initialRoute: FirstScreen.id,
     );
   }
 }
