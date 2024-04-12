@@ -7,6 +7,10 @@ import 'package:reddit_bel_ham/components/settings_components/settings_tile_lead
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/home_page_seach_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
+import 'package:reddit_bel_ham/utilities/token_decoder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:reddit_bel_ham/screens/settings_screen.dart';
 
 class HomePageScreen extends StatefulWidget {
   const HomePageScreen({super.key});
@@ -23,6 +27,13 @@ class _HomePageScreenState extends State<HomePageScreen> {
   bool onlineStatusToggle = true;
   Color onlineStatusColor = kOnlineStatusColor;
   double onlineStatusWidth = ScreenSizeHandler.smaller * 0.42;
+  late String email;
+  @override
+  void initState() {
+    super.initState();
+    username = TokenDecoder.username;
+    email = TokenDecoder.email;
+  }
 
   String selectedMenuItem = "Home";
   final List<String> menuItems = ['Home', 'Popular', 'Latest News'];
@@ -304,7 +315,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                   titleText: "Settings",
                   trailingWidget: Icon(Icons.nights_stay_sharp, size: 25),
                   onTap: () {
-                    Navigator.pushNamed(context, 'account_settings_screen');
+                    Navigator.pushNamed(context, SettingsScreen.id);
                   },
                 ),
               ],
