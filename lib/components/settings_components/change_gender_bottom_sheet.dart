@@ -74,19 +74,19 @@ class _ChangeGenderBottomSheetState extends State<ChangeGenderBottomSheet> {
               textAlign: TextAlign.center,
             ),
             SettingsRadioButtonTile(
-              key: const Key('change_gender_woman_radio_button_tile'),
+              key: const Key('change_gender_female_radio_button_tile'),
               groupValueNotifier: groupValueNotifier,
-              value: "Woman",
+              value: "female",
             ),
             SettingsRadioButtonTile(
-              key: const Key('change_gender_man_radio_button_tile'),
+              key: const Key('change_gender_male_radio_button_tile'),
               groupValueNotifier: groupValueNotifier,
-              value: "Man",
+              value: "male",
             ),
             SettingsRadioButtonTile(
               key: const Key('change_gender_others_radio_button_tile'),
               groupValueNotifier: groupValueNotifier,
-              value: "Others",
+              value: "others",
             )
           ],
         ),

@@ -1,6 +1,7 @@
 // import '../services/api_services.dart';
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/screens/home_page_screen.dart';
+import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import '../utilities/screen_size_handler.dart';
 import '../constants.dart';
 import '../components/general_components/credentials_text_field.dart';
@@ -8,6 +9,7 @@ import '../components/general_components/continue_button.dart';
 import '../components/login_components/logo_text_app_bar.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AboutYouScreen extends StatefulWidget {
   const AboutYouScreen({Key? key}) : super(key: key);
@@ -19,7 +21,7 @@ class AboutYouScreen extends StatefulWidget {
 }
 
 class AboutYouScreenState extends State<AboutYouScreen> {
-  String gender = 'None';
+  String gender = '';
   late String username, email, password;
   @override
   void didChangeDependencies() {
@@ -28,6 +30,17 @@ class AboutYouScreenState extends State<AboutYouScreen> {
     username = args['username'];
     email = args['email'];
     password = args['password'];
+  }
+  late SharedPreferences prefs;
+
+  @override
+  void initState() {
+    super.initState();
+    initSharedPrefs();
+  }
+
+  void initSharedPrefs() async {
+    prefs = await SharedPreferences.getInstance();
   }
 
   Future<void> signUp(
@@ -41,6 +54,7 @@ class AboutYouScreenState extends State<AboutYouScreen> {
       'gender': gender,
     };
     late final response;
+    String message='Signup failed.';
     try {
       response = await http.post(
         url,
@@ -50,12 +64,19 @@ class AboutYouScreenState extends State<AboutYouScreen> {
         body: jsonEncode(requestData),
       );
       if (response.statusCode == 200) {
-        Navigator.pushNamed(context, HomePageScreen.id, arguments: {'token: ${jsonDecode(response.body)['token']}'});
+        message='Signup successful.';
+        var token = jsonDecode(response.body)['token'];
+        prefs.setString('token', token);
+        TokenDecoder.updateToken(token);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => HomePageScreen()));
       }
       showDialog(context: context, builder:
           (BuildContext context) {
         return AlertDialog(
-          title: const Text('Signup successful'),
+          title: Text(message),
           content: Text(response.body.toString()),
           actions: [
             TextButton(
@@ -69,11 +90,11 @@ class AboutYouScreenState extends State<AboutYouScreen> {
       });
 
     } catch (e) {
-      print('Failed to sign up.');
+      print('Failed to signup.');
       showDialog(context: context, builder:
           (BuildContext context) {
         return AlertDialog(
-          title: Text('Failed to sign up'),
+          title: Text('Failed to login'),
           content: Text('Please try again later.'),
           actions: [
             TextButton(
@@ -98,9 +119,8 @@ class AboutYouScreenState extends State<AboutYouScreen> {
           LogoTextAppBar(
             key: const Key('about_you_screen_logo_text_app_bar_skip_button'),
             text: 'Skip',
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => HomePageScreen()));
+            onTap: () async {
+              await signUp(username, email, password, gender);
             },
           ),
           Expanded(
