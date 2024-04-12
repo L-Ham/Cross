@@ -1,8 +1,7 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reddit_bel_ham/components/general_components/interactive_text.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/community_rules_screen.dart';
@@ -501,7 +500,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             IconButtonWithCaption(
-                              icon: Icons.link,
+                              icon: FontAwesomeIcons.link,
+                              isFontAwesomeIcons: true,
                               caption: "Link",
                               onTap: () async {
                                 if (!isIconChosen()) {
@@ -525,7 +525,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
                               isIconEnabled: areIconsEnabled(),
                             ),
                             IconButtonWithCaption(
-                              icon: Icons.image,
+                              icon: FontAwesomeIcons.image,
+                              isFontAwesomeIcons: true,
                               caption: "Image",
                               onTap: () async {
                                 if (!isIconChosen()) {
@@ -547,8 +548,9 @@ class _AddPostScreenState extends State<AddPostScreen> {
                               isIconEnabled: areIconsEnabled(),
                             ),
                             IconButtonWithCaption(
-                              icon: Icons.play_arrow,
+                              icon: FontAwesomeIcons.play,
                               caption: "Video",
+                              isFontAwesomeIcons: true,
                               onTap: () async {
                                 if (!isIconChosen()) {
                                   pickVideo();
@@ -569,7 +571,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
                               isIconEnabled: areIconsEnabled(),
                             ),
                             IconButtonWithCaption(
-                              icon: Icons.poll_outlined,
+                              icon: FontAwesomeIcons.squarePollHorizontal,
+                              isFontAwesomeIcons: true,
                               caption: "Poll",
                               onTap: () async {
                                 if (!isIconChosen()) {
@@ -615,7 +618,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
                         });
                       },
                       icon: Icon(
-                        Icons.link,
+                        size: ScreenSizeHandler.bigger * 0.024,
+                        FontAwesomeIcons.link,
                         color:
                             areIconsEnabled() ? Colors.white : Colors.grey[700],
                       ),
@@ -627,7 +631,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
                         }
                       },
                       icon: Icon(
-                        Icons.photo_outlined,
+                        size: ScreenSizeHandler.bigger * 0.024,
+                        FontAwesomeIcons.image,
                         color:
                             areIconsEnabled() ? Colors.white : Colors.grey[700],
                       ),
@@ -637,7 +642,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
                         if (areIconsEnabled()) pickVideo();
                       },
                       icon: Icon(
-                        Icons.play_arrow,
+                        size: ScreenSizeHandler.bigger * 0.024,
+                        FontAwesomeIcons.play,
                         color:
                             areIconsEnabled() ? Colors.white : Colors.grey[700],
                       ),
@@ -647,7 +653,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
                         if (areIconsEnabled()) addPoll();
                       },
                       icon: Icon(
-                        Icons.poll_outlined,
+                        FontAwesomeIcons.squarePollHorizontal,
+                        size: ScreenSizeHandler.bigger*0.024,
                         color:
                             areIconsEnabled() ? Colors.white : Colors.grey[700],
                       ),
