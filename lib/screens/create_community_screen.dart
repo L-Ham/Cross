@@ -57,6 +57,7 @@ Future<void> createCommunity() async {
   print(_controller.text);
   print(communityType);
   print(isSwitched);
+  print("Community Created Successfully");
   Map<String, dynamic> data = {
     "name": _controller.text,
     "privacy": communityType,

@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+import '../components/home_page_components/post_card.dart';
+
 class ApiService {
   final String baseURL;
 
@@ -35,13 +37,13 @@ class ApiService {
 
   Future<dynamic> createCommunity(Map<String, dynamic> data) async {
     try {
-      String token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjVmOGEzZTRiZGNlYWU5YmNiODJkYWUwIiwidHlwZSI6Im5vcm1hbCJ9LCJpYXQiOjE3MTEzMDMyNTEsImV4cCI6NTAxNzExMzAzMjUxfQ.h0qBRBJXuerCcd-tVJx0yWDCSm5oyOrRIshgXy-38Ug';
+      String token =
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjVmOGEzZTRiZGNlYWU5YmNiODJkYWUwIiwidHlwZSI6Im5vcm1hbCJ9LCJpYXQiOjE3MTEzMDMyNTEsImV4cCI6NTAxNzExMzAzMjUxfQ.h0qBRBJXuerCcd-tVJx0yWDCSm5oyOrRIshgXy-38Ug';
       final response = await http.post(
         Uri.parse('https://reddit-bylham.me/api/subreddit/createCommunity'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization':
-              'Bearer $token',
+          'Authorization': 'Bearer $token',
         },
         body: jsonEncode(data),
       );
@@ -55,5 +57,16 @@ class ApiService {
       print('Exception occurred: $e');
       throw e;
     }
+  }
+
+  Future<List<Post>> fetchPosts() async {
+    //   final response = await http.get('https://MestanyElBackend.com/posts');
+
+    //   if (response.statusCode == 200) {
+    //     List<dynamic> jsonPosts = jsonDecode(response.body);
+    //     return jsonPosts.map((json) => Post.fromJson(json)).toList();
+    //   } else {
+    throw Exception('Failed to load posts');
+    //   }
   }
 }
