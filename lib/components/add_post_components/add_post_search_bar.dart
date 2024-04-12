@@ -15,6 +15,10 @@ class AddPostSearchBar extends StatelessWidget {
     return SizedBox(
       height: ScreenSizeHandler.bigger * 0.055,
       child: TextField(
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: ScreenSizeHandler.bigger * 0.018,
+        ),
         focusNode: isSearchFocused,
         cursorColor: Colors.blue,
         decoration: InputDecoration(

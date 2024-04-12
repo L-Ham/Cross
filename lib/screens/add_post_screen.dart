@@ -1,14 +1,19 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:reddit_bel_ham/components/general_components/interactive_text.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/community_rules_screen.dart';
 import 'package:reddit_bel_ham/screens/post_to_screen.dart';
+import 'package:reddit_bel_ham/services/api_service.dart';
 import 'package:reddit_bel_ham/utilities/is_valid_url.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'package:video_player/video_player.dart';
 import '../components/add_post_components/add_post_tags_row.dart';
 import '../components/add_post_components/add_post_text_field.dart';
@@ -39,6 +44,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
   List<XFile> chosenImages = [];
   final ImagePicker _picker = ImagePicker();
   TextEditingController titleController = TextEditingController();
+  TextEditingController urlController = TextEditingController();
+  TextEditingController bodyController = TextEditingController();
   bool isLinkEnabled = true;
   bool isImageEnabled = true;
   bool isVideoEnabled = true;
@@ -57,6 +64,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
   bool isBrandAffiliate = false;
   String subredditName = "";
   String subredditImage = "";
+  ApiService apiService = ApiService(TokenDecoder.token);
+  File? videoFile;
 
   void addURL() {
     isLinkChosen = true;
@@ -78,8 +87,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
     FilePickerResult? result =
         await FilePicker.platform.pickFiles(type: FileType.video);
     if (result != null) {
-      File file = File(result.files.single.path!);
-      _controller = VideoPlayerController.file(file)
+      File videoFile = File(result.files.single.path!);
+      _controller = VideoPlayerController.file(videoFile)
         ..initialize().then((_) {
           setState(() {
             isVideoChosen = true;
@@ -223,20 +232,64 @@ class _AddPostScreenState extends State<AddPostScreen> {
               buttonHeightRatio: 0.05,
               buttonWidthRatio: 0.08,
               onTap: () async {
-                if (!isSubredditSelected) {
-                  final result = await Navigator.pushNamed(
-                          context, PostToScreen.id,
-                          arguments: {"subredditName": subredditName})
-                      as Map<String, String>?;
-                  if (result != null) {
-                    setState(() {
-                      subredditName = result['subredditName']!;
-                      subredditImage = result['subredditImage']!;
-                      isSubredditSelected = true;
-                    });
+                if (isPostButtonActivated) {
+                  if (!isSubredditSelected) {
+                    final result = await Navigator.pushNamed(
+                            context, PostToScreen.id,
+                            arguments: {"subredditName": subredditName})
+                        as Map<String, String>?;
+                    if (result != null) {
+                      setState(() {
+                        subredditName = result['subredditName']!;
+                        subredditImage = result['subredditImage']!;
+                        isSubredditSelected = true;
+                      });
+                    }
+                  } else {
+                    //TODO: POST HERE
+                    Map<String, dynamic> post = {
+                      "title": titleController.text,
+                      "subRedditId": "6600763f0e1e9482675cf856",
+                      "isSpoiler": isSpoiler,
+                      "text": bodyController.text,
+                    };
+                    if (isImageChosen) {
+                      post['type'] = "image";
+                      List<File> imageFiles = chosenImages
+                          .map((xfile) => File(xfile.path))
+                          .toList();
+                      await apiService.addMediaPost((imageFiles), post);
+                    } else if (isVideoChosen) {
+                      post['type'] = "video";
+                      await apiService.addMediaPost(([videoFile!]), post);
+                    } else if (isPollChosen) {
+                      DateTime now = DateTime.now();
+                      String formattedDate =
+                          DateFormat('yyyy-MM-ddTHH:mm:ssZ').format(now);
+                      DateTime pollEndTime =
+                          now.add(Duration(days: int.parse(pollDays[0])));
+                      String formattedPollEndTime =
+                          DateFormat('yyyy-MM-ddTHH:mm:ssZ')
+                              .format(pollEndTime);
+                      post['type'] = "poll";
+
+                      post["poll.options"] =
+                          controllers!.map((e) => e.text).toList();
+                      post["poll.votingLength"] = "0";
+                      post["poll.startTime"] = formattedDate.toString();
+                      post["poll.endTime"] = formattedPollEndTime.toString();
+                      apiService.addPollPost(post);
+                    }
+                    else if(isLinkChosen){
+                      post['type'] = "link";
+                      post['url'] = urlController.text;
+                      apiService.addTextPost(post);
+                    }
+                    else{
+                      post['type'] = "text";
+                      apiService.addTextPost(post);
+                    }
                   }
-                } else {
-                  //TODO: POST HERE
                 }
               },
               buttonColor:
@@ -389,6 +442,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                             Expanded(
                               child: SizedBox(
                                 child: AddPostTextField(
+                                  controller: urlController,
                                   focusNode: urlFocus,
                                   hintText: "URL",
                                   onChanged: (p0) {
@@ -446,6 +500,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                         ),
                       ),
                       AddPostTextField(
+                          controller: bodyController,
                           hintText: "body text (optional)",
                           maxLines: isPollChosen ? 1 : 20),
                       Visibility(
@@ -654,7 +709,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                       },
                       icon: Icon(
                         FontAwesomeIcons.squarePollHorizontal,
-                        size: ScreenSizeHandler.bigger*0.024,
+                        size: ScreenSizeHandler.bigger * 0.024,
                         color:
                             areIconsEnabled() ? Colors.white : Colors.grey[700],
                       ),

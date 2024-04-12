@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_bel_ham/components/add_post_components/add_post_search_bar.dart';
 import 'package:reddit_bel_ham/components/general_components/interactive_text.dart';
 import 'package:reddit_bel_ham/components/general_components/rounded_button.dart';
 import 'package:reddit_bel_ham/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../components/add_post_components/add_post_search_bar.dart';
 import '../components/add_post_components/post_to_subreddit_tile.dart';
 import '../utilities/screen_size_handler.dart';
 
@@ -19,6 +20,46 @@ class PostToScreen extends StatefulWidget {
 class _PostToScreenState extends State<PostToScreen> {
   FocusNode searchFocus = FocusNode();
   bool isSearchFocused = false;
+
+  void selectSubreddit(int i) {
+    String selectedSubreddit = subredditNames.removeAt(i);
+    subredditNames.insert(0, selectedSubreddit);
+    String selectedImage = subredditImages.removeAt(i);
+    subredditImages.insert(0, selectedImage);
+    int selectedNumOfOnlineUsers = numOfOnlineUsers.removeAt(i);
+    numOfOnlineUsers.insert(0, selectedNumOfOnlineUsers);
+
+    saveSubredditData();
+
+    Navigator.pop(context, {
+      "subredditName": selectedSubreddit,
+      "subredditImage": selectedImage
+    });
+  }
+
+  Future<void> saveSubredditData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('subredditNames', subredditNames);
+    await prefs.setStringList('subredditImages', subredditImages);
+    await prefs.setStringList(
+        'numOfOnlineUsers', numOfOnlineUsers.map((i) => i.toString()).toList());
+  }
+
+  Future<void> loadSubredditData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      subredditNames = prefs.getStringList('subredditNames') ?? subredditNames;
+      subredditImages =
+          prefs.getStringList('subredditImages') ?? subredditImages;
+      numOfOnlineUsers = (prefs.getStringList('numOfOnlineUsers') ??
+              numOfOnlineUsers.map((i) => i.toString()).toList())
+          .map((i) => int.parse(i))
+          .toList();
+    });
+    print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+    print(subredditNames);
+  }
+
   List<String> subredditNames = [
     "redditBelHam",
     "ay 7aga",
@@ -59,6 +100,7 @@ class _PostToScreenState extends State<PostToScreen> {
   @override
   void initState() {
     super.initState();
+    loadSubredditData();
     searchFocus.addListener(() {
       setState(() {
         isSearchFocused = searchFocus.hasFocus;
@@ -118,7 +160,9 @@ class _PostToScreenState extends State<PostToScreen> {
               child: Row(
                 children: [
                   Expanded(
-                    child: AddPostSearchBar(isSearchFocused: searchFocus),
+                    child: AddPostSearchBar(
+                      isSearchFocused: searchFocus,
+                    ),
                   ),
                   if (isSearchFocused)
                     Padding(
@@ -155,12 +199,7 @@ class _PostToScreenState extends State<PostToScreen> {
                   subredditImage: subredditImages[i],
                   numOfOnlineUsers: numOfOnlineUsers[i],
                   onTap: () {
-                    Navigator.pop(context, {
-                      "subredditName": subredditNames[i],
-                      "subredditImage": subredditImages[i]
-                    });
-                    String selectedSubreddit = subredditNames.removeAt(i);
-                    subredditNames.insert(0, selectedSubreddit);
+                    selectSubreddit(i);
                   },
                 ),
               if (isSeeMore)
@@ -171,12 +210,7 @@ class _PostToScreenState extends State<PostToScreen> {
                     subredditImage: subredditImages[i],
                     numOfOnlineUsers: numOfOnlineUsers[i],
                     onTap: () {
-                      Navigator.pop(context, {
-                        "subredditName": subredditNames[i],
-                        "subredditImage": subredditImages[i]
-                      });
-                      String selectedSubreddit = subredditNames.removeAt(i);
-                      subredditNames.insert(0, selectedSubreddit);
+                      selectSubreddit(i);
                     },
                   ),
               if (subredditNames.length > 5 && !isSeeMore)

@@ -20,10 +20,7 @@ class PostToSubredditTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.pop(context,
-            {"subredditName": subredditName, "subredditImage": subredditImage});
-      },
+      onTap: onTap,
       child: Padding(
         padding: EdgeInsets.symmetric(
             vertical: ScreenSizeHandler.screenHeight * 0.013),
