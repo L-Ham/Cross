@@ -68,7 +68,6 @@ class RedditByLham extends StatelessWidget {
         AboutYouScreen.id: (context) => const AboutYouScreen(),
         CommunityRulesScreen.id: (context) => const CommunityRulesScreen(),
         PostToScreen.id: (context) => const PostToScreen(),
-        InboxMessagesScreen.id: (context) => const InboxMessagesScreen(),
       },
 
       // initialRoute: (token == null)
@@ -76,7 +75,7 @@ class RedditByLham extends StatelessWidget {
       //     : (JwtDecoder.isExpired(token))
       //         ? LoginScreen.id
       //         : HomePageScreen.id,
-      initialRoute: InboxMessagesScreen.id,
+      initialRoute: HomePageScreen.id,
     );
   }
 }

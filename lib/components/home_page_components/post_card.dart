@@ -86,7 +86,7 @@ class _PostCardState extends State<PostCard> {
                 SizedBox(width: ScreenSizeHandler.screenWidth * 0.02),
                 Expanded(
                   child: Text(
-                    post.username,
+                    '${post.username}   7h',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: ScreenSizeHandler.screenWidth * 0.025,
@@ -134,22 +134,29 @@ class _PostCardState extends State<PostCard> {
                         ),
                       ),
                       if (post.type == 'link')
-                        LinkPreview(
-                          padding: EdgeInsets.only(
-                              bottom: ScreenSizeHandler.screenHeight * 0.0),
-                          metadataTextStyle: TextStyle(fontSize: 0, height: 0),
-                          metadataTitleStyle: TextStyle(fontSize: 0, height: 0),
-                          textStyle: TextStyle(fontSize: 0, height: 0),
-                          enableAnimation: true,
-                          onPreviewDataFetched: (data) {
-                            setState(() {
-                              post.previewData = data;
-                            });
+                        GestureDetector(
+                          onTap: () => {
+                            _launchURL(post.link),
                           },
-                          previewData: post
-                              .previewData, // Pass the preview data from the state
-                          text: post.link,
-                          width: ScreenSizeHandler.screenWidth * 0.25,
+                          child: LinkPreview(
+                            padding: EdgeInsets.only(
+                                bottom: ScreenSizeHandler.screenHeight * 0.05,
+                                right: ScreenSizeHandler.screenWidth * 0.02),
+                            metadataTextStyle:
+                                TextStyle(fontSize: 0, height: 0),
+                            metadataTitleStyle:
+                                TextStyle(fontSize: 0, height: 0),
+                            textStyle: TextStyle(fontSize: 0, height: 0),
+                            enableAnimation: true,
+                            onPreviewDataFetched: (data) {
+                              setState(() {
+                                post.previewData = data;
+                              });
+                            },
+                            previewData: post.previewData,
+                            text: post.link,
+                            width: ScreenSizeHandler.screenWidth * 0.25,
+                          ),
                         ),
                     ],
                   ),
@@ -240,6 +247,17 @@ class _PostCardState extends State<PostCard> {
                                           fontSize:
                                               ScreenSizeHandler.screenWidth *
                                                   0.025),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          left:
+                                              ScreenSizeHandler.bigger * 0.01),
+                                      child: Container(
+                                        width: ScreenSizeHandler.bigger * 0.001,
+                                        height: ScreenSizeHandler.bigger * 0.02,
+                                        color:
+                                            Color.fromARGB(102, 127, 126, 126),
+                                      ),
                                     )
                                   ],
                                 ),
@@ -262,8 +280,12 @@ class _PostCardState extends State<PostCard> {
                                 });
                               },
                               child: Padding(
-                                padding: EdgeInsets.all(
-                                    ScreenSizeHandler.screenWidth * 0.01),
+                                padding: EdgeInsets.only(
+                                    bottom:
+                                        ScreenSizeHandler.screenWidth * 0.01,
+                                    top: ScreenSizeHandler.screenWidth * 0.01,
+                                    right: ScreenSizeHandler.screenWidth * 0.01,
+                                    left: ScreenSizeHandler.screenWidth * 0.001),
                                 child: Row(
                                   children: [
                                     Icon(
@@ -321,7 +343,7 @@ class _PostCardState extends State<PostCard> {
                                             Icons.mode_comment_outlined,
                                             size:
                                                 ScreenSizeHandler.screenWidth *
-                                                    0.04,
+                                                    0.036,
                                             color: Colors.white,
                                           ),
                                         ),
@@ -380,13 +402,17 @@ class _PostCardState extends State<PostCard> {
                                 ),
                                 child: Icon(
                                   Icons.share,
-                                  size: ScreenSizeHandler.screenWidth * 0.04,
+                                  size: ScreenSizeHandler.screenWidth * 0.037,
                                   color: Colors.white,
                                 ),
                               ),
                               Padding(
-                                padding: EdgeInsets.all(
-                                    ScreenSizeHandler.screenWidth * 0.01),
+                                padding: EdgeInsets.only(
+                                    left: ScreenSizeHandler.screenWidth * 0.01,
+                                    right: ScreenSizeHandler.screenWidth * 0.02,
+                                    top: ScreenSizeHandler.screenWidth * 0.01,
+                                    bottom:
+                                        ScreenSizeHandler.screenWidth * 0.01),
                                 child: Text("147",
                                     style: TextStyle(
                                       color: Colors.white,

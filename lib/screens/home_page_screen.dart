@@ -47,7 +47,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
       comments: 141,
       type: "text",
       image: "",
-      link: "https://www.instagram.com/p/CJ9J9J1h7Zz/",
+      link: "",
     ),
     Post(
       username: "r/AnnieBakesCakes",
@@ -57,7 +57,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
       upvotes: 20,
       comments: 35,
       type: "image",
-      image: "assets/images/redditAvata2.png",
+      image: "assets/images/elham_logo.png",
       link: "",
     ),
     Post(

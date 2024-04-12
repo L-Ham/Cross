@@ -33,8 +33,10 @@ buildShareToPostCard(BuildContext context, Post post) {
         Padding(
           padding: EdgeInsets.only(
             left: ScreenSizeHandler.screenWidth * 0.025,
-            right: ScreenSizeHandler.screenWidth* 0.025,
-            top: ScreenSizeHandler.screenWidth* 0.025,
+            right: ScreenSizeHandler.screenWidth * 0.025,
+            top: post.type == 'image'
+                ? ScreenSizeHandler.screenWidth * 0.025
+                : ScreenSizeHandler.screenWidth * 0.04,
           ),
           child: Text(
             post.username,
@@ -45,7 +47,8 @@ buildShareToPostCard(BuildContext context, Post post) {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.all(5.0),
+          padding: EdgeInsets.all(
+              post.type == 'image' ? 7 : ScreenSizeHandler.screenWidth * 0.025),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
