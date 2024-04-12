@@ -7,8 +7,8 @@ import 'package:reddit_bel_ham/components/settings_components/settings_tile_lead
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/home_page_seach_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
-import 'package:reddit_bel_ham/screens/popular_posts_screen.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:reddit_bel_ham/components/home_page_components/trending_posts.dart';
 
 class HomePageScreen extends StatefulWidget {
   const HomePageScreen({super.key});
@@ -20,6 +20,7 @@ class HomePageScreen extends StatefulWidget {
 
 class _HomePageScreenState extends State<HomePageScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  PageController controller = PageController();
   String username = "peter_ashraf";
   String onlineStatusString = "On";
   bool onlineStatusToggle = true;
@@ -27,10 +28,60 @@ class _HomePageScreenState extends State<HomePageScreen> {
   double onlineStatusWidth = ScreenSizeHandler.smaller * 0.42;
 
   String selectedMenuItem = "Home";
-  final List<String> menuItems = ['Home', 'Popular', 'Latest'];
+
+  final List<DropdownMenuItem<String>> dropdownItems = [
+    DropdownMenuItem<String>(
+      value: 'Home',
+      child: Row(
+        children: [
+          const Icon(Icons.home),
+          SizedBox(
+              width: ScreenSizeHandler.screenWidth *
+                  0.05), // Adjust the spacing as needed
+          const Text('Home'),
+        ],
+      ),
+    ),
+    DropdownMenuItem<String>(
+      value: 'Popular',
+      child: Row(
+        children: [
+          const Icon(Icons.arrow_outward_outlined),
+          SizedBox(
+              width: ScreenSizeHandler.screenWidth *
+                  0.05), // Adjust the spacing as needed
+          const Text('Popular'),
+        ],
+      ),
+    ),
+    DropdownMenuItem<String>(
+      value: 'Latest',
+      child: Row(
+        children: [
+          const Icon(Icons.settings),
+          SizedBox(
+              width: ScreenSizeHandler.screenWidth *
+                  0.05), // Adjust the spacing as needed
+          const Text('Latest'),
+        ],
+      ),
+    )
+  ];
+
   final List<Post> posts = [
     Post(
-      username: "r/DanielAdel",
+      username: "r/NardoTheFish",
+      contentTitle:
+          "Is instagram buggering up for anyone else? I can't post anything",
+      content: "Check this page for more details",
+      upvotes: 90,
+      comments: 35,
+      type: "text",
+      image: "",
+      link: "",
+    ),
+    Post(
+      username: "r/DaveTheDude",
       contentTitle: "Foodie Instagrammers, Let's Talk Strategy!",
       content:
           "Hey fellow food lovers! I've been diving deep into the world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. It's incredible how much competition there is out there, right? I mean, everyone's snapping pics of their avocado toast and artisanal burgers. So, what are your go-to tips for making our food shots pop? Do you swear by natural lighting or do you have some secret editing tricks up your sleeve? And let's talk about captions too! I'm always struggling to strike the right balance between informative and witty. Let's share some wisdom and help each other elevate our Instagram game to the next level! 🍕✨",
@@ -41,7 +92,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
       link: "https://www.instagram.com/p/CJ9J9J1h7Zz/",
     ),
     Post(
-      username: "r/AnnieBakesCakes",
+      username: "r/PeterThePenguin",
       contentTitle: "Curating Culinary Moments on Instagram: Tips & Tricks!",
       content:
           "Hey foodies! I've been pondering tellow fthe world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. It's incredible how much competition there is out there, right? I mean, everyone's snapping pics of their avocado toast and artisanal burgers. So, what are your go-to tips for making our food shots pop? Dood lovers! I've been diving deep into the world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. Ihe art of curating culinary moments on Instagram latelto learn from your experien",
@@ -51,17 +102,34 @@ class _HomePageScreenState extends State<HomePageScreen> {
       image: "",
       link: "",
     ),
-    Post(
-      username: "r/JohannaDoesYoga",
-      contentTitle:
-          "Is instagram buggering up for anyone else? I can't post anything",
-      content: "Check this page for more details",
-      upvotes: 90,
-      comments: 35,
-      type: "text",
-      image: "",
-      link: "",
+  ];
+
+  final List<TrendingPost> trending = [
+    TrendingPost(
+      contentTitle: "Peter nayem 3al ard",
+      // content: "Check this page for more details",
+      image: const AssetImage('assets/images/peter_nayem.png'),
     ),
+    TrendingPost(
+      contentTitle: "Habouba nayma",
+      // content: "Check this page for more details",
+      image: const AssetImage('assets/images/habouba_nayma.png'),
+    ),
+    TrendingPost(
+      contentTitle: "David nayem",
+      // content: "Check this page for more details",
+      image: const AssetImage('assets/images/david_nayem.png'),
+    ),
+    TrendingPost(
+      contentTitle: "Nardo nayma",
+      // content: "Check this page for more details",
+      image: const AssetImage('assets/images/nardo_nayma.png'),
+    ),
+    TrendingPost(
+      contentTitle: "Daniel haymawetna",
+      // content: "Check this page for more details",
+      image: const AssetImage('assets/images/daniel_haymawetna.png'),
+    )
   ];
 
   @override
@@ -72,44 +140,50 @@ class _HomePageScreenState extends State<HomePageScreen> {
         key: _scaffoldKey,
         appBar: AppBar(
           leading: Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 2.0),
+            padding: EdgeInsets.only(left: ScreenSizeHandler.screenWidth * 0.02, right: ScreenSizeHandler.screenWidth * 0.01),
             child: GestureDetector(
               onTap: () {
                 _scaffoldKey.currentState?.openDrawer();
               },
               child: Icon(
                 Icons.menu,
-                size: 30,
+                size: ScreenSizeHandler.smaller * 0.085,
                 color: Colors.white,
               ),
             ),
           ),
-          title:  DropdownButtonHideUnderline(
+          title: DropdownButtonHideUnderline(
             child: DropdownButton2(
-              items: menuItems.map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
+              items: dropdownItems,
               onChanged: (String? newValue) {
-                setState(() {
-                  selectedMenuItem = newValue!;
-                });
-                if (selectedMenuItem == "Popular") {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const PopularPostsScreen()));
+                if (newValue != "Latest") {
+                  setState(() {
+                    selectedMenuItem = newValue!;
+                  });
+                  if (selectedMenuItem == "Home") {
+                    controller.jumpToPage(0);
+                  }
+                  if (selectedMenuItem == "Popular") {
+                    controller.jumpToPage(1);
+                  }
                 }
               },
               value: selectedMenuItem,
+              selectedItemBuilder: (BuildContext context) {
+                return dropdownItems
+                    .map<Widget>((DropdownMenuItem<String> item) {
+                  return Text(item.value!);
+                }).toList();
+              },
+              dropdownStyleData: DropdownStyleData(
+                width: ScreenSizeHandler.screenWidth,
+              ),
               underline: null,
+              isDense: true,
               iconStyleData: IconStyleData(
                   icon: Icon(Icons.keyboard_arrow_down_outlined,
                       color: Colors.white,
-                      size: ScreenSizeHandler.smaller * 0.045)
-                      ),
+                      size: ScreenSizeHandler.smaller * 0.045)),
               buttonStyleData: ButtonStyleData(
                 padding: EdgeInsets.symmetric(
                   vertical: ScreenSizeHandler.screenHeight * 0.01,
@@ -120,10 +194,11 @@ class _HomePageScreenState extends State<HomePageScreen> {
                   borderRadius: BorderRadius.circular(7),
                 ),
                 width: ScreenSizeHandler.screenWidth * 0.25,
-                height: ScreenSizeHandler.screenHeight * 0.05,
+                height: ScreenSizeHandler.bigger * 0.041,
               ),
               isExpanded: true,
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ),
           backgroundColor: Colors.black,
@@ -136,16 +211,16 @@ class _HomePageScreenState extends State<HomePageScreen> {
                 );
               },
               child: Padding(
-                padding: const EdgeInsets.all(2.0),
+                padding: EdgeInsets.all(ScreenSizeHandler.smaller * 0.01),
                 child: Icon(
                   Icons.search,
-                  size: 35,
+                  size: ScreenSizeHandler.smaller * 0.095,
                   color: Colors.white,
                 ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: EdgeInsets.all(ScreenSizeHandler.smaller * 0.03),
               child: GestureDetector(
                 onTap: () {
                   _scaffoldKey.currentState?.openEndDrawer();
@@ -155,13 +230,77 @@ class _HomePageScreenState extends State<HomePageScreen> {
             ),
           ],
         ),
-        body: ListView.builder(
-          itemCount: posts.length,
-          itemBuilder: (context, index) {
-            return PostCard(post: posts[index]);
-          },
+        body: PageView(
+          controller: controller,
+          onPageChanged: (value) => setState(() {
+            if (value == 0) {
+              selectedMenuItem = "Home";
+            } else {
+              selectedMenuItem = "Popular";
+            }
+          }),
+          children: [
+            SingleChildScrollView(
+              child: ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: posts.length,
+                itemBuilder: (context, index) {
+                  return PostCard(post: posts[index]);
+                },
+              ),
+            ),
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    height: ScreenSizeHandler.screenHeight * 0.05,
+                    color: Colors.black,
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: ScreenSizeHandler.screenWidth * 0.02,
+                              right: ScreenSizeHandler.screenWidth * 0.02),
+                          child: Icon(
+                            Icons.trending_up_rounded,
+                            color: Colors.white,
+                            size: ScreenSizeHandler.smaller * 0.055,
+                          ),
+                        ),
+                        const Text(
+                          'Trending Today',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: kDefaultFontSize,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: trending
+                          .map((post) => TrendingPostCard(post: post))
+                          .toList(),
+                    ),
+                  ),
+                  ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: posts.length,
+                    itemBuilder: (context, index) {
+                      return PostCard(post: posts[index]);
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-        drawer: Drawer(),
+        drawer: const Drawer(),
         endDrawer: Drawer(
           backgroundColor: kBackgroundColor,
           child: SafeArea(
@@ -186,11 +325,11 @@ class _HomePageScreenState extends State<HomePageScreen> {
                       bottom: ScreenSizeHandler.screenHeight * 0.02),
                   child: CircleAvatar(
                     backgroundColor: Colors.white,
-                    child: Text('A'),
                     radius: ScreenSizeHandler.bigger *
                         kSideBarCircleAvatarRadiusRatio,
                     foregroundImage:
-                        AssetImage('assets/images/reddit_logo.png'),
+                        const AssetImage('assets/images/reddit_logo.png'),
+                    child: const Text('A'),
                   ),
                 ),
                 Padding(
@@ -208,7 +347,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
                       onlineStatusToggle = !onlineStatusToggle;
                       if (onlineStatusToggle) {
                         onlineStatusString = "On";
-                        onlineStatusColor = Color.fromARGB(255, 0, 204, 120);
+                        onlineStatusColor =
+                            const Color.fromARGB(255, 0, 204, 120);
                         onlineStatusWidth = ScreenSizeHandler.smaller * 0.42;
                       } else {
                         onlineStatusString = "Off";
@@ -299,7 +439,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                     leadingIcon: Icons.settings_outlined,
                   ),
                   titleText: "Settings",
-                  trailingWidget: Icon(Icons.nights_stay_sharp, size: 25),
+                  trailingWidget: Icon(Icons.nights_stay_sharp, size: ScreenSizeHandler.smaller*0.063),
                   onTap: () {
                     Navigator.pushNamed(context, SettingsScreen.id);
                   },
@@ -308,253 +448,6 @@ class _HomePageScreenState extends State<HomePageScreen> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget buildPostCard(Post post) {
-    return Container(
-      color: kBackgroundColor,
-      child: Column(
-        children: [
-          ListTile(
-            leading: CircleAvatar(radius: 15),
-            title: Text(post.username, style: TextStyle(color: Colors.white)),
-          ),
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  post.contentTitle,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.0,
-                  ),
-                ),
-                SizedBox(height: 8.0),
-                Text(
-                  post.content,
-                  style: TextStyle(color: Colors.white),
-                ),
-              ],
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: kBackgroundColor,
-                      borderRadius: BorderRadius.circular(15.0),
-                      border: Border.all(
-                        color: kFillingColor,
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              post.isUpvoted ? post.upvotes-- : post.upvotes++;
-                              post.isUpvoted = !post.isUpvoted;
-                              post.isDownvoted = false;
-                            });
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                left: 8.0, right: 8.0, top: 3.0, bottom: 4.0),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.arrow_upward,
-                                  color: post.isUpvoted
-                                      ? Colors.red
-                                      : Colors.white,
-                                  size: 18.0,
-                                ),
-                                Text(
-                                  post.upvotes.toString(),
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 12.0),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              post.isDownvoted
-                                  ? post.upvotes++
-                                  : post.upvotes--;
-                              post.isDownvoted = !post.isDownvoted;
-                              post.isUpvoted = false;
-                            });
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.arrow_downward,
-                                  color: post.isDownvoted
-                                      ? const Color.fromARGB(255, 110, 85, 114)
-                                      : Colors.white,
-                                  size: 18.0,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      // Handle comment button tap
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(right: 10.0, left: 10.0),
-                            child: Row(
-                              children: [
-                                Container(
-                                    decoration: BoxDecoration(
-                                      color: kBackgroundColor,
-                                      borderRadius: BorderRadius.circular(15.0),
-                                      border: Border.all(
-                                        color: kFillingColor,
-                                      ),
-                                    ),
-                                    child: Row(children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Icon(
-                                          Icons.comment,
-                                          size: 15,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(4.0),
-                                        child: Text(
-                                          post.comments.toString(),
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 12.0),
-                                        ),
-                                      )
-                                    ])),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              GestureDetector(
-                onTap: () {
-                  showModalBottomSheet(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return SafeArea(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: kBackgroundColor,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(20.0),
-                              topRight: Radius.circular(20.0),
-                            ),
-                          ),
-                          padding: EdgeInsets.all(16.0),
-                          constraints: BoxConstraints(
-                            maxHeight:
-                                MediaQuery.of(context).size.height * 0.35,
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Share to...",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18.0,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              SizedBox(height: 100.0),
-                              SizedBox(height: 16.0),
-                              Text(
-                                "Your username stays hidden when you share outside of Reddit",
-                                style: TextStyle(
-                                  fontSize: 12.0,
-                                  color: kHintTextColor,
-                                ),
-                              ),
-                              SizedBox(height: 16.0),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Icon(Icons.facebook, color: Colors.white),
-                                  Icon(Icons.copy, color: Colors.white),
-                                  Icon(Icons.email, color: Colors.white),
-                                  Icon(Icons.more_horiz, color: Colors.white),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                },
-                child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15.0),
-                      border: Border.all(
-                        color: kFillingColor,
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(3.0),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(3.0),
-                            child: Icon(
-                              Icons.share,
-                              size: 12,
-                              color: Colors.white,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Text("147",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                )),
-                          ),
-                        ],
-                      ),
-                    )),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }
