@@ -11,6 +11,8 @@ import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:reddit_bel_ham/screens/settings_screen.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:reddit_bel_ham/components/home_page_components/trending_posts.dart';
 
 class HomePageScreen extends StatefulWidget {
   const HomePageScreen({super.key});
@@ -22,6 +24,7 @@ class HomePageScreen extends StatefulWidget {
 
 class _HomePageScreenState extends State<HomePageScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  PageController controller = PageController();
   String username = "peter_ashraf";
   String onlineStatusString = "On";
   bool onlineStatusToggle = true;
@@ -36,7 +39,46 @@ class _HomePageScreenState extends State<HomePageScreen> {
   }
 
   String selectedMenuItem = "Home";
-  final List<String> menuItems = ['Home', 'Popular', 'Latest News'];
+
+  final List<DropdownMenuItem<String>> dropdownItems = [
+    DropdownMenuItem<String>(
+      value: 'Home',
+      child: Row(
+        children: [
+          const Icon(Icons.home),
+          SizedBox(
+              width: ScreenSizeHandler.screenWidth *
+                  0.05), // Adjust the spacing as needed
+          const Text('Home'),
+        ],
+      ),
+    ),
+    DropdownMenuItem<String>(
+      value: 'Popular',
+      child: Row(
+        children: [
+          const Icon(Icons.arrow_outward_outlined),
+          SizedBox(
+              width: ScreenSizeHandler.screenWidth *
+                  0.05), // Adjust the spacing as needed
+          const Text('Popular'),
+        ],
+      ),
+    ),
+    DropdownMenuItem<String>(
+      value: 'Latest',
+      child: Row(
+        children: [
+          const Icon(Icons.settings),
+          SizedBox(
+              width: ScreenSizeHandler.screenWidth *
+                  0.05), // Adjust the spacing as needed
+          const Text('Latest'),
+        ],
+      ),
+    )
+  ];
+
   final List<Post> posts = [
     Post(
       username: "r/DanielAdel",
@@ -83,7 +125,33 @@ class _HomePageScreenState extends State<HomePageScreen> {
       link: "",
     )
   ];
-
+   final List<TrendingPost> trending = [
+    TrendingPost(
+      contentTitle: "Peter nayem 3al ard",
+      // content: "Check this page for more details",
+      image: const AssetImage('assets/images/peter_nayem.png'),
+    ),
+    TrendingPost(
+      contentTitle: "Habouba nayma",
+      // content: "Check this page for more details",
+      image: const AssetImage('assets/images/habouba_nayma.png'),
+    ),
+    TrendingPost(
+      contentTitle: "David nayem",
+      // content: "Check this page for more details",
+      image: const AssetImage('assets/images/david_nayem.png'),
+    ),
+    TrendingPost(
+      contentTitle: "Nardo nayma",
+      // content: "Check this page for more details",
+      image: const AssetImage('assets/images/nardo_nayma.png'),
+    ),
+    TrendingPost(
+      contentTitle: "Daniel haymawetna",
+      // content: "Check this page for more details",
+      image: const AssetImage('assets/images/daniel_haymawetna.png'),
+    )
+  ];
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -91,54 +159,67 @@ class _HomePageScreenState extends State<HomePageScreen> {
       child: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          leading: Row(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(
-                    left: ScreenSizeHandler.screenWidth * 0.018,
-                    right: ScreenSizeHandler.screenWidth * 0.02),
-                child: GestureDetector(
-                  onTap: () {
-                    _scaffoldKey.currentState?.openDrawer();
-                  },
-                  child: Icon(
-                    Icons.menu,
-                    size: 30,
-                    color: Colors.white,
-                  ),
-                ),
+          leading:  Padding(
+            padding: EdgeInsets.only(left: ScreenSizeHandler.screenWidth * 0.018, right: ScreenSizeHandler.screenWidth * 0.02),
+            child: GestureDetector(
+              onTap: () {
+                _scaffoldKey.currentState?.openDrawer();
+              },
+              child: Icon(
+                Icons.menu,
+                size: ScreenSizeHandler.smaller * 0.085,
+                color: Colors.white,
               ),
-              Container(
-                padding: EdgeInsets.only(
-                    left: ScreenSizeHandler.screenWidth * 0.02,
-                    top: ScreenSizeHandler.screenWidth * 0.006,
-                    bottom: ScreenSizeHandler.screenWidth * 0.006,
-                    right: ScreenSizeHandler.screenWidth * 0.01),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(
-                      255, 55, 55, 55), // Set the background color
-                  borderRadius: BorderRadius.circular(
-                      5.0), // Adjust border radius as needed
-                ),
-                child: Row(
-                  children: [
-                    Text(
-                      selectedMenuItem,
-                      style: TextStyle(
-                        fontSize: ScreenSizeHandler.screenWidth * 0.03,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    Icon(
-                      Icons.keyboard_arrow_down,
-                      size: ScreenSizeHandler.screenWidth * 0.06,
+            ),
+          ),
+          title: DropdownButtonHideUnderline(
+            child: DropdownButton2(
+              items: dropdownItems,
+              onChanged: (String? newValue) {
+                if (newValue != "Latest") {
+                  setState(() {
+                    selectedMenuItem = newValue!;
+                  });
+                  if (selectedMenuItem == "Home") {
+                    controller.jumpToPage(0);
+                  }
+                  if (selectedMenuItem == "Popular") {
+                    controller.jumpToPage(1);
+                  }
+                }
+              },
+              value: selectedMenuItem,
+              selectedItemBuilder: (BuildContext context) {
+                return dropdownItems
+                    .map<Widget>((DropdownMenuItem<String> item) {
+                  return Text(item.value!);
+                }).toList();
+              },
+              dropdownStyleData: DropdownStyleData(
+                width: ScreenSizeHandler.screenWidth,
+              ),
+              underline: null,
+              isDense: true,
+              iconStyleData: IconStyleData(
+                  icon: Icon(Icons.keyboard_arrow_down_outlined,
                       color: Colors.white,
-                    ),
-                  ],
+                      size: ScreenSizeHandler.smaller * 0.045)),
+              buttonStyleData: ButtonStyleData(
+                padding: EdgeInsets.symmetric(
+                  vertical: ScreenSizeHandler.screenHeight * 0.01,
+                  horizontal: ScreenSizeHandler.screenWidth * 0.02,
                 ),
+                decoration: BoxDecoration(
+                  color: Colors.grey[800],
+                  borderRadius: BorderRadius.circular(7),
+                ),
+                width: ScreenSizeHandler.screenWidth * 0.25,
+                height: ScreenSizeHandler.bigger * 0.041,
               ),
-            ],
+              isExpanded: true,
+              style: const TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.bold),
+            ),
           ),
           backgroundColor: Colors.black,
           actions: [
@@ -150,16 +231,16 @@ class _HomePageScreenState extends State<HomePageScreen> {
                 );
               },
               child: Padding(
-                padding: const EdgeInsets.all(2.0),
+                padding: EdgeInsets.all(ScreenSizeHandler.smaller * 0.01),
                 child: Icon(
                   Icons.search,
-                  size: 35,
+                  size: ScreenSizeHandler.smaller * 0.095,
                   color: Colors.white,
                 ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: EdgeInsets.all(ScreenSizeHandler.smaller * 0.03),
               child: GestureDetector(
                 onTap: () {
                   _scaffoldKey.currentState?.openEndDrawer();
@@ -169,13 +250,77 @@ class _HomePageScreenState extends State<HomePageScreen> {
             ),
           ],
         ),
-        body: ListView.builder(
-          itemCount: posts.length,
-          itemBuilder: (context, index) {
-            return PostCard(post: posts[index]);
-          },
+        body: PageView(
+          controller: controller,
+          onPageChanged: (value) => setState(() {
+            if (value == 0) {
+              selectedMenuItem = "Home";
+            } else {
+              selectedMenuItem = "Popular";
+            }
+          }),
+          children: [
+            SingleChildScrollView(
+              child: ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: posts.length,
+                itemBuilder: (context, index) {
+                  return PostCard(post: posts[index]);
+                },
+              ),
+            ),
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    height: ScreenSizeHandler.screenHeight * 0.05,
+                    color: Colors.black,
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: ScreenSizeHandler.screenWidth * 0.02,
+                              right: ScreenSizeHandler.screenWidth * 0.02),
+                          child: Icon(
+                            Icons.trending_up_rounded,
+                            color: Colors.white,
+                            size: ScreenSizeHandler.smaller * 0.055,
+                          ),
+                        ),
+                        const Text(
+                          'Trending Today',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: kDefaultFontSize,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: trending
+                          .map((post) => TrendingPostCard(post: post))
+                          .toList(),
+                    ),
+                  ),
+                  ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: posts.length,
+                    itemBuilder: (context, index) {
+                      return PostCard(post: posts[index]);
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-        drawer: Drawer(),
+        drawer: const Drawer(),
         endDrawer: Drawer(
           backgroundColor: kBackgroundColor,
           child: SafeArea(
@@ -200,11 +345,11 @@ class _HomePageScreenState extends State<HomePageScreen> {
                       bottom: ScreenSizeHandler.screenHeight * 0.02),
                   child: CircleAvatar(
                     backgroundColor: Colors.white,
-                    child: Text('A'),
                     radius: ScreenSizeHandler.bigger *
                         kSideBarCircleAvatarRadiusRatio,
                     foregroundImage:
-                        AssetImage('assets/images/reddit_logo.png'),
+                        const AssetImage('assets/images/reddit_logo.png'),
+                    child: const Text('A'),
                   ),
                 ),
                 Padding(
@@ -222,7 +367,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
                       onlineStatusToggle = !onlineStatusToggle;
                       if (onlineStatusToggle) {
                         onlineStatusString = "On";
-                        onlineStatusColor = Color.fromARGB(255, 0, 204, 120);
+                        onlineStatusColor =
+                            const Color.fromARGB(255, 0, 204, 120);
                         onlineStatusWidth = ScreenSizeHandler.smaller * 0.42;
                       } else {
                         onlineStatusString = "Off";
@@ -313,7 +459,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                     leadingIcon: Icons.settings_outlined,
                   ),
                   titleText: "Settings",
-                  trailingWidget: Icon(Icons.nights_stay_sharp, size: 25),
+                  trailingWidget: Icon(Icons.nights_stay_sharp, size: ScreenSizeHandler.smaller*0.063),
                   onTap: () {
                     Navigator.pushNamed(context, SettingsScreen.id);
                   },
