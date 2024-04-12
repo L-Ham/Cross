@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_bel_ham/screens/settings_screen.dart';
+import 'package:flutter/widgets.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 import 'package:reddit_bel_ham/components/home_page_components/profile_icon_with_indicator.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile.dart';
@@ -7,6 +7,10 @@ import 'package:reddit_bel_ham/components/settings_components/settings_tile_lead
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/home_page_seach_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
+import 'package:reddit_bel_ham/utilities/token_decoder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:reddit_bel_ham/screens/settings_screen.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:reddit_bel_ham/components/home_page_components/trending_posts.dart';
 
@@ -26,6 +30,13 @@ class _HomePageScreenState extends State<HomePageScreen> {
   bool onlineStatusToggle = true;
   Color onlineStatusColor = kOnlineStatusColor;
   double onlineStatusWidth = ScreenSizeHandler.smaller * 0.42;
+  late String email;
+  @override
+  void initState() {
+    super.initState();
+    username = TokenDecoder.username;
+    email = TokenDecoder.email;
+  }
 
   String selectedMenuItem = "Home";
 
@@ -70,18 +81,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
 
   final List<Post> posts = [
     Post(
-      username: "r/NardoTheFish",
-      contentTitle:
-          "Is instagram buggering up for anyone else? I can't post anything",
-      content: "Check this page for more details",
-      upvotes: 90,
-      comments: 35,
-      type: "text",
-      image: "",
-      link: "",
-    ),
-    Post(
-      username: "r/DaveTheDude",
+      username: "r/DanielAdel",
       contentTitle: "Foodie Instagrammers, Let's Talk Strategy!",
       content:
           "Hey fellow food lovers! I've been diving deep into the world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. It's incredible how much competition there is out there, right? I mean, everyone's snapping pics of their avocado toast and artisanal burgers. So, what are your go-to tips for making our food shots pop? Do you swear by natural lighting or do you have some secret editing tricks up your sleeve? And let's talk about captions too! I'm always struggling to strike the right balance between informative and witty. Let's share some wisdom and help each other elevate our Instagram game to the next level! 🍕✨",
@@ -92,19 +92,40 @@ class _HomePageScreenState extends State<HomePageScreen> {
       link: "https://www.instagram.com/p/CJ9J9J1h7Zz/",
     ),
     Post(
-      username: "r/PeterThePenguin",
+      username: "r/AnnieBakesCakes",
       contentTitle: "Curating Culinary Moments on Instagram: Tips & Tricks!",
       content:
           "Hey foodies! I've been pondering tellow fthe world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. It's incredible how much competition there is out there, right? I mean, everyone's snapping pics of their avocado toast and artisanal burgers. So, what are your go-to tips for making our food shots pop? Dood lovers! I've been diving deep into the world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. Ihe art of curating culinary moments on Instagram latelto learn from your experien",
       upvotes: 20,
       comments: 35,
-      type: "text",
-      image: "",
+      type: "image",
+      image: "assets/images/redditAvata2.png",
       link: "",
     ),
+    Post(
+      username: "r/JohannaDoesYoga",
+      contentTitle:
+          "Is instagram buggering up for anyone else? I can't post anything",
+      content:
+          "Check this page for more detailsjrhgshejaiajirjsijijfiarjgiajeijgiohgijaerigjiorhgiqjarigvja",
+      upvotes: 90,
+      comments: 35,
+      type: "link",
+      image: "",
+      link: "https://www.instagram.com",
+    ),
+    Post(
+      username: "r/JohannaDoesYoga",
+      contentTitle: "instagram",
+      content: "Check this page for more details",
+      upvotes: 90,
+      comments: 35,
+      type: "poll",
+      image: "",
+      link: "",
+    )
   ];
-
-  final List<TrendingPost> trending = [
+   final List<TrendingPost> trending = [
     TrendingPost(
       contentTitle: "Peter nayem 3al ard",
       // content: "Check this page for more details",
@@ -131,7 +152,6 @@ class _HomePageScreenState extends State<HomePageScreen> {
       image: const AssetImage('assets/images/daniel_haymawetna.png'),
     )
   ];
-
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -139,8 +159,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
       child: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          leading: Padding(
-            padding: EdgeInsets.only(left: ScreenSizeHandler.screenWidth * 0.02, right: ScreenSizeHandler.screenWidth * 0.01),
+          leading:  Padding(
+            padding: EdgeInsets.only(left: ScreenSizeHandler.screenWidth * 0.018, right: ScreenSizeHandler.screenWidth * 0.02),
             child: GestureDetector(
               onTap: () {
                 _scaffoldKey.currentState?.openDrawer();
