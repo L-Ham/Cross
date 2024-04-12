@@ -176,7 +176,6 @@ class _PostCardState extends State<PostCard> {
                         post.image,
                       ),
                     ),
-                
                   if (widget.post.type == 'poll') PollPost(post: post),
                 ],
               ),

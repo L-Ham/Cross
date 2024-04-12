@@ -23,6 +23,7 @@ import 'screens/blocked_accounts.dart';
 // import 'package:firebase_core/firebase_core.dart';
 // import 'firebase_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:reddit_bel_ham/screens/inbox_messages.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -67,6 +68,7 @@ class RedditByLham extends StatelessWidget {
         AboutYouScreen.id: (context) => const AboutYouScreen(),
         CommunityRulesScreen.id: (context) => const CommunityRulesScreen(),
         PostToScreen.id: (context) => const PostToScreen(),
+        InboxMessagesScreen.id: (context) => const InboxMessagesScreen(),
       },
 
       // initialRoute: (token == null)
@@ -74,7 +76,7 @@ class RedditByLham extends StatelessWidget {
       //     : (JwtDecoder.isExpired(token))
       //         ? LoginScreen.id
       //         : HomePageScreen.id,
-      initialRoute: FirstScreen.id,
+      initialRoute: InboxMessagesScreen.id,
     );
   }
 }
