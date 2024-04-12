@@ -33,6 +33,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
     username = TokenDecoder.username;
     email = TokenDecoder.email;
   }
+  
 
   String selectedMenuItem = "Home";
   final List<String> menuItems = ['Home', 'Popular', 'Latest News'];

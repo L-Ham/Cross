@@ -14,6 +14,8 @@ import '../screens/forgot_password_screen.dart';
 import '../screens/home_page_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:reddit_bel_ham/services/google_sign_in.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -107,6 +109,69 @@ class LoginScreenState extends State<LoginScreen> {
       });
     }
   }
+  Future<void> loginWithGoogle(
+    String token) async {
+    print(token);
+    final url = Uri.parse('https://reddit-bylham.me/api/auth/googleLogin');
+
+    final Map<String, dynamic> requestData = {
+      'token': token
+    };
+    late final response;
+    String message='Login failed.';
+    try {
+      response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(requestData),
+      );
+      if (response.statusCode == 200) {
+        message='Login successful.';
+        var token = jsonDecode(response.body)['token'];
+        prefs.setString('token', token);
+        TokenDecoder.updateToken(token);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => HomePageScreen()));
+      }
+      showDialog(context: context, builder:
+          (BuildContext context) {
+        return AlertDialog(
+          title: Text(message),
+          content: Text(response.body.toString()),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('OK'),
+            )
+          ],
+        );
+      });
+
+    } catch (e) {
+      print('Failed to login.');
+      showDialog(context: context, builder:
+          (BuildContext context) {
+        return AlertDialog(
+          title: Text('Failed to login'),
+          content: Text('Please try again later.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('OK'),
+            )
+          ],
+        );
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +214,19 @@ class LoginScreenState extends State<LoginScreen> {
                     ),
                     ContinueButton(
                       key: const Key('login_screen_continue_with_google_button'),
-                      onPress: (){},// => AuthService().signInWithGoogle(),
+                      onPress: () async{
+                      if (FirebaseAuth.instance.currentUser != null) {
+                        await AuthService().signOutWithGoogle();
+                      }
+                      var check=await AuthService().signInWithGoogle();
+                      if (check == null) {
+                        return;
+                      }
+                      else {
+                      loginWithGoogle(check);
+                      }
+                      
+                    },
                       text: "Continue with Google",
                       icon: Image(
                         image:

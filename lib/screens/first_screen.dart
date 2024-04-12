@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/screens/signup_screen.dart';
+import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import '../screens/login_screen.dart';
 import '../constants.dart';
 import '../components/general_components/continue_button.dart';
@@ -39,7 +40,7 @@ class _FirstScreenState extends State<FirstScreen> {
   Future<void> signUpWithGoogle(
     String token) async {
     print(token);
-    final url = Uri.parse('https://reddit-bylham.me/api/auth/signUp');
+    final url = Uri.parse('https://reddit-bylham.me/api/auth/googleSignUp');
 
     final Map<String, dynamic> requestData = {
       'token': token
@@ -58,6 +59,7 @@ class _FirstScreenState extends State<FirstScreen> {
         message='Signup successful.';
         var token = jsonDecode(response.body)['token'];
         prefs.setString('token', token);
+        TokenDecoder.updateToken(token);
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -154,8 +156,7 @@ class _FirstScreenState extends State<FirstScreen> {
                         return;
                       }
                       else {
-                        print('User signed in with Google');
-                      FirebaseAuth.instance.currentUser!.getIdToken().then((value) => signUpWithGoogle(value!));
+                      signUpWithGoogle(check);
                       }
                       
                     },

@@ -192,6 +192,7 @@ class AboutYouScreenState extends State<AboutYouScreen> {
                         ),
                         ContinueButton(
                           onPress: () async {
+                            gender = 'I prefer not to say';
                             await signUp(username, email, password, gender);
                             // Navigator.push(
                             //     context,
