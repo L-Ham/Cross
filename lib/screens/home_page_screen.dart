@@ -1,5 +1,5 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 import 'package:reddit_bel_ham/components/home_page_components/profile_icon_with_indicator.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile.dart';
@@ -46,20 +46,31 @@ class _HomePageScreenState extends State<HomePageScreen> {
       upvotes: 20,
       comments: 35,
       type: "image",
-      image:"assets/images/elham_logo.png",
+      image: "assets/images/redditAvata2.png",
       link: "",
     ),
     Post(
       username: "r/JohannaDoesYoga",
       contentTitle:
           "Is instagram buggering up for anyone else? I can't post anything",
-      content: "Check this page for more details",
+      content:
+          "Check this page for more detailsjrhgshejaiajirjsijijfiarjgiajeijgiohgijaerigjiorhgiqjarigvja",
       upvotes: 90,
       comments: 35,
       type: "link",
-      image:"",
+      image: "",
       link: "https://www.instagram.com",
     ),
+    Post(
+      username: "r/JohannaDoesYoga",
+      contentTitle: "instagram",
+      content: "Check this page for more details",
+      upvotes: 90,
+      comments: 35,
+      type: "poll",
+      image: "",
+      link: "",
+    )
   ];
 
   @override
@@ -69,34 +80,52 @@ class _HomePageScreenState extends State<HomePageScreen> {
       child: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          leading: Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 2.0),
-            child: GestureDetector(
-              onTap: () {
-                _scaffoldKey.currentState?.openDrawer();
-              },
-              child: Icon(
-                Icons.menu,
-                size: 30,
-                color: Colors.white,
-              ),
-            ),
-          ),
-          title: Row(
+          leading: Row(
             children: [
-             Text(
-                  selectedMenuItem,
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
+              Padding(
+                padding: EdgeInsets.only(
+                    left: ScreenSizeHandler.screenWidth * 0.018,
+                    right: ScreenSizeHandler.screenWidth * 0.02),
+                child: GestureDetector(
+                  onTap: () {
+                    _scaffoldKey.currentState?.openDrawer();
+                  },
+                  child: Icon(
+                    Icons.menu,
+                    size: 30,
+                    color: Colors.white,
+                  ),
                 ),
-              
-      
-              Icon(
-                Icons.arrow_drop_down,
-                size: 30,
-                color: Colors.white,
+              ),
+              Container(
+                padding: EdgeInsets.only(
+                    left: ScreenSizeHandler.screenWidth * 0.02,
+                    top: ScreenSizeHandler.screenWidth * 0.006,
+                    bottom: ScreenSizeHandler.screenWidth * 0.006,
+                    right: ScreenSizeHandler.screenWidth * 0.01),
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(
+                      255, 55, 55, 55), // Set the background color
+                  borderRadius: BorderRadius.circular(
+                      5.0), // Adjust border radius as needed
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      selectedMenuItem,
+                      style: TextStyle(
+                        fontSize: ScreenSizeHandler.screenWidth * 0.03,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Icon(
+                      Icons.keyboard_arrow_down,
+                      size: ScreenSizeHandler.screenWidth * 0.06,
+                      color: Colors.white,
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -150,7 +179,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
                     icon: Icon(
                       Icons.close,
                       color: Colors.white,
-                      size: ScreenSizeHandler.bigger * kSideBarCloseIconSizeRatio,
+                      size:
+                          ScreenSizeHandler.bigger * kSideBarCloseIconSizeRatio,
                     ),
                   ),
                 ),
@@ -162,7 +192,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
                     child: Text('A'),
                     radius: ScreenSizeHandler.bigger *
                         kSideBarCircleAvatarRadiusRatio,
-                    foregroundImage: AssetImage('assets/images/reddit_logo.png'),
+                    foregroundImage:
+                        AssetImage('assets/images/reddit_logo.png'),
                   ),
                 ),
                 Padding(
@@ -185,7 +216,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
                       } else {
                         onlineStatusString = "Off";
                         onlineStatusColor = Colors.grey;
-                        onlineStatusWidth = ScreenSizeHandler.screenWidth * 0.38;
+                        onlineStatusWidth =
+                            ScreenSizeHandler.screenWidth * 0.38;
                       }
                     });
                   },
@@ -244,7 +276,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
                         ),
                         titleText: "Create a community",
                         onTap: () {
-                          Navigator.pushNamed(context, 'create_community_screen');
+                          Navigator.pushNamed(
+                              context, 'create_community_screen');
                         },
                       ),
                       SettingsTile(
@@ -278,253 +311,6 @@ class _HomePageScreenState extends State<HomePageScreen> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget buildPostCard(Post post) {
-    return Container(
-      color: kBackgroundColor,
-      child: Column(
-        children: [
-          ListTile(
-            leading: CircleAvatar(radius: 15),
-            title: Text(post.username, style: TextStyle(color: Colors.white)),
-          ),
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  post.contentTitle,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.0,
-                  ),
-                ),
-                SizedBox(height: 8.0),
-                Text(
-                  post.content,
-                  style: TextStyle(color: Colors.white),
-                ),
-              ],
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: kBackgroundColor,
-                      borderRadius: BorderRadius.circular(15.0),
-                      border: Border.all(
-                        color: kFillingColor,
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              post.isUpvoted ? post.upvotes-- : post.upvotes++;
-                              post.isUpvoted = !post.isUpvoted;
-                              post.isDownvoted = false;
-                            });
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                left: 8.0, right: 8.0, top: 3.0, bottom: 4.0),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.arrow_upward,
-                                  color: post.isUpvoted
-                                      ? Colors.red
-                                      : Colors.white,
-                                  size: 18.0,
-                                ),
-                                Text(
-                                  post.upvotes.toString(),
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 12.0),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              post.isDownvoted
-                                  ? post.upvotes++
-                                  : post.upvotes--;
-                              post.isDownvoted = !post.isDownvoted;
-                              post.isUpvoted = false;
-                            });
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.arrow_downward,
-                                  color: post.isDownvoted
-                                      ? const Color.fromARGB(255, 110, 85, 114)
-                                      : Colors.white,
-                                  size: 18.0,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      // Handle comment button tap
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(right: 10.0, left: 10.0),
-                            child: Row(
-                              children: [
-                                Container(
-                                    decoration: BoxDecoration(
-                                      color: kBackgroundColor,
-                                      borderRadius: BorderRadius.circular(15.0),
-                                      border: Border.all(
-                                        color: kFillingColor,
-                                      ),
-                                    ),
-                                    child: Row(children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Icon(
-                                          Icons.comment,
-                                          size: 15,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(4.0),
-                                        child: Text(
-                                          post.comments.toString(),
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 12.0),
-                                        ),
-                                      )
-                                    ])),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              GestureDetector(
-                onTap: () {
-                  showModalBottomSheet(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return SafeArea(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: kBackgroundColor,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(20.0),
-                              topRight: Radius.circular(20.0),
-                            ),
-                          ),
-                          padding: EdgeInsets.all(16.0),
-                          constraints: BoxConstraints(
-                            maxHeight:
-                                MediaQuery.of(context).size.height * 0.35,
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Share to...",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18.0,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              SizedBox(height: 100.0),
-                              SizedBox(height: 16.0),
-                              Text(
-                                "Your username stays hidden when you share outside of Reddit",
-                                style: TextStyle(
-                                  fontSize: 12.0,
-                                  color: kHintTextColor,
-                                ),
-                              ),
-                              SizedBox(height: 16.0),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Icon(Icons.facebook, color: Colors.white),
-                                  Icon(Icons.copy, color: Colors.white),
-                                  Icon(Icons.email, color: Colors.white),
-                                  Icon(Icons.more_horiz, color: Colors.white),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                },
-                child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15.0),
-                      border: Border.all(
-                        color: kFillingColor,
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(3.0),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(3.0),
-                            child: Icon(
-                              Icons.share,
-                              size: 12,
-                              color: Colors.white,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Text("147",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                )),
-                          ),
-                        ],
-                      ),
-                    )),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }
