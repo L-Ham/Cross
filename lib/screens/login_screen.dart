@@ -36,6 +36,10 @@ class LoginScreenState extends State<LoginScreen> {
   bool isButtonEnabled = false;
   late SharedPreferences prefs;
   bool isLoading = false;
+  final _focusNode = FocusNode();
+  final _focusNode2 = FocusNode();
+
+
 
   @override
   void initState() {
@@ -287,6 +291,7 @@ class LoginScreenState extends State<LoginScreen> {
                             horizontal: ScreenSizeHandler.screenWidth * 0.04,
                             vertical: ScreenSizeHandler.screenHeight * 0.01),
                         child: CredentialsTextField(
+                          focusNode: _focusNode,
                           key: const Key(
                               'login_screen_email_or_username_text_field'),
                           controller: nameController,
@@ -329,6 +334,7 @@ class LoginScreenState extends State<LoginScreen> {
                             vertical: ScreenSizeHandler.screenHeight *
                                 kButtonHeightRatio),
                         child: CredentialsTextField(
+                          focusNode: _focusNode2,
                           key: const Key('login_screen_password_text_field'),
                           controller: passController,
                           isObscure: isPassObscure,
@@ -407,6 +413,8 @@ class LoginScreenState extends State<LoginScreen> {
                       if (isButtonEnabled) {
                         setState(() {
                           isLoading = true;
+                          _focusNode.unfocus();
+                          _focusNode2.unfocus();
                         });
                         login(nameController.text, passController.text);
                       } else {

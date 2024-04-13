@@ -421,6 +421,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                   child: isYourCommunitiesPressed
                       ? Container(
                           child: ListView.builder(
+                            
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: 2 + yourCommunities.length,
@@ -1061,11 +1062,13 @@ class _HomePageScreenState extends State<HomePageScreen> {
         ),
          drawer: Drawer(
             backgroundColor: kBackgroundColor,
+            elevation: 0,
             child: isRecentlyVisitedDrawerVisible
                 ? buildDrawerTwo()
                 : buildDrawerOne()),
         endDrawer: Drawer(
           backgroundColor: kBackgroundColor,
+          elevation: 0,
           child: SafeArea(
             child: Column(
               children: [
@@ -1176,6 +1179,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                 ),
                 Expanded(
                   child: ListView(
+                    
                     scrollDirection: Axis.vertical,
                     children: [
                       SettingsTile(

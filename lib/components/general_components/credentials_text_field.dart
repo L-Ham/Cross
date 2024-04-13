@@ -12,8 +12,9 @@ class CredentialsTextField extends StatelessWidget {
   final Widget? suffixIcon;
   final Widget? prefixIcon;
   final bool isObscure;
+  FocusNode? focusNode = FocusNode();
 
-  const CredentialsTextField({
+  CredentialsTextField({
     required this.controller,
     required this.isFocused,
     required this.onChanged,
@@ -22,12 +23,15 @@ class CredentialsTextField extends StatelessWidget {
     this.suffixIcon,
     this.prefixIcon,
     this.isValid = true,
+    this.focusNode,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    
     return TextField(
+      focusNode: focusNode??FocusNode(),
       inputFormatters: [
     FilteringTextInputFormatter.deny(RegExp(r'\s')),],
       controller: controller,
