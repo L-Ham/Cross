@@ -2,24 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 
 class GradientButton extends StatelessWidget {
-  const GradientButton(
-      {super.key,
-      required this.isPassFocused,
-      required this.buttonTitle,
-      required this.onTap});
+  const GradientButton({
+    super.key,
+    required this.isPassFocused,
+    required this.buttonTitle,
+    required this.onTap
+  });
 
   final bool isPassFocused;
   final String buttonTitle;
-  final Function() onTap;
+  final Function onTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () {
+        if (isPassFocused) {
+          onTap();
+        }
+      },
       child: Opacity(
         opacity: isPassFocused ? 1 : 0.5,
         child: Container(
-          height: ScreenSizeHandler.bigger * 0.055,
+          height: ScreenSizeHandler.bigger * 0.065,
           decoration: BoxDecoration(
             gradient: const LinearGradient(
               colors: [Colors.red, Colors.orange],
@@ -33,7 +38,7 @@ class GradientButton extends StatelessWidget {
               buttonTitle,
               style: TextStyle(
                 color: Colors.white,
-                fontSize: ScreenSizeHandler.bigger * 0.02,
+                fontSize: ScreenSizeHandler.bigger * 0.025,
                 fontWeight: FontWeight.bold,
               ),
             ),

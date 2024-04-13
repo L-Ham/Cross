@@ -8,7 +8,7 @@ class SettingsSaveButton extends StatelessWidget {
     required this.onPressed
   });
 
-  final Function() onPressed;
+  final Function onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -16,16 +16,17 @@ class SettingsSaveButton extends StatelessWidget {
       padding: EdgeInsets.only(right: ScreenSizeHandler.screenWidth * 0.045),
       child: IconButton(
         icon: Text(
-          'SAVE',
+          'Save',
           style: TextStyle(
             color: Colors.blue,
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w500,
             decoration: TextDecoration.underline,
-            fontSize: ScreenSizeHandler.bigger * 0.016,
-            decorationColor: Colors.blue,
+            fontSize: ScreenSizeHandler.bigger * 0.018,
           ),
         ),
-        onPressed: onPressed,
+        onPressed: () {
+          // TODO: Implement the done functionality
+        },
       ),
     );
   }

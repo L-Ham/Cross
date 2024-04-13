@@ -10,13 +10,11 @@ class RoundedButton extends StatelessWidget {
     this.buttonColor = kFillingColor,
     required this.buttonHeightRatio,
     required this.buttonWidthRatio,
-    this.borderColor,
   });
 
   final Function() onTap;
   final Widget child;
   final Color buttonColor;
-  final Color? borderColor;
   final double buttonHeightRatio;
   final double buttonWidthRatio;
 
@@ -28,7 +26,6 @@ class RoundedButton extends StatelessWidget {
         height: ScreenSizeHandler.bigger * buttonHeightRatio,
         width: ScreenSizeHandler.bigger * buttonWidthRatio,
         decoration: BoxDecoration(
-          border: borderColor != null ? Border.all(color: borderColor!) : null,
           color: buttonColor,
           borderRadius: BorderRadius.circular(30), // Add rounded border
         ),

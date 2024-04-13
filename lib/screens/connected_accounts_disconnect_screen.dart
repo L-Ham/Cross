@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_bel_ham/components/settings_components/settings_text_field.dart';
+import 'package:reddit_bel_ham/components/general_components/credentials_text_field.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/components/settings_components/forget_password_text.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
@@ -18,43 +18,18 @@ class DisconnectScreen extends StatefulWidget {
 class _DisconnectScreenState extends State<DisconnectScreen> {
   TextEditingController passController = TextEditingController();
   bool isPassObscure = true;
-  bool isPassNotEmpty = false;
+  bool isPassFocused = false;
   late String email;
   late String username;
-
-  void showSnackBar(BuildContext context, String message) {
-    final snackBar = SnackBar(
-      content: Text(message),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    passController.addListener(() {
-      setState(() {
-        isPassNotEmpty = passController.text.isNotEmpty;
-      });
-    });
-  }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    Map<String, String>? args =
-        ModalRoute.of(context)!.settings.arguments as Map<String, String>?;
-    if (args == null) {
-      email = "daniel@email.com";
-      username = "dani";
-    } else {
-      email = args['email']!;
-      username = args['username']!;
-    }
+    Map<String, String> args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, String>;
+    email = args['email'] as String;
+    username = args['username'] as String;
   }
 
   @override
@@ -73,9 +48,7 @@ class _DisconnectScreenState extends State<DisconnectScreen> {
           "Confirm your password",
           style: TextStyle(
               color: Colors.white,
-              fontSize:
-                  ScreenSizeHandler.smaller * kAppBarTitleSmallerFontRatio,
-              fontWeight: FontWeight.w600),
+              fontSize: ScreenSizeHandler.smaller * kAppBarTitleSmallerFontRatio),
         ),
         centerTitle: true,
       ),
@@ -86,9 +59,7 @@ class _DisconnectScreenState extends State<DisconnectScreen> {
               itemCount: 1,
               itemBuilder: (BuildContext context, int index) {
                 return Padding(
-                  padding: EdgeInsets.symmetric(
-                      vertical: ScreenSizeHandler.screenHeight * 0.045,
-                      horizontal: ScreenSizeHandler.screenWidth * 0.06),
+                  padding: EdgeInsets.all(ScreenSizeHandler.smaller * 0.045),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -102,27 +73,36 @@ class _DisconnectScreenState extends State<DisconnectScreen> {
                         child: Text(
                           "For your security, confirm your password.",
                           style: kSettingsSubHeaderTextStyle.copyWith(
-                              fontSize: ScreenSizeHandler.bigger * 0.017,
-                              fontWeight: FontWeight.normal),
+                            fontSize: ScreenSizeHandler.bigger * 0.016,
+                          ),
                         ),
                       ),
-                      SettingsTextField(
+                      CredentialsTextField(
+                        key: const Key("disconnect_screen_password_text_field"),
                         controller: passController,
-                        hintText: "Password",
-                        isDisconnectScreen: true,
-                        isObscured: isPassObscure,
-                        onTap: () {
+                        isObscure: isPassObscure,
+                        text: 'Password',
+                        suffixIcon: isPassFocused
+                            ? IconButton(
+                                icon: const Icon(Icons.visibility_rounded),
+                                onPressed: () {
+                                  setState(() {
+                                    isPassObscure = !isPassObscure;
+                                  });
+                                },
+                              )
+                            : null,
+                        isFocused: isPassFocused,
+                        onChanged: (value) {
                           setState(() {
-                            isPassObscure = !isPassObscure;
+                            isPassFocused = value.isNotEmpty;
                           });
                         },
                       ),
                       Padding(
                         padding: EdgeInsets.only(
                             top: ScreenSizeHandler.bigger * 0.015),
-                        child: const ForgetPasswordText(
-                          isDisconnectScreen: true,
-                        ),
+                        child: const ForgetPasswordText(),
                       ),
                     ],
                   ),
@@ -131,21 +111,19 @@ class _DisconnectScreenState extends State<DisconnectScreen> {
             ),
           ),
           Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: ScreenSizeHandler.screenHeight * kBottomButtonPadding,
-                horizontal: ScreenSizeHandler.smaller * 0.08,
-              ),
-              child: GradientButton(
-                key: const Key("disconnect_screen_confirm_button"),
-                isPassFocused: isPassNotEmpty,
-                buttonTitle: "Confirm",
-                onTap: () {
-                  //TODO: Implement the logic for disconnecting the account
-                  if (isPassNotEmpty) {
-                    showSnackBar(context, "Invalid username or password");
-                  }
-                },
-              )),
+            padding: EdgeInsets.symmetric(
+              vertical: ScreenSizeHandler.screenHeight * kBottomButtonPadding,
+              horizontal: ScreenSizeHandler.smaller * 0.04,
+            ),
+            child: GradientButton(
+              key: const Key("disconnect_screen_confirm_button"),
+              isPassFocused: isPassFocused,
+              buttonTitle: "Confirm",
+              onTap: () {
+                //TODO: Implement the logic for disconnecting the account
+              },
+          )
+          ),
         ],
       ),
     );

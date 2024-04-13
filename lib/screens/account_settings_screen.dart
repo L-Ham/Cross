@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/components/general_components/custom_switch.dart';
-import 'package:reddit_bel_ham/components/general_components/interactive_text.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/change_password_screen.dart';
 import 'package:reddit_bel_ham/screens/connected_accounts_disconnect_screen.dart';
@@ -15,6 +14,7 @@ import 'package:reddit_bel_ham/components/settings_components/settings_tile.dart
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_leading_icon.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_image.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_trailing_icon.dart';
+import 'package:reddit_bel_ham/components/general_components/text_link.dart';
 import 'package:reddit_bel_ham/screens/location_customization.dart';
 import 'package:reddit_bel_ham/screens/blocked_accounts.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
@@ -54,7 +54,6 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
       isLoading = false;
       username = TokenDecoder.username;
       location = recievedLocation['location'];
-      gender = gender == "" ? "Select" : gender;
     });
   }
 
@@ -221,11 +220,10 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                             ),
                             titleText: "Google",
                             trailingWidget: isConnectedToGoogle
-                                ? InteractiveText(
+                                ? TextLink(
                                     key: const Key(
                                         "account_settings_disconnect_google_text_link"),
                                     text: "Disconnect",
-                                    isUnderlined: true,
                                     onTap: () {
                                       Navigator.pushNamed(
                                         context,
@@ -236,25 +234,18 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                                         },
                                       );
                                     },
-                                    fontSizeRatio: 0.018,
+                                    fontSizeRatio:
+                                        ScreenSizeHandler.smaller * 0.035,
                                   )
-                                : InteractiveText(
+                                : TextLink(
                                     key: const Key(
                                         "account_settings_connect_google_text_link"),
                                     text: "Connect",
-                                    isUnderlined: true,
                                     onTap: () {
                                       //TODO: Implement the connect functionality
-                                      Navigator.pushNamed(
-                                        context,
-                                        DisconnectScreen.id,
-                                        arguments: {
-                                          'email': connectedEmailAddress,
-                                          'username': username,
-                                        },
-                                      );
                                     },
-                                    fontSizeRatio: 0.018,
+                                    fontSizeRatio:
+                                        ScreenSizeHandler.smaller * 0.035,
                                   ),
                             onTap: () {},
                           ),

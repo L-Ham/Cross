@@ -8,9 +8,8 @@ class TokenDecoder {
   static void updateToken(String token) {
     _token = token;
     Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(_token);
-    print('Token: $jwtDecodedToken');
-    _username = jwtDecodedToken['user']['userName']??'' ;
-    _email = jwtDecodedToken['user']['email']??'' ;
+    _username = jwtDecodedToken['user']['userName'];
+    _email = jwtDecodedToken['user']['email'];
   }
 
   static String get token => _token;

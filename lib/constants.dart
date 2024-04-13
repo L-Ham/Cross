@@ -25,7 +25,7 @@ const double kInteractiveTextHeightRatio = 0.02;
 const double kSettingsVerticalPaddingHeightRatio = 0.038;
 const double kSettingsHorizontalPaddingHeightRatio = 0.03;
 const double kBottomButtonPadding = 0.02;
-const double kForgetPasswordTextHeightRatio = 0.016;
+const double kForgetPasswordTextHeightRatio = 0.0185;
 const double kTagTextSizeRatio = 0.02;
 const double kTagSpacingWidthRatio = 0.035;
 const double kCancelAppbarIconSizeRatio = 0.04;
@@ -52,7 +52,6 @@ const Color kSettingsBackGroundColor = Colors.black;
 const Color kFillingColor = Color.fromARGB(255, 40, 40, 40);
 const Color kHintTextColor = Color.fromARGB(255, 122, 122, 122);
 const Color kGreenGrayColor = Color.fromARGB(255, 144, 178, 185);
-const Color kCursorColor = Color.fromARGB(255, 66, 34, 179);
 
 const int kSwitchAnimationTime = 150;
 const Color kSwitchOnColor = Color.fromARGB(255, 46, 100, 182);

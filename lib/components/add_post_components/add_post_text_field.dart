@@ -15,7 +15,6 @@ class AddPostTextField extends StatelessWidget {
     this.hasClearButton = false,
     this.onClearTap = defaultFunction,
     this.onChanged,
-    this.controller,
   });
 
   static void defaultFunction() {}
@@ -28,12 +27,10 @@ class AddPostTextField extends StatelessWidget {
   final Function() onClearTap;
   final Function(String)? onChanged;
   final FocusNode? focusNode;
-  final TextEditingController? controller;
 
   @override
   Widget build(BuildContext context) {
     return TextField(
-      controller: controller,
       maxLines: null,
       minLines: maxLines,
       focusNode: focusNode != null ? focusNode : null,
@@ -41,7 +38,6 @@ class AddPostTextField extends StatelessWidget {
           fontSize: ScreenSizeHandler.bigger * fontSizeRatio,
           fontWeight: isTitle ? FontWeight.bold : FontWeight.normal),
       decoration: InputDecoration(
-        contentPadding: const EdgeInsets.all(0),
           hintText: hintText,
           hintStyle: TextStyle(
               fontSize: ScreenSizeHandler.bigger * fontSizeRatio,

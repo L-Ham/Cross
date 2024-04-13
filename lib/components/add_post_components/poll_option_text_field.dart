@@ -7,13 +7,11 @@ class PollOptionTextField extends StatelessWidget {
       {super.key,
       required this.i,
       required this.onTap,
-      required this.controller,
-      required this.onChanged});
+      required this.controller});
 
   final int i;
   final Function() onTap;
   final TextEditingController controller;
-  final Function(String) onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +21,6 @@ class PollOptionTextField extends StatelessWidget {
           child: SizedBox(
             height: ScreenSizeHandler.bigger * 0.048,
             child: TextField(
-              onChanged: onChanged,
               controller: controller,
               style: TextStyle(
                   color: Colors.white,

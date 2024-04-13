@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 
@@ -9,14 +8,12 @@ class InteractiveText extends StatelessWidget {
       required this.text,
       required this.onTap,
       this.isUnderlined = false,
-      this.fontWeight = FontWeight.bold,
       this.fontSizeRatio = kInteractiveTextHeightRatio});
 
   final String text;
   final double fontSizeRatio;
   final bool isUnderlined;
   final Function() onTap;
-  final FontWeight fontWeight;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +22,6 @@ class InteractiveText extends StatelessWidget {
       child: Text(
         text,
         style: kInteractiveTextStyle.copyWith(
-          fontWeight: fontWeight,
           fontSize: ScreenSizeHandler.bigger * fontSizeRatio,
           decoration: isUnderlined? TextDecoration.underline: TextDecoration.none,
           decorationColor: Colors.blue

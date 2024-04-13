@@ -1,19 +1,13 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:reddit_bel_ham/components/general_components/interactive_text.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/community_rules_screen.dart';
 import 'package:reddit_bel_ham/screens/post_to_screen.dart';
-import 'package:reddit_bel_ham/services/api_service.dart';
 import 'package:reddit_bel_ham/utilities/is_valid_url.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'package:video_player/video_player.dart';
 import '../components/add_post_components/add_post_tags_row.dart';
 import '../components/add_post_components/add_post_text_field.dart';
@@ -39,13 +33,11 @@ class AddPostScreen extends StatefulWidget {
 
 class _AddPostScreenState extends State<AddPostScreen> {
   bool isPostButtonActivated = false;
-  bool isSubredditSelected = false;
+  bool isFromSubreddit = true;
+  bool isLinkFieldVisible = false;
   FocusNode urlFocus = FocusNode();
   List<XFile> chosenImages = [];
   final ImagePicker _picker = ImagePicker();
-  TextEditingController titleController = TextEditingController();
-  TextEditingController urlController = TextEditingController();
-  TextEditingController bodyController = TextEditingController();
   bool isLinkEnabled = true;
   bool isImageEnabled = true;
   bool isVideoEnabled = true;
@@ -62,12 +54,9 @@ class _AddPostScreenState extends State<AddPostScreen> {
   List<TextEditingController>? controllers;
   bool isSpoiler = false;
   bool isBrandAffiliate = false;
-  String subredditName = "";
-  String subredditImage = "";
-  ApiService apiService = ApiService(TokenDecoder.token);
-  File? videoFile;
 
   void addURL() {
+    isLinkFieldVisible = true;
     isLinkChosen = true;
     setAllIcons(false);
     urlFocus.requestFocus();
@@ -87,8 +76,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
     FilePickerResult? result =
         await FilePicker.platform.pickFiles(type: FileType.video);
     if (result != null) {
-      File videoFile = File(result.files.single.path!);
-      _controller = VideoPlayerController.file(videoFile)
+      File file = File(result.files.single.path!);
+      _controller = VideoPlayerController.file(file)
         ..initialize().then((_) {
           setState(() {
             isVideoChosen = true;
@@ -125,6 +114,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
   void removeURL() {
     setState(() {
       showLinkError = false;
+      isLinkFieldVisible = false;
       setAllIcons(true);
       isLinkChosen = false;
       urlFocus.unfocus();
@@ -198,11 +188,6 @@ class _AddPostScreenState extends State<AddPostScreen> {
     urlFocus.addListener(() {
       setState(() {});
     });
-    titleController.addListener(() {
-      setState(() {
-        isPostButtonActivated = titleController.text.isNotEmpty;
-      });
-    });
   }
 
   @override
@@ -230,72 +215,14 @@ class _AddPostScreenState extends State<AddPostScreen> {
                 vertical: ScreenSizeHandler.screenHeight * 0.013),
             child: RoundedButton(
               buttonHeightRatio: 0.05,
-              buttonWidthRatio: 0.08,
-              onTap: () async {
-                if (isPostButtonActivated) {
-                  if (!isSubredditSelected) {
-                    final result = await Navigator.pushNamed(
-                            context, PostToScreen.id,
-                            arguments: {"subredditName": subredditName})
-                        as Map<String, String>?;
-                    if (result != null) {
-                      setState(() {
-                        subredditName = result['subredditName']!;
-                        subredditImage = result['subredditImage']!;
-                        isSubredditSelected = true;
-                      });
-                    }
-                  } else {
-                    //TODO: POST HERE
-                    Map<String, dynamic> post = {
-                      "title": titleController.text,
-                      "subRedditId": "6600763f0e1e9482675cf856",
-                      "isSpoiler": isSpoiler,
-                      "text": bodyController.text,
-                    };
-                    if (isImageChosen) {
-                      post['type'] = "image";
-                      List<File> imageFiles = chosenImages
-                          .map((xfile) => File(xfile.path))
-                          .toList();
-                      await apiService.addMediaPost((imageFiles), post);
-                    } else if (isVideoChosen) {
-                      post['type'] = "video";
-                      await apiService.addMediaPost(([videoFile!]), post);
-                    } else if (isPollChosen) {
-                      DateTime now = DateTime.now();
-                      String formattedDate =
-                          DateFormat('yyyy-MM-ddTHH:mm:ssZ').format(now);
-                      DateTime pollEndTime =
-                          now.add(Duration(days: int.parse(pollDays[0])));
-                      String formattedPollEndTime =
-                          DateFormat('yyyy-MM-ddTHH:mm:ssZ')
-                              .format(pollEndTime);
-                      post['type'] = "poll";
-
-                      post["poll.options"] =
-                          controllers!.map((e) => e.text).toList();
-                      post["poll.votingLength"] = "0";
-                      post["poll.startTime"] = formattedDate.toString();
-                      post["poll.endTime"] = formattedPollEndTime.toString();
-                      apiService.addPollPost(post);
-                    }
-                    else if(isLinkChosen){
-                      post['type'] = "link";
-                      post['url'] = urlController.text;
-                      apiService.addTextPost(post);
-                    }
-                    else{
-                      post['type'] = "text";
-                      apiService.addTextPost(post);
-                    }
-                  }
-                }
+              buttonWidthRatio: 0.085,
+              onTap: () {
+                //TODO: CONTINUE
               },
               buttonColor:
                   isPostButtonActivated ? kSwitchOnColor : Colors.grey[900]!,
               child: Text(
-                isSubredditSelected ? "Post" : "Next",
+                isFromSubreddit ? "Post" : "Next",
                 style: TextStyle(
                   fontSize: ScreenSizeHandler.screenHeight * 0.019,
                   fontWeight: FontWeight.bold,
@@ -313,163 +240,122 @@ class _AddPostScreenState extends State<AddPostScreen> {
             child: Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.only(
-                    bottom: ScreenSizeHandler.screenHeight * 0.015,
-                    left: ScreenSizeHandler.screenHeight * 0.026,
-                    right: ScreenSizeHandler.screenHeight * 0.026,
+                  padding: EdgeInsets.symmetric(
+                    vertical: ScreenSizeHandler.screenHeight * 0.015,
+                    horizontal: ScreenSizeHandler.screenHeight * 0.026,
                   ),
                   child: Column(
                     children: <Widget>[
-                      Visibility(
-                        visible: isSubredditSelected,
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                              bottom: ScreenSizeHandler.screenHeight * 0.01),
-                          child: Row(
-                            children: [
-                              CircleAvatar(
-                                radius: ScreenSizeHandler.screenHeight * 0.013,
-                                child: Image(
-                                  //TODO: Make the image dynamic
-                                  image: AssetImage(
-                                      'assets/images/reddit_logo.png'),
-                                ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            bottom: ScreenSizeHandler.screenHeight * 0.01),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              radius: ScreenSizeHandler.screenHeight * 0.013,
+                              child: Image(
+                                //TODO: Make the image dynamic
+                                image:
+                                    AssetImage('assets/images/reddit_logo.png'),
                               ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    left:
-                                        ScreenSizeHandler.screenWidth * 0.045),
-                                child: GestureDetector(
-                                  onTap: () async {
-                                    final result = await Navigator.pushNamed(
-                                        context, PostToScreen.id, arguments: {
-                                      "subredditName": subredditName
-                                    }) as Map<String, String>?;
-                                    if (result != null) {
-                                      setState(() {
-                                        subredditName =
-                                            result['subredditName']!;
-                                        subredditImage =
-                                            result['subredditImage']!;
-                                      });
-                                    }
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        "r/$subredditName",
-                                        style: TextStyle(
-                                            fontSize: ScreenSizeHandler.bigger *
-                                                0.022,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      const Icon(Icons.keyboard_arrow_down),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              const Expanded(child: SizedBox()),
-                              InteractiveText(
-                                text: "RULES",
-                                fontSizeRatio: 0.018,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  left: ScreenSizeHandler.screenWidth * 0.045),
+                              child: GestureDetector(
                                 onTap: () {
-                                  Navigator.pushNamed(
-                                      context, CommunityRulesScreen.id);
+                                  Navigator.pushNamed(context, PostToScreen.id);
                                 },
-                                isUnderlined: true,
-                              )
-                            ],
-                          ),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "r/redditBelham",
+                                      style: TextStyle(
+                                          fontSize:
+                                              ScreenSizeHandler.bigger * 0.022,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const Icon(Icons.keyboard_arrow_down),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const Expanded(child: SizedBox()),
+                            InteractiveText(
+                              text: "RULES",
+                              fontSizeRatio: 0.018,
+                              onTap: () {
+                                Navigator.pushNamed(
+                                    context, CommunityRulesScreen.id);
+                              },
+                              isUnderlined: true,
+                            )
+                          ],
                         ),
                       ),
                       AddPostTagsRow(
                           isSpoiler: isSpoiler,
                           isBrandAffiliate: isBrandAffiliate),
-                      AddPostTextField(
-                        controller: titleController,
+                      const AddPostTextField(
                         hintText: "Title",
                         fontSizeRatio: 0.032,
                         isTitle: true,
                       ),
-                      Visibility(
-                        visible: isSubredditSelected,
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                              top: ScreenSizeHandler.screenHeight * 0.01),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: RoundedButton(
-                              onTap: () async {
-                                final result = await showModalBottomSheet(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AddTagsBottomSheet(
-                                      isSpoiler: isSpoiler,
-                                      isBrandAffiliate: isBrandAffiliate,
-                                      setIsBrandAffiliate:
-                                          setIsBrandAffiliateCallback,
-                                      setIsSpoiler: setIsSpoilerCallback,
-                                    );
-                                  },
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: RoundedButton(
+                          onTap: () async {
+                            final result = await showModalBottomSheet(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AddTagsBottomSheet(
+                                  isSpoiler: isSpoiler,
+                                  isBrandAffiliate: isBrandAffiliate,
+                                  setIsBrandAffiliate:
+                                      setIsBrandAffiliateCallback,
+                                  setIsSpoiler: setIsSpoilerCallback,
                                 );
-                                if (result != null) {
-                                  setState(() {
-                                    isSpoiler = result['isSpoiler']!;
-                                    isBrandAffiliate =
-                                        result['isBrandAffiliate']!;
-                                    isSubredditSelected = true;
-                                  });
-                                }
                               },
-                              buttonColor: kFillingColor,
-                              buttonHeightRatio: 0.038,
-                              buttonWidthRatio: 0.17,
-                              child: Text(
-                                'Add tags (optional)',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: ScreenSizeHandler.bigger * 0.015,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ),
+                            );
+                            if (result != null) {
+                              setState(() {
+                                isSpoiler = result['isSpoiler']!;
+                                isBrandAffiliate = result['isBrandAffiliate']!;
+                              });
+                            }
+                          },
+                          buttonColor: kFillingColor,
+                          buttonHeightRatio: 0.038,
+                          buttonWidthRatio: 0.17,
+                          child: Text(
+                            'Add tags (optional)',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: ScreenSizeHandler.bigger * 0.015,
+                                fontWeight: FontWeight.w500),
                           ),
                         ),
                       ),
                       Visibility(
-                        visible: isLinkChosen,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: SizedBox(
-                                child: AddPostTextField(
-                                  controller: urlController,
-                                  focusNode: urlFocus,
-                                  hintText: "URL",
-                                  onChanged: (p0) {
-                                    setState(() {
-                                      if (isValidUrl(p0) || p0.isEmpty) {
-                                        showLinkError = false;
-                                      } else {
-                                        showLinkError = true;
-                                      }
-                                    });
-                                  },
-                                ),
-                              ),
-                            ),
-                            IconButtonWithCaption(
-                              icon: Icons.clear,
-                              onTap: () {
-                                setState(() {
-                                  removeURL();
-                                });
-                              },
-                              backgroundColor: kFillingColor,
-                              iconRadiusRatio: 0.018,
-                              isIconEnabled: true,
-                              hasCaption: false,
-                            )
-                          ],
+                        visible: isLinkFieldVisible,
+                        child: AddPostTextField(
+                          focusNode: urlFocus,
+                          hintText: "URL",
+                          hasClearButton: true,
+                          onClearTap: () {
+                            setState(() {
+                              removeURL();
+                            });
+                          },
+                          onChanged: (p0) {
+                            setState(() {
+                              if (isValidUrl(p0) || p0.isEmpty) {
+                                showLinkError = false;
+                              } else {
+                                showLinkError = true;
+                              }
+                            });
+                          },
                         ),
                       ),
                       Visibility(
@@ -500,7 +386,6 @@ class _AddPostScreenState extends State<AddPostScreen> {
                         ),
                       ),
                       AddPostTextField(
-                          controller: bodyController,
                           hintText: "body text (optional)",
                           maxLines: isPollChosen ? 1 : 20),
                       Visibility(
@@ -555,8 +440,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             IconButtonWithCaption(
-                              icon: FontAwesomeIcons.link,
-                              isFontAwesomeIcons: true,
+                              icon: Icons.link,
                               caption: "Link",
                               onTap: () async {
                                 if (!isIconChosen()) {
@@ -580,8 +464,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                               isIconEnabled: areIconsEnabled(),
                             ),
                             IconButtonWithCaption(
-                              icon: FontAwesomeIcons.image,
-                              isFontAwesomeIcons: true,
+                              icon: Icons.image,
                               caption: "Image",
                               onTap: () async {
                                 if (!isIconChosen()) {
@@ -603,9 +486,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
                               isIconEnabled: areIconsEnabled(),
                             ),
                             IconButtonWithCaption(
-                              icon: FontAwesomeIcons.play,
+                              icon: Icons.play_arrow,
                               caption: "Video",
-                              isFontAwesomeIcons: true,
                               onTap: () async {
                                 if (!isIconChosen()) {
                                   pickVideo();
@@ -626,8 +508,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                               isIconEnabled: areIconsEnabled(),
                             ),
                             IconButtonWithCaption(
-                              icon: FontAwesomeIcons.squarePollHorizontal,
-                              isFontAwesomeIcons: true,
+                              icon: Icons.poll_outlined,
                               caption: "Poll",
                               onTap: () async {
                                 if (!isIconChosen()) {
@@ -673,8 +554,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                         });
                       },
                       icon: Icon(
-                        size: ScreenSizeHandler.bigger * 0.024,
-                        FontAwesomeIcons.link,
+                        Icons.link,
                         color:
                             areIconsEnabled() ? Colors.white : Colors.grey[700],
                       ),
@@ -686,8 +566,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                         }
                       },
                       icon: Icon(
-                        size: ScreenSizeHandler.bigger * 0.024,
-                        FontAwesomeIcons.image,
+                        Icons.photo_outlined,
                         color:
                             areIconsEnabled() ? Colors.white : Colors.grey[700],
                       ),
@@ -697,8 +576,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                         if (areIconsEnabled()) pickVideo();
                       },
                       icon: Icon(
-                        size: ScreenSizeHandler.bigger * 0.024,
-                        FontAwesomeIcons.play,
+                        Icons.play_arrow,
                         color:
                             areIconsEnabled() ? Colors.white : Colors.grey[700],
                       ),
@@ -708,8 +586,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                         if (areIconsEnabled()) addPoll();
                       },
                       icon: Icon(
-                        FontAwesomeIcons.squarePollHorizontal,
-                        size: ScreenSizeHandler.bigger * 0.024,
+                        Icons.poll_outlined,
                         color:
                             areIconsEnabled() ? Colors.white : Colors.grey[700],
                       ),
@@ -735,10 +612,6 @@ class _AddPostScreenState extends State<AddPostScreen> {
   @override
   void dispose() {
     urlFocus.dispose();
-    super.dispose();
-    titleController.removeListener(() {});
-    titleController.dispose();
-
     super.dispose();
   }
 }

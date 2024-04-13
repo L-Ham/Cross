@@ -10,9 +10,7 @@ import 'package:http/http.dart' as http;
 import 'check_your_inbox.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
-  final String username;
-  const ForgotPasswordScreen({Key? key, required this.username})
-      : super(key: key);
+  const ForgotPasswordScreen({Key? key}) : super(key: key);
 
   static const String id = 'forgot_password_screen';
 
@@ -45,54 +43,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     } catch (e) {
       _response = 'Error: $e';
     }
-  }
-
-  void checkUsernameOrEmail(String value) {
-    setState(() {
-      isNameFocused = value.isNotEmpty;
-      if (value.isEmpty) {
-        setState(() {
-          isButtonEnabled = false;
-          isNameValid = true;
-        });
-      } else {
-        if (value.contains('@')) {
-          isMailValid = isEmailValid(value);
-          if (isMailValid) {
-            setState(() {
-              isButtonEnabled = true;
-              isNameValid = true;
-            });
-          } else {
-            setState(() {
-              isButtonEnabled = false;
-              isNameValid = false;
-              errorMessage = "Not a valid email address";
-            });
-          }
-        } else if (value.length > 2 && value.length < 21) {
-          setState(() {
-            isButtonEnabled = true;
-            isNameValid = true;
-          });
-        } else {
-          setState(() {
-            isButtonEnabled = false;
-            isNameValid = false;
-            errorMessage = "There isn't a Reddit account with that username";
-          });
-        }
-      }
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    setState(() {
-      nameController.text = widget.username;
-    });
-    checkUsernameOrEmail(widget.username);
   }
 
   @override
@@ -194,7 +144,44 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             : null,
                         isFocused: isNameFocused,
                         onChanged: (value) {
-                          checkUsernameOrEmail(value);
+                          setState(() {
+                            isNameFocused = value.isNotEmpty;
+                            if (value.isEmpty) {
+                              setState(() {
+                                isButtonEnabled = false;
+                                isNameValid = true;
+                              });
+                            } else {
+                              if (value.contains('@')) {
+                                isMailValid = isEmailValid(value);
+                                if (isMailValid) {
+                                  setState(() {
+                                    isButtonEnabled = true;
+                                    isNameValid = true;
+                                  });
+                                } else {
+                                  setState(() {
+                                    isButtonEnabled = false;
+                                    isNameValid = false;
+                                    errorMessage = "Not a valid email address";
+                                  });
+                                }
+                              } else if (value.length > 2 &&
+                                  value.length < 21) {
+                                setState(() {
+                                  isButtonEnabled = true;
+                                  isNameValid = true;
+                                });
+                              } else {
+                                setState(() {
+                                  isButtonEnabled = false;
+                                  isNameValid = false;
+                                  errorMessage =
+                                    "There isn't a Reddit account with that username";
+                                });
+                              }
+                            }
+                          });
                         },
                       ),
                     ),
@@ -237,13 +224,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         ? nameController.text
                         : "the email associated with your $UesrnameOrEmail account";
                     await ForgotPasswordRequest(UesrnameOrEmail);
-
-                    if (_response.contains('Email sent')) {
+                  
+                    if(_response.contains('Email sent'))
+                    {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CheckYourInboxScreen(
-                                  username: toNextScreen)));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                            CheckYourInboxScreen(username: toNextScreen)));
                     } else {
                       showDialog(
                         context: context,
