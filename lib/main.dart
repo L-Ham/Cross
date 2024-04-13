@@ -39,8 +39,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   await Firebase.initializeApp(
-  options: DefaultFirebaseOptions.currentPlatform,
-);
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   String? token = prefs.getString('token');
   if (token != null) {
     TokenDecoder.updateToken(token);
@@ -87,7 +87,7 @@ class RedditByLham extends StatelessWidget {
         CommunityRulesScreen.id: (context) => const CommunityRulesScreen(),
         PostToScreen.id: (context) => const PostToScreen(),
         ProfileScreen.id: (context) => ProfileScreen(),
-        },
+      },
       // initialRoute: (token == null)
       //     ? FirstScreen.id
       //     : (JwtDecoder.isExpired(token))
@@ -97,4 +97,3 @@ class RedditByLham extends StatelessWidget {
     );
   }
 }
-
