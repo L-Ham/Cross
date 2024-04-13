@@ -21,6 +21,13 @@ import 'screens/signup_screen.dart';
 import 'screens/forgot_password_screen.dart';
 import 'screens/home_page_screen.dart';
 import 'screens/blocked_accounts.dart';
+
+import 'screens/subreddit_screen.dart';
+import 'screens/subreddit_search_screen.dart';
+
+// import 'package:firebase_core/firebase_core.dart';
+// import 'firebase_options.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:reddit_bel_ham/screens/inbox_messages.dart';
@@ -69,6 +76,11 @@ class RedditByLham extends StatelessWidget {
             const ForgotPasswordScreen(username: ''),
         HomePageScreen.id: (context) => HomePageScreen(),
         BlockedAccount.id: (context) => const BlockedAccount(),
+        SubredditScreen.id: (context) => const SubredditScreen(),
+        //Resolved
+        // SearchScreen.id: (context) => SearchScreen(),
+        SubredditSearchScreen.id: (context) => const SubredditSearchScreen(),
+
         AddPostScreen.id: (context) => const AddPostScreen(),
         CreateUsernameScreen.id: (context) => const CreateUsernameScreen(),
         AboutYouScreen.id: (context) => const AboutYouScreen(),
