@@ -28,6 +28,8 @@ class SignupScreenState extends State<SignupScreen> {
   bool isButtonEnabled = false;
   bool isValidEmail = true;
   bool isValidPassword = true;
+  final _focusNode = FocusNode();
+  final _focusNode2 = FocusNode();
 
   void continueNavigation() {}
 
@@ -73,6 +75,7 @@ class SignupScreenState extends State<SignupScreen> {
                           horizontal: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
                           vertical: ScreenSizeHandler.screenHeight * kButtonHeightRatio),
                       child: CredentialsTextField(
+                        focusNode: _focusNode,
                         key: const Key('signup_screen_email_text_field'),
                         controller: nameController,
                         isObscure: false,
@@ -146,6 +149,7 @@ class SignupScreenState extends State<SignupScreen> {
                           horizontal: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
                           vertical: ScreenSizeHandler.screenHeight * kButtonHeightRatio),
                       child: CredentialsTextField(
+                        focusNode: _focusNode2,
                         key: const Key('signup_screen_password_text_field'),
                         controller: passController,
                         isObscure: isPassObscure,
@@ -224,6 +228,8 @@ class SignupScreenState extends State<SignupScreen> {
                   isButtonEnabled: isButtonEnabled,
                   onPress: () {
                     if (isButtonEnabled) {
+                      _focusNode.unfocus();
+                      _focusNode2.unfocus();
                       Navigator.pushNamed(context,CreateUsernameScreen.id, arguments: {'email': nameController.text, 'password': passController.text, 'username': ''});
                     } else {
                       null;
