@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
-import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 
 const String baseURL = "https://reddit-bylham.me/api";
 
@@ -63,9 +62,6 @@ class ApiService {
 
   Future<dynamic> createCommunity(Map<String, dynamic> data) async {
     try {
-      String token =
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjVmOGEzZTRiZGNlYWU5YmNiODJkYWUwIiwidHlwZSI6Im5vcm1hbCJ9LCJpYXQiOjE3MTEzMDMyNTEsImV4cCI6NTAxNzExMzAzMjUxfQ.h0qBRBJXuerCcd-tVJx0yWDCSm5oyOrRIshgXy-38Ug';
-
       final response = await http.post(
         Uri.parse('$baseURL/subreddit/createCommunity'),
         headers: <String, String>{
@@ -84,17 +80,6 @@ class ApiService {
       print('Exception occurred: $e');
       throw e;
     }
-  }
-
-  Future<List<Post>> fetchPosts() async {
-    //   final response = await http.get('https://MestanyElBackend.com/posts');
-
-    //   if (response.statusCode == 200) {
-    //     List<dynamic> jsonPosts = jsonDecode(response.body);
-    //     return jsonPosts.map((json) => Post.fromJson(json)).toList();
-    //   } else {
-    throw Exception('Failed to load posts');
-    //   }
   }
 
   Future<dynamic> getUserAccountSettings() async {
@@ -199,44 +184,6 @@ class ApiService {
     sentData = {"search": userName};
     var result = await request('/user/searchUsernames',
         headers: headerWithToken, method: 'GET', body: sentData);
-  }
-
-  Future<void> addMediaPost(
-      List<File> imageFiles, Map<String, dynamic> body) async {
-    var request =
-        http.MultipartRequest('POST', Uri.parse('$baseURL/post/createPost'));
-
-    request.headers.addAll({
-      'Content-Type': 'multipart/form-data',
-      'Authorization': "Bearer $token",
-    });
-
-    request.fields['title'] = body['title'];
-    request.fields['text'] = body['text'];
-    request.fields['type'] = body['type'];
-    request.fields['subRedditId'] = body['subRedditId'];
-    request.fields['isNSFW'] = false.toString();
-    request.fields['isSpoiler'] = body['isSpoiler'].toString();
-    request.fields['isLocked'] = false.toString();
-
-    for (var imageFile in imageFiles) {
-      debugPrint('Image file path: ${imageFile.path}');
-      request.files
-          .add(await http.MultipartFile.fromPath('file', imageFile.path));
-    }
-    var response = await request.send();
-    if (response.statusCode == 200) {
-      debugPrint('Media uploaded successfully');
-    } else {
-      debugPrint(response.statusCode.toString());
-      debugPrint('Media upload failed');
-    }
-  }
-
-  Future<dynamic> addTextPost(Map<String, dynamic> body) async {
-    debugPrint('success');
-    var result = await request('/post/createPost',
-        headers: headerWithToken, method: 'POST', body: body);
     return result;
   }
 

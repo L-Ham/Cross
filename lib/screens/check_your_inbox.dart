@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'package:timer_count_down/timer_controller.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 import '../utilities/screen_size_handler.dart';
@@ -7,118 +6,31 @@ import '../constants.dart';
 import '../components/general_components/continue_button.dart';
 import '../components/general_components/text_link.dart';
 import '../components/login_components/logo_text_app_bar.dart';
-import 'package:http/http.dart' as http;
 
 class CheckYourInboxScreen extends StatefulWidget {
   final String username;
-  const CheckYourInboxScreen({Key? key, required this.username})
-      : super(key: key);
+  const CheckYourInboxScreen({Key? key, required this.username}) : super(key: key);
 
   static const String id = 'check_your_inox_screen';
+  
 
   @override
   _CheckYourInboxScreenState createState() => _CheckYourInboxScreenState();
 }
 
 class _CheckYourInboxScreenState extends State<CheckYourInboxScreen> {
+  
   TextEditingController nameController = TextEditingController();
   bool isNameFocused = false;
   bool isButtonEnabled = false;
   bool isNameValid = true;
   bool isMailValid = true;
   bool didTimerFinish = false;
-  bool isResending = false;
-  bool isSnackBarVisible = true;
   String errorMessage = '';
-  CountdownController timerController = CountdownController();
-  String snackBarText = '';
-  String _response = '';
-  String accountName = '';
-
-  Future<void> ForgotPasswordRequest(String username) async {
-    try {
-      final response = await http.post(
-        Uri.parse('https://reddit-bylham.me/api/auth/forgotPassword'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization':
-              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjVmNzNlY2Q5OGZlZWIyZmRjNWVjYzkwIiwidHlwZSI6Im5vcm1hbCJ9LCJpYXQiOjE3MTA3OTExNjIsImV4cCI6NTAxNzEwNzkxMTYyfQ.Io0wcsk6LS8juXEJOOdFq7qPvjxFzrN_nrwhbYIMoBQ'
-        },
-        body: json.encode({"email": username}),
-      );
-      _response = 'POST Response: ${response.body}';
-    } catch (e) {
-      _response = 'Error: $e';
-    }
-  }
-
-  void showSnackBar() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      snackBarText = widget.username.contains('@')
-          ? ("Email sent to ${widget.username}")
-          : 'Email sent';
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Center(child: Text(snackBarText)),
-          backgroundColor: Colors.white,
-          behavior: SnackBarBehavior.floating,
-          margin: EdgeInsets.only(
-            left: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
-            right: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
-            bottom: ScreenSizeHandler.screenHeight * 0.09,
-          ),
-          duration: const Duration(seconds: 3),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30.0),
-          ),
-        ),
-      );
-    });
-  }
-
-  Future<void> resendEmail() async {
-    await ForgotPasswordRequest(widget.username);
-    if (_response.contains('Email sent')) {
-      showSnackBar();
-      setState(() {
-        isResending = false;
-        didTimerFinish = false;
-      });
-    } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Error'),
-            content: Text(_response),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('Close'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    accountName = widget.username.contains('@')
-        ? widget.username
-        : "the email associated with your ${widget.username} account";
-    showSnackBar();
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this as WidgetsBindingObserver);
-    super.dispose();
-  }
+  CountdownController timerController  = CountdownController();
+  // String userEmail = "test@gmail.com";
+  // String userEmail = ;
+  
 
   @override
   Widget build(BuildContext context) {
@@ -178,7 +90,7 @@ class _CheckYourInboxScreenState extends State<CheckYourInboxScreen> {
                         horizontal: ScreenSizeHandler.screenWidth * 0.04,
                       ),
                       child: Text(
-                        "A link to reset your password was sent to \n $accountName",
+                        "A link to reset your password was sent to \n ${widget.username}",
                         style: TextStyle(
                           fontSize: ScreenSizeHandler.smaller * 0.04,
                           color: kHintTextColor,
@@ -194,8 +106,7 @@ class _CheckYourInboxScreenState extends State<CheckYourInboxScreen> {
                             ScreenSizeHandler.screenWidth * kButtonWidthRatio,
                       ),
                       child: Image(
-                        image: const AssetImage(
-                            'assets/images/thinking_avatar.png'),
+                        image: const AssetImage('assets/images/thinking_avatar.png'),
                         height: ScreenSizeHandler.screenHeight * 0.22,
                         width: ScreenSizeHandler.screenWidth * 0.22,
                       ),
@@ -208,69 +119,53 @@ class _CheckYourInboxScreenState extends State<CheckYourInboxScreen> {
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Visibility(
-                visible: !isResending,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Didn't get an email? ",
-                      style: TextStyle(
-                        fontSize:
-                            ScreenSizeHandler.smaller * kButtonSmallerFontRatio,
-                        color: Colors.grey,
-                      ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Didn't get an email? ",
+                    style: TextStyle(
+                      fontSize: ScreenSizeHandler.smaller * kButtonSmallerFontRatio,
+                      color: Colors.grey,
                     ),
-                    Visibility(
-                      visible: !didTimerFinish,
-                      child: Countdown(
-                        seconds: 60,
-                        build: (BuildContext context, double time) => Text(
+                  ),
+                  Visibility(
+                    visible: !didTimerFinish,
+                    child: Countdown(
+                      controller: timerController,
+                      seconds: 10,
+                      build: (BuildContext context, double time) {
+                        return Text(
                           "Resend in 00:${time.toInt()}",
                           style: TextStyle(
-                            fontSize: ScreenSizeHandler.smaller *
-                                kButtonSmallerFontRatio,
+                            fontSize: ScreenSizeHandler.smaller * kButtonSmallerFontRatio,
                             color: const Color.fromARGB(255, 104, 102, 102),
                             fontWeight: FontWeight.bold,
                           ),
-                        ),
-                        interval: const Duration(milliseconds: 100),
-                        onFinished: () {
-                          setState(() {
-                            didTimerFinish = true;
-                          });
-                        },
-                      ),
+                        );
+                      },
+                      onFinished: () {
+                      //TODO
+                      //replace the text and timer with a text resend link that sends the email again
+                        didTimerFinish = true;
+                      }
                     ),
-                    Visibility(
-                      visible: didTimerFinish,
-                      child: TextLink(
-                        key: const Key(
-                            'check_your_inbox_screen_resend_text_link'),
-                        fontSizeRatio:
-                            ScreenSizeHandler.smaller * kButtonSmallerFontRatio,
+                  ),
+                  Visibility(
+                    visible: didTimerFinish,
+                    child: TextLink(
+                      // key: const Key('first_screen_log_in_text_link'),
+                        fontSizeRatio: ScreenSizeHandler.smaller * kButtonSmallerFontRatio,
                         onTap: () {
-                          resendEmail();
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => const LoginScreen()));
                         },
-                        text: 'Resend',
-                        color: Colors.white,
-                        isBold: true,
-                        isUnderline: true,
-                      ),
-                    ),
-                  ],
-                ),
+                        text: 'Resend'),
+                  ),
+                ],
               ),
-              Visibility(
-                  visible: isResending,
-                  child: Text(
-                    "Sending...",
-                    style: TextStyle(
-                      fontSize:
-                          ScreenSizeHandler.smaller * kButtonSmallerFontRatio,
-                      color: Colors.white,
-                    ),
-                  )),
               ContinueButton(
                 key: const Key('check_your_inbox_screen_open_email_app_button'),
                 text: "Open Email App",
