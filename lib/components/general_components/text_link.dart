@@ -10,6 +10,7 @@ class TextLink extends StatelessWidget {
     required this.fontSizeRatio,
     this.color,
     this.isBold,
+    this.isUnderline,
   }) : super(key: key);
 
   final VoidCallback onTap;
@@ -17,6 +18,7 @@ class TextLink extends StatelessWidget {
   final double? fontSizeRatio;
   final Color? color;
   final bool? isBold;
+  final bool? isUnderline;
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +32,7 @@ class TextLink extends StatelessWidget {
             fontSize: fontSizeRatio,
             color: color ?? Colors.blue,
             fontWeight: isBold == true ? FontWeight.bold : FontWeight.normal,
+            decoration: isUnderline == true ? TextDecoration.underline : TextDecoration.none,
           ),
         ),
       ),
