@@ -160,7 +160,6 @@ class ApiService {
     var result = await request('/user/profileSettings',
         headers: headerWithToken, method: 'PATCH', body: sentData);
     return result;
-
   }
 
   Future<dynamic> getAllBlockedUsers() async {
@@ -208,7 +207,9 @@ class ApiService {
     sentData = {"search": userName};
     var result = await request('/user/searchUsernames',
         headers: headerWithToken, method: 'GET', body: sentData);
+    return result;
   }
+
   Future<void> addMediaPost(
       List<File> imageFiles, Map<String, dynamic> body) async {
     var request =
@@ -253,4 +254,12 @@ class ApiService {
         headers: headerWithToken, method: 'POST', body: body);
     return result;
   }
+
+  Future<dynamic> getCommunityDetails(String communityName) async {
+    Map<String, dynamic> sentData;
+    sentData = {"subRedditName": communityName};
+    var result = await request('/subreddit/communityDetails',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    return result;
   }
+}
