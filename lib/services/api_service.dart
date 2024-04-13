@@ -186,4 +186,12 @@ class ApiService {
         headers: headerWithToken, method: 'GET', body: sentData);
     return result;
   }
+
+  Future<dynamic> getCommunityDetails(String communityName) async {
+    Map<String, dynamic> sentData;
+    sentData = {"subRedditName": communityName};
+    var result = await request('/subreddit/communityDetails',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    return result;
+  }
 }

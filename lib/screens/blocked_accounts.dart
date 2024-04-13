@@ -117,6 +117,7 @@ class _BlockedAccountState extends State<BlockedAccount> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: kBackgroundColor,
       appBar: AppBar(
         centerTitle: true,
@@ -204,7 +205,7 @@ class _BlockedAccountState extends State<BlockedAccount> {
           ),
           if (_isBlockedAccountsEmpty && _isTextFieldEmpty)
             SizedBox(
-              height: ScreenSizeHandler.screenHeight * 0.25,
+              height: ScreenSizeHandler.screenHeight * 0.12,
             ),
           if (_isBlockedAccountsEmpty && _isTextFieldEmpty)
             EmptyDog()
