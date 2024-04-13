@@ -818,49 +818,57 @@ class _HomePageScreenState extends State<HomePageScreen> {
     return PopScope(
       canPop: false,
       child: Scaffold(
-        bottomNavigationBar:BottomNavigationBar(
-      selectedFontSize: kAcknowledgeTextSmallerFontRatio* ScreenSizeHandler.smaller*0.9,
-      unselectedFontSize: kAcknowledgeTextSmallerFontRatio* ScreenSizeHandler.smaller*0.9,
-      type: BottomNavigationBarType.fixed,
-      
-      backgroundColor: kBackgroundColor,
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Home',
-          // backgroundColor: Colors.black,
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.group_outlined),
-          label: 'Communities',
+        bottomNavigationBar:Theme(
+          data: ThemeData(
+            splashColor: kBackgroundColor,
+            highlightColor: kBackgroundColor,
+          ),
 
-          // backgroundColor: Colors.black,
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.add_outlined),
-          label: 'Create',
-          // backgroundColor: Colors.black,
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.messenger_outline_sharp),
-          label: 'Chat',
-          // backgroundColor: Colors.black,
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.notifications_none_rounded),
-          label: 'Inbox',
+
+          child: BottomNavigationBar(
+                selectedFontSize: kAcknowledgeTextSmallerFontRatio* ScreenSizeHandler.smaller*0.9,
+                unselectedFontSize: kAcknowledgeTextSmallerFontRatio* ScreenSizeHandler.smaller*0.9,
+                type: BottomNavigationBarType.fixed,
+                
+                backgroundColor: kBackgroundColor,
+                items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+            // backgroundColor: Colors.black,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.group_outlined),
+            label: 'Communities',
           
-          // backgroundColor: Colors.black,
+            // backgroundColor: Colors.black,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add_outlined),
+            label: 'Create',
+            // backgroundColor: Colors.black,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.messenger_outline_sharp),
+            label: 'Chat',
+            // backgroundColor: Colors.black,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications_none_rounded),
+            label: 'Inbox',
+            
+            // backgroundColor: Colors.black,
+          ),
+                ],
+                currentIndex: navigationBarIndex,
+                selectedItemColor: Colors.white,
+                unselectedItemColor: Colors.grey,
+                unselectedLabelStyle: TextStyle(color: Colors.grey),
+                showUnselectedLabels: true,
+                onTap: _onItemTapped,
+                
+              ),
         ),
-      ],
-      currentIndex: navigationBarIndex,
-      selectedItemColor: Colors.white,
-      unselectedItemColor: Colors.grey,
-      unselectedLabelStyle: TextStyle(color: Colors.grey),
-      showUnselectedLabels: true,
-      onTap: _onItemTapped,
-      
-    ),
         key: _scaffoldKey,
         appBar: AppBar(
           leading:  Padding(
