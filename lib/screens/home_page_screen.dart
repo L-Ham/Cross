@@ -1324,7 +1324,7 @@ class _DrawerBottomSheetState extends State<DrawerBottomSheet> {
                                   1.1,
                             ),
                           ),
-                          SizedBox(width: ScreenSizeHandler.screenWidth * 0.34),
+                          Spacer(),
                           const Icon(Icons.check, color: Colors.blue),
                           IconButton(
                             onPressed: () {

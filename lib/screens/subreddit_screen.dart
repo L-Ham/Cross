@@ -20,10 +20,10 @@ class SubredditScreen extends StatefulWidget {
 class _SubredditScreenState extends State<SubredditScreen> {
   final ScrollController _scrollController = ScrollController();
   bool _showTitleInAppBar = false;
-  String subredditName = 'r/AskEngineers';
+  String subredditName = 'AskEngineers';
   String subredditDescription =
       'Engineers apply the knowledge of math & science to design and manufacture maintainable systems used to solve specific problems. AskEngineers is a forum for questions about the technologies, standards, and processes used to design & build these systems, as well as for questions about the engineering profession and its many disciplines.';
-  String subredditMembersCount = '1,194,127';
+  String subredditMembersCount = '999';
   String subredditMembersNickname = 'members';
   String subredditOnlineCount = '106';
   String subredditOnlineNickname = 'online';
@@ -35,16 +35,16 @@ class _SubredditScreenState extends State<SubredditScreen> {
   Future<void> getCommunityData() async {
     Map<String, dynamic> data =
         (await apiService.getCommunityDetails(subredditName)) ?? {};
-
-    if (data.isEmpty) {
-      return;
-    }
     setState(() {
-      subredditMembersCount = data['communityDetails']['membersCount'];
-      subredditOnlineCount = data['communityDetails']['currentlyViewingCount'];
+      subredditMembersCount =
+          data['communityDetails']['membersCount'].toString();
+      subredditOnlineCount =
+          data['communityDetails']['currentlyViewingCount'].toString();
       _isJoined = data['communityDetails']['isMember'];
-      subredditAvatarImage = data['communityDetails']['avatarImage'];
-      subredditBannerImage = data['communityDetails']['bannerImage'];
+      subredditAvatarImage =
+          data['communityDetails']['avatarImage'] ?? subredditAvatarImage;
+      subredditBannerImage =
+          data['communityDetails']['bannerImage'] ?? subredditBannerImage;
       subredditDescription = data['communityDetails']['description'];
       subredditMembersNickname = data['communityDetails']['membersNickname'];
       subredditOnlineNickname =
@@ -56,7 +56,6 @@ class _SubredditScreenState extends State<SubredditScreen> {
   void initState() {
     super.initState();
     _scrollController.addListener(_updateAppBarText);
-    getCommunityData();
   }
 
   @override
@@ -70,6 +69,15 @@ class _SubredditScreenState extends State<SubredditScreen> {
       _showTitleInAppBar =
           _scrollController.offset > ScreenSizeHandler.screenHeight * 0.05;
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    subredditName =
+        ModalRoute.of(context)!.settings.arguments as String? ?? "AskEngineers";
+    getCommunityData();
+
+    super.didChangeDependencies();
   }
 
   final List<Post> posts = [
@@ -110,8 +118,6 @@ class _SubredditScreenState extends State<SubredditScreen> {
 
   @override
   Widget build(BuildContext context) {
-    subredditName = ModalRoute.of(context)!.settings.arguments as String? ??
-        "r/AskEngineers";
     return Scaffold(
       backgroundColor: kBackgroundColor,
       body: CustomScrollView(
@@ -123,7 +129,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        subredditName,
+                        'r/$subredditName',
                         style: TextStyle(
                             fontSize: ScreenSizeHandler.bigger * 0.022,
                             fontWeight: FontWeight.bold),
@@ -164,8 +170,12 @@ class _SubredditScreenState extends State<SubredditScreen> {
             expandedHeight: ScreenSizeHandler.screenHeight * 0.002,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
-                background:
-                    Image.network(subredditBannerImage, fit: BoxFit.cover)),
+                background: subredditBannerImage != 'assets/images/blue2.jpg'
+                    ? Image.network(subredditBannerImage, fit: BoxFit.cover)
+                    : Image.asset(
+                        'assets/images/blue2.jpg',
+                        fit: BoxFit.cover,
+                      )),
             actions: [
               SubredditNavbarIcon(
                 iconSize: 0.025,
@@ -245,7 +255,11 @@ class _SubredditScreenState extends State<SubredditScreen> {
                           ),
                           CircleAvatar(
                             radius: ScreenSizeHandler.bigger * 0.027,
-                            foregroundImage: NetworkImage(subredditAvatarImage),
+                            foregroundImage: subredditAvatarImage !=
+                                    'assets/images/planet3.png'
+                                ? NetworkImage(subredditAvatarImage)
+                                : Image.asset('assets/images/planet3.png')
+                                    .image,
                           ),
                         ],
                       ),
@@ -257,7 +271,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
                         children: [
                           Text(
                             textAlign: TextAlign.left,
-                            subredditName,
+                            'r/$subredditName',
                             style: TextStyle(
                               fontSize: ScreenSizeHandler.bigger * 0.024,
                               fontWeight: FontWeight.bold,
@@ -343,14 +357,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
                             )
                         ],
                       ),
-                      if (_isJoined)
-                        SizedBox(
-                          width: ScreenSizeHandler.screenWidth * 0.2,
-                        )
-                      else
-                        SizedBox(
-                          width: ScreenSizeHandler.screenWidth * 0.09,
-                        ),
+                      if (_isJoined) Spacer() else Spacer(),
                       if (_isJoined)
                         SizedBox(
                           height: ScreenSizeHandler.screenHeight * 0.04,
