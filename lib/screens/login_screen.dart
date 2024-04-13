@@ -76,19 +76,16 @@ class LoginScreenState extends State<LoginScreen> {
       );
       message = jsonDecode(response.body)['message'];
       if (response.statusCode == 200) {
-        message='Login successful.';
+        message = 'Login successful.';
         var token = jsonDecode(response.body)['token'];
         prefs.setString('token', token);
         TokenDecoder.updateToken(token);
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const HomePageScreen()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const HomePageScreen()));
       }
     } catch (e) {
       print(e);
-    } 
-    finally {
+    } finally {
       setState(() {
         isLoading = false;
       });
@@ -98,17 +95,15 @@ class LoginScreenState extends State<LoginScreen> {
       ));
     }
   }
-  Future<void> loginWithGoogle(
-    String token) async {
+
+  Future<void> loginWithGoogle(String token) async {
     // await AuthService().signOutWithGoogle();
     print(token);
     final url = Uri.parse('https://reddit-bylham.me/api/auth/googleLogin');
 
-    final Map<String, dynamic> requestData = {
-      'token': token
-    };
+    final Map<String, dynamic> requestData = {'token': token};
     late final response;
-    String message='Login failed.';
+    String message = 'Login failed.';
     try {
       response = await http.post(
         url,
@@ -117,25 +112,22 @@ class LoginScreenState extends State<LoginScreen> {
         },
         body: jsonEncode(requestData),
       );
-      message= jsonDecode(response.body)['message'];
+      message = jsonDecode(response.body)['message'];
       if (response.statusCode == 200) {
-        message='Login successful.';
+        message = 'Login successful.';
         var token = jsonDecode(response.body)['token'];
         prefs.setString('token', token);
         TokenDecoder.updateToken(token);
         Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => HomePageScreen()));
+            context, MaterialPageRoute(builder: (context) => HomePageScreen()));
       }
-
     } catch (e) {
       print(e);
-    } 
-    finally {
+    } finally {
       setState(() {
         isLoading = false;
       });
+      AuthService().signOutWithGoogle();
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(message),
         duration: const Duration(seconds: 3),
@@ -150,7 +142,8 @@ class LoginScreenState extends State<LoginScreen> {
       progressIndicator: const RedditLoadingIndicator(),
       blur: 0,
       opacity: 0,
-      offset: Offset( ScreenSizeHandler.screenWidth*0.38,ScreenSizeHandler.screenHeight*0.6),
+      offset: Offset(ScreenSizeHandler.screenWidth * 0.38,
+          ScreenSizeHandler.screenHeight * 0.6),
       child: Scaffold(
         backgroundColor: kBackgroundColor,
         body: Column(
@@ -189,31 +182,32 @@ class LoginScreenState extends State<LoginScreen> {
                         child: const AcknowledgementText(),
                       ),
                       ContinueButton(
-                        key: const Key('login_screen_continue_with_google_button'),
-                        onPress: () async{
+                        key: const Key(
+                            'login_screen_continue_with_google_button'),
+                        onPress: () async {
                           setState(() {
                             isLoading = true;
                           });
-                              FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (user == null) {
-        print('User is currently signed out!');
-      } else {
-        print('User is signed in!');
-        AuthService().signOutWithGoogle();
-      }
-    });
-                        var check=await AuthService().signInWithGoogle();
-                        if (check == null) {
-                          setState(() {
-                            isLoading = false;
+                          FirebaseAuth.instance
+                              .authStateChanges()
+                              .listen((User? user) {
+                            if (user == null) {
+                              print('User is currently signed out!');
+                            } else {
+                              print('User is signed in!');
+                              AuthService().signOutWithGoogle();
+                            }
                           });
-                          return;
-                        }
-                        else {
-                        loginWithGoogle(check);
-                        }
-                        
-                      },
+                          var check = await AuthService().signInWithGoogle();
+                          if (check == null) {
+                            setState(() {
+                              isLoading = false;
+                            });
+                            return;
+                          } else {
+                            loginWithGoogle(check);
+                          }
+                        },
                         text: "Continue with Google",
                         icon: Image(
                           image:
@@ -297,8 +291,8 @@ class LoginScreenState extends State<LoginScreen> {
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(
-                            horizontal:
-                                ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+                            horizontal: ScreenSizeHandler.screenWidth *
+                                kButtonWidthRatio,
                             vertical: ScreenSizeHandler.screenHeight *
                                 kButtonHeightRatio),
                         child: CredentialsTextField(
@@ -353,7 +347,8 @@ class LoginScreenState extends State<LoginScreen> {
                                     MaterialPageRoute(
                                         builder: (context) =>
                                             ForgotPasswordScreen(
-                                                username: nameController.text)));
+                                                username:
+                                                    nameController.text)));
                               },
                             ),
                           ],
@@ -369,7 +364,8 @@ class LoginScreenState extends State<LoginScreen> {
               children: [
                 Padding(
                   padding: EdgeInsets.only(
-                      bottom: ScreenSizeHandler.screenHeight * kButtonWidthRatio),
+                      bottom:
+                          ScreenSizeHandler.screenHeight * kButtonWidthRatio),
                   child: ContinueButton(
                     key: const Key('login_screen_continue_button'),
                     text: "Continue",
