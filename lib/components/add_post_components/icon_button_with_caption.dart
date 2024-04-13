@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../../constants.dart';
@@ -14,6 +13,7 @@ class IconButtonWithCaption extends StatelessWidget {
     this.isIconEnabled = false,
     this.isIconChosen = false,
     this.hasCaption = true,
+    this.isFontAwesomeIcons = false,
     super.key,
   });
 
@@ -25,6 +25,7 @@ class IconButtonWithCaption extends StatelessWidget {
   final bool isIconEnabled;
   final bool isIconChosen;
   final bool hasCaption;
+  final bool isFontAwesomeIcons;
 
   @override
   Widget build(BuildContext context) {
@@ -42,25 +43,27 @@ class IconButtonWithCaption extends StatelessWidget {
                   : isIconEnabled
                       ? Colors.grey[100]
                       : Colors.grey[700],
-                      size: ScreenSizeHandler.bigger*iconRadiusRatio*1.45,
+              size: isFontAwesomeIcons
+                  ? ScreenSizeHandler.bigger * iconRadiusRatio
+                  : ScreenSizeHandler.bigger * iconRadiusRatio * 1.45,
             ),
           ),
           if (hasCaption)
-          Padding(
-            padding:
-                EdgeInsets.only(top: ScreenSizeHandler.screenHeight * 0.005),
-            child: Text(
-              caption,
-              style: TextStyle(
-                  fontSize: ScreenSizeHandler.bigger * 0.015,
-                  color: isIconChosen
-                      ? kSwitchOnColor
-                      : isIconEnabled
-                          ? Colors.grey[100]
-                          : Colors.grey[700],
-                  fontWeight: FontWeight.w500),
-            ),
-          )
+            Padding(
+              padding:
+                  EdgeInsets.only(top: ScreenSizeHandler.screenHeight * 0.005),
+              child: Text(
+                caption,
+                style: TextStyle(
+                    fontSize: ScreenSizeHandler.bigger * 0.015,
+                    color: isIconChosen
+                        ? kSwitchOnColor
+                        : isIconEnabled
+                            ? Colors.grey[100]
+                            : Colors.grey[700],
+                    fontWeight: FontWeight.w500),
+              ),
+            )
         ],
       ),
     );

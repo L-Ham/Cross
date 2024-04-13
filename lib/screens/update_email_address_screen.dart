@@ -3,9 +3,9 @@ import 'package:reddit_bel_ham/components/settings_components/user_information_c
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/components/settings_components/forget_password_text.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
-import 'package:reddit_bel_ham/components/general_components/credentials_text_field.dart';
 
 import '../components/settings_components/settings_save_button.dart';
+import '../components/settings_components/settings_text_field.dart';
 
 class UpdateEmailAddressScreen extends StatefulWidget {
   const UpdateEmailAddressScreen({super.key});
@@ -81,13 +81,13 @@ class _UpdateEmailAddressScreenState extends State<UpdateEmailAddressScreen> {
                     children: [
                       Padding(
                         padding: EdgeInsets.only(
-                            bottom: ScreenSizeHandler.bigger * 0.03),
+                            bottom: ScreenSizeHandler.bigger * 0.02),
                         child: UserInformationCard(
                             username: username, email: email),
                       ),
                       Padding(
                         padding: EdgeInsets.only(
-                            bottom: ScreenSizeHandler.bigger * 0.01),
+                            bottom: ScreenSizeHandler.bigger * 0.005),
                         child: Text(
                           "Be sure to verify your new email address",
                           style: kSettingsSubHeaderTextStyle.copyWith(
@@ -106,57 +106,22 @@ class _UpdateEmailAddressScreenState extends State<UpdateEmailAddressScreen> {
                       Padding(
                         padding: EdgeInsets.only(
                             top: ScreenSizeHandler.screenHeight * 0.02),
-                        child: CredentialsTextField(
+                        child: SettingsTextField(
+                          controller: emailController,
+                          hintText: 'New email address',
                           key: const Key(
                               'update_email_address_email_text_field'),
-                          controller: emailController,
-                          isObscure: false,
-                          text: 'New email address',
-                          suffixIcon: isEmailFocused
-                              ? IconButton(
-                                  icon: const Icon(Icons.cancel_rounded),
-                                  onPressed: () {
-                                    setState(() {
-                                      emailController.clear();
-                                    });
-                                  },
-                                )
-                              : null,
-                          isFocused: isEmailFocused,
-                          onChanged: (value) {
-                            setState(() {
-                              isEmailFocused = value.isNotEmpty;
-                            });
-                          },
                         ),
                       ),
                       Padding(
                         padding: EdgeInsets.only(
                             top: ScreenSizeHandler.screenHeight * 0.02),
-                        child: CredentialsTextField(
+                        child: SettingsTextField(
+                          controller: passwordController,
+                          hintText: 'Reddit password',
+                          isObscured: isPasswordObscure,
                           key: const Key(
                               'update_email_address_password_text_field'),
-                          controller: passwordController,
-                          isObscure: isPasswordObscure,
-                          text: 'Password',
-                          suffixIcon: isPasswordFocused
-                              ? IconButton(
-                                  icon: const Icon(Icons.visibility_rounded),
-                                  onPressed: () {
-                                    setState(() {
-                                      isPasswordObscure = !isPasswordObscure;
-                                    });
-                                  },
-                                )
-                              : null,
-                          isFocused: isPasswordFocused,
-                          onChanged: (value) {
-                            setState(
-                              () {
-                                isPasswordFocused = value.isNotEmpty;
-                              },
-                            );
-                          },
                         ),
                       ),
                       Padding(

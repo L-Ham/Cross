@@ -53,10 +53,9 @@ class RedditByLham extends StatelessWidget {
       theme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
       routes: {
-        FirstScreen.id: (context) => FirstScreen(),
+        FirstScreen.id: (context) => const FirstScreen(),
         CreateCommunityScreen.id: (context) => const CreateCommunityScreen(),
         AccountSettingsScreen.id: (context) => const AccountSettingsScreen(),
-
         SettingsScreen.id: (context) => const SettingsScreen(),
         NotificationSettingsScreen.id: (context) =>
             const NotificationSettingsScreen(),
@@ -66,7 +65,8 @@ class RedditByLham extends StatelessWidget {
         ChangePasswordScreen.id: (context) => const ChangePasswordScreen(),
         SignupScreen.id: (context) => const SignupScreen(),
         LoginScreen.id: (context) => const LoginScreen(),
-        ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(username: ''),
+        ForgotPasswordScreen.id: (context) =>
+            const ForgotPasswordScreen(username: ''),
         HomePageScreen.id: (context) => HomePageScreen(),
         BlockedAccount.id: (context) => const BlockedAccount(),
         AddPostScreen.id: (context) => const AddPostScreen(),
