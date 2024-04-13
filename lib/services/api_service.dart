@@ -4,10 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
+import '../components/home_page_components/post_card.dart';
 
 const String baseURL = "https://reddit-bylham.me/api";
-
-import '../components/home_page_components/post_card.dart';
 
 class ApiService {
   String token = '';
@@ -97,7 +96,7 @@ class ApiService {
     //     return jsonPosts.map((json) => Post.fromJson(json)).toList();
     //   } else {
     throw Exception('Failed to load posts');
-    //   }
+  }
 
   Future<dynamic> getUserAccountSettings() async {
     var result = await request('/user/accountSettings',
@@ -160,7 +159,6 @@ class ApiService {
     var result = await request('/user/profileSettings',
         headers: headerWithToken, method: 'PATCH', body: sentData);
     return result;
-
   }
 
   Future<dynamic> getAllBlockedUsers() async {
@@ -209,6 +207,7 @@ class ApiService {
     var result = await request('/user/searchUsernames',
         headers: headerWithToken, method: 'GET', body: sentData);
   }
+
   Future<void> addMediaPost(
       List<File> imageFiles, Map<String, dynamic> body) async {
     var request =
@@ -253,4 +252,4 @@ class ApiService {
         headers: headerWithToken, method: 'POST', body: body);
     return result;
   }
-  }
+}
