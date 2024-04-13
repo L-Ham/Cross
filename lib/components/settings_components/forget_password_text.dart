@@ -15,7 +15,7 @@ class ForgetPasswordText extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()),
+          MaterialPageRoute(builder: (context) => const ForgotPasswordScreen(username: '',)),
         );
       },
       text: 'Forget Password',
