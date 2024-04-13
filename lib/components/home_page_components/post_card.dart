@@ -32,6 +32,8 @@ class Post {
     required this.link,
     required this.image,
   });
+
+  static fromJson(json) {}
 }
 
 class PostCard extends StatefulWidget {

@@ -7,6 +7,8 @@ import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 
 const String baseURL = "https://reddit-bylham.me/api";
 
+import '../components/home_page_components/post_card.dart';
+
 class ApiService {
   String token = '';
   late Map<String, String> headerWithToken;
@@ -64,6 +66,9 @@ class ApiService {
 
   Future<dynamic> createCommunity(Map<String, dynamic> data) async {
     try {
+      String token =
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjVmOGEzZTRiZGNlYWU5YmNiODJkYWUwIiwidHlwZSI6Im5vcm1hbCJ9LCJpYXQiOjE3MTEzMDMyNTEsImV4cCI6NTAxNzExMzAzMjUxfQ.h0qBRBJXuerCcd-tVJx0yWDCSm5oyOrRIshgXy-38Ug';
+
       final response = await http.post(
         Uri.parse('$baseURL/subreddit/createCommunity'),
         headers: <String, String>{
@@ -83,6 +88,16 @@ class ApiService {
       throw e;
     }
   }
+
+  Future<List<Post>> fetchPosts() async {
+    //   final response = await http.get('https://MestanyElBackend.com/posts');
+
+    //   if (response.statusCode == 200) {
+    //     List<dynamic> jsonPosts = jsonDecode(response.body);
+    //     return jsonPosts.map((json) => Post.fromJson(json)).toList();
+    //   } else {
+    throw Exception('Failed to load posts');
+    //   }
 
   Future<dynamic> getUserAccountSettings() async {
     var result = await request('/user/accountSettings',
@@ -145,6 +160,7 @@ class ApiService {
     var result = await request('/user/profileSettings',
         headers: headerWithToken, method: 'PATCH', body: sentData);
     return result;
+
   }
 
   Future<dynamic> getAllBlockedUsers() async {
