@@ -44,7 +44,12 @@ class _HomePageScreenState extends State<HomePageScreen> {
   bool onlineStatusToggle = true;
   Color onlineStatusColor = kOnlineStatusColor;
   double onlineStatusWidth = ScreenSizeHandler.smaller * 0.42;
-
+  @override
+  void initState() {
+    super.initState();
+    username = TokenDecoder.username;
+    email = TokenDecoder.email;
+  }
   bool isExitPressed = false;
 
   bool isRecentlyVisitedDrawerVisible = false;
@@ -678,12 +683,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
 
   int navigationBarIndex=0;
   int oldIndex=0;
-  @override
-  void initState() {
-    super.initState();
-    username = TokenDecoder.username;
-    email = TokenDecoder.email;
-  }
+
   
 
   String selectedMenuItem = "Home";
@@ -1239,7 +1239,12 @@ class DrawerBottomSheet extends StatefulWidget {
 }
 
 class _DrawerBottomSheetState extends State<DrawerBottomSheet> {
-  String username = "peter_ashraf";
+  late String username;
+  @override
+  void initState() {
+    super.initState();
+    username=TokenDecoder.username;
+  }
   bool isExitPressed = false;
   @override
   Widget build(BuildContext context) {
