@@ -233,9 +233,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 onPress: () async {
                   if (isButtonEnabled) {
                     UesrnameOrEmail = nameController.text;
-                    String toNextScreen = nameController.text.contains('@')
-                        ? nameController.text
-                        : "the email associated with your $UesrnameOrEmail account";
                     await ForgotPasswordRequest(UesrnameOrEmail);
 
                     if (_response.contains('Email sent')) {
@@ -243,7 +240,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => CheckYourInboxScreen(
-                                  username: toNextScreen)));
+                                  username: UesrnameOrEmail)));
                     } else {
                       showDialog(
                         context: context,
