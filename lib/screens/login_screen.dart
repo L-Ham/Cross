@@ -93,6 +93,9 @@ class LoginScreenState extends State<LoginScreen> {
         isLoading = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(
+            bottom: ScreenSizeHandler.screenHeight * 0.05,),
         content: Text(message),
         duration: const Duration(seconds: 3),
       ));
@@ -137,6 +140,9 @@ class LoginScreenState extends State<LoginScreen> {
         isLoading = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(
+            bottom: ScreenSizeHandler.screenHeight * 0.05,),
         content: Text(message),
         duration: const Duration(seconds: 3),
       ));
