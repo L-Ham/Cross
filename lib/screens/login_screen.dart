@@ -42,6 +42,14 @@ class LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     initSharedPrefs();
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        print('User is signed in!');
+        AuthService().signOutWithGoogle();
+      }
+    });
   }
 
   void initSharedPrefs() async {
@@ -66,6 +74,7 @@ class LoginScreenState extends State<LoginScreen> {
         },
         body: jsonEncode(requestData),
       );
+      message = jsonDecode(response.body)['message'];
       if (response.statusCode == 200) {
         message='Login successful.';
         var token = jsonDecode(response.body)['token'];
@@ -76,44 +85,22 @@ class LoginScreenState extends State<LoginScreen> {
             MaterialPageRoute(
                 builder: (context) => const HomePageScreen()));
       }
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text(message),
-              content: Text(response.body.toString()),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text('OK'),
-                )
-              ],
-            );
-          });
     } catch (e) {
-      print('Failed to login.');
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Failed to login'),
-              content: Text('Please try again later.'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('OK'),
-                )
-              ],
-            );
-          });
+      print(e);
+    } 
+    finally {
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 3),
+      ));
     }
   }
   Future<void> loginWithGoogle(
     String token) async {
+    // await AuthService().signOutWithGoogle();
     print(token);
     final url = Uri.parse('https://reddit-bylham.me/api/auth/googleLogin');
 
@@ -130,6 +117,7 @@ class LoginScreenState extends State<LoginScreen> {
         },
         body: jsonEncode(requestData),
       );
+      message= jsonDecode(response.body)['message'];
       if (response.statusCode == 200) {
         message='Login successful.';
         var token = jsonDecode(response.body)['token'];
@@ -140,39 +128,18 @@ class LoginScreenState extends State<LoginScreen> {
             MaterialPageRoute(
                 builder: (context) => HomePageScreen()));
       }
-      showDialog(context: context, builder:
-          (BuildContext context) {
-        return AlertDialog(
-          title: Text(message),
-          content: Text(response.body.toString()),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('OK'),
-            )
-          ],
-        );
-      });
 
     } catch (e) {
-      print('Failed to login.');
-      showDialog(context: context, builder:
-          (BuildContext context) {
-        return AlertDialog(
-          title: Text('Failed to login'),
-          content: Text('Please try again later.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('OK'),
-            )
-          ],
-        );
+      print(e);
+    } 
+    finally {
+      setState(() {
+        isLoading = false;
       });
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 3),
+      ));
     }
   }
 
@@ -227,11 +194,19 @@ class LoginScreenState extends State<LoginScreen> {
                           setState(() {
                             isLoading = true;
                           });
-                        if (FirebaseAuth.instance.currentUser != null) {
-                          await AuthService().signOutWithGoogle();
-                        }
+                              FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        print('User is signed in!');
+        AuthService().signOutWithGoogle();
+      }
+    });
                         var check=await AuthService().signInWithGoogle();
                         if (check == null) {
+                          setState(() {
+                            isLoading = false;
+                          });
                           return;
                         }
                         else {

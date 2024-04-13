@@ -66,6 +66,7 @@ class AboutYouScreenState extends State<AboutYouScreen> {
         },
         body: jsonEncode(requestData),
       );
+      message=jsonDecode(response.body)['message'];
       if (response.statusCode == 200) {
         message='Signup successful.';
         var token = jsonDecode(response.body)['token'];
@@ -76,40 +77,18 @@ class AboutYouScreenState extends State<AboutYouScreen> {
             MaterialPageRoute(
                 builder: (context) => HomePageScreen()));
       }
-      showDialog(context: context, builder:
-          (BuildContext context) {
-        return AlertDialog(
-          title: Text(message),
-          content: Text(response.body.toString()),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('OK'),
-            )
-          ],
-        );
-      });
 
     } catch (e) {
-      print('Error: $e');
-      print('Failed to signup.');
-      showDialog(context: context, builder:
-          (BuildContext context) {
-        return AlertDialog(
-          title: Text('Failed to login'),
-          content: Text('Please try again later.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('OK'),
-            )
-          ],
-        );
+      print(e);
+    } 
+    finally {
+      setState(() {
+        isLoading = false;
       });
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 3),
+      ));
     }
   }
 
