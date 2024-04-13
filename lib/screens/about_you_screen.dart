@@ -77,18 +77,32 @@ class AboutYouScreenState extends State<AboutYouScreen> {
             MaterialPageRoute(
                 builder: (context) => HomePageScreen()));
       }
+      else
+      {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(
+            bottom: ScreenSizeHandler.screenHeight * 0.05,),
+        content: Text(message),
+        duration: const Duration(seconds: 3),
+      ));
+      }
 
     } catch (e) {
       print(e);
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(
+            bottom: ScreenSizeHandler.screenHeight * 0.05,),
+        content: Text(message),
+        duration: const Duration(seconds: 3),
+      ));
     } 
     finally {
       setState(() {
         isLoading = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(message),
-        duration: const Duration(seconds: 3),
-      ));
+
     }
   }
 
