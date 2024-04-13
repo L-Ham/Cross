@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/screens/add_post_screen.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:provider/provider.dart';
 import 'package:reddit_bel_ham/screens/about_you_screen.dart';
 import 'package:reddit_bel_ham/screens/change_password_screen.dart';
 import 'package:reddit_bel_ham/screens/community_rules_screen.dart';
@@ -26,12 +27,20 @@ import 'screens/subreddit_search_screen.dart';
 
 // import 'package:firebase_core/firebase_core.dart';
 // import 'firebase_options.dart';
+
+import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:reddit_bel_ham/screens/inbox_messages.dart';
+import 'firebase_options.dart';
+import 'services/google_sign_in.dart';
+import 'screens/profile_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  // await Firebase.initializeApp();
+  await Firebase.initializeApp(
+  options: DefaultFirebaseOptions.currentPlatform,
+);
   String? token = prefs.getString('token');
   if (token != null) {
     TokenDecoder.updateToken(token);
@@ -51,10 +60,10 @@ class RedditByLham extends StatelessWidget {
       theme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
       routes: {
-        FirstScreen.id: (context) => FirstScreen(),
+        FirstScreen.id: (context) => const FirstScreen(),
         CreateCommunityScreen.id: (context) => const CreateCommunityScreen(),
         AccountSettingsScreen.id: (context) => const AccountSettingsScreen(),
-        SettingsScreen.id: (context) => SettingsScreen(),
+        SettingsScreen.id: (context) => const SettingsScreen(),
         NotificationSettingsScreen.id: (context) =>
             const NotificationSettingsScreen(),
         DisconnectScreen.id: (context) => const DisconnectScreen(),
@@ -63,8 +72,9 @@ class RedditByLham extends StatelessWidget {
         ChangePasswordScreen.id: (context) => const ChangePasswordScreen(),
         SignupScreen.id: (context) => const SignupScreen(),
         LoginScreen.id: (context) => const LoginScreen(),
-        ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
-        HomePageScreen.id: (context) => const HomePageScreen(),
+        ForgotPasswordScreen.id: (context) =>
+            const ForgotPasswordScreen(username: ''),
+        HomePageScreen.id: (context) => HomePageScreen(),
         BlockedAccount.id: (context) => const BlockedAccount(),
         SubredditScreen.id: (context) => const SubredditScreen(),
         //Resolved
@@ -76,13 +86,15 @@ class RedditByLham extends StatelessWidget {
         AboutYouScreen.id: (context) => const AboutYouScreen(),
         CommunityRulesScreen.id: (context) => const CommunityRulesScreen(),
         PostToScreen.id: (context) => const PostToScreen(),
-      },
+        ProfileScreen.id: (context) => ProfileScreen(),
+        },
       // initialRoute: (token == null)
       //     ? FirstScreen.id
       //     : (JwtDecoder.isExpired(token))
       //         ? LoginScreen.id
       //         : HomePageScreen.id,
-      initialRoute: FirstScreen.id,
+      initialRoute: HomePageScreen.id,
     );
   }
 }
+
