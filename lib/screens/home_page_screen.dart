@@ -935,30 +935,33 @@ class _HomePageScreenState extends State<HomePageScreen> {
           )
           :navigationBarIndex==3?
           Padding(
-            padding: EdgeInsets.only(left: ScreenSizeHandler.screenWidth * 0.15, ),
+            padding: EdgeInsets.only(left: ScreenSizeHandler.screenWidth * 0.05, ),
             child: Center(child: Text('Chat', style: TextStyle(fontSize: ScreenSizeHandler.smaller* kButtonSmallerFontRatio*1.1),),),
           )
           :navigationBarIndex==4?
           Padding(
-            padding: EdgeInsets.only(left: ScreenSizeHandler.screenWidth * 0.15, ),
+            padding: EdgeInsets.only(left: ScreenSizeHandler.screenWidth * 0.05, ),
             child: Center(child: Text('Inbox', style: TextStyle(fontSize: ScreenSizeHandler.smaller* kButtonSmallerFontRatio*1.1),),),
           )
           :Center(child: Text(''),),
           backgroundColor: Colors.black,
           actions: [
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SearchScreen()),
-                );
-              },
-              child: Padding(
-                padding: EdgeInsets.all(ScreenSizeHandler.smaller * 0.01),
-                child: Icon(
-                  Icons.search,
-                  size: ScreenSizeHandler.smaller * 0.095,
-                  color: Colors.white,
+            Visibility(
+              visible: navigationBarIndex==0 || navigationBarIndex==1,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SearchScreen()),
+                  );
+                },
+                child: Padding(
+                  padding: EdgeInsets.all(ScreenSizeHandler.smaller * 0.01),
+                  child: Icon(
+                    Icons.search,
+                    size: ScreenSizeHandler.smaller * 0.095,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
@@ -980,7 +983,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
         )
         :navigationBarIndex==3?
         Padding(
-          padding: EdgeInsets.only(left: ScreenSizeHandler.screenWidth * 0.15, ),
+          padding: EdgeInsets.only(left: ScreenSizeHandler.screenWidth * 0.1, ),
           child: Center(child: Text('Chat', style: TextStyle(fontSize: ScreenSizeHandler.smaller* kButtonSmallerFontRatio*1.1),),),
         )
         :navigationBarIndex==4?
