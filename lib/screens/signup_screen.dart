@@ -88,22 +88,22 @@ class SignupScreenState extends State<SignupScreen> {
                                 )
                             : null,
                         suffixIcon: isNameFocused
-                            ? Semantics(
-                              identifier: 'signup_screen_email_clear_button',
-                              child: IconButton(
-                                  icon: const Icon(
+                            ? IconButton(
+                                icon: Semantics(
+                                  identifier: 'signup_screen_email_clear_button',
+                                  child: const Icon(
                                     Icons.clear_rounded,
                                   ),
-                                  onPressed: () {
-                                    nameController.clear();
-                                    setState(() {
-                                      isButtonEnabled = false;
-                                      isNameFocused = false;
-                                      isValidEmail = true;
-                                    });
-                                  },
                                 ),
-                            )
+                                onPressed: () {
+                                  nameController.clear();
+                                  setState(() {
+                                    isButtonEnabled = false;
+                                    isNameFocused = false;
+                                    isValidEmail = true;
+                                  });
+                                },
+                              )
                             : null,
                         isFocused: isNameFocused,
                         onChanged: (value) {
@@ -165,17 +165,16 @@ class SignupScreenState extends State<SignupScreen> {
                                 )
                             : null,
                         suffixIcon: isPassFocused
-                            ? Semantics(
-                              identifier: 'signup_screen_password_visibility_button',
-                              child: IconButton(
-                                  icon: const Icon(Icons.visibility_rounded),
-                                  onPressed: () {
-                                    setState(() {
-                                      isPassObscure = !isPassObscure;
-                                    });
-                                  },
-                                ),
-                            )
+                            ? IconButton(
+                                icon: Semantics(
+                                  identifier: 'signup_screen_password_visibility_button',
+                                  child: const Icon(Icons.visibility_rounded)),
+                                onPressed: () {
+                                  setState(() {
+                                    isPassObscure = !isPassObscure;
+                                  });
+                                },
+                              )
                             : null,
                         isFocused: isPassFocused,
                         onChanged: (value) {
