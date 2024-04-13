@@ -1112,16 +1112,19 @@ class _HomePageScreenState extends State<HomePageScreen> {
                         },
                       );
                     },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('u/$username',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: ScreenSizeHandler.bigger * 0.023,
-                                fontWeight: FontWeight.bold)),
-                        Icon(Icons.keyboard_arrow_down_rounded),
-                      ],
+                    child: Semantics(
+                      identifier: 'drawer_username_identifier',
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('u/$username',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: ScreenSizeHandler.bigger * 0.023,
+                                  fontWeight: FontWeight.bold)),
+                          Icon(Icons.keyboard_arrow_down_rounded),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -1288,27 +1291,30 @@ class _DrawerBottomSheetState extends State<DrawerBottomSheet> {
             ),
           )),
           isExitPressed
-              ? GestureDetector(
-                  onTap: () {
-                    Navigator.popUntil(context, ModalRoute.withName('/'));
-                    Navigator.pushNamed(context, LoginScreen.id);
-                  },
-                  child: ButtonBar(
-                    alignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.exit_to_app, color: Colors.white38),
-                      Text(
-                        'Logout',
-                        style: TextStyle(
-                          color: Colors.red,
-                          fontSize: ScreenSizeHandler.smaller *
-                              kAcknowledgeTextSmallerFontRatio *
-                              1.1,
+              ? Semantics(
+                identifier: 'second_exit_app_button_identifier',
+                child: GestureDetector(
+                    onTap: () {
+                      Navigator.popUntil(context, ModalRoute.withName('/'));
+                      Navigator.pushNamed(context, LoginScreen.id);
+                    },
+                    child: ButtonBar(
+                      alignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.exit_to_app, color: Colors.white38),
+                        Text(
+                          'Logout',
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: ScreenSizeHandler.smaller *
+                                kAcknowledgeTextSmallerFontRatio *
+                                1.1,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                )
+              )
               : Column(
                   children: [
                     ListTile(
@@ -1330,14 +1336,17 @@ class _DrawerBottomSheetState extends State<DrawerBottomSheet> {
                           ),
                           SizedBox(width: ScreenSizeHandler.screenWidth * 0.34),
                           const Icon(Icons.check, color: Colors.blue),
-                          IconButton(
-                            onPressed: () {
-                              setState(() {
-                                isExitPressed = true;
-                              });
-                            },
-                            icon: const Icon(Icons.exit_to_app),
-                            color: Colors.white38,
+                          Semantics(
+                            identifier: 'first_exit_app_button_identifier',
+                            child: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  isExitPressed = true;
+                                });
+                              },
+                              icon: const Icon(Icons.exit_to_app),
+                              color: Colors.white38,
+                            ),
                           ),
                         ],
                       ),

@@ -298,16 +298,19 @@ class LoginScreenState extends State<LoginScreen> {
                           isObscure: false,
                           text: 'Email or username',
                           suffixIcon: isNameFocused
-                              ? IconButton(
-                                  icon: const Icon(Icons.clear_rounded),
-                                  onPressed: () {
-                                    setState(() {
-                                      nameController.clear();
-                                      isNameFocused = false;
-                                      isButtonEnabled = false;
-                                    });
-                                  },
-                                )
+                              ? Semantics(
+                                identifier: 'login_screen_clear_button',
+                                child: IconButton(
+                                    icon: const Icon(Icons.clear_rounded),
+                                    onPressed: () {
+                                      setState(() {
+                                        nameController.clear();
+                                        isNameFocused = false;
+                                        isButtonEnabled = false;
+                                      });
+                                    },
+                                  ),
+                              )
                               : null,
                           isFocused: isNameFocused,
                           onChanged: (value) {
@@ -340,14 +343,17 @@ class LoginScreenState extends State<LoginScreen> {
                           isObscure: isPassObscure,
                           text: 'Password',
                           suffixIcon: isPassFocused
-                              ? IconButton(
-                                  icon: const Icon(Icons.visibility_rounded),
-                                  onPressed: () {
-                                    setState(() {
-                                      isPassObscure = !isPassObscure;
-                                    });
-                                  },
-                                )
+                              ? Semantics(
+                                identifier: 'login_screen_password_visibility_button',
+                                child: IconButton(
+                                    icon: const Icon(Icons.visibility_rounded),
+                                    onPressed: () {
+                                      setState(() {
+                                        isPassObscure = !isPassObscure;
+                                      });
+                                    },
+                                  ),
+                              )
                               : null,
                           isFocused: isPassFocused,
                           onChanged: (value) {
