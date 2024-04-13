@@ -54,19 +54,16 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
     return '';
   }
 
-  Future<void> createCommunity() async {
-    ApiService apiService =
-        ApiService(TokenDecoder.token);
-    print(_controller.text);
-    print(communityType);
-    print(isSwitched);
-    Map<String, dynamic> data = {
-      "name": _controller.text,
-      "privacy": communityType,
-      "ageRestriction": isSwitched
-    };
-    await apiService.createCommunity(data);
-  }
+Future<void> createCommunity() async {
+  ApiService apiService = ApiService('https://reddit-bylham.me/api/subreddit/createCommunit');
+  //print("Community Created Successfully");
+  Map<String, dynamic> data = {
+    "name": _controller.text,
+    "privacy": communityType,
+    "ageRestriction": isSwitched
+  };
+  await apiService.createCommunity(data);
+}
 
   @override
   Widget build(BuildContext context) {

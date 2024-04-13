@@ -31,7 +31,9 @@ class AboutYouScreenState extends State<AboutYouScreen> {
     email = args['email'];
     password = args['password'];
   }
+
   late SharedPreferences prefs;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -44,7 +46,7 @@ class AboutYouScreenState extends State<AboutYouScreen> {
   }
 
   Future<void> signUp(
-    String userName, String email, String password, String gender) async {
+      String userName, String email, String password, String gender) async {
     final url = Uri.parse('https://reddit-bylham.me/api/auth/signUp');
 
     final Map<String, dynamic> requestData = {
@@ -54,7 +56,7 @@ class AboutYouScreenState extends State<AboutYouScreen> {
       'gender': gender,
     };
     late final response;
-    String message='Signup failed.';
+    String message = 'Signup failed.';
     try {
       response = await http.post(
         url,
@@ -64,47 +66,35 @@ class AboutYouScreenState extends State<AboutYouScreen> {
         body: jsonEncode(requestData),
       );
       if (response.statusCode == 200) {
-        message='Signup successful.';
+        message = 'Signup successful.';
         var token = jsonDecode(response.body)['token'];
         prefs.setString('token', token);
         TokenDecoder.updateToken(token);
         Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => HomePageScreen()));
+            context, MaterialPageRoute(builder: (context) => HomePageScreen()));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(
+            bottom: ScreenSizeHandler.screenHeight * 0.05,
+          ),
+          content: Text(message),
+          duration: const Duration(seconds: 3),
+        ));
       }
-      showDialog(context: context, builder:
-          (BuildContext context) {
-        return AlertDialog(
-          title: Text(message),
-          content: Text(response.body.toString()),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('OK'),
-            )
-          ],
-        );
-      });
-
     } catch (e) {
-      print('Failed to signup.');
-      showDialog(context: context, builder:
-          (BuildContext context) {
-        return AlertDialog(
-          title: Text('Failed to login'),
-          content: Text('Please try again later.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('OK'),
-            )
-          ],
-        );
+      print(e);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(
+          bottom: ScreenSizeHandler.screenHeight * 0.05,
+        ),
+        content: Text(message),
+        duration: const Duration(seconds: 3),
+      ));
+    } finally {
+      setState(() {
+        isLoading = false;
       });
     }
   }

@@ -609,9 +609,13 @@ class _AddPostScreenState extends State<AddPostScreen> {
     );
   }
 
-  @override
-  void dispose() {
-    urlFocus.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   urlFocus.dispose();
+  //   super.dispose();
+  //   titleController.removeListener(() {});
+  //   titleController.dispose();
+
+  //   super.dispose();
+  // }
 }

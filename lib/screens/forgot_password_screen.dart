@@ -177,7 +177,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                   isButtonEnabled = false;
                                   isNameValid = false;
                                   errorMessage =
-                                    "There isn't a Reddit account with that username";
+                                      "There isn't a Reddit account with that username";
                                 });
                               }
                             }
@@ -220,18 +220,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 onPress: () async {
                   if (isButtonEnabled) {
                     UesrnameOrEmail = nameController.text;
-                    String toNextScreen = nameController.text.contains('@')
-                        ? nameController.text
-                        : "the email associated with your $UesrnameOrEmail account";
                     await ForgotPasswordRequest(UesrnameOrEmail);
-                  
-                    if(_response.contains('Email sent'))
-                    {
+
+                    if (_response.contains('Email sent')) {
                       Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                            CheckYourInboxScreen(username: toNextScreen)));
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CheckYourInboxScreen(
+                                  username: UesrnameOrEmail)));
                     } else {
                       showDialog(
                         context: context,

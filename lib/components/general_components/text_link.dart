@@ -6,25 +6,36 @@ class TextLink extends StatelessWidget {
   const TextLink({
     Key? key,
     required this.onTap,
-    required this.text, 
+    required this.text,
     required this.fontSizeRatio,
+    this.color,
+    this.isBold,
+    this.isUnderline,
   }) : super(key: key);
 
   final VoidCallback onTap;
-  final String text; 
+  final String text;
   final double? fontSizeRatio;
+  final Color? color;
+  final bool? isBold;
+  final bool? isUnderline;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Padding(
-        padding: EdgeInsets.only(left: ScreenSizeHandler.smaller * kTextLinkPaddingRatio),
+        padding: EdgeInsets.only(
+            left: ScreenSizeHandler.smaller * kTextLinkPaddingRatio),
         child: Text(
           text,
           style: TextStyle(
             fontSize: fontSizeRatio,
-            color: Colors.blue,
+            color: color ?? Colors.blue,
+            fontWeight: isBold == true ? FontWeight.bold : FontWeight.normal,
+            decoration: isUnderline == true
+                ? TextDecoration.underline
+                : TextDecoration.none,
           ),
         ),
       ),
