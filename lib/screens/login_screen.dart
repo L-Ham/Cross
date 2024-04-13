@@ -148,13 +148,8 @@ class LoginScreenState extends State<LoginScreen> {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => HomePageScreen()));
       }
-    } catch (e) {
-      print(e);
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
-      AuthService().signOutWithGoogle();
+      else 
+      {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         behavior: SnackBarBehavior.floating,
         margin: EdgeInsets.only(
@@ -168,6 +163,28 @@ class LoginScreenState extends State<LoginScreen> {
         content: Center(child: Text(message)),
         duration: const Duration(seconds: 3),
       ));
+      }
+    } catch (e) {
+      print(e);
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(
+            bottom: ScreenSizeHandler.screenHeight * 0.12,
+            left: ScreenSizeHandler.screenWidth * 0.04,
+            right: ScreenSizeHandler.screenWidth * 0.04),
+
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+        content: Center(child: Text(message)),
+        duration: const Duration(seconds: 3),
+      ));
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+      AuthService().signOutWithGoogle();
+
     }
   }
 
