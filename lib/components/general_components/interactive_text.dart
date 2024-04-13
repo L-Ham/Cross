@@ -7,10 +7,12 @@ class InteractiveText extends StatelessWidget {
       {super.key,
       required this.text,
       required this.onTap,
+      this.isUnderlined = false,
       this.fontSizeRatio = kInteractiveTextHeightRatio});
 
   final String text;
   final double fontSizeRatio;
+  final bool isUnderlined;
   final Function() onTap;
 
   @override
@@ -21,6 +23,8 @@ class InteractiveText extends StatelessWidget {
         text,
         style: kInteractiveTextStyle.copyWith(
           fontSize: ScreenSizeHandler.bigger * fontSizeRatio,
+          decoration: isUnderlined? TextDecoration.underline: TextDecoration.none,
+          decorationColor: Colors.blue
         ),
       ),
     );

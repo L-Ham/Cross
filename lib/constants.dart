@@ -26,6 +26,9 @@ const double kSettingsVerticalPaddingHeightRatio = 0.038;
 const double kSettingsHorizontalPaddingHeightRatio = 0.03;
 const double kBottomButtonPadding = 0.02;
 const double kForgetPasswordTextHeightRatio = 0.0185;
+const double kTagTextSizeRatio = 0.02;
+const double kTagSpacingWidthRatio = 0.035;
+const double kCancelAppbarIconSizeRatio = 0.04;
 
 const kNotificationSettingsPrivateMessagesSwitchIndex = 0;
 const kNotificationSettingsChatMessagesSwitchIndex = 1;
@@ -48,14 +51,15 @@ const Color kBackgroundColor = Color.fromARGB(255, 20, 20, 20);
 const Color kSettingsBackGroundColor = Colors.black;
 const Color kFillingColor = Color.fromARGB(255, 40, 40, 40);
 const Color kHintTextColor = Color.fromARGB(255, 122, 122, 122);
+const Color kGreenGrayColor = Color.fromARGB(255, 144, 178, 185);
 
-const int switchAnimationTime = 150;
-const Color switchOnColor = Color.fromARGB(255, 46, 100, 182);
-const Color switchOffColor = Color.fromARGB(255, 66, 66, 66);
-const double switchWidthRatio = 0.12;
-const double switchHeightRatio = 0.072;
-const double switchCircleSizeRatio = 0.065;
-const double switchBorderRadiusRatio = 0.05;
+const int kSwitchAnimationTime = 150;
+const Color kSwitchOnColor = Color.fromARGB(255, 46, 100, 182);
+const Color kSwitchOffColor = Color.fromARGB(255, 66, 66, 66);
+const double kSwitchWidthRatio = 0.12;
+const double kSwitchHeightRatio = 0.072;
+const double kSwitchCircleSizeRatio = 0.065;
+const double kSwitchBorderRadiusRatio = 0.05;
 
 const Color kDisabledButtonColor = Colors.grey;
 const Color kBlockButtonColor = Color(0xFF44A3F2);
@@ -76,6 +80,11 @@ TextStyle kInteractiveTextStyle = const TextStyle(
 TextStyle kSettingsSegmentTileTextStyle = const TextStyle(
   fontWeight: FontWeight.bold,
   color: Colors.grey,
+);
+
+TextStyle kTagsTextStyle = const TextStyle(
+  color: Colors.white,
+  fontWeight: FontWeight.w500,
 );
 
 TextStyle kSettingsSubHeaderTextStyle =
