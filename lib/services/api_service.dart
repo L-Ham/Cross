@@ -65,9 +65,6 @@ class ApiService {
 
   Future<dynamic> createCommunity(Map<String, dynamic> data) async {
     try {
-      String token =
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjVmOGEzZTRiZGNlYWU5YmNiODJkYWUwIiwidHlwZSI6Im5vcm1hbCJ9LCJpYXQiOjE3MTEzMDMyNTEsImV4cCI6NTAxNzExMzAzMjUxfQ.h0qBRBJXuerCcd-tVJx0yWDCSm5oyOrRIshgXy-38Ug';
-
       final response = await http.post(
         Uri.parse('$baseURL/subreddit/createCommunity'),
         headers: <String, String>{
@@ -84,7 +81,6 @@ class ApiService {
       }
     } catch (e) {
       print('Exception occurred: $e');
-      throw e;
     }
   }
 
