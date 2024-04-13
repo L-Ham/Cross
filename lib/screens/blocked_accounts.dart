@@ -69,6 +69,7 @@ class _BlockedAccountState extends State<BlockedAccount> {
   }
 
   Future<void> getSearchedForUsers(String authToken) async {
+    print(authToken);
     ApiService apiService = ApiService(authToken);
     final response =
         await apiService.getSearchedForBlockedUsers(_controller.text);
@@ -117,6 +118,7 @@ class _BlockedAccountState extends State<BlockedAccount> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: kBackgroundColor,
       appBar: AppBar(
         centerTitle: true,
@@ -204,7 +206,7 @@ class _BlockedAccountState extends State<BlockedAccount> {
           ),
           if (_isBlockedAccountsEmpty && _isTextFieldEmpty)
             SizedBox(
-              height: ScreenSizeHandler.screenHeight * 0.25,
+              height: ScreenSizeHandler.screenHeight * 0.12,
             ),
           if (_isBlockedAccountsEmpty && _isTextFieldEmpty)
             EmptyDog()
@@ -276,8 +278,6 @@ class SearchedUser {
   });
 
   factory SearchedUser.fromJson(Map<String, dynamic> json) {
-    print('kkkkkkk');
-    print(json);
     return SearchedUser(
       id: json['_id'] ?? '',
       userName: json['userName'] ?? '',

@@ -5,7 +5,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 import 'package:reddit_bel_ham/components/subreddit_components/subreddit_navbar_icon.dart';
 import 'package:reddit_bel_ham/screens/subreddit_search_screen.dart';
+import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import '../constants.dart';
+import 'package:reddit_bel_ham/services/api_service.dart';
 
 class SubredditScreen extends StatefulWidget {
   const SubredditScreen({Key? key}) : super(key: key);
@@ -21,16 +23,40 @@ class _SubredditScreenState extends State<SubredditScreen> {
   String subredditName = 'r/AskEngineers';
   String subredditDescription =
       'Engineers apply the knowledge of math & science to design and manufacture maintainable systems used to solve specific problems. AskEngineers is a forum for questions about the technologies, standards, and processes used to design & build these systems, as well as for questions about the engineering profession and its many disciplines.';
-  String subredditMembers = '1,194,127';
-  String subredditOnline = '106';
-  String subredditWallpaper = 'assets/images/blue2.jpg';
+  String subredditMembersCount = '1,194,127';
+  String subredditMembersNickname = 'members';
+  String subredditOnlineCount = '106';
+  String subredditOnlineNickname = 'online';
+  String subredditBannerImage = 'assets/images/blue2.jpg';
   String subredditAvatarImage = 'assets/images/planet3.png';
   bool _isJoined = true;
+  ApiService apiService = ApiService(TokenDecoder.token);
+
+  Future<void> getCommunityData() async {
+    Map<String, dynamic> data =
+        (await apiService.getCommunityDetails(subredditName)) ?? {};
+
+    if (data.isEmpty) {
+      return;
+    }
+    setState(() {
+      subredditMembersCount = data['communityDetails']['membersCount'];
+      subredditOnlineCount = data['communityDetails']['currentlyViewingCount'];
+      _isJoined = data['communityDetails']['isMember'];
+      subredditAvatarImage = data['communityDetails']['avatarImage'];
+      subredditBannerImage = data['communityDetails']['bannerImage'];
+      subredditDescription = data['communityDetails']['description'];
+      subredditMembersNickname = data['communityDetails']['membersNickname'];
+      subredditOnlineNickname =
+          data['communityDetails']['currentlyViewingNickname'];
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_updateAppBarText);
+    getCommunityData();
   }
 
   @override
@@ -84,6 +110,8 @@ class _SubredditScreenState extends State<SubredditScreen> {
 
   @override
   Widget build(BuildContext context) {
+    subredditName = ModalRoute.of(context)!.settings.arguments as String? ??
+        "r/AskEngineers";
     return Scaffold(
       backgroundColor: kBackgroundColor,
       body: CustomScrollView(
@@ -109,7 +137,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
                           SizedBox(
                               width: ScreenSizeHandler.screenWidth * 0.005),
                           Text(
-                            '$subredditOnline online',
+                            '$subredditOnlineCount $subredditOnlineNickname',
                             style: TextStyle(
                               fontSize: ScreenSizeHandler.bigger * 0.015,
                               color: Colors.white,
@@ -136,7 +164,8 @@ class _SubredditScreenState extends State<SubredditScreen> {
             expandedHeight: ScreenSizeHandler.screenHeight * 0.002,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
-                background: Image.asset(subredditWallpaper, fit: BoxFit.cover)),
+                background:
+                    Image.network(subredditBannerImage, fit: BoxFit.cover)),
             actions: [
               SubredditNavbarIcon(
                 iconSize: 0.025,
@@ -216,7 +245,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
                           ),
                           CircleAvatar(
                             radius: ScreenSizeHandler.bigger * 0.027,
-                            foregroundImage: AssetImage(subredditAvatarImage),
+                            foregroundImage: NetworkImage(subredditAvatarImage),
                           ),
                         ],
                       ),
@@ -247,7 +276,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  '$subredditMembers members',
+                                  '$subredditMembersCount $subredditMembersNickname',
                                   style: TextStyle(
                                     fontSize: ScreenSizeHandler.bigger * 0.016,
                                     color: kDisabledButtonColor,
@@ -266,7 +295,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
                                         width: ScreenSizeHandler.screenWidth *
                                             0.005),
                                     Text(
-                                      '$subredditOnline online',
+                                      '$subredditOnlineCount $subredditOnlineNickname',
                                       style: TextStyle(
                                         fontSize:
                                             ScreenSizeHandler.bigger * 0.016,
@@ -282,7 +311,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '$subredditMembers members',
+                                  '$subredditMembersCount $subredditMembersNickname',
                                   style: TextStyle(
                                     fontSize: ScreenSizeHandler.bigger * 0.016,
                                     color: kDisabledButtonColor,
@@ -301,7 +330,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
                                         width: ScreenSizeHandler.screenWidth *
                                             0.005),
                                     Text(
-                                      '$subredditOnline online',
+                                      '$subredditOnlineCount $subredditOnlineNickname',
                                       style: TextStyle(
                                         fontSize:
                                             ScreenSizeHandler.bigger * 0.016,
@@ -352,6 +381,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
                                               setState(() {
                                                 _isJoined = false;
                                               });
+                                              Navigator.pop(context);
                                             },
                                             child: Row(
                                               children: [
