@@ -192,7 +192,7 @@ class ApiService {
     sentData = {"search": userName};
     var result = await request('/user/searchUsernames',
         headers: headerWithToken, method: 'GET', body: sentData);
-=======
+  }
   Future<void> addMediaPost(
       List<File> imageFiles, Map<String, dynamic> body) async {
     var request =
@@ -237,4 +237,4 @@ class ApiService {
         headers: headerWithToken, method: 'POST', body: body);
     return result;
   }
-}
+  }
