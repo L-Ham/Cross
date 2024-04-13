@@ -16,7 +16,6 @@ import '../screens/forgot_password_screen.dart';
 import '../screens/home_page_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:reddit_bel_ham/services/google_sign_in.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -42,14 +41,6 @@ class LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     initSharedPrefs();
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (user == null) {
-        print('User is currently signed out!');
-      } else {
-        print('User is signed in!');
-        AuthService().signOutWithGoogle();
-      }
-    });
   }
 
   void initSharedPrefs() async {
@@ -183,7 +174,6 @@ class LoginScreenState extends State<LoginScreen> {
       setState(() {
         isLoading = false;
       });
-      AuthService().signOutWithGoogle();
 
     }
   }
@@ -240,16 +230,6 @@ class LoginScreenState extends State<LoginScreen> {
                         onPress: () async {
                           setState(() {
                             isLoading = true;
-                          });
-                          FirebaseAuth.instance
-                              .authStateChanges()
-                              .listen((User? user) {
-                            if (user == null) {
-                              print('User is currently signed out!');
-                            } else {
-                              print('User is signed in!');
-                              AuthService().signOutWithGoogle();
-                            }
                           });
                           var check = await AuthService().signInWithGoogle();
                           if (check == null) {
