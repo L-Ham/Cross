@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:image_picker/image_picker.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 
@@ -159,21 +158,21 @@ class ApiService {
     request.fields['isLocked'] = false.toString();
 
     for (var imageFile in imageFiles) {
-      print('Image file path: ${imageFile.path}');
+      debugPrint('Image file path: ${imageFile.path}');
       request.files
           .add(await http.MultipartFile.fromPath('file', imageFile.path));
     }
     var response = await request.send();
     if (response.statusCode == 200) {
-      print('Media uploaded successfully');
+      debugPrint('Media uploaded successfully');
     } else {
-      print(response.statusCode);
-      print('Media upload failed');
+      debugPrint(response.statusCode.toString());
+      debugPrint('Media upload failed');
     }
   }
 
   Future<dynamic> addTextPost(Map<String, dynamic> body) async {
-    print('success');
+    debugPrint('success');
     var result = await request('/post/createPost',
         headers: headerWithToken, method: 'POST', body: body);
     return result;
