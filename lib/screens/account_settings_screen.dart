@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:reddit_bel_ham/components/general_components/custom_switch.dart';
 import 'package:reddit_bel_ham/components/general_components/interactive_text.dart';
 import 'package:reddit_bel_ham/constants.dart';
@@ -105,27 +106,30 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                             child: const SettingsSegmentTitle(
                                 titleText: "Basic Settings"),
                           ),
-                          SettingsTile(
-                            key: const Key(
-                                "account_settings_update_email_address_tile"),
-                            leadingIcon: const SettingsTileLeadingIcon(
-                              leadingIcon: Icons.settings_outlined,
+                          Semantics(
+                            identifier: "account_settings_update_email_address_tile",
+                            child: SettingsTile(
+                              key: const Key(
+                                  "account_settings_update_email_address_tile"),
+                              leadingIcon: const SettingsTileLeadingIcon(
+                                leadingIcon: Icons.settings_outlined,
+                              ),
+                              titleText: "Update Email Address",
+                              trailingWidget: const SettingsTileTrailingIcon(
+                                trailingIcon: Icons.arrow_forward,
+                              ),
+                              subtitleText: connectedEmailAddress,
+                              onTap: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  UpdateEmailAddressScreen.id,
+                                  arguments: {
+                                    'email': connectedEmailAddress,
+                                    'username': username,
+                                  },
+                                );
+                              },
                             ),
-                            titleText: "Update Email Address",
-                            trailingWidget: const SettingsTileTrailingIcon(
-                              trailingIcon: Icons.arrow_forward,
-                            ),
-                            subtitleText: connectedEmailAddress,
-                            onTap: () {
-                              Navigator.pushNamed(
-                                context,
-                                UpdateEmailAddressScreen.id,
-                                arguments: {
-                                  'email': connectedEmailAddress,
-                                  'username': username,
-                                },
-                              );
-                            },
                           ),
                           SettingsTile(
                             key: const Key(

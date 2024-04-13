@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
+import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 
 const String baseURL = "https://reddit-bylham.me/api";
 
@@ -80,8 +81,18 @@ class ApiService {
       }
     } catch (e) {
       print('Exception occurred: $e');
-      throw e;
     }
+  }
+
+  Future<List<Post>> fetchPosts() async {
+    //   final response = await http.get('https://MestanyElBackend.com/posts');
+
+    //   if (response.statusCode == 200) {
+    //     List<dynamic> jsonPosts = jsonDecode(response.body);
+    //     return jsonPosts.map((json) => Post.fromJson(json)).toList();
+    //   } else {
+    throw Exception('Failed to load posts');
+    //   }
   }
 
   Future<dynamic> getUserAccountSettings() async {
@@ -237,6 +248,14 @@ class ApiService {
   Future<dynamic> addPollPost(Map<String, dynamic> body) async {
     var result = await request('/post/createPost',
         headers: headerWithToken, method: 'POST', body: body);
+    return result;
+  }
+
+  Future<dynamic> getCommunityDetails(String communityName) async {
+    Map<String, dynamic> sentData;
+    sentData = {"subRedditName": communityName};
+    var result = await request('/subreddit/communityDetails',
+        headers: headerWithToken, method: 'GET', body: sentData);
     return result;
   }
 }

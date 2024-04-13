@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:reddit_bel_ham/screens/add_post_screen.dart';
+import 'package:reddit_bel_ham/screens/subreddit_screen.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import '../components/create_community_components/community_name_text_box.dart';
 import '../components/general_components/continue_button.dart';
@@ -10,8 +12,7 @@ import '../constants.dart';
 import '../services/api_service.dart';
 
 class CreateCommunityScreen extends StatefulWidget {
-  const CreateCommunityScreen({Key? key})
-      : super(key: key);
+  const CreateCommunityScreen({Key? key}) : super(key: key);
 
   static const String id = 'create_community_screen';
 
@@ -55,17 +56,20 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
   }
 
   Future<void> createCommunity() async {
-    ApiService apiService =
-        ApiService(TokenDecoder.token);
-    print(_controller.text);
-    print(communityType);
-    print(isSwitched);
+    ApiService apiService = ApiService(TokenDecoder.token);
+    //print("Community Created Successfully");
     Map<String, dynamic> data = {
       "name": _controller.text,
       "privacy": communityType,
       "ageRestriction": isSwitched
     };
-    await apiService.createCommunity(data);
+    Map<String, dynamic> communityData = await apiService.createCommunity(data);
+    Navigator.pushNamed(context, SubredditScreen.id,
+        arguments: _controller.text);
+    Navigator.pushNamed(context, AddPostScreen.id, arguments: {
+      "subredditName": _controller.text,
+      "subredditId": communityData["_id"]
+    });
   }
 
   @override

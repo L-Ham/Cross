@@ -66,6 +66,29 @@ class _AddPostScreenState extends State<AddPostScreen> {
   String subredditImage = "";
   ApiService apiService = ApiService(TokenDecoder.token);
   File? videoFile;
+  String subredditId = "";
+
+  @override
+  void didChangeDependencies() {
+    Map<String, dynamic>? args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
+    if (args == null) {
+      return;
+    }
+    if (args['subredditName'] != null) {
+      subredditName = args['subredditName'];
+      setState(() {
+        isSubredditSelected = true;
+      });
+    }
+    if (args['subredditImage'] != null) {
+      subredditImage = args['subredditImage'];
+    }
+    if (args['subredditId'] != null) {
+      subredditId = args['subredditId'];
+    }
+    super.didChangeDependencies();
+  }
 
   void addURL() {
     isLinkChosen = true;
@@ -249,10 +272,12 @@ class _AddPostScreenState extends State<AddPostScreen> {
                     //TODO: POST HERE
                     Map<String, dynamic> post = {
                       "title": titleController.text,
-                      "subRedditId": "6600763f0e1e9482675cf856",
                       "isSpoiler": isSpoiler,
                       "text": bodyController.text,
                     };
+                    if (subredditId != "") {
+                      post["subRedditId"] = subredditId;
+                    }
                     if (isImageChosen) {
                       post['type'] = "image";
                       List<File> imageFiles = chosenImages
@@ -279,18 +304,17 @@ class _AddPostScreenState extends State<AddPostScreen> {
                       post["poll.startTime"] = formattedDate.toString();
                       post["poll.endTime"] = formattedPollEndTime.toString();
                       apiService.addPollPost(post);
-                    }
-                    else if(isLinkChosen){
+                    } else if (isLinkChosen) {
                       post['type'] = "link";
                       post['url'] = urlController.text;
                       apiService.addTextPost(post);
-                    }
-                    else{
+                    } else {
                       post['type'] = "text";
                       apiService.addTextPost(post);
                     }
                   }
                 }
+                Navigator.pop(context);
               },
               buttonColor:
                   isPostButtonActivated ? kSwitchOnColor : Colors.grey[900]!,
@@ -732,13 +756,13 @@ class _AddPostScreenState extends State<AddPostScreen> {
     );
   }
 
-  @override
-  void dispose() {
-    urlFocus.dispose();
-    super.dispose();
-    titleController.removeListener(() {});
-    titleController.dispose();
+  // @override
+  // void dispose() {
+  //   urlFocus.dispose();
+  //   super.dispose();
+  //   titleController.removeListener(() {});
+  //   titleController.dispose();
 
-    super.dispose();
-  }
+  //   super.dispose();
+  // }
 }

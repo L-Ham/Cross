@@ -33,26 +33,8 @@ class _InboxMessagesScreenState extends State<InboxMessagesScreen>
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        leading: Row(
-          children: [
-            Padding(
-              padding: EdgeInsets.only(
-                  left: ScreenSizeHandler.screenWidth * 0.018,
-                  right: ScreenSizeHandler.screenWidth * 0.02),
-              child: GestureDetector(
-                onTap: () {
-                  _scaffoldKey.currentState?.openDrawer();
-                },
-                child: Icon(
-                  Icons.menu,
-                  size: 30,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
-        ),
-        bottom: TabBar(
+        automaticallyImplyLeading: false,
+        title: TabBar(
           controller: _tabController,
           indicatorColor: Color.fromARGB(255, 70, 111, 205),
           labelColor: Colors.white,
@@ -61,52 +43,12 @@ class _InboxMessagesScreenState extends State<InboxMessagesScreen>
                   width: ScreenSizeHandler.screenWidth*0.01, color: Color.fromARGB(255, 70, 111, 205)),
               insets: EdgeInsets.symmetric(horizontal: 80.0)),
           unselectedLabelColor: Colors.white,
-          tabs: [
+          tabs: const [
             Tab(text: 'Activity'),
             Tab(text: 'Messages'),
           ],
         ),
-        title: Center(
-          child: Text(
-            'Inbox',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: ScreenSizeHandler.screenWidth * 0.04,
-            ),
-          ),
-        ),
         backgroundColor: Colors.black,
-        actions: [
-          GestureDetector(
-            onTap: () {},
-            child: Padding(
-              padding: const EdgeInsets.all(2.0),
-              child: GestureDetector(
-                onTap:() => {
-                   showModalBottomSheet(
-                      context: context,
-                      builder: (BuildContext context) =>
-                          buildMoreModalBottomSheetinbox(context),
-                    ),
-                },
-                child: Icon(
-                  Icons.more_horiz_outlined,
-                  size: 30,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: GestureDetector(
-              onTap: () {
-                _scaffoldKey.currentState?.openEndDrawer();
-              },
-              child: ProfileIconWithIndicator(isOnline: false),
-            ),
-          ),
-        ],
       ),
       body: TabBarView(
         controller: _tabController,

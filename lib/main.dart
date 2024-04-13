@@ -25,22 +25,18 @@ import 'screens/blocked_accounts.dart';
 import 'screens/subreddit_screen.dart';
 import 'screens/subreddit_search_screen.dart';
 
-// import 'package:firebase_core/firebase_core.dart';
-// import 'firebase_options.dart';
 
-import 'package:firebase_core/firebase_core.dart';
+
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:reddit_bel_ham/screens/inbox_messages.dart';
-import 'firebase_options.dart';
+
 import 'services/google_sign_in.dart';
 import 'screens/profile_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
   String? token = prefs.getString('token');
   if (token != null) {
     TokenDecoder.updateToken(token);

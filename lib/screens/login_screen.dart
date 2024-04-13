@@ -16,7 +16,6 @@ import '../screens/forgot_password_screen.dart';
 import '../screens/home_page_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:reddit_bel_ham/services/google_sign_in.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -37,19 +36,15 @@ class LoginScreenState extends State<LoginScreen> {
   bool isButtonEnabled = false;
   late SharedPreferences prefs;
   bool isLoading = false;
+  final _focusNode = FocusNode();
+  final _focusNode2 = FocusNode();
+
+
 
   @override
   void initState() {
     super.initState();
     initSharedPrefs();
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (user == null) {
-        print('User is currently signed out!');
-      } else {
-        print('User is signed in!');
-        AuthService().signOutWithGoogle();
-      }
-    });
   }
 
   void initSharedPrefs() async {
@@ -83,16 +78,43 @@ class LoginScreenState extends State<LoginScreen> {
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => const HomePageScreen()));
       }
+      else
+      {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(
+            bottom: ScreenSizeHandler.screenHeight * 0.12,
+            left: ScreenSizeHandler.screenWidth * 0.04,
+            right: ScreenSizeHandler.screenWidth * 0.04),
+
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+        content: Center(child: Text(message)),
+        duration: const Duration(seconds: 3),
+      ));
+      }
     } catch (e) {
       print(e);
-    } finally {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(
+            bottom: ScreenSizeHandler.screenHeight * 0.12,
+            left: ScreenSizeHandler.screenWidth * 0.04,
+            right: ScreenSizeHandler.screenWidth * 0.04),
+
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+        content: Center(child: Text(message)),
+        duration: const Duration(seconds: 3),
+      ));
+    } 
+    finally {
       setState(() {
         isLoading = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(message),
-        duration: const Duration(seconds: 3),
-      ));
+
     }
   }
 
@@ -121,17 +143,42 @@ class LoginScreenState extends State<LoginScreen> {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => HomePageScreen()));
       }
+      else 
+      {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(
+            bottom: ScreenSizeHandler.screenHeight * 0.12,
+            left: ScreenSizeHandler.screenWidth * 0.04,
+            right: ScreenSizeHandler.screenWidth * 0.04),
+
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+        content: Center(child: Text(message)),
+        duration: const Duration(seconds: 3),
+      ));
+      }
     } catch (e) {
       print(e);
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(
+            bottom: ScreenSizeHandler.screenHeight * 0.12,
+            left: ScreenSizeHandler.screenWidth * 0.04,
+            right: ScreenSizeHandler.screenWidth * 0.04),
+
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+        content: Center(child: Text(message)),
+        duration: const Duration(seconds: 3),
+      ));
     } finally {
       setState(() {
         isLoading = false;
       });
-      AuthService().signOutWithGoogle();
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(message),
-        duration: const Duration(seconds: 3),
-      ));
+
     }
   }
 
@@ -187,16 +234,6 @@ class LoginScreenState extends State<LoginScreen> {
                         onPress: () async {
                           setState(() {
                             isLoading = true;
-                          });
-                          FirebaseAuth.instance
-                              .authStateChanges()
-                              .listen((User? user) {
-                            if (user == null) {
-                              print('User is currently signed out!');
-                            } else {
-                              print('User is signed in!');
-                              AuthService().signOutWithGoogle();
-                            }
                           });
                           var check = await AuthService().signInWithGoogle();
                           if (check == null) {
@@ -254,6 +291,7 @@ class LoginScreenState extends State<LoginScreen> {
                             horizontal: ScreenSizeHandler.screenWidth * 0.04,
                             vertical: ScreenSizeHandler.screenHeight * 0.01),
                         child: CredentialsTextField(
+                          focusNode: _focusNode,
                           key: const Key(
                               'login_screen_email_or_username_text_field'),
                           controller: nameController,
@@ -261,7 +299,9 @@ class LoginScreenState extends State<LoginScreen> {
                           text: 'Email or username',
                           suffixIcon: isNameFocused
                               ? IconButton(
-                                  icon: const Icon(Icons.clear_rounded),
+                                  icon: Semantics(
+                                    identifier: 'login_screen_clear_button',
+                                    child: const Icon(Icons.clear_rounded)),
                                   onPressed: () {
                                     setState(() {
                                       nameController.clear();
@@ -296,13 +336,16 @@ class LoginScreenState extends State<LoginScreen> {
                             vertical: ScreenSizeHandler.screenHeight *
                                 kButtonHeightRatio),
                         child: CredentialsTextField(
+                          focusNode: _focusNode2,
                           key: const Key('login_screen_password_text_field'),
                           controller: passController,
                           isObscure: isPassObscure,
                           text: 'Password',
                           suffixIcon: isPassFocused
                               ? IconButton(
-                                  icon: const Icon(Icons.visibility_rounded),
+                                  icon: Semantics(
+                                    identifier: 'login_screen_password_visibility_button',
+                                    child: const Icon(Icons.visibility_rounded)),
                                   onPressed: () {
                                     setState(() {
                                       isPassObscure = !isPassObscure;
@@ -374,6 +417,8 @@ class LoginScreenState extends State<LoginScreen> {
                       if (isButtonEnabled) {
                         setState(() {
                           isLoading = true;
+                          _focusNode.unfocus();
+                          _focusNode2.unfocus();
                         });
                         login(nameController.text, passController.text);
                       } else {
