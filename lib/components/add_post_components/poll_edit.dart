@@ -96,6 +96,7 @@ class _PollEditState extends State<PollEdit> {
               padding: EdgeInsets.only(
                   bottom: ScreenSizeHandler.screenHeight * 0.02),
               child: PollOptionTextField(
+                onChanged: (p0) => widget.updatePollOptions(numOfPollOptions, controllers),
                 controller: controllers[i - 1],
                 i: i,
                 onTap: () {

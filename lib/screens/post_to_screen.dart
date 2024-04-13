@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/components/general_components/interactive_text.dart';
+import 'package:reddit_bel_ham/components/general_components/rounded_button.dart';
 import 'package:reddit_bel_ham/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../components/add_post_components/add_post_search_bar.dart';
+import '../components/add_post_components/post_to_subreddit_tile.dart';
 import '../utilities/screen_size_handler.dart';
 
 class PostToScreen extends StatefulWidget {
@@ -17,9 +21,86 @@ class _PostToScreenState extends State<PostToScreen> {
   FocusNode searchFocus = FocusNode();
   bool isSearchFocused = false;
 
+  void selectSubreddit(int i) {
+    String selectedSubreddit = subredditNames.removeAt(i);
+    subredditNames.insert(0, selectedSubreddit);
+    String selectedImage = subredditImages.removeAt(i);
+    subredditImages.insert(0, selectedImage);
+    int selectedNumOfOnlineUsers = numOfOnlineUsers.removeAt(i);
+    numOfOnlineUsers.insert(0, selectedNumOfOnlineUsers);
+
+    saveSubredditData();
+
+    Navigator.pop(context, {
+      "subredditName": selectedSubreddit,
+      "subredditImage": selectedImage
+    });
+  }
+
+  Future<void> saveSubredditData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('subredditNames', subredditNames);
+    await prefs.setStringList('subredditImages', subredditImages);
+    await prefs.setStringList(
+        'numOfOnlineUsers', numOfOnlineUsers.map((i) => i.toString()).toList());
+  }
+
+  Future<void> loadSubredditData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      subredditNames = prefs.getStringList('subredditNames') ?? subredditNames;
+      subredditImages =
+          prefs.getStringList('subredditImages') ?? subredditImages;
+      numOfOnlineUsers = (prefs.getStringList('numOfOnlineUsers') ??
+              numOfOnlineUsers.map((i) => i.toString()).toList())
+          .map((i) => int.parse(i))
+          .toList();
+    });
+    print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+    print(subredditNames);
+  }
+
+  List<String> subredditNames = [
+    "redditBelHam",
+    "ay 7aga",
+    "norsk",
+    "csMajors",
+    "FlutterDev",
+    "Flutter"
+  ];
+  List<String> subredditImages = [
+    "redditBelHam",
+    "ay 7aga",
+    "norsk",
+    "csMajors",
+    "FlutterDev",
+    "Flutter"
+  ];
+  List<int> numOfOnlineUsers = [
+    100,
+    200,
+    300,
+    400,
+    500,
+    600,
+  ];
+  String selectedSubredditName = "";
+  bool isSeeMore = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final Map<String, dynamic>? args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
+    if (args != null) {
+      selectedSubredditName = args["subredditName"];
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    loadSubredditData();
     searchFocus.addListener(() {
       setState(() {
         isSearchFocused = searchFocus.hasFocus;
@@ -79,7 +160,9 @@ class _PostToScreenState extends State<PostToScreen> {
               child: Row(
                 children: [
                   Expanded(
-                    child: SearchBar(isSearchFocused: searchFocus),
+                    child: AddPostSearchBar(
+                      isSearchFocused: searchFocus,
+                    ),
                   ),
                   if (isSearchFocused)
                     Padding(
@@ -105,89 +188,57 @@ class _PostToScreenState extends State<PostToScreen> {
           padding: EdgeInsets.symmetric(
               horizontal: ScreenSizeHandler.screenWidth * 0.05),
           child: Column(
-            children: [SizedBox(height: ScreenSizeHandler.screenHeight*0.018,),PostToSubredditTile(), PostToSubredditTile()],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class PostToSubredditTile extends StatelessWidget {
-  const PostToSubredditTile({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-          vertical: ScreenSizeHandler.screenHeight * 0.013),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: ScreenSizeHandler.bigger * 0.032,
-            backgroundColor: Colors.grey,
-          ),
-          Padding(
-            padding:
-                EdgeInsets.only(left: ScreenSizeHandler.screenWidth * 0.02),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "r/redditBelHam",
-                  style: TextStyle(
-                      fontSize: ScreenSizeHandler.bigger * 0.02,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
+            children: [
+              SizedBox(
+                height: ScreenSizeHandler.screenHeight * 0.018,
+              ),
+              for (int i = 0; i < 5; i++)
+                PostToSubredditTile(
+                  subredditName: subredditNames[i],
+                  selectedSubredditName: selectedSubredditName,
+                  subredditImage: subredditImages[i],
+                  numOfOnlineUsers: numOfOnlineUsers[i],
+                  onTap: () {
+                    selectSubreddit(i);
+                  },
                 ),
-                Text(
-                  "5 online",
-                  style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: ScreenSizeHandler.bigger * 0.016),
-                )
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class SearchBar extends StatelessWidget {
-  const SearchBar({
-    super.key,
-    required this.isSearchFocused,
-  });
-
-  final FocusNode isSearchFocused;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: ScreenSizeHandler.bigger * 0.055,
-      child: TextField(
-        focusNode: isSearchFocused,
-        cursorColor: Colors.blue,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide.none,
-          ),
-          fillColor: Colors.grey[800],
-          filled: true,
-          hintText: 'Search for a community',
-          hintStyle: TextStyle(
-            color: Colors.grey,
-            fontSize: ScreenSizeHandler.bigger * 0.018,
-          ),
-          prefixIcon: Icon(
-            Icons.search,
-            color: Colors.grey,
-            size: ScreenSizeHandler.bigger * 0.03,
+              if (isSeeMore)
+                for (int i = 5; i < subredditNames.length; i++)
+                  PostToSubredditTile(
+                    subredditName: subredditNames[i],
+                    selectedSubredditName: selectedSubredditName,
+                    subredditImage: subredditImages[i],
+                    numOfOnlineUsers: numOfOnlineUsers[i],
+                    onTap: () {
+                      selectSubreddit(i);
+                    },
+                  ),
+              if (subredditNames.length > 5 && !isSeeMore)
+                Padding(
+                  padding: EdgeInsets.only(
+                      top: ScreenSizeHandler.screenHeight * 0.02),
+                  child: RoundedButton(
+                    onTap: () {
+                      setState(() {
+                        isSeeMore = true;
+                      });
+                    },
+                    buttonHeightRatio: 0.055,
+                    buttonWidthRatio: 0.49,
+                    buttonColor: kBackgroundColor,
+                    borderColor: Colors.blue,
+                    child: const Text(
+                      'See More',
+                      style: TextStyle(
+                          color: Colors.blue,
+                          decoration: TextDecoration.underline,
+                          decorationThickness: 2,
+                          decorationColor: Colors.blue,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+            ],
           ),
         ),
       ),

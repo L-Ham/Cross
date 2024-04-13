@@ -31,7 +31,7 @@ class UserInformationCard extends StatelessWidget {
                 padding: EdgeInsets.only(
                     left: ScreenSizeHandler.smaller * 0.04,
                     top: ScreenSizeHandler.bigger * 0.01,
-                    bottom: ScreenSizeHandler.bigger * 0.01),
+                    bottom: ScreenSizeHandler.bigger * 0),
                 child: Text(
                   "u/$username",
                   style: kSettingsSubHeaderTextStyle.copyWith(
