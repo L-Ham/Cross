@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/screens/add_post_screen.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:provider/provider.dart';
 import 'package:reddit_bel_ham/screens/about_you_screen.dart';
 import 'package:reddit_bel_ham/screens/change_password_screen.dart';
 import 'package:reddit_bel_ham/screens/community_rules_screen.dart';
@@ -20,14 +21,18 @@ import 'screens/signup_screen.dart';
 import 'screens/forgot_password_screen.dart';
 import 'screens/home_page_screen.dart';
 import 'screens/blocked_accounts.dart';
-// import 'package:firebase_core/firebase_core.dart';
-// import 'firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'firebase_options.dart';
+import 'services/google_sign_in.dart';
+import 'screens/profile_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  // await Firebase.initializeApp();
+  await Firebase.initializeApp(
+  options: DefaultFirebaseOptions.currentPlatform,
+);
   String? token = prefs.getString('token');
   if (token != null) {
     TokenDecoder.updateToken(token);
@@ -68,8 +73,8 @@ class RedditByLham extends StatelessWidget {
         AboutYouScreen.id: (context) => const AboutYouScreen(),
         CommunityRulesScreen.id: (context) => const CommunityRulesScreen(),
         PostToScreen.id: (context) => const PostToScreen(),
-      },
-
+        ProfileScreen.id: (context) => ProfileScreen(),
+        },
       // initialRoute: (token == null)
       //     ? FirstScreen.id
       //     : (JwtDecoder.isExpired(token))
@@ -79,3 +84,4 @@ class RedditByLham extends StatelessWidget {
     );
   }
 }
+

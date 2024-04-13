@@ -8,6 +8,7 @@ import 'package:reddit_bel_ham/components/settings_components/settings_segment_t
 import 'package:reddit_bel_ham/components/settings_components/settings_tile.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_leading_icon.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_trailing_icon.dart';
+import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -19,7 +20,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  String username = "Nardo";
+  String username = TokenDecoder.username;
   bool isBananaEnabled = false;
   bool isMuted = false;
   bool recentCommunities = false;
