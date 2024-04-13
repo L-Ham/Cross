@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:reddit_bel_ham/components/home_page_components/home_navigation_bar.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 import 'package:reddit_bel_ham/components/home_page_components/profile_icon_with_indicator.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_leading_icon.dart';
 import 'package:reddit_bel_ham/constants.dart';
+import 'package:reddit_bel_ham/screens/add_post_screen.dart';
+import 'package:reddit_bel_ham/screens/community_rules_screen.dart';
 import 'package:reddit_bel_ham/screens/home_page_seach_screen.dart';
+import 'package:reddit_bel_ham/screens/inbox_messages.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,6 +35,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
   Color onlineStatusColor = kOnlineStatusColor;
   double onlineStatusWidth = ScreenSizeHandler.smaller * 0.42;
   late String email;
+
+  int navigationBarIndex=0;
+  int oldIndex=0;
   @override
   void initState() {
     super.initState();
@@ -153,11 +160,67 @@ class _HomePageScreenState extends State<HomePageScreen> {
       image: const AssetImage('assets/images/daniel_haymawetna.png'),
     )
   ];
+    void _onItemTapped(int index) {
+    setState(() {
+      oldIndex=navigationBarIndex;
+      navigationBarIndex = index;
+    });
+    if (index == 2) {
+      Navigator.pushNamed(context, AddPostScreen.id);
+      setState(() {
+        navigationBarIndex = oldIndex;
+      });
+    }
+
+  }
   @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
       child: Scaffold(
+        bottomNavigationBar:BottomNavigationBar(
+      selectedFontSize: kAcknowledgeTextSmallerFontRatio* ScreenSizeHandler.smaller*0.9,
+      unselectedFontSize: kAcknowledgeTextSmallerFontRatio* ScreenSizeHandler.smaller*0.9,
+      type: BottomNavigationBarType.fixed,
+      
+      backgroundColor: kBackgroundColor,
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: 'Home',
+          // backgroundColor: Colors.black,
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.group_outlined),
+          label: 'Communities',
+
+          // backgroundColor: Colors.black,
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.add_outlined),
+          label: 'Create',
+          // backgroundColor: Colors.black,
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.messenger_outline_sharp),
+          label: 'Chat',
+          // backgroundColor: Colors.black,
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.notifications_none_rounded),
+          label: 'Inbox',
+          
+          // backgroundColor: Colors.black,
+        ),
+      ],
+      currentIndex: navigationBarIndex,
+      selectedItemColor: Colors.white,
+      unselectedItemColor: Colors.grey,
+      unselectedLabelStyle: TextStyle(color: Colors.grey),
+      showUnselectedLabels: true,
+      onTap: _onItemTapped,
+      
+    ),
         key: _scaffoldKey,
         appBar: AppBar(
           leading:  Padding(
@@ -173,7 +236,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
               ),
             ),
           ),
-          title: DropdownButtonHideUnderline(
+          title: navigationBarIndex==0?
+          DropdownButtonHideUnderline(
             child: DropdownButton2(
               items: dropdownItems,
               onChanged: (String? newValue) {
@@ -221,7 +285,23 @@ class _HomePageScreenState extends State<HomePageScreen> {
               style: const TextStyle(
                   color: Colors.white, fontWeight: FontWeight.bold),
             ),
-          ),
+          )
+          : navigationBarIndex==1?
+          Padding(
+            padding: EdgeInsets.only(left: ScreenSizeHandler.screenWidth * 0.15, ),
+            child: Center(child: Text('Communities', style: TextStyle(fontSize: ScreenSizeHandler.smaller* kButtonSmallerFontRatio*1.1),),),
+          )
+          :navigationBarIndex==3?
+          Padding(
+            padding: EdgeInsets.only(left: ScreenSizeHandler.screenWidth * 0.15, ),
+            child: Center(child: Text('Chat', style: TextStyle(fontSize: ScreenSizeHandler.smaller* kButtonSmallerFontRatio*1.1),),),
+          )
+          :navigationBarIndex==4?
+          Padding(
+            padding: EdgeInsets.only(left: ScreenSizeHandler.screenWidth * 0.15, ),
+            child: Center(child: Text('Inbox', style: TextStyle(fontSize: ScreenSizeHandler.smaller* kButtonSmallerFontRatio*1.1),),),
+          )
+          :Center(child: Text(''),),
           backgroundColor: Colors.black,
           actions: [
             GestureDetector(
@@ -251,7 +331,20 @@ class _HomePageScreenState extends State<HomePageScreen> {
             ),
           ],
         ),
-        body: PageView(
+        body: navigationBarIndex==1?
+        Padding(
+          padding: EdgeInsets.only(left: ScreenSizeHandler.screenWidth * 0.15, ),
+          child: Center(child: Text('Communities', style: TextStyle(fontSize: ScreenSizeHandler.smaller* kButtonSmallerFontRatio*1.1),),),
+        )
+        :navigationBarIndex==3?
+        Padding(
+          padding: EdgeInsets.only(left: ScreenSizeHandler.screenWidth * 0.15, ),
+          child: Center(child: Text('Chat', style: TextStyle(fontSize: ScreenSizeHandler.smaller* kButtonSmallerFontRatio*1.1),),),
+        )
+        :navigationBarIndex==4?
+        InboxMessagesScreen()
+        :
+        PageView(
           controller: controller,
           onPageChanged: (value) => setState(() {
             if (value == 0) {

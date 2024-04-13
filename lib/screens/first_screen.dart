@@ -79,20 +79,43 @@ class _FirstScreenState extends State<FirstScreen> {
             MaterialPageRoute(
                 builder: (context) => HomePageScreen()));
       }
+      else
+      {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(
+            bottom: ScreenSizeHandler.screenHeight * 0.08,
+            left: ScreenSizeHandler.screenWidth * 0.04,
+            right: ScreenSizeHandler.screenWidth * 0.04),
+
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+        content: Center(child: Text(message)),
+        duration: const Duration(seconds: 3),
+      ));
+      }
     } catch (e) {
       print(e);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(
+            bottom: ScreenSizeHandler.screenHeight * 0.08,
+            left: ScreenSizeHandler.screenWidth * 0.04,
+            right: ScreenSizeHandler.screenWidth * 0.04),
+
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+        content: Center(child: Text(message)),
+        duration: const Duration(seconds: 3),
+      ));
     } 
     finally {
       setState(() {
         isLoading = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        behavior: SnackBarBehavior.floating,
-        margin: EdgeInsets.only(
-            bottom: ScreenSizeHandler.screenHeight * 0.05,),
-        content: Text(message),
-        duration: const Duration(seconds: 3),
-      ));
+
     }
   }
   @override
