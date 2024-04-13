@@ -64,6 +64,7 @@ const double kSwitchBorderRadiusRatio = 0.05;
 
 const Color kDisabledButtonColor = Colors.grey;
 const Color kBlockButtonColor = Color(0xFF44A3F2);
+const Color kSubredditJoinedColor = Color.fromARGB(255, 98, 141, 251);
 
 const kPageTitleStyle =
     TextStyle(fontWeight: FontWeight.w500, color: Colors.white);
