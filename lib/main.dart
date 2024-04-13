@@ -23,6 +23,7 @@ import 'screens/home_page_screen.dart';
 import 'screens/blocked_accounts.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:reddit_bel_ham/screens/inbox_messages.dart';
 import 'firebase_options.dart';
 import 'services/google_sign_in.dart';
 import 'screens/profile_screen.dart';
@@ -80,7 +81,7 @@ class RedditByLham extends StatelessWidget {
       //     : (JwtDecoder.isExpired(token))
       //         ? LoginScreen.id
       //         : HomePageScreen.id,
-      initialRoute: FirstScreen.id,
+      initialRoute: HomePageScreen.id,
     );
   }
 }
