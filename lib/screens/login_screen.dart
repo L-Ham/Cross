@@ -256,6 +256,19 @@ class LoginScreenState extends State<LoginScreen> {
                             setState(() {
                               isLoading = false;
                             });
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            behavior: SnackBarBehavior.floating,
+                            margin: EdgeInsets.only(
+                                bottom: ScreenSizeHandler.screenHeight * 0.12,
+                                left: ScreenSizeHandler.screenWidth * 0.04,
+                                right: ScreenSizeHandler.screenWidth * 0.04),
+
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
+                            content: Center(child: Text("It looks like you're not connected to the internet.")),
+                            duration: const Duration(seconds: 3),
+                          ));
                             return;
                           } else {
                             loginWithGoogle(check);
