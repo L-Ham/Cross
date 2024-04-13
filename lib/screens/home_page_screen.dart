@@ -1325,13 +1325,16 @@ class _DrawerBottomSheetState extends State<DrawerBottomSheet> {
                       ),
                       title: Row(
                         children: [
-                          Text(
-                            'u/$username',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: ScreenSizeHandler.smaller *
-                                  kAcknowledgeTextSmallerFontRatio *
-                                  1.1,
+                          Expanded(
+                            child: Text(
+                              'u/$username',
+                              softWrap: true,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: ScreenSizeHandler.smaller *
+                                    kAcknowledgeTextSmallerFontRatio *
+                                    1.1,
+                              ),
                             ),
                           ),
                           Spacer(),
