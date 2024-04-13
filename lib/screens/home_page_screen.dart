@@ -1324,6 +1324,7 @@ class _DrawerBottomSheetState extends State<DrawerBottomSheet> {
                         radius: ScreenSizeHandler.smaller * 0.03,
                       ),
                       title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Expanded(
                             child: Text(
@@ -1337,19 +1338,23 @@ class _DrawerBottomSheetState extends State<DrawerBottomSheet> {
                               ),
                             ),
                           ),
-                          Spacer(),
-                          const Icon(Icons.check, color: Colors.blue),
-                          Semantics(
-                            identifier: 'first_exit_app_button_identifier',
-                            child: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  isExitPressed = true;
-                                });
-                              },
-                              icon: const Icon(Icons.exit_to_app),
-                              color: Colors.white38,
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              const Icon(Icons.check, color: Colors.blue),
+                              Semantics(
+                                identifier: 'first_exit_app_button_identifier',
+                                child: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      isExitPressed = true;
+                                    });
+                                  },
+                                  icon: const Icon(Icons.exit_to_app),
+                                  color: Colors.white38,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
