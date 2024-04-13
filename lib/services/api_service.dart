@@ -7,12 +7,14 @@ import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 
 const String baseURL = "https://reddit-bylham.me/api";
 
+import '../components/home_page_components/post_card.dart';
+
 class ApiService {
-  String token;
+  String token = '';
   late Map<String, String> headerWithToken;
 
-  ApiService(this.token) {
-    token = TokenDecoder.token;
+  ApiService(String token) {
+    this.token = token;
     headerWithToken = {
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Bearer $token',
@@ -29,7 +31,15 @@ class ApiService {
     try {
       switch (method) {
         case 'GET':
-          response = await http.get(url, headers: headers);
+          if (body != null) {
+            var request = http.Request('GET', url);
+            request.headers.addAll(headers);
+            request.body = jsonEncode(body);
+            var streamedResponse = await request.send();
+            response = await http.Response.fromStream(streamedResponse);
+          } else {
+            response = await http.get(url, headers: headers);
+          }
           break;
         case 'POST':
           response =
@@ -56,6 +66,9 @@ class ApiService {
 
   Future<dynamic> createCommunity(Map<String, dynamic> data) async {
     try {
+      String token =
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjVmOGEzZTRiZGNlYWU5YmNiODJkYWUwIiwidHlwZSI6Im5vcm1hbCJ9LCJpYXQiOjE3MTEzMDMyNTEsImV4cCI6NTAxNzExMzAzMjUxfQ.h0qBRBJXuerCcd-tVJx0yWDCSm5oyOrRIshgXy-38Ug';
+
       final response = await http.post(
         Uri.parse('$baseURL/subreddit/createCommunity'),
         headers: <String, String>{
@@ -75,6 +88,16 @@ class ApiService {
       throw e;
     }
   }
+
+  Future<List<Post>> fetchPosts() async {
+    //   final response = await http.get('https://MestanyElBackend.com/posts');
+
+    //   if (response.statusCode == 200) {
+    //     List<dynamic> jsonPosts = jsonDecode(response.body);
+    //     return jsonPosts.map((json) => Post.fromJson(json)).toList();
+    //   } else {
+    throw Exception('Failed to load posts');
+    //   }
 
   Future<dynamic> getUserAccountSettings() async {
     var result = await request('/user/accountSettings',
@@ -137,8 +160,55 @@ class ApiService {
     var result = await request('/user/profileSettings',
         headers: headerWithToken, method: 'PATCH', body: sentData);
     return result;
+
   }
 
+  Future<dynamic> getAllBlockedUsers() async {
+    var result = await request('/user/getAllBlockedUsers',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+
+  Future<dynamic> unblockUser(String userName) async {
+    Map<String, dynamic> sentData;
+    sentData = {"UserNameToUnblock": userName};
+    var result = await request('/user/unblockUser',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    print(result);
+    return result;
+  }
+
+  Future<dynamic> blockUser(String userName) async {
+    print(userName);
+    Map<String, dynamic> sentData;
+    sentData = {"usernameToBlock": userName};
+    var result = await request('/user/blockUser',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    print(result);
+    return result;
+  }
+
+  Future<dynamic> editLocation(String location) async {
+    Map<String, dynamic> sentData;
+    sentData = {"location": location};
+    var result = await request('/user/editUserLocation',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    print(result);
+    return result;
+  }
+
+  Future<dynamic> getUserLocation() async {
+    var result = await request('/user/getUserLocation',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+
+  Future<dynamic> getSearchedForBlockedUsers(String userName) async {
+    Map<String, dynamic> sentData;
+    sentData = {"search": userName};
+    var result = await request('/user/searchUsernames',
+        headers: headerWithToken, method: 'GET', body: sentData);
+  }
   Future<void> addMediaPost(
       List<File> imageFiles, Map<String, dynamic> body) async {
     var request =
@@ -183,4 +253,4 @@ class ApiService {
         headers: headerWithToken, method: 'POST', body: body);
     return result;
   }
-}
+  }

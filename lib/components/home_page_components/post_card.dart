@@ -32,6 +32,8 @@ class Post {
     required this.link,
     required this.image,
   });
+
+  static fromJson(json) {}
 }
 
 class PostCard extends StatefulWidget {
@@ -76,7 +78,7 @@ class _PostCardState extends State<PostCard> {
               children: [
                 Padding(
                   padding: EdgeInsets.only(
-                      left: ScreenSizeHandler.screenWidth * 0.02),
+                      left: ScreenSizeHandler.screenWidth * 0.04),
                   child: CircleAvatar(
                     radius: ScreenSizeHandler.screenWidth * 0.03,
                     backgroundImage:
@@ -102,10 +104,13 @@ class _PostCardState extends State<PostCard> {
                       builder: (BuildContext context) =>
                           buildMoreModalBottomSheet(context, widget.post),
                     ),
-                    child: Icon(
-                      Icons.more_horiz_outlined,
-                      color: Color.fromARGB(255, 191, 188, 188),
-                      size: ScreenSizeHandler.screenWidth * 0.05,
+                    child: Padding(
+                      padding: EdgeInsets.only(right:ScreenSizeHandler.screenWidth * 0.04),
+                      child: Icon(
+                        Icons.more_horiz_outlined,
+                        color: Color.fromARGB(255, 191, 188, 188),
+                        size: ScreenSizeHandler.screenWidth * 0.05,
+                      ),
                     ),
                   ),
                 )
@@ -114,7 +119,7 @@ class _PostCardState extends State<PostCard> {
             Padding(
               padding: EdgeInsets.only(
                 right: ScreenSizeHandler.screenWidth * 0.01,
-                left: ScreenSizeHandler.screenWidth * 0.02,
+                left: ScreenSizeHandler.screenWidth * 0.04,
                 top: ScreenSizeHandler.screenWidth * 0.01,
               ),
               child: Column(
@@ -195,113 +200,116 @@ class _PostCardState extends State<PostCard> {
                 children: [
                   Row(
                     children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.circular(
-                              ScreenSizeHandler.screenWidth * 0.05),
-                          border: Border.all(
-                            color: kFillingColor,
+                      Padding(
+                        padding: EdgeInsets.only(left:ScreenSizeHandler.screenWidth * 0.02),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(
+                                ScreenSizeHandler.screenWidth * 0.05),
+                            border: Border.all(
+                              color: kFillingColor,
+                            ),
                           ),
-                        ),
-                        child: Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  if (post.isUpvoted) {
-                                    post.upvotes--;
-                                    post.isUpvoted = !post.isUpvoted;
-                                    post.isDownvoted = false;
-                                  } else if (post.isDownvoted) {
-                                    post.upvotes += 2;
-                                    post.isUpvoted = true;
-                                    post.isDownvoted = false;
-                                  } else {
-                                    post.upvotes++;
-                                    post.isUpvoted = !post.isUpvoted;
-                                  }
-                                });
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                    left: ScreenSizeHandler.screenWidth * 0.02,
-                                    right: ScreenSizeHandler.screenWidth * 0.02,
-                                    top: ScreenSizeHandler.screenWidth * 0.001,
-                                    bottom:
-                                        ScreenSizeHandler.screenWidth * 0.001),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.arrow_upward,
-                                      color: post.isUpvoted
-                                          ? Colors.red
-                                          : Colors.white,
-                                      size:
-                                          ScreenSizeHandler.screenWidth * 0.04,
-                                    ),
-                                    Text(
-                                      post.upvotes.toString(),
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize:
-                                              ScreenSizeHandler.screenWidth *
-                                                  0.025),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                          left:
-                                              ScreenSizeHandler.bigger * 0.01),
-                                      child: Container(
-                                        width: ScreenSizeHandler.bigger * 0.001,
-                                        height: ScreenSizeHandler.bigger * 0.02,
-                                        color:
-                                            Color.fromARGB(102, 127, 126, 126),
+                          child: Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    if (post.isUpvoted) {
+                                      post.upvotes--;
+                                      post.isUpvoted = !post.isUpvoted;
+                                      post.isDownvoted = false;
+                                    } else if (post.isDownvoted) {
+                                      post.upvotes += 2;
+                                      post.isUpvoted = true;
+                                      post.isDownvoted = false;
+                                    } else {
+                                      post.upvotes++;
+                                      post.isUpvoted = !post.isUpvoted;
+                                    }
+                                  });
+                                },
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      left: ScreenSizeHandler.screenWidth * 0.02,
+                                      right: ScreenSizeHandler.screenWidth * 0.02,
+                                      top: ScreenSizeHandler.screenWidth * 0.001,
+                                      bottom:
+                                          ScreenSizeHandler.screenWidth * 0.001),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.arrow_upward,
+                                        color: post.isUpvoted
+                                            ? Colors.red
+                                            : Colors.white,
+                                        size:
+                                            ScreenSizeHandler.screenWidth * 0.04,
                                       ),
-                                    )
-                                  ],
+                                      Text(
+                                        post.upvotes.toString(),
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize:
+                                                ScreenSizeHandler.screenWidth *
+                                                    0.025),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left:
+                                                ScreenSizeHandler.bigger * 0.01),
+                                        child: Container(
+                                          width: ScreenSizeHandler.bigger * 0.001,
+                                          height: ScreenSizeHandler.bigger * 0.02,
+                                          color:
+                                              Color.fromARGB(102, 127, 126, 126),
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  if (post.isDownvoted) {
-                                    post.upvotes++;
-                                    post.isDownvoted = !post.isDownvoted;
-                                  } else if (post.isUpvoted) {
-                                    post.upvotes -= 2;
-                                    post.isDownvoted = true;
-                                    post.isUpvoted = false;
-                                  } else {
-                                    post.upvotes--;
-                                    post.isDownvoted = !post.isDownvoted;
-                                  }
-                                });
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                    bottom:
-                                        ScreenSizeHandler.screenWidth * 0.01,
-                                    top: ScreenSizeHandler.screenWidth * 0.01,
-                                    right: ScreenSizeHandler.screenWidth * 0.01,
-                                    left: ScreenSizeHandler.screenWidth * 0.001),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.arrow_downward,
-                                      color: post.isDownvoted
-                                          ? const Color.fromARGB(
-                                              255, 110, 85, 114)
-                                          : Colors.white,
-                                      size:
-                                          ScreenSizeHandler.screenWidth * 0.04,
-                                    ),
-                                  ],
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    if (post.isDownvoted) {
+                                      post.upvotes++;
+                                      post.isDownvoted = !post.isDownvoted;
+                                    } else if (post.isUpvoted) {
+                                      post.upvotes -= 2;
+                                      post.isDownvoted = true;
+                                      post.isUpvoted = false;
+                                    } else {
+                                      post.upvotes--;
+                                      post.isDownvoted = !post.isDownvoted;
+                                    }
+                                  });
+                                },
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      bottom:
+                                          ScreenSizeHandler.screenWidth * 0.01,
+                                      top: ScreenSizeHandler.screenWidth * 0.01,
+                                      right: ScreenSizeHandler.screenWidth * 0.01,
+                                      left: ScreenSizeHandler.screenWidth * 0.001),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.arrow_downward,
+                                        color: post.isDownvoted
+                                            ? const Color.fromARGB(
+                                                255, 110, 85, 114)
+                                            : Colors.white,
+                                        size:
+                                            ScreenSizeHandler.screenWidth * 0.04,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                       GestureDetector(
@@ -381,16 +389,15 @@ class _PostCardState extends State<PostCard> {
                             buildPostModalBottomSheet(context, widget.post),
                       );
                     },
-                    child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(18.0),
-                          border: Border.all(
-                            color: kFillingColor,
+                    child: Padding(
+                      padding: EdgeInsets.only(right:ScreenSizeHandler.screenWidth * 0.04),
+                      child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(18.0),
+                            border: Border.all(
+                              color: kFillingColor,
+                            ),
                           ),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(
-                              ScreenSizeHandler.screenWidth * 0.0001),
                           child: Row(
                             children: [
                               Padding(
@@ -421,8 +428,8 @@ class _PostCardState extends State<PostCard> {
                                     )),
                               ),
                             ],
-                          ),
-                        )),
+                          )),
+                    ),
                   ),
                 ],
               ),
