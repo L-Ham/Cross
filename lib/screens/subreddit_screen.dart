@@ -18,6 +18,14 @@ class SubredditScreen extends StatefulWidget {
 class _SubredditScreenState extends State<SubredditScreen> {
   final ScrollController _scrollController = ScrollController();
   bool _showTitleInAppBar = false;
+  String subredditName = 'r/AskEngineers';
+  String subredditDescription =
+      'Engineers apply the knowledge of math & science to design and manufacture maintainable systems used to solve specific problems. AskEngineers is a forum for questions about the technologies, standards, and processes used to design & build these systems, as well as for questions about the engineering profession and its many disciplines.';
+  String subredditMembers = '1,194,127';
+  String subredditOnline = '106';
+  String subredditWallpaper = 'assets/images/blue2.jpg';
+  String subredditAvatarImage = 'assets/images/planet3.png';
+  bool _isJoined = true;
 
   @override
   void initState() {
@@ -87,10 +95,9 @@ class _SubredditScreenState extends State<SubredditScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'r/AskEngineers',
+                        subredditName,
                         style: TextStyle(
-                            fontSize: ScreenSizeHandler.bigger *
-                                kPageSubtitleFontSizeHeightRatio,
+                            fontSize: ScreenSizeHandler.bigger * 0.022,
                             fontWeight: FontWeight.bold),
                       ),
                       Row(
@@ -102,7 +109,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
                           SizedBox(
                               width: ScreenSizeHandler.screenWidth * 0.005),
                           Text(
-                            '106 online',
+                            '$subredditOnline online',
                             style: TextStyle(
                               fontSize: ScreenSizeHandler.bigger * 0.015,
                               color: Colors.white,
@@ -116,7 +123,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
             leading: Padding(
               padding: EdgeInsets.only(left: ScreenSizeHandler.bigger * 0.013),
               child: CircleAvatar(
-                backgroundColor: Color.fromARGB(140, 0, 0, 0),
+                backgroundColor: Color.fromARGB(155, 0, 0, 0),
                 child: IconButton(
                   iconSize: ScreenSizeHandler.bigger * 0.035,
                   icon: const Icon(Icons.arrow_back),
@@ -129,8 +136,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
             expandedHeight: ScreenSizeHandler.screenHeight * 0.002,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
-                background:
-                    Image.asset('assets/images/blue2.jpg', fit: BoxFit.cover)),
+                background: Image.asset(subredditWallpaper, fit: BoxFit.cover)),
             actions: [
               SubredditNavbarIcon(
                 iconSize: 0.025,
@@ -148,11 +154,50 @@ class _SubredditScreenState extends State<SubredditScreen> {
                 icon: FaIcon(FontAwesomeIcons.share),
                 onPressed: () {},
               ),
-              SubredditNavbarIcon(
-                iconSize: 0.025,
-                icon: FaIcon(FontAwesomeIcons.ellipsis),
-                onPressed: () {},
-              ),
+              if (_isJoined)
+                SubredditNavbarIcon(
+                  iconSize: 0.025,
+                  icon: FaIcon(FontAwesomeIcons.ellipsis),
+                  onPressed: () {},
+                )
+              else if (!_showTitleInAppBar)
+                SubredditNavbarIcon(
+                  iconSize: 0.025,
+                  icon: FaIcon(FontAwesomeIcons.ellipsis),
+                  onPressed: () {},
+                )
+              else
+                Padding(
+                  padding:
+                      EdgeInsets.only(right: ScreenSizeHandler.bigger * 0.013),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        _isJoined = true;
+                      });
+                    },
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.all(EdgeInsets.zero),
+                      minimumSize: MaterialStateProperty.all(Size.zero),
+                      fixedSize: MaterialStateProperty.all(Size(
+                        ScreenSizeHandler.screenWidth * 0.21,
+                        ScreenSizeHandler.screenHeight * 0.05,
+                      )),
+                      backgroundColor:
+                          MaterialStateProperty.resolveWith<Color?>(
+                        (states) => Color.fromARGB(155, 0, 0, 0),
+                      ),
+                    ),
+                    child: Text(
+                      'Join',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: ScreenSizeHandler.bigger * 0.019,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
             ],
           ),
           SliverToBoxAdapter(
@@ -171,8 +216,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
                           ),
                           CircleAvatar(
                             radius: ScreenSizeHandler.bigger * 0.027,
-                            foregroundImage:
-                                AssetImage('assets/images/planet3.png'),
+                            foregroundImage: AssetImage(subredditAvatarImage),
                           ),
                         ],
                       ),
@@ -184,89 +228,232 @@ class _SubredditScreenState extends State<SubredditScreen> {
                         children: [
                           Text(
                             textAlign: TextAlign.left,
-                            'r/AskEngineers',
+                            subredditName,
                             style: TextStyle(
-                              fontSize: ScreenSizeHandler.bigger * 0.023,
+                              fontSize: ScreenSizeHandler.bigger * 0.024,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(
-                            height: ScreenSizeHandler.screenHeight * 0.006,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                '1,194,127 members',
-                                style: TextStyle(
-                                  fontSize: ScreenSizeHandler.bigger * 0.015,
-                                  color: kDisabledButtonColor,
+                          if (!_isJoined)
+                            SizedBox(
+                              height: ScreenSizeHandler.screenHeight * 0.003,
+                            )
+                          else
+                            SizedBox(
+                              height: ScreenSizeHandler.screenHeight * 0.002,
+                            ),
+                          if (!_isJoined)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  '$subredditMembers members',
+                                  style: TextStyle(
+                                    fontSize: ScreenSizeHandler.bigger * 0.016,
+                                    color: kDisabledButtonColor,
+                                  ),
                                 ),
-                              ),
-                              SizedBox(
-                                  width: ScreenSizeHandler.screenWidth * 0.03),
-                              Row(
-                                children: [
-                                  CircleAvatar(
-                                    radius: ScreenSizeHandler.bigger * 0.0039,
-                                    backgroundColor: kOnlineStatusColor,
-                                  ),
-                                  SizedBox(
-                                      width: ScreenSizeHandler.screenWidth *
-                                          0.005),
-                                  Text(
-                                    '106 online',
-                                    style: TextStyle(
-                                      fontSize:
-                                          ScreenSizeHandler.bigger * 0.015,
-                                      color: kDisabledButtonColor,
+                                SizedBox(
+                                    width:
+                                        ScreenSizeHandler.screenWidth * 0.03),
+                                Row(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: ScreenSizeHandler.bigger * 0.0043,
+                                      backgroundColor: kOnlineStatusColor,
                                     ),
+                                    SizedBox(
+                                        width: ScreenSizeHandler.screenWidth *
+                                            0.005),
+                                    Text(
+                                      '$subredditOnline online',
+                                      style: TextStyle(
+                                        fontSize:
+                                            ScreenSizeHandler.bigger * 0.016,
+                                        color: kDisabledButtonColor,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            )
+                          else
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '$subredditMembers members',
+                                  style: TextStyle(
+                                    fontSize: ScreenSizeHandler.bigger * 0.016,
+                                    color: kDisabledButtonColor,
                                   ),
-                                ],
-                              )
-                            ],
-                          ),
+                                ),
+                                SizedBox(
+                                    width:
+                                        ScreenSizeHandler.screenWidth * 0.03),
+                                Row(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: ScreenSizeHandler.bigger * 0.0043,
+                                      backgroundColor: kOnlineStatusColor,
+                                    ),
+                                    SizedBox(
+                                        width: ScreenSizeHandler.screenWidth *
+                                            0.005),
+                                    Text(
+                                      '$subredditOnline online',
+                                      style: TextStyle(
+                                        fontSize:
+                                            ScreenSizeHandler.bigger * 0.016,
+                                        color: kDisabledButtonColor,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            )
                         ],
                       ),
-                      SizedBox(
-                        width: ScreenSizeHandler.screenWidth * 0.05,
-                      ),
-                      SizedBox(
-                        height: ScreenSizeHandler.screenHeight * 0.04,
-                        width: ScreenSizeHandler.screenWidth * 0.228,
-                        child: OutlinedButton(
+                      if (_isJoined)
+                        SizedBox(
+                          width: ScreenSizeHandler.screenWidth * 0.2,
+                        )
+                      else
+                        SizedBox(
+                          width: ScreenSizeHandler.screenWidth * 0.09,
+                        ),
+                      if (_isJoined)
+                        SizedBox(
+                          height: ScreenSizeHandler.screenHeight * 0.04,
+                          child: OutlinedButton(
+                            onPressed: () {
+                              setState(() {
+                                showModalBottomSheet(
+                                    isScrollControlled: true,
+                                    backgroundColor:
+                                        Color.fromARGB(255, 10, 10, 10),
+                                    context: context,
+                                    builder: (BuildContext bc) {
+                                      return ClipRRect(
+                                        borderRadius:
+                                            const BorderRadius.vertical(
+                                          top: Radius.circular(20.0),
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: ScreenSizeHandler
+                                                      .screenWidth *
+                                                  0.05,
+                                              vertical: ScreenSizeHandler
+                                                      .screenHeight *
+                                                  0.03),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                _isJoined = false;
+                                              });
+                                            },
+                                            child: Row(
+                                              children: [
+                                                FaIcon(
+                                                  FontAwesomeIcons.circleMinus,
+                                                  color: Colors.white,
+                                                ),
+                                                SizedBox(
+                                                  width: ScreenSizeHandler
+                                                          .screenWidth *
+                                                      0.03,
+                                                ),
+                                                Text(
+                                                  'Leave',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: ScreenSizeHandler
+                                                            .bigger *
+                                                        0.018,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    });
+                              });
+                            },
+                            style: ButtonStyle(
+                              side:
+                                  MaterialStateBorderSide.resolveWith((states) {
+                                return BorderSide(
+                                    color: kSubredditJoinedColor,
+                                    width:
+                                        ScreenSizeHandler.screenWidth * 0.0034);
+                              }),
+                              padding:
+                                  MaterialStateProperty.all(EdgeInsets.zero),
+                              minimumSize: MaterialStateProperty.all(Size.zero),
+                              fixedSize: MaterialStateProperty.all(Size(
+                                ScreenSizeHandler.screenWidth * 0.18,
+                                ScreenSizeHandler.screenHeight * 0.04,
+                              )),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.all(
+                                  ScreenSizeHandler.bigger * 0.0000001),
+                              child: Text(
+                                'Joined',
+                                style: TextStyle(
+                                    color: kSubredditJoinedColor,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: ScreenSizeHandler.bigger * 0.017),
+                              ),
+                            ),
+                          ),
+                        )
+                      else
+                        ElevatedButton(
                           onPressed: () {
-                            setState(() {});
+                            setState(() {
+                              _isJoined = true;
+                            });
                           },
                           style: ButtonStyle(
-                            side: MaterialStateBorderSide.resolveWith((states) {
-                              return BorderSide(
-                                  color: kSubredditJoinedColor,
-                                  width: ScreenSizeHandler.screenWidth * 0.004);
-                            }),
+                            padding: MaterialStateProperty.all(EdgeInsets.zero),
+                            minimumSize: MaterialStateProperty.all(Size.zero),
+                            fixedSize: MaterialStateProperty.all(Size(
+                              ScreenSizeHandler.screenWidth * 0.14,
+                              ScreenSizeHandler.screenHeight * 0.04,
+                            )),
+                            backgroundColor:
+                                MaterialStateProperty.resolveWith<Color?>(
+                              (states) => Color.fromARGB(255, 20, 89, 200),
+                            ),
                           ),
-                          child: Padding(
-                            padding: EdgeInsets.all(
-                                ScreenSizeHandler.bigger * 0.0000001),
-                            child: Text(
-                              'Joined',
-                              style: TextStyle(
-                                  color: kSubredditJoinedColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: ScreenSizeHandler.bigger * 0.0165),
+                          child: Text(
+                            'Join',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: ScreenSizeHandler.bigger * 0.0165,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                   SizedBox(
-                    height: ScreenSizeHandler.bigger * 0.02,
+                    height: ScreenSizeHandler.bigger * 0.015,
                   ),
                   Text(
-                      'Engineers apply the knowledge of math & science to design and manufacture maintainable systems used to...'),
+                    subredditDescription,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: ScreenSizeHandler.bigger * 0.016,
+                    ),
+                  ),
                   SizedBox(
-                    height: ScreenSizeHandler.bigger * 0.015,
+                    height: ScreenSizeHandler.bigger * 0.014,
                   ),
                   Row(
                     children: [
@@ -275,6 +462,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
                           'See more',
                           style: TextStyle(
                             color: kSubredditJoinedColor,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
@@ -284,7 +472,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
                       Container(
                         width: ScreenSizeHandler.bigger * 0.001,
                         height: ScreenSizeHandler.bigger * 0.02,
-                        color: kFillingColor,
+                        color: Color.fromARGB(102, 127, 126, 126),
                       ),
                       SizedBox(
                         width: ScreenSizeHandler.screenWidth * 0.02,
@@ -294,6 +482,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
                           '#3 in Engineering',
                           style: TextStyle(
                             color: kSubredditJoinedColor,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),

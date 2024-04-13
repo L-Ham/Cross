@@ -1,13 +1,15 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import '../constants.dart';
 import '../components/empty_dog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../utilities/screen_size_handler.dart';
 import 'package:reddit_bel_ham/components/blocked_accounts_components/blocked_acoount_tile.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:reddit_bel_ham/services/api_service.dart';
+import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 
 class BlockedAccount extends StatefulWidget {
   const BlockedAccount({Key? key}) : super(key: key);
@@ -22,10 +24,10 @@ class _BlockedAccountState extends State<BlockedAccount> {
   late FocusNode _focusNode;
   bool _isKeyboardVisible = false;
   bool _isTextFieldEmpty = true;
-  bool _isBlockedAccountsEmpty = false;
-  String authToken =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjYwMDczMTU4NzBiMmY5OWQzZDNlZmFjIiwidHlwZSI6Im5vcm1hbCJ9LCJpYXQiOjE3MTI1MjYzODAsImV4cCI6NTAxNzEyNTI2MzgwfQ.UCh8pA6PaGGHCpEhxffFpj46iWpBtNSuVeOIad9NPiE';
+  bool _isBlockedAccountsEmpty = true;
+  String authToken = TokenDecoder.token;
   List<BlockedUser> blockedUsers = [];
+  List<SearchedUser> searchedUsers = [];
 
   final TextEditingController _controller = TextEditingController();
 
@@ -33,44 +35,59 @@ class _BlockedAccountState extends State<BlockedAccount> {
     print('Unblock button pressed');
   }
 
-  void parseBlockedUsers(String responseBody) {
-    final parsed = json.decode(responseBody);
+  void parseBlockedUsers(responseBody) {
+    final blockedUsersList = responseBody['blockedUsers'] as List<dynamic>;
 
-    // Extract blockedUsers array from the parsed JSON
-    final blockedUsersList = parsed['blockedUsers'] as List<dynamic>;
+    setState(() {
+      blockedUsers =
+          blockedUsersList.map((json) => BlockedUser.fromJson(json)).toList();
+      if (blockedUsers.isEmpty) {
+        _isBlockedAccountsEmpty = true;
+      } else {
+        _isBlockedAccountsEmpty = false;
+      }
+    });
+  }
 
-    // Convert each item in the blockedUsersList to BlockedUser object
-    blockedUsers =
-        blockedUsersList.map((json) => BlockedUser.fromJson(json)).toList();
+  void parseSearchedUsers(responseBody) {
+    final searchedUsersList =
+        responseBody['matchingUsernames'] as List<dynamic>;
+    print(searchedUsersList);
+
+    setState(() {
+      searchedUsers =
+          searchedUsersList.map((json) => SearchedUser.fromJson(json)).toList();
+    });
+    print(searchedUsers);
   }
 
   Future<void> getAllBlockedUsers(String authToken) async {
-    final url = Uri.parse('http://localhost:5000/user/getAllBlockedUsers');
+    ApiService apiService = ApiService(authToken);
+    final response = await apiService.getAllBlockedUsers();
+    print(response);
+    if (response != null) parseBlockedUsers(response);
+  }
 
-    try {
-      final response = await http.get(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization':
-              'Bearer $authToken', // Include the authorization token here
-        },
-      );
+  Future<void> getSearchedForUsers(String authToken) async {
+    ApiService apiService = ApiService(authToken);
+    final response =
+        await apiService.getSearchedForBlockedUsers(_controller.text);
+    print(_controller.text);
+    print(response);
+    if (response != null) parseSearchedUsers(response);
+  }
 
-      if (response.statusCode == 200) {
-        // Successful GET request
-        print('Response body: ${response.body}');
-        parseBlockedUsers(response.body);
-        // You can parse and handle the response data here
-      } else {
-        // Error handling
-        print('Failed to get blocked users: ${response.statusCode}');
-        print('Response body: ${response.body}');
-      }
-    } catch (e) {
-      // Exception handling
-      print('Exception occurred while getting blocked users: $e');
-    }
+  void _refreshScreen(bool isBlocked) {
+    setState(() {
+      getAllBlockedUsers(authToken);
+    });
+  }
+
+  void _refreshSearchingScreen(bool isBlocked) {
+    setState(() {
+      _controller.clear();
+      getAllBlockedUsers(authToken);
+    });
   }
 
   @override
@@ -85,12 +102,10 @@ class _BlockedAccountState extends State<BlockedAccount> {
     _controller.addListener(() {
       setState(() {
         _isTextFieldEmpty = _controller.text.isEmpty;
+        if (!_isTextFieldEmpty) getSearchedForUsers(authToken);
       });
     });
     getAllBlockedUsers(authToken);
-    if (blockedUsers.isEmpty) {
-      _isBlockedAccountsEmpty = true;
-    }
   }
 
   @override
@@ -161,6 +176,7 @@ class _BlockedAccountState extends State<BlockedAccount> {
                                 onPressed: () {
                                   setState(() {
                                     _controller.clear();
+                                    _refreshScreen(false);
                                   });
                                 },
                               ),
@@ -179,30 +195,46 @@ class _BlockedAccountState extends State<BlockedAccount> {
                       "Cancel",
                       style: TextStyle(
                         color: kHintTextColor,
-                        fontSize: MediaQuery.of(context).size.height *
-                            kPageSubtitleFontSizeHeightRatio,
+                        fontSize: ScreenSizeHandler.bigger * 0.02,
                       ),
                     ),
                   ),
                 )
             ],
           ),
-          if (_isBlockedAccountsEmpty)
+          if (_isBlockedAccountsEmpty && _isTextFieldEmpty)
+            SizedBox(
+              height: ScreenSizeHandler.screenHeight * 0.25,
+            ),
+          if (_isBlockedAccountsEmpty && _isTextFieldEmpty)
             EmptyDog()
           else
             SizedBox(
               height: ScreenSizeHandler.screenHeight * 0.035,
             ),
-          Column(
-            children: [
-              if (_isTextFieldEmpty)
-                for (BlockedUser blockedUser in blockedUsers)
-                  BlockedAccountTile(
-                    imagePath: 'assets/images/reddit_logo.png',
-                    username: blockedUser.userName,
-                    isAccountBlocked: true,
-                  ),
-            ],
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  if (_isTextFieldEmpty)
+                    for (BlockedUser blockedUser in blockedUsers)
+                      BlockedAccountTile(
+                        imagePath: 'assets/images/reddit_logo.png',
+                        username: blockedUser.userName,
+                        isAccountBlocked: true,
+                        onActionComplete: _refreshScreen,
+                      )
+                  else
+                    for (SearchedUser searchedUser in searchedUsers)
+                      BlockedAccountTile(
+                        imagePath: 'assets/images/reddit_logo.png',
+                        username: searchedUser.userName,
+                        isAccountBlocked: searchedUser.isBlocked,
+                        onActionComplete: _refreshSearchingScreen,
+                      )
+                ],
+              ),
+            ),
           )
         ],
       ),
@@ -226,6 +258,31 @@ class BlockedUser {
       id: json['id'],
       userName: json['userName'],
       avatarImage: json['avatarImage'],
+    );
+  }
+}
+
+class SearchedUser {
+  final String id;
+  final String userName;
+  final bool isBlocked;
+  final String? avatarImage;
+
+  SearchedUser({
+    required this.id,
+    required this.userName,
+    required this.isBlocked,
+    this.avatarImage,
+  });
+
+  factory SearchedUser.fromJson(Map<String, dynamic> json) {
+    print('kkkkkkk');
+    print(json);
+    return SearchedUser(
+      id: json['_id'] ?? '',
+      userName: json['userName'] ?? '',
+      isBlocked: json['isBlocked'] ?? false,
+      avatarImage: json['avatarImage'] ?? '',
     );
   }
 }

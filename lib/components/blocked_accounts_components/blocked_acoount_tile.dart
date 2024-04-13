@@ -3,17 +3,32 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
+import 'package:reddit_bel_ham/services/api_service.dart';
+import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 
 class BlockedAccountTile extends StatefulWidget {
   final String imagePath;
   final String username;
   bool isAccountBlocked;
+  String authToken = TokenDecoder.token;
+  final Function(bool) onActionComplete;
 
   BlockedAccountTile({
     required this.imagePath,
     required this.username,
     required this.isAccountBlocked,
+    required this.onActionComplete,
   });
+
+  Future<void> unblockUser(String authToken) async {
+    ApiService apiService = ApiService(authToken);
+    await apiService.unblockUser(username);
+  }
+
+  Future<void> blockUser(String authToken) async {
+    ApiService apiService = ApiService(authToken);
+    await apiService.blockUser(username);
+  }
 
   @override
   State<BlockedAccountTile> createState() => _BlockedAccountTileState();
@@ -52,10 +67,9 @@ class _BlockedAccountTileState extends State<BlockedAccountTile> {
             SizedBox(
               height: ScreenSizeHandler.screenHeight * 0.035,
               child: OutlinedButton(
-                onPressed: () {
-                  setState(() {
-                    widget.isAccountBlocked = false;
-                  });
+                onPressed: () async {
+                  await widget.unblockUser(widget.authToken);
+                  widget.onActionComplete(false);
                 },
                 style: ButtonStyle(
                   fixedSize: MaterialStateProperty.all(Size(
@@ -82,10 +96,9 @@ class _BlockedAccountTileState extends State<BlockedAccountTile> {
             SizedBox(
               height: ScreenSizeHandler.screenHeight * 0.035,
               child: ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    widget.isAccountBlocked = true;
-                  });
+                onPressed: () async {
+                  await widget.blockUser(widget.authToken);
+                  widget.onActionComplete(true);
                 },
                 style: ButtonStyle(
                   fixedSize: MaterialStateProperty.all(Size(

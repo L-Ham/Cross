@@ -38,19 +38,27 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
   bool isConnectedToGoogle = true;
   bool isLoading = true;
   Map<String, dynamic> profileSettings = {};
+  Map<String, dynamic> recievedLocation = {};
 
-  void getUserData() async {
+  Future<void> getUserData() async {
     Map<String, dynamic> data = await apiService.getUserAccountSettings();
     profileSettings = await apiService.getProfileSettings();
+    recievedLocation = await apiService.getUserLocation();
     setState(() {
       gender = data['accountSettings']['gender'];
       connectedEmailAddress = data['accountSettings']['email'];
+      //connectedEmailAddress = data['accountSettings']['email'];
       isConnectedToGoogle = data['accountSettings']['connectedToGoogle'];
       allowPeopleToFollowYou =
           profileSettings['profileSettings']['allowFollow'];
       isLoading = false;
       username = TokenDecoder.username;
+      location = recievedLocation['location'];
     });
+  }
+
+  Future<void> editLocation(String location) async {
+    await apiService.editLocation(location);
   }
 
   @override
@@ -198,6 +206,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                               if (newLocation != null) {
                                 setState(() {
                                   location = newLocation;
+                                  editLocation(location);
                                 });
                               }
                             },

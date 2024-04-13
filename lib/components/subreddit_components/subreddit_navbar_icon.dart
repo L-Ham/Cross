@@ -20,7 +20,7 @@ class SubredditNavbarIcon extends StatelessWidget {
           EdgeInsets.symmetric(horizontal: ScreenSizeHandler.bigger * 0.008),
       child: CircleAvatar(
         radius: ScreenSizeHandler.bigger * 0.026,
-        backgroundColor: Color.fromARGB(130, 0, 0, 0),
+        backgroundColor: Color.fromARGB(155, 0, 0, 0),
         child: Center(
           child: IconButton(
             iconSize: ScreenSizeHandler.bigger * iconSize,
