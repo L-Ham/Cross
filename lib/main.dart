@@ -25,9 +25,6 @@ import 'screens/blocked_accounts.dart';
 import 'screens/subreddit_screen.dart';
 import 'screens/subreddit_search_screen.dart';
 
-
-
-
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:reddit_bel_ham/screens/inbox_messages.dart';
 

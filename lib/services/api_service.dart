@@ -86,7 +86,7 @@ class ApiService {
     //     return jsonPosts.map((json) => Post.fromJson(json)).toList();
     //   } else {
     throw Exception('Failed to load posts');
-      }
+  }
 
   Future<dynamic> getUserAccountSettings() async {
     var result = await request('/user/accountSettings',
@@ -288,7 +288,7 @@ class ApiService {
     return result;
   }
 
-  Future<dynamic> updateEmailAddress(String newEmail,String password) async {
+  Future<dynamic> updateEmailAddress(String newEmail, String password) async {
     Map<String, dynamic> sentData;
     sentData = {
       "email": newEmail,
