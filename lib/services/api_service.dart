@@ -265,6 +265,7 @@ class ApiService {
     sentData = {"subredditId": communityId};
     var result = await request('/subreddit/rule',
         headers: headerWithToken, method: 'GET', body: sentData);
+  }
 
   Future<dynamic> changePassword(
       String currentPass, String newPass, String confirmPass) async {

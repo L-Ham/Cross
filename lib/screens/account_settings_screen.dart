@@ -48,6 +48,9 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
     print('ProfileSettings:$profileSettings');
     recievedLocation = await apiService.getUserLocation();
     print('Location:$recievedLocation');
+    if (mounted)
+    {
+
     setState(() {
       gender = data['accountSettings']['gender'] ?? "Select";
       connectedEmailAddress = data['accountSettings']['email'];
@@ -60,6 +63,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
       location = recievedLocation['location'];
       gender = gender == "" ? "Select" : gender;
     });
+    }
   }
 
   Future<void> editLocation(String location) async {

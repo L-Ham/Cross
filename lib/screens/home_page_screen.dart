@@ -1320,6 +1320,9 @@ class _DrawerBottomSheetState extends State<DrawerBottomSheet> {
                     onTap: () {
                       Navigator.popUntil(context, ModalRoute.withName('/'));
                       Navigator.pushNamed(context, LoginScreen.id);
+                      SharedPreferences.getInstance().then((prefs) {
+                        prefs.remove('token');
+                      });
                     },
                     child: ButtonBar(
                       alignment: MainAxisAlignment.start,
