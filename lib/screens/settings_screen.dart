@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reddit_bel_ham/components/general_components/custom_switch.dart';
 import 'package:reddit_bel_ham/constants.dart';
@@ -60,31 +61,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       child: const SettingsSegmentTitle(
                           titleText: "ACCOUNT SETTINGS"),
                     ),
-                    SettingsTile(
-                      key: const Key(
-                          "settings_screen_account_settings_tile"),
-                      leadingIcon:
-                       Padding(
-                         padding:
-                          EdgeInsets.only(
-                            right: ScreenSizeHandler.screenWidth * 0.04,
-                          ),
-                         child: Image(
-                          image: const AssetImage('assets/images/avatarDaniel.png'),
-                          height: ScreenSizeHandler.screenHeight * 0.05,
-                          width: ScreenSizeHandler.screenWidth * 0.05,
-                          ),
-                       ),
-                      titleText: 'u/$username',
-                      trailingWidget: const SettingsTileTrailingIcon(
-                        trailingIcon: Icons.arrow_forward,
+                    Semantics(
+                      identifier: 'settings_screen_account_settings_tile',
+                      child: SettingsTile(
+                        key: const Key(
+                            "settings_screen_account_settings_tile"),
+                        leadingIcon:
+                         Padding(
+                           padding:
+                            EdgeInsets.only(
+                              right: ScreenSizeHandler.screenWidth * 0.04,
+                            ),
+                           child: Image(
+                            image: const AssetImage('assets/images/avatarDaniel.png'),
+                            height: ScreenSizeHandler.screenHeight * 0.05,
+                            width: ScreenSizeHandler.screenWidth * 0.05,
+                            ),
+                         ),
+                        titleText: 'u/$username',
+                        trailingWidget: const SettingsTileTrailingIcon(
+                          trailingIcon: Icons.arrow_forward,
+                        ),
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            AccountSettingsScreen.id,
+                          );
+                        },
                       ),
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          AccountSettingsScreen.id,
-                        );
-                      },
                     ),
                     const SettingsSegmentTitle(
                       titleText: "REDDIT PREMIUM",

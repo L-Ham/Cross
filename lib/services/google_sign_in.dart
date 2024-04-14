@@ -11,6 +11,7 @@ class AuthService {
     final GoogleSignInAuthentication googleAuth =
         await googleUser.authentication;
     var token = googleAuth.accessToken;
+    googleSignIn.signOut();
     return token;
   }
 

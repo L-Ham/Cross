@@ -67,6 +67,7 @@ class CreateUsernameScreenState extends State<CreateUsernameScreen> {
   bool isValidName = true;
   bool isTaken = false;
   bool isLoading = false;
+  String message='';
 
   @override
   void initState() {
@@ -75,6 +76,33 @@ class CreateUsernameScreenState extends State<CreateUsernameScreen> {
       isLoading = true;
     });
     generateUsernames();
+  }
+
+  Future<void> checkAvailability(String username) async {
+    final url = Uri.parse('https://reddit-bylham.me/api/user/usernameAvailability?username=$username');
+
+    late final response;
+    try {
+      response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+      message = jsonDecode(response.body)['message']+'! Try another';
+      print(jsonDecode(response.body)['message']);
+      if (response.statusCode == 200) {
+        message = 'Great Name! It\'s not taken, so it\'s all yours.';
+      }
+    } catch (e) {
+      print('Error: $e');
+    } 
+    finally {
+      setState(() {
+        isLoading = false;
+      });
+
+    }
   }
 
   @override
@@ -140,7 +168,7 @@ class CreateUsernameScreenState extends State<CreateUsernameScreen> {
                           isObscure: false,
                           isValid: isValidName,
                           text: 'Username',
-                          suffixIcon: isValidName && isNameFocused
+                          suffixIcon: isValidName && isNameFocused && message.contains('Great Name')
                               ? const Icon(
                                   Icons.check_rounded,
                                   color: Colors.green,
@@ -150,6 +178,7 @@ class CreateUsernameScreenState extends State<CreateUsernameScreen> {
                                   : null,
                           isFocused: isNameFocused,
                           onChanged: (value) {
+                            checkAvailability(value);
                             setState(() {
                               isValidName = value.length >= 3 &&
                                   value.length <= 20 &&
@@ -174,7 +203,7 @@ class CreateUsernameScreenState extends State<CreateUsernameScreen> {
                       ),
                       Visibility(
                         key: const Key('create_username_screen_error_text'),
-                        visible: isNameFocused,
+                        visible: nameController.text.isNotEmpty,
                         child: Padding(
                           padding: EdgeInsets.only(
                               left: ScreenSizeHandler.screenWidth *
@@ -183,18 +212,16 @@ class CreateUsernameScreenState extends State<CreateUsernameScreen> {
                             alignment: Alignment.centerLeft,
                             child: Text(
                               isTaken
-                                  ? 'Username already taken! Try another'
+                                  ? message
                                   : nameController.text.length > 20 ||
                                           nameController.text.length < 3
                                       ? 'Your username must be between 3 and 20 characters.'
                                       : nameController.text
                                               .contains(RegExp(r'[^\w\s-]'))
                                           ? 'Your username can only contain letters, numbers, or the special characters - or _'
-                                          : 'Great name! It'
-                                              's not taken, so it'
-                                              's all yours.',
+                                          : message,
                               style: TextStyle(
-                                color: isValidName ? Colors.green : kErrorColor,
+                                color: message.contains('Great Name') && isValidName ? Colors.green : kErrorColor,
                                 fontSize: ScreenSizeHandler.smaller *
                                     kErrorMessageSmallerFontRatio,
                               ),
@@ -225,9 +252,10 @@ class CreateUsernameScreenState extends State<CreateUsernameScreen> {
                                 child: GestureDetector(
                                   onTap: () {
                                     nameController.text = firstName;
+                                    checkAvailability(nameController.text);
                                     setState(() {
-                                      isValidName = true;
                                       isNameFocused = true;
+                                      isValidName = true;
                                       isButtonEnabled = true;
                                     });
                                   },
@@ -247,6 +275,7 @@ class CreateUsernameScreenState extends State<CreateUsernameScreen> {
                                 child: GestureDetector(
                                   onTap: () {
                                     nameController.text = secondName;
+                                    checkAvailability(nameController.text);
                                     setState(() {
                                       isValidName = true;
                                       isNameFocused = true;
@@ -271,6 +300,7 @@ class CreateUsernameScreenState extends State<CreateUsernameScreen> {
                                 child: GestureDetector(
                                   onTap: () {
                                     nameController.text = thirdName;
+                                    checkAvailability(nameController.text);
                                     setState(() {
                                       isValidName = true;
                                       isNameFocused = true;

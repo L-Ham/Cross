@@ -11,6 +11,7 @@ class SettingsTextField extends StatelessWidget {
     this.isObscured = false,
     this.isDisconnectScreen = false,
     this.onTap,
+    this.focusNode,
   });
 
   final TextEditingController controller;
@@ -18,6 +19,7 @@ class SettingsTextField extends StatelessWidget {
   final bool isObscured;
   final bool isDisconnectScreen;
   final Function()? onTap;
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +31,7 @@ class SettingsTextField extends StatelessWidget {
           color: Colors.white,
         ),
         cursorColor: kCursorColor,
+        focusNode: focusNode,
         obscureText: isObscured,
         controller: controller,
         decoration: InputDecoration(

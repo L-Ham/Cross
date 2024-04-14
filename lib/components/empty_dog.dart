@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../constants.dart';
+import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 
 class EmptyDog extends StatelessWidget {
   const EmptyDog({
@@ -14,15 +14,14 @@ class EmptyDog extends StatelessWidget {
         children: [
           Image.asset(
             'assets/images/empty_dog.png',
-            width: MediaQuery.of(context).size.width * 0.5,
-            height: MediaQuery.of(context).size.height * 0.15,
+            width: ScreenSizeHandler.screenWidth * 0.35,
+            height: ScreenSizeHandler.screenHeight * 0.15,
           ),
           Text(
-            'WOW, SUCH EMPTY',
+            'Wow, such empty',
             style: TextStyle(
               color: Colors.grey,
-              fontSize: MediaQuery.of(context).size.height *
-                  kPageSubtitleFontSizeHeightRatio,
+              fontSize: ScreenSizeHandler.bigger * 0.02,
             ),
           )
         ],

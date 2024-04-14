@@ -13,7 +13,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'home_page_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:reddit_bel_ham/components/general_components/reddit_loading_indicator.dart';
 
 class FirstScreen extends StatefulWidget {
@@ -35,14 +34,6 @@ class _FirstScreenState extends State<FirstScreen> {
   void initState() {
     super.initState();
     initSharedPrefs();
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (user == null) {
-        print('User is currently signed out!');
-      } else {
-        print('User is signed in!');
-        AuthService().signOutWithGoogle();
-      }
-    });
   }
 
   void initSharedPrefs() async {
@@ -50,7 +41,6 @@ class _FirstScreenState extends State<FirstScreen> {
   }
 
   Future<void> signUpWithGoogle(String token) async {
-    // await AuthService().signOutWithGoogle();
     print(token);
     final url = Uri.parse('https://reddit-bylham.me/api/auth/googleSignUp');
 
@@ -174,16 +164,6 @@ class _FirstScreenState extends State<FirstScreen> {
                       onPress: () async {
                         setState(() {
                           isLoading = true;
-                        });
-                        FirebaseAuth.instance
-                            .authStateChanges()
-                            .listen((User? user) {
-                          if (user == null) {
-                            print('User is currently signed out!');
-                          } else {
-                            print('User is signed in!');
-                            AuthService().signOutWithGoogle();
-                          }
                         });
                         var check = await AuthService().signInWithGoogle();
                         if (check == null) {

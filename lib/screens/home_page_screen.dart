@@ -44,7 +44,12 @@ class _HomePageScreenState extends State<HomePageScreen> {
   bool onlineStatusToggle = true;
   Color onlineStatusColor = kOnlineStatusColor;
   double onlineStatusWidth = ScreenSizeHandler.smaller * 0.42;
-
+  @override
+  void initState() {
+    super.initState();
+    username = TokenDecoder.username;
+    email = TokenDecoder.email;
+  }
   bool isExitPressed = false;
 
   bool isRecentlyVisitedDrawerVisible = false;
@@ -416,6 +421,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                   child: isYourCommunitiesPressed
                       ? Container(
                           child: ListView.builder(
+                            
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: 2 + yourCommunities.length,
@@ -678,12 +684,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
 
   int navigationBarIndex=0;
   int oldIndex=0;
-  @override
-  void initState() {
-    super.initState();
-    username = TokenDecoder.username;
-    email = TokenDecoder.email;
-  }
+
   
 
   String selectedMenuItem = "Home";
@@ -832,49 +833,57 @@ class _HomePageScreenState extends State<HomePageScreen> {
     return PopScope(
       canPop: false,
       child: Scaffold(
-        bottomNavigationBar:BottomNavigationBar(
-      selectedFontSize: kAcknowledgeTextSmallerFontRatio* ScreenSizeHandler.smaller*0.9,
-      unselectedFontSize: kAcknowledgeTextSmallerFontRatio* ScreenSizeHandler.smaller*0.9,
-      type: BottomNavigationBarType.fixed,
-      
-      backgroundColor: kBackgroundColor,
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Home',
-          // backgroundColor: Colors.black,
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.group_outlined),
-          label: 'Communities',
+        bottomNavigationBar:Theme(
+          data: ThemeData(
+            splashColor: kBackgroundColor,
+            highlightColor: kBackgroundColor,
+          ),
 
-          // backgroundColor: Colors.black,
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.add_outlined),
-          label: 'Create',
-          // backgroundColor: Colors.black,
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.messenger_outline_sharp),
-          label: 'Chat',
-          // backgroundColor: Colors.black,
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.notifications_none_rounded),
-          label: 'Inbox',
+
+          child: BottomNavigationBar(
+                selectedFontSize: kAcknowledgeTextSmallerFontRatio* ScreenSizeHandler.smaller*0.9,
+                unselectedFontSize: kAcknowledgeTextSmallerFontRatio* ScreenSizeHandler.smaller*0.9,
+                type: BottomNavigationBarType.fixed,
+                
+                backgroundColor: kBackgroundColor,
+                items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+            // backgroundColor: Colors.black,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.group_outlined),
+            label: 'Communities',
           
-          // backgroundColor: Colors.black,
+            // backgroundColor: Colors.black,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add_outlined),
+            label: 'Create',
+            // backgroundColor: Colors.black,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.messenger_outline_sharp),
+            label: 'Chat',
+            // backgroundColor: Colors.black,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications_none_rounded),
+            label: 'Inbox',
+            
+            // backgroundColor: Colors.black,
+          ),
+                ],
+                currentIndex: navigationBarIndex,
+                selectedItemColor: Colors.white,
+                unselectedItemColor: Colors.grey,
+                unselectedLabelStyle: TextStyle(color: Colors.grey),
+                showUnselectedLabels: true,
+                onTap: _onItemTapped,
+                
+              ),
         ),
-      ],
-      currentIndex: navigationBarIndex,
-      selectedItemColor: Colors.white,
-      unselectedItemColor: Colors.grey,
-      unselectedLabelStyle: TextStyle(color: Colors.grey),
-      showUnselectedLabels: true,
-      onTap: _onItemTapped,
-      
-    ),
         key: _scaffoldKey,
         appBar: AppBar(
           leading:  Padding(
@@ -1076,11 +1085,13 @@ class _HomePageScreenState extends State<HomePageScreen> {
         ),
          drawer: Drawer(
             backgroundColor: kBackgroundColor,
+            elevation: 0,
             child: isRecentlyVisitedDrawerVisible
                 ? buildDrawerTwo()
                 : buildDrawerOne()),
         endDrawer: Drawer(
           backgroundColor: kBackgroundColor,
+          elevation: 0,
           child: SafeArea(
             child: Column(
               children: [
@@ -1124,16 +1135,19 @@ class _HomePageScreenState extends State<HomePageScreen> {
                         },
                       );
                     },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('u/$username',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: ScreenSizeHandler.bigger * 0.023,
-                                fontWeight: FontWeight.bold)),
-                        Icon(Icons.keyboard_arrow_down_rounded),
-                      ],
+                    child: Semantics(
+                      identifier: 'drawer_username_identifier',
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('u/$username',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: ScreenSizeHandler.bigger * 0.023,
+                                  fontWeight: FontWeight.bold)),
+                          Icon(Icons.keyboard_arrow_down_rounded),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -1191,6 +1205,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                 ),
                 Expanded(
                   child: ListView(
+                    
                     scrollDirection: Axis.vertical,
                     children: [
                       SettingsTile(
@@ -1254,7 +1269,12 @@ class DrawerBottomSheet extends StatefulWidget {
 }
 
 class _DrawerBottomSheetState extends State<DrawerBottomSheet> {
-  String username = "peter_ashraf";
+  late String username;
+  @override
+  void initState() {
+    super.initState();
+    username=TokenDecoder.username;
+  }
   bool isExitPressed = false;
   @override
   Widget build(BuildContext context) {
@@ -1294,27 +1314,30 @@ class _DrawerBottomSheetState extends State<DrawerBottomSheet> {
             ),
           )),
           isExitPressed
-              ? GestureDetector(
-                  onTap: () {
-                    Navigator.popUntil(context, ModalRoute.withName('/'));
-                    Navigator.pushNamed(context, LoginScreen.id);
-                  },
-                  child: ButtonBar(
-                    alignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.exit_to_app, color: Colors.white38),
-                      Text(
-                        'Logout',
-                        style: TextStyle(
-                          color: Colors.red,
-                          fontSize: ScreenSizeHandler.smaller *
-                              kAcknowledgeTextSmallerFontRatio *
-                              1.1,
+              ? Semantics(
+                identifier: 'second_exit_app_button_identifier',
+                child: GestureDetector(
+                    onTap: () {
+                      Navigator.popUntil(context, ModalRoute.withName('/'));
+                      Navigator.pushNamed(context, LoginScreen.id);
+                    },
+                    child: ButtonBar(
+                      alignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.exit_to_app, color: Colors.white38),
+                        Text(
+                          'Logout',
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: ScreenSizeHandler.smaller *
+                                kAcknowledgeTextSmallerFontRatio *
+                                1.1,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                )
+              )
               : Column(
                   children: [
                     ListTile(
@@ -1324,26 +1347,37 @@ class _DrawerBottomSheetState extends State<DrawerBottomSheet> {
                         radius: ScreenSizeHandler.smaller * 0.03,
                       ),
                       title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            'u/$username',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: ScreenSizeHandler.smaller *
-                                  kAcknowledgeTextSmallerFontRatio *
-                                  1.1,
+                          Expanded(
+                            child: Text(
+                              'u/$username',
+                              softWrap: true,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: ScreenSizeHandler.smaller *
+                                    kAcknowledgeTextSmallerFontRatio *
+                                    1.1,
+                              ),
                             ),
                           ),
-                          SizedBox(width: ScreenSizeHandler.screenWidth * 0.34),
-                          const Icon(Icons.check, color: Colors.blue),
-                          IconButton(
-                            onPressed: () {
-                              setState(() {
-                                isExitPressed = true;
-                              });
-                            },
-                            icon: const Icon(Icons.exit_to_app),
-                            color: Colors.white38,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              const Icon(Icons.check, color: Colors.blue),
+                              Semantics(
+                                identifier: 'first_exit_app_button_identifier',
+                                child: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      isExitPressed = true;
+                                    });
+                                  },
+                                  icon: const Icon(Icons.exit_to_app),
+                                  color: Colors.white38,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),

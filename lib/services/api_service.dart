@@ -51,13 +51,7 @@ class ApiService {
         default:
           throw Exception('HTTP method $method not implemented');
       }
-
-      if (response.statusCode == 200) {
-        return jsonDecode(response.body);
-      } else {
-        throw Exception(
-            'Failed to load data with error body ${response.body} and status code ${response.statusCode}');
-      }
+      return jsonDecode(response.body);
     } catch (e) {
       debugPrint("Exception occured: $e");
     }
@@ -65,9 +59,6 @@ class ApiService {
 
   Future<dynamic> createCommunity(Map<String, dynamic> data) async {
     try {
-      String token =
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjVmOGEzZTRiZGNlYWU5YmNiODJkYWUwIiwidHlwZSI6Im5vcm1hbCJ9LCJpYXQiOjE3MTEzMDMyNTEsImV4cCI6NTAxNzExMzAzMjUxfQ.h0qBRBJXuerCcd-tVJx0yWDCSm5oyOrRIshgXy-38Ug';
-
       final response = await http.post(
         Uri.parse('$baseURL/subreddit/createCommunity'),
         headers: <String, String>{
@@ -84,7 +75,6 @@ class ApiService {
       }
     } catch (e) {
       print('Exception occurred: $e');
-      throw e;
     }
   }
 
@@ -206,6 +196,7 @@ class ApiService {
     sentData = {"search": userName};
     var result = await request('/user/searchUsernames',
         headers: headerWithToken, method: 'GET', body: sentData);
+    return result;
   }
 
   Future<void> addMediaPost(
@@ -251,4 +242,45 @@ class ApiService {
     var result = await request('/post/createPost',
         headers: headerWithToken, method: 'POST', body: body);
     return result;
-}}
+  }
+
+  Future<dynamic> getCommunityDetails(String communityName) async {
+    Map<String, dynamic> sentData;
+    sentData = {"subRedditName": communityName};
+    var result = await request('/subreddit/communityDetails',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> changePassword(
+      String currentPass, String newPass, String confirmPass) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "oldPassword": currentPass,
+      "newPassword": newPass,
+      "confirmPassword": confirmPass
+    };
+    var result = await request('/auth/changePassword',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> forgotPassword(String username) async {
+    var result = await request('/auth/forgotPassword',
+        headers: {'Content-Type': 'application/json'},
+        method: 'POST',
+        body: {"email": username});
+    return result;
+  }
+
+  Future<dynamic> updateEmailAddress(String newEmail,String password) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "email": newEmail,
+      "password": password,
+    };
+    var result = await request('/auth/email',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+}
