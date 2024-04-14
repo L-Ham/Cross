@@ -10,6 +10,7 @@ class SettingsTile extends StatelessWidget {
   final VoidCallback? onTap;
   final FontWeight titleFontWeight;
   final FontWeight subtitileFontWeight;
+  final Color? fontColor;
 
   const SettingsTile({
     Key? key,
@@ -20,6 +21,7 @@ class SettingsTile extends StatelessWidget {
     this.onTap,
     this.titleFontWeight = FontWeight.w500,
     this.subtitileFontWeight = FontWeight.w500,
+    this.fontColor,
   }) : super(key: key);
 
   @override
@@ -42,10 +44,13 @@ class SettingsTile extends StatelessWidget {
                     children: [
                       Text(
                         titleText,
+
                         style: kSettingsIconTextStyle.copyWith(
                           fontSize: ScreenSizeHandler.bigger *
-                              kSettingsTileTextRatio, fontWeight: titleFontWeight
+                              kSettingsTileTextRatio, fontWeight: titleFontWeight,
+                          color: fontColor,
                         ),
+                        
                       ),
                       if (subtitleText != null)
                         Text(
