@@ -59,6 +59,48 @@ Widget buildMoreModalBottomSheet(BuildContext context, Post post) {
                   ],
                 ),
                 SizedBox(height: ScreenSizeHandler.screenHeight * 0.02),
+                if(post.username=='r/DanielAdel')...
+               [ Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: ScreenSizeHandler.screenWidth * 0.025),
+                      child: Icon(Icons.edit, color: Colors.white,size:ScreenSizeHandler.screenWidth * 0.055),
+                    ),
+                    Text('Edit Post', style: TextStyle(color: Colors.white)),
+                  ],
+                ),
+                SizedBox(height: ScreenSizeHandler.screenHeight * 0.02),
+                Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: ScreenSizeHandler.screenWidth * 0.025),
+                      child: Icon(Icons.warning_amber_outlined, color: Colors.white,size:ScreenSizeHandler.screenWidth * 0.055),
+                    ),
+                    Text('Mark spoiler', style: TextStyle(color: Colors.white,)),
+                  ],
+
+                ),
+                SizedBox(height: ScreenSizeHandler.screenHeight * 0.02),
+                 Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: ScreenSizeHandler.screenWidth * 0.025),
+                      child: Icon(Icons.eighteen_up_rating_sharp,  color: Colors.white,size:ScreenSizeHandler.screenWidth * 0.055),
+                    ),
+                    Text('Mark NSFW', style: TextStyle( color: Colors.white,)),
+                  ],
+                ),
+                SizedBox(height: ScreenSizeHandler.screenHeight * 0.02),
+                Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: ScreenSizeHandler.screenWidth * 0.025),
+                      child: Icon(Icons.delete_outline, color: Color.fromARGB(255, 204, 90, 90),size:ScreenSizeHandler.screenWidth * 0.055),
+                    ),
+                    Text('Delete Post', style: TextStyle(color: Color.fromARGB(255, 204, 90, 90))),
+                  ],
+                ),
+                SizedBox(height: ScreenSizeHandler.screenHeight * 0.02),],
                 Row(
                   children: [
                     Padding(
@@ -68,7 +110,8 @@ Widget buildMoreModalBottomSheet(BuildContext context, Post post) {
                     Text('Crosspost to a community', style: TextStyle(color: Colors.white)),
                   ],
                 ),
-                SizedBox(height: ScreenSizeHandler.screenHeight * 0.02),
+                if(post.username!="r/DanielAdel")...
+                [SizedBox(height: ScreenSizeHandler.screenHeight * 0.02),
                 Row(
                   children: [
                     Padding(
@@ -97,7 +140,7 @@ Widget buildMoreModalBottomSheet(BuildContext context, Post post) {
                     ),
                     Text('Hide', style: TextStyle(color: Colors.white)),
                   ],
-                ),
+                ),]
                 
               ],
             ),

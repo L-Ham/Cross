@@ -4,9 +4,11 @@ import 'package:flutter_link_previewer/flutter_link_previewer.dart';
 import 'package:reddit_bel_ham/components/home_page_components/more_bottom_sheet.dart';
 import 'package:reddit_bel_ham/components/home_page_components/poll_post_card.dart';
 import 'package:reddit_bel_ham/components/home_page_components/share_bottom_sheet.dart';
+import 'package:reddit_bel_ham/components/home_page_components/video_player.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:video_player/video_player.dart';
 
 class Post {
   final String username;
@@ -14,7 +16,8 @@ class Post {
   final String contentTitle;
   final String type;
   final String link;
-  final String image;
+  final String video;
+  final List<String> image;
   int upvotes;
   int comments;
   bool isUpvoted = false;
@@ -31,6 +34,7 @@ class Post {
     required this.type,
     required this.link,
     required this.image,
+    required this.video
   });
 
   static fromJson(json) {}
@@ -48,6 +52,7 @@ class PostCard extends StatefulWidget {
 }
 
 class _PostCardState extends State<PostCard> {
+  
   @override
   Widget build(BuildContext context) {
     final isTypeImage = widget.post.type == 'image';
@@ -55,6 +60,7 @@ class _PostCardState extends State<PostCard> {
     final isTypeLink = widget.post.type == 'link';
     final isTypePoll = widget.post.type == 'poll';
     final isOwner = widget.post.username == 'r/DanielAdel';
+    final isTypeVideo = widget.post.type == 'video';
     return buildPostCard(widget.post, isTypeImage, isTypeText, isTypeLink,
         isOwner, isTypePoll, context);
   }
@@ -105,7 +111,8 @@ class _PostCardState extends State<PostCard> {
                           buildMoreModalBottomSheet(context, widget.post),
                     ),
                     child: Padding(
-                      padding: EdgeInsets.only(right:ScreenSizeHandler.screenWidth * 0.04),
+                      padding: EdgeInsets.only(
+                          right: ScreenSizeHandler.screenWidth * 0.04),
                       child: Icon(
                         Icons.more_horiz_outlined,
                         color: Color.fromARGB(255, 191, 188, 188),
@@ -182,13 +189,25 @@ class _PostCardState extends State<PostCard> {
                             fontSize: ScreenSizeHandler.screenWidth * 0.026),
                       ),
                     ),
-                  if (widget.post.type == 'image')
-                    Center(
-                      child: Image.asset(
-                        post.image,
+                  if (widget.post.type == 'image') ...[
+                    SizedBox(
+                      height: ScreenSizeHandler.screenHeight *
+                          0.6, // Adjust the height as needed
+                      child: PageView.builder(
+                        itemCount: post.image.length,
+                        itemBuilder: (context, index) {
+                          return Image.asset(
+                            post.image[index],
+                            fit: BoxFit.cover,
+                          );
+                        },
                       ),
                     ),
+                  ],
                   if (widget.post.type == 'poll') PollPost(post: post),
+                  if (widget.post.type == 'video') ...[
+                    VideoPlayerWidget(videoPath: post.video),
+                  ],
                 ],
               ),
             ),
@@ -201,7 +220,8 @@ class _PostCardState extends State<PostCard> {
                   Row(
                     children: [
                       Padding(
-                        padding: EdgeInsets.only(left:ScreenSizeHandler.screenWidth * 0.02),
+                        padding: EdgeInsets.only(
+                            left: ScreenSizeHandler.screenWidth * 0.02),
                         child: Container(
                           decoration: BoxDecoration(
                             color: Colors.black,
@@ -232,11 +252,14 @@ class _PostCardState extends State<PostCard> {
                                 },
                                 child: Padding(
                                   padding: EdgeInsets.only(
-                                      left: ScreenSizeHandler.screenWidth * 0.02,
-                                      right: ScreenSizeHandler.screenWidth * 0.02,
-                                      top: ScreenSizeHandler.screenWidth * 0.001,
-                                      bottom:
-                                          ScreenSizeHandler.screenWidth * 0.001),
+                                      left:
+                                          ScreenSizeHandler.screenWidth * 0.02,
+                                      right:
+                                          ScreenSizeHandler.screenWidth * 0.02,
+                                      top:
+                                          ScreenSizeHandler.screenWidth * 0.001,
+                                      bottom: ScreenSizeHandler.screenWidth *
+                                          0.001),
                                   child: Row(
                                     children: [
                                       Icon(
@@ -244,8 +267,8 @@ class _PostCardState extends State<PostCard> {
                                         color: post.isUpvoted
                                             ? Colors.red
                                             : Colors.white,
-                                        size:
-                                            ScreenSizeHandler.screenWidth * 0.04,
+                                        size: ScreenSizeHandler.screenWidth *
+                                            0.04,
                                       ),
                                       Text(
                                         post.upvotes.toString(),
@@ -257,13 +280,15 @@ class _PostCardState extends State<PostCard> {
                                       ),
                                       Padding(
                                         padding: EdgeInsets.only(
-                                            left:
-                                                ScreenSizeHandler.bigger * 0.01),
+                                            left: ScreenSizeHandler.bigger *
+                                                0.01),
                                         child: Container(
-                                          width: ScreenSizeHandler.bigger * 0.001,
-                                          height: ScreenSizeHandler.bigger * 0.02,
-                                          color:
-                                              Color.fromARGB(102, 127, 126, 126),
+                                          width:
+                                              ScreenSizeHandler.bigger * 0.001,
+                                          height:
+                                              ScreenSizeHandler.bigger * 0.02,
+                                          color: Color.fromARGB(
+                                              102, 127, 126, 126),
                                         ),
                                       )
                                     ],
@@ -291,8 +316,10 @@ class _PostCardState extends State<PostCard> {
                                       bottom:
                                           ScreenSizeHandler.screenWidth * 0.01,
                                       top: ScreenSizeHandler.screenWidth * 0.01,
-                                      right: ScreenSizeHandler.screenWidth * 0.01,
-                                      left: ScreenSizeHandler.screenWidth * 0.001),
+                                      right:
+                                          ScreenSizeHandler.screenWidth * 0.01,
+                                      left: ScreenSizeHandler.screenWidth *
+                                          0.001),
                                   child: Row(
                                     children: [
                                       Icon(
@@ -301,8 +328,8 @@ class _PostCardState extends State<PostCard> {
                                             ? const Color.fromARGB(
                                                 255, 110, 85, 114)
                                             : Colors.white,
-                                        size:
-                                            ScreenSizeHandler.screenWidth * 0.04,
+                                        size: ScreenSizeHandler.screenWidth *
+                                            0.04,
                                       ),
                                     ],
                                   ),
@@ -390,7 +417,8 @@ class _PostCardState extends State<PostCard> {
                       );
                     },
                     child: Padding(
-                      padding: EdgeInsets.only(right:ScreenSizeHandler.screenWidth * 0.04),
+                      padding: EdgeInsets.only(
+                          right: ScreenSizeHandler.screenWidth * 0.04),
                       child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(18.0),

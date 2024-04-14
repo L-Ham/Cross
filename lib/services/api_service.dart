@@ -86,8 +86,7 @@ class ApiService {
     //     return jsonPosts.map((json) => Post.fromJson(json)).toList();
     //   } else {
     throw Exception('Failed to load posts');
-    //   }
-  }
+      }
 
   Future<dynamic> getUserAccountSettings() async {
     var result = await request('/user/accountSettings',
