@@ -29,6 +29,18 @@ class PostToSubredditTile extends StatelessWidget {
             CircleAvatar(
               radius: ScreenSizeHandler.bigger * 0.032,
               backgroundColor: Colors.grey,
+              child: subredditImage != 'assets/images/planet3.png'
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(35),
+                      child: Image.network(subredditImage, fit: BoxFit.cover),
+                    )
+                  : ClipRRect(
+                      borderRadius: BorderRadius.circular(35),
+                      child: Image.asset(
+                        'assets/images/planet3.png',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
             ),
             Padding(
               padding:
@@ -51,7 +63,7 @@ class PostToSubredditTile extends StatelessWidget {
                             color: Colors.grey,
                             fontSize: ScreenSizeHandler.bigger * 0.016),
                       ),
-                      if (subredditImage != selectedSubredditName)
+                      if (subredditName != selectedSubredditName)
                         Text(
                           " \u00B7 recently visited",
                           style: TextStyle(

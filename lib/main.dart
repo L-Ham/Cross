@@ -83,14 +83,13 @@ class RedditByLham extends StatelessWidget {
         CommunityRulesScreen.id: (context) => const CommunityRulesScreen(),
         PostToScreen.id: (context) => const PostToScreen(),
         ProfileScreen.id: (context) => ProfileScreen(),
-        },
+      },
       // initialRoute: (token == null)
       //     ? FirstScreen.id
       //     : (JwtDecoder.isExpired(token))
       //         ? LoginScreen.id
       //         : HomePageScreen.id,
-      initialRoute: FirstScreen.id,
+      initialRoute: AddPostScreen.id,
     );
   }
 }
-

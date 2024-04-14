@@ -6,15 +6,18 @@ class AddPostSearchBar extends StatelessWidget {
   const AddPostSearchBar({
     super.key,
     required this.isSearchFocused,
+    required this.searchController,
   });
 
   final FocusNode isSearchFocused;
+  final TextEditingController searchController;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: ScreenSizeHandler.bigger * 0.055,
       child: TextField(
+        controller: searchController,
         style: TextStyle(
           color: Colors.white,
           fontSize: ScreenSizeHandler.bigger * 0.018,

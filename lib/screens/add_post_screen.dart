@@ -63,7 +63,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
   bool isSpoiler = false;
   bool isBrandAffiliate = false;
   String subredditName = "";
-  String subredditImage = "";
+  String subredditImage = "assets/images/planet3.png";
   ApiService apiService = ApiService(TokenDecoder.token);
   File? videoFile;
   String subredditId = "";
@@ -265,6 +265,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                       setState(() {
                         subredditName = result['subredditName']!;
                         subredditImage = result['subredditImage']!;
+                        subredditId = result['subredditId']!;
                         isSubredditSelected = true;
                       });
                     }
@@ -312,9 +313,9 @@ class _AddPostScreenState extends State<AddPostScreen> {
                       post['type'] = "text";
                       apiService.addTextPost(post);
                     }
+                    Navigator.pop(context);
                   }
                 }
-                Navigator.pop(context);
               },
               buttonColor:
                   isPostButtonActivated ? kSwitchOnColor : Colors.grey[900]!,
@@ -353,11 +354,20 @@ class _AddPostScreenState extends State<AddPostScreen> {
                             children: [
                               CircleAvatar(
                                 radius: ScreenSizeHandler.screenHeight * 0.013,
-                                child: Image(
-                                  //TODO: Make the image dynamic
-                                  image: AssetImage(
-                                      'assets/images/reddit_logo.png'),
-                                ),
+                                child: subredditImage !=
+                                        'assets/images/planet3.png'
+                                    ? ClipRRect(
+                                        borderRadius: BorderRadius.circular(35),
+                                        child: Image.network(subredditImage,
+                                            fit: BoxFit.cover),
+                                      )
+                                    : ClipRRect(
+                                        borderRadius: BorderRadius.circular(35),
+                                        child: Image.asset(
+                                          'assets/images/planet3.png',
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
                               ),
                               Padding(
                                 padding: EdgeInsets.only(
@@ -375,6 +385,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                                             result['subredditName']!;
                                         subredditImage =
                                             result['subredditImage']!;
+                                        subredditId = result['subredditId']!;
                                       });
                                     }
                                   },
@@ -398,7 +409,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
                                 fontSizeRatio: 0.018,
                                 onTap: () {
                                   Navigator.pushNamed(
-                                      context, CommunityRulesScreen.id);
+                                      context, CommunityRulesScreen.id,
+                                      arguments: subredditId);
                                 },
                                 isUnderlined: true,
                               )

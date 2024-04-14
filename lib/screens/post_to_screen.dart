@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/components/general_components/interactive_text.dart';
 import 'package:reddit_bel_ham/components/general_components/rounded_button.dart';
 import 'package:reddit_bel_ham/constants.dart';
+import 'package:reddit_bel_ham/services/api_service.dart';
+import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../components/add_post_components/add_post_search_bar.dart';
@@ -20,6 +22,9 @@ class PostToScreen extends StatefulWidget {
 class _PostToScreenState extends State<PostToScreen> {
   FocusNode searchFocus = FocusNode();
   bool isSearchFocused = false;
+  ApiService apiService = ApiService(TokenDecoder.token);
+  TextEditingController searchController = TextEditingController();
+  bool isSearching = false;
 
   void selectSubreddit(int i) {
     String selectedSubreddit = subredditNames.removeAt(i);
@@ -32,8 +37,26 @@ class _PostToScreenState extends State<PostToScreen> {
     saveSubredditData();
 
     Navigator.pop(context, {
-      "subredditName": selectedSubreddit,
-      "subredditImage": selectedImage
+      "subredditName": subredditNames[i],
+      "subredditImage": subredditImages[i],
+      "subredditId": subredditIds[i],
+    });
+  }
+
+  void selectSearchSubreddit(int i) {
+    // String selectedSubreddit = subredditNames.removeAt(i);
+    // subredditNames.insert(0, selectedSubreddit);
+    // String selectedImage = subredditImages.removeAt(i);
+    // subredditImages.insert(0, selectedImage);
+    // int selectedNumOfOnlineUsers = numOfOnlineUsers.removeAt(i);
+    // numOfOnlineUsers.insert(0, selectedNumOfOnlineUsers);
+
+    saveSubredditData();
+
+    Navigator.pop(context, {
+      "subredditName": searchedSubredditNames[i],
+      "subredditImage": searchSubredditImages[i],
+      "subredditId": searchSubredditId[i],
     });
   }
 
@@ -56,34 +79,52 @@ class _PostToScreenState extends State<PostToScreen> {
           .map((i) => int.parse(i))
           .toList();
     });
-    print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
-    print(subredditNames);
+    print(subredditImages);
   }
 
-  List<String> subredditNames = [
-    "redditBelHam",
-    "ay 7aga",
-    "norsk",
-    "csMajors",
-    "FlutterDev",
-    "Flutter"
-  ];
-  List<String> subredditImages = [
-    "redditBelHam",
-    "ay 7aga",
-    "norsk",
-    "csMajors",
-    "FlutterDev",
-    "Flutter"
-  ];
-  List<int> numOfOnlineUsers = [
-    100,
-    200,
-    300,
-    400,
-    500,
-    600,
-  ];
+  void getSubredditsFromBack() async {
+    Map<String, dynamic> results =
+        await apiService.searchSubredditByName(searchController.text);
+    List<dynamic> resultsList = results['matchingNames'];
+    searchSubreddit(resultsList);
+  }
+
+  void searchSubreddit(List<dynamic> resultsList) {
+    searchSubredditImages.clear();
+    searchSubredditId.clear();
+    searchedSubredditNames.clear();
+    searchNumOfOnlineUsers.clear();
+    for (int i = 0; i < resultsList.length; i++) {
+      setState(() {
+        if (resultsList[i]["appearance"]["avatarImage"] != null) {
+          searchSubredditImages
+              .add(resultsList[i]["appearance"]["avatarImage"]);
+        } else {
+          searchSubredditImages.add('assets/images/planet3.png');
+        }
+        searchSubredditId.add(resultsList[i]["_id"]);
+        searchedSubredditNames.add(resultsList[i]["name"]);
+        searchNumOfOnlineUsers.add(resultsList[i]["membersCount"]);
+      });
+    }
+    print(searchedSubredditNames);
+  }
+
+  void refreshSubreddit(String subredditName) {
+    setState(() {
+      getSubredditsFromBack();
+    });
+  }
+
+  List<String> subredditNames = [];
+  List<String> subredditImages = [];
+  List<int> numOfOnlineUsers = [];
+  List<String> subredditIds = [];
+
+  List<String> searchedSubredditNames = [];
+  List<String> searchSubredditImages = [];
+  List<int> searchNumOfOnlineUsers = [];
+  List<String> searchSubredditId = [];
   String selectedSubredditName = "";
   bool isSeeMore = false;
 
@@ -104,6 +145,12 @@ class _PostToScreenState extends State<PostToScreen> {
     searchFocus.addListener(() {
       setState(() {
         isSearchFocused = searchFocus.hasFocus;
+      });
+      searchController.addListener(() {
+        setState(() {
+          isSearching = searchController.text.isNotEmpty;
+          if (isSearching) refreshSubreddit(searchController.text);
+        });
       });
     });
   }
@@ -161,6 +208,7 @@ class _PostToScreenState extends State<PostToScreen> {
                 children: [
                   Expanded(
                     child: AddPostSearchBar(
+                      searchController: searchController,
                       isSearchFocused: searchFocus,
                     ),
                   ),
@@ -187,59 +235,89 @@ class _PostToScreenState extends State<PostToScreen> {
         child: Padding(
           padding: EdgeInsets.symmetric(
               horizontal: ScreenSizeHandler.screenWidth * 0.05),
-          child: Column(
-            children: [
-              SizedBox(
-                height: ScreenSizeHandler.screenHeight * 0.018,
-              ),
-              for (int i = 0; i < 5; i++)
-                PostToSubredditTile(
-                  subredditName: subredditNames[i],
-                  selectedSubredditName: selectedSubredditName,
-                  subredditImage: subredditImages[i],
-                  numOfOnlineUsers: numOfOnlineUsers[i],
-                  onTap: () {
-                    selectSubreddit(i);
-                  },
-                ),
-              if (isSeeMore)
-                for (int i = 5; i < subredditNames.length; i++)
-                  PostToSubredditTile(
-                    subredditName: subredditNames[i],
-                    selectedSubredditName: selectedSubredditName,
-                    subredditImage: subredditImages[i],
-                    numOfOnlineUsers: numOfOnlineUsers[i],
-                    onTap: () {
-                      selectSubreddit(i);
-                    },
-                  ),
-              if (subredditNames.length > 5 && !isSeeMore)
-                Padding(
-                  padding: EdgeInsets.only(
-                      top: ScreenSizeHandler.screenHeight * 0.02),
-                  child: RoundedButton(
-                    onTap: () {
-                      setState(() {
-                        isSeeMore = true;
-                      });
-                    },
-                    buttonHeightRatio: 0.055,
-                    buttonWidthRatio: 0.49,
-                    buttonColor: kBackgroundColor,
-                    borderColor: Colors.blue,
-                    child: const Text(
-                      'See More',
-                      style: TextStyle(
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline,
-                          decorationThickness: 2,
-                          decorationColor: Colors.blue,
-                          fontWeight: FontWeight.bold),
+          child: !isSearching
+              ? Column(
+                  children: [
+                    SizedBox(
+                      height: ScreenSizeHandler.screenHeight * 0.018,
                     ),
-                  ),
+                    if (subredditNames.length < 5)
+                      for (int i = 0; i < subredditNames.length; i++)
+                        PostToSubredditTile(
+                          subredditName: subredditNames[i],
+                          selectedSubredditName: selectedSubredditName,
+                          subredditImage: subredditImages[i],
+                          numOfOnlineUsers: numOfOnlineUsers[i],
+                          onTap: () {
+                            selectSubreddit(i);
+                          },
+                        ),
+                    if (subredditNames.length > 5)
+                      for (int i = 0; i < 5; i++)
+                        PostToSubredditTile(
+                          subredditName: subredditNames[i],
+                          selectedSubredditName: selectedSubredditName,
+                          subredditImage: subredditImages[i],
+                          numOfOnlineUsers: numOfOnlineUsers[i],
+                          onTap: () {
+                            selectSubreddit(i);
+                          },
+                        ),
+                    if (isSeeMore)
+                      for (int i = 5; i < subredditNames.length; i++)
+                        PostToSubredditTile(
+                          subredditName: subredditNames[i],
+                          selectedSubredditName: selectedSubredditName,
+                          subredditImage: subredditImages[i],
+                          numOfOnlineUsers: numOfOnlineUsers[i],
+                          onTap: () {
+                            selectSubreddit(i);
+                          },
+                        ),
+                    if (subredditNames.length > 5 && !isSeeMore)
+                      Padding(
+                        padding: EdgeInsets.only(
+                            top: ScreenSizeHandler.screenHeight * 0.02),
+                        child: RoundedButton(
+                          onTap: () {
+                            setState(() {
+                              isSeeMore = true;
+                            });
+                          },
+                          buttonHeightRatio: 0.055,
+                          buttonWidthRatio: 0.49,
+                          buttonColor: kBackgroundColor,
+                          borderColor: Colors.blue,
+                          child: const Text(
+                            'See More',
+                            style: TextStyle(
+                                color: Colors.blue,
+                                decoration: TextDecoration.underline,
+                                decorationThickness: 2,
+                                decorationColor: Colors.blue,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                  ],
+                )
+              : Column(
+                  children: [
+                    SizedBox(
+                      height: ScreenSizeHandler.screenHeight * 0.018,
+                    ),
+                    for (int i = 0; i < searchedSubredditNames.length; i++)
+                      PostToSubredditTile(
+                        subredditName: searchedSubredditNames[i],
+                        selectedSubredditName: selectedSubredditName,
+                        subredditImage: searchSubredditImages[i],
+                        numOfOnlineUsers: searchNumOfOnlineUsers[i],
+                        onTap: () {
+                          selectSearchSubreddit(i);
+                        },
+                      ),
+                  ],
                 ),
-            ],
-          ),
         ),
       ),
     );
