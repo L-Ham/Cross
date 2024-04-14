@@ -273,4 +273,15 @@ class ApiService {
         body: {"email": username});
     return result;
   }
+
+  Future<dynamic> updateEmailAddress(String newEmail,String password) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "email": newEmail,
+      "password": password,
+    };
+    var result = await request('/auth/email',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
 }
