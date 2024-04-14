@@ -350,71 +350,74 @@ class _AddPostScreenState extends State<AddPostScreen> {
                         child: Padding(
                           padding: EdgeInsets.only(
                               bottom: ScreenSizeHandler.screenHeight * 0.01),
-                          child: Row(
-                            children: [
-                              CircleAvatar(
-                                radius: ScreenSizeHandler.screenHeight * 0.013,
-                                child: subredditImage !=
-                                        'assets/images/planet3.png'
-                                    ? ClipRRect(
-                                        borderRadius: BorderRadius.circular(35),
-                                        child: Image.network(subredditImage,
-                                            fit: BoxFit.cover),
-                                      )
-                                    : ClipRRect(
-                                        borderRadius: BorderRadius.circular(35),
-                                        child: Image.asset(
-                                          'assets/images/planet3.png',
-                                          fit: BoxFit.cover,
+                          child: Semantics(
+                            identifier: "add_post_screen_select_subreddit",
+                            child: Row(
+                              children: [
+                                CircleAvatar(
+                                  radius: ScreenSizeHandler.screenHeight * 0.013,
+                                  child: subredditImage !=
+                                          'assets/images/planet3.png'
+                                      ? ClipRRect(
+                                          borderRadius: BorderRadius.circular(35),
+                                          child: Image.network(subredditImage,
+                                              fit: BoxFit.cover),
+                                        )
+                                      : ClipRRect(
+                                          borderRadius: BorderRadius.circular(35),
+                                          child: Image.asset(
+                                            'assets/images/planet3.png',
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
-                                      ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    left:
-                                        ScreenSizeHandler.screenWidth * 0.045),
-                                child: GestureDetector(
-                                  onTap: () async {
-                                    final result = await Navigator.pushNamed(
-                                        context, PostToScreen.id, arguments: {
-                                      "subredditName": subredditName
-                                    }) as Map<String, String>?;
-                                    if (result != null) {
-                                      setState(() {
-                                        subredditName =
-                                            result['subredditName']!;
-                                        subredditImage =
-                                            result['subredditImage']!;
-                                        subredditId = result['subredditId']!;
-                                      });
-                                    }
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        "r/$subredditName",
-                                        style: TextStyle(
-                                            fontSize: ScreenSizeHandler.bigger *
-                                                0.022,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      const Icon(Icons.keyboard_arrow_down),
-                                    ],
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      left:
+                                          ScreenSizeHandler.screenWidth * 0.045),
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      final result = await Navigator.pushNamed(
+                                          context, PostToScreen.id, arguments: {
+                                        "subredditName": subredditName
+                                      }) as Map<String, String>?;
+                                      if (result != null) {
+                                        setState(() {
+                                          subredditName =
+                                              result['subredditName']!;
+                                          subredditImage =
+                                              result['subredditImage']!;
+                                          subredditId = result['subredditId']!;
+                                        });
+                                      }
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "r/$subredditName",
+                                          style: TextStyle(
+                                              fontSize: ScreenSizeHandler.bigger *
+                                                  0.022,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        const Icon(Icons.keyboard_arrow_down),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                              const Expanded(child: SizedBox()),
-                              InteractiveText(
-                                text: "RULES",
-                                fontSizeRatio: 0.018,
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                      context, CommunityRulesScreen.id,
-                                      arguments: subredditId);
-                                },
-                                isUnderlined: true,
-                              )
-                            ],
+                                const Expanded(child: SizedBox()),
+                                InteractiveText(
+                                  text: "RULES",
+                                  fontSizeRatio: 0.018,
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                        context, CommunityRulesScreen.id,
+                                        arguments: subredditId);
+                                  },
+                                  isUnderlined: true,
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),

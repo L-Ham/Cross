@@ -32,7 +32,9 @@ class PostToSubredditTile extends StatelessWidget {
               child: subredditImage != 'assets/images/planet3.png'
                   ? ClipRRect(
                       borderRadius: BorderRadius.circular(35),
-                      child: Image.network(subredditImage, fit: BoxFit.cover),
+                      child: Image.network(
+                          'https://res.cloudinary.com/dfb8f6xbh/image/upload/v1712930368/cvjm2ipxhpjvuafxnrwv.jpg',
+                          fit: BoxFit.cover),
                     )
                   : ClipRRect(
                       borderRadius: BorderRadius.circular(35),

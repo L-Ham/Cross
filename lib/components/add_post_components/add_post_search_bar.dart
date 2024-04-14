@@ -25,6 +25,18 @@ class AddPostSearchBar extends StatelessWidget {
         focusNode: isSearchFocused,
         cursorColor: Colors.blue,
         decoration: InputDecoration(
+          suffixIcon: searchController.text.isNotEmpty
+              ? IconButton(
+                  icon: Icon(
+                    Icons.cancel,
+                    color: Colors.grey,
+                    size: ScreenSizeHandler.bigger * 0.022,
+                  ),
+                  onPressed: () {
+                    searchController.clear();
+                  },
+                )
+              : null,
           contentPadding: EdgeInsets.only(top: ScreenSizeHandler.bigger * 0.01),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),

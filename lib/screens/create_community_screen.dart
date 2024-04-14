@@ -177,15 +177,18 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                           kAcknowledgeTextSmallerFontRatio,
                     )),
               ),
-              CommunityTypeSelector(
-                key: const Key('community_type_selector'),
-                communityType: communityType,
-                onCommunityTypeChanged: (type, description) {
-                  setState(() {
-                    communityType = type;
-                    communityTypeDescription = description;
-                  });
-                },
+              Semantics(
+                identifier: "community_type_selector",
+                child: CommunityTypeSelector(
+                  key: const Key('community_type_selector'),
+                  communityType: communityType,
+                  onCommunityTypeChanged: (type, description) {
+                    setState(() {
+                      communityType = type;
+                      communityTypeDescription = description;
+                    });
+                  },
+                ),
               ),
               Text(communityTypeDescription,
                   style: TextStyle(

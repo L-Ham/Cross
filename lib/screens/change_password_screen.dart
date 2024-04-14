@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:reddit_bel_ham/components/settings_components/forget_password_text.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_save_button.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_text_field.dart';
@@ -164,13 +165,16 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       Padding(
                           padding: EdgeInsets.symmetric(
                               vertical: ScreenSizeHandler.screenHeight * 0.018),
-                          child: SettingsTextField(
-                            controller: currentPasswordController,
-                            focusNode: currentPasswordFocusNode,
-                            hintText: "Current password",
-                            isObscured: true,
-                            key: const Key(
-                                'change_password_screen_current_password_text_field'),
+                          child: Semantics(
+                            identifier: "current_password_text_field",
+                            child: SettingsTextField(
+                              controller: currentPasswordController,
+                              focusNode: currentPasswordFocusNode,
+                              hintText: "Current password",
+                              isObscured: true,
+                              key: const Key(
+                                  'change_password_screen_current_password_text_field'),
+                            ),
                           )),
                       const Align(
                         alignment: Alignment.centerRight,
@@ -181,21 +185,27 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       Padding(
                           padding: EdgeInsets.symmetric(
                               vertical: ScreenSizeHandler.screenHeight * 0.018),
-                          child: SettingsTextField(
-                            controller: newPasswordController,
-                            focusNode: newPasswordFocusNode,
-                            hintText: "New password",
+                          child: Semantics(
+                            identifier: "new_password_text_field",
+                            child: SettingsTextField(
+                              controller: newPasswordController,
+                              focusNode: newPasswordFocusNode,
+                              hintText: "New password",
+                              isObscured: true,
+                              key: const Key(
+                                  'change_password_screen_new_password_text_field'),
+                            ),
+                          )),
+                      Semantics(
+                        identifier: "confirm_password_text_field",
+                        child: SettingsTextField(
+                            controller: confirmPasswordController,
+                            focusNode: confirmPasswordFocusNode,
+                            hintText: "Confirm new password",
                             isObscured: true,
                             key: const Key(
-                                'change_password_screen_new_password_text_field'),
-                          )),
-                      SettingsTextField(
-                          controller: confirmPasswordController,
-                          focusNode: confirmPasswordFocusNode,
-                          hintText: "Confirm new password",
-                          isObscured: true,
-                          key: const Key(
-                              'change_password_screen_confirm_password_text_field')),
+                                'change_password_screen_confirm_password_text_field')),
+                      ),
                       // Padding(
                       //     padding: EdgeInsets.only(
                       //         top: ScreenSizeHandler.screenHeight * 0.01),

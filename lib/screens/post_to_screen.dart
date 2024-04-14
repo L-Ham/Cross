@@ -3,6 +3,7 @@ import 'package:reddit_bel_ham/components/general_components/interactive_text.da
 import 'package:reddit_bel_ham/components/general_components/rounded_button.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
+import 'package:reddit_bel_ham/utilities/subreddit_store.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -27,14 +28,8 @@ class _PostToScreenState extends State<PostToScreen> {
   bool isSearching = false;
 
   void selectSubreddit(int i) {
-    String selectedSubreddit = subredditNames.removeAt(i);
-    subredditNames.insert(0, selectedSubreddit);
-    String selectedImage = subredditImages.removeAt(i);
-    subredditImages.insert(0, selectedImage);
-    int selectedNumOfOnlineUsers = numOfOnlineUsers.removeAt(i);
-    numOfOnlineUsers.insert(0, selectedNumOfOnlineUsers);
-
-    saveSubredditData();
+    SubredditStore().addSubreddit(subredditNames[i], subredditIds[i],
+        subredditImages[i], numOfOnlineUsers[i]);
 
     Navigator.pop(context, {
       "subredditName": subredditNames[i],
@@ -44,14 +39,11 @@ class _PostToScreenState extends State<PostToScreen> {
   }
 
   void selectSearchSubreddit(int i) {
-    // String selectedSubreddit = subredditNames.removeAt(i);
-    // subredditNames.insert(0, selectedSubreddit);
-    // String selectedImage = subredditImages.removeAt(i);
-    // subredditImages.insert(0, selectedImage);
-    // int selectedNumOfOnlineUsers = numOfOnlineUsers.removeAt(i);
-    // numOfOnlineUsers.insert(0, selectedNumOfOnlineUsers);
-
-    saveSubredditData();
+    SubredditStore().addSubreddit(
+        searchedSubredditNames[i],
+        searchSubredditId[i],
+        searchSubredditImages[i],
+        searchNumOfOnlineUsers[i]);
 
     Navigator.pop(context, {
       "subredditName": searchedSubredditNames[i],
@@ -60,27 +52,6 @@ class _PostToScreenState extends State<PostToScreen> {
     });
   }
 
-  Future<void> saveSubredditData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList('subredditNames', subredditNames);
-    await prefs.setStringList('subredditImages', subredditImages);
-    await prefs.setStringList(
-        'numOfOnlineUsers', numOfOnlineUsers.map((i) => i.toString()).toList());
-  }
-
-  Future<void> loadSubredditData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      subredditNames = prefs.getStringList('subredditNames') ?? subredditNames;
-      subredditImages =
-          prefs.getStringList('subredditImages') ?? subredditImages;
-      numOfOnlineUsers = (prefs.getStringList('numOfOnlineUsers') ??
-              numOfOnlineUsers.map((i) => i.toString()).toList())
-          .map((i) => int.parse(i))
-          .toList();
-    });
-    print(subredditImages);
-  }
 
   void getSubredditsFromBack() async {
     Map<String, dynamic> results =
@@ -107,12 +78,23 @@ class _PostToScreenState extends State<PostToScreen> {
         searchNumOfOnlineUsers.add(resultsList[i]["membersCount"]);
       });
     }
-    print(searchedSubredditNames);
+    print(searchSubredditImages);
   }
 
   void refreshSubreddit(String subredditName) {
     setState(() {
       getSubredditsFromBack();
+    });
+  }
+
+  void getRecentSubreddits() async {
+    SubredditStore().getSubreddits().then((value) {
+      setState(() {
+        subredditNames = value['names']!;
+        subredditImages = value['images']!;
+        numOfOnlineUsers = value['members']!.map((e) => int.parse(e)).toList();
+        subredditIds = value['ids']!;
+      });
     });
   }
 
@@ -136,12 +118,12 @@ class _PostToScreenState extends State<PostToScreen> {
     if (args != null) {
       selectedSubredditName = args["subredditName"];
     }
+    getRecentSubreddits();
   }
 
   @override
   void initState() {
     super.initState();
-    loadSubredditData();
     searchFocus.addListener(() {
       setState(() {
         isSearchFocused = searchFocus.hasFocus;
@@ -241,7 +223,7 @@ class _PostToScreenState extends State<PostToScreen> {
                     SizedBox(
                       height: ScreenSizeHandler.screenHeight * 0.018,
                     ),
-                    if (subredditNames.length < 5)
+                    if (subredditNames.length <= 5)
                       for (int i = 0; i < subredditNames.length; i++)
                         PostToSubredditTile(
                           subredditName: subredditNames[i],
