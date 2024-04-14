@@ -274,4 +274,12 @@ class ApiService {
         headers: headerWithToken, method: 'GET', body: sentData);
     return result;
   }
+
+  Future<dynamic> connectWithGoogle(String password) async {
+    Map<String, dynamic> sentData;
+    sentData = {"password": password};
+    var result = await request('/auth/googleConnect',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
 }
