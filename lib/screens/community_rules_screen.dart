@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/components/general_components/rounded_button.dart';
 import 'package:reddit_bel_ham/constants.dart';
+import 'package:reddit_bel_ham/services/api_service.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
+import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 
 import '../components/add_post_components/community_rule_tile.dart';
 
@@ -15,24 +17,41 @@ class CommunityRulesScreen extends StatefulWidget {
 }
 
 class _CommunityRulesScreenState extends State<CommunityRulesScreen> {
-  List<String> rulesTitles = [
-    "Only Rocket League Related content",
-    "No spamming",
-    "No hate speech",
-    "No NSFW content",
-    "No personal information",
-    "No self-promotion",
-    "No low-effort posts",
-  ];
-  List<String> rulesBody = [
-    "This community is dedicated to Rocket League. Please keep all posts and comments related to Rocket League.",
-    "Spamming is not allowed in this community. Spamming includes posting the same content multiple times, posting irrelevant content, or posting content that is not related to Rocket League.",
-    "Hate speech is not allowed in this community. Hate speech includes any content that is meant to harm or discriminate against others based on their.",
-    "NSFW content is not allowed in this community. NSFW content includes any content that is meant to be sexual or explicit in nature.",
-    "Personal information is not allowed in this community. Personal information includes any content that is meant to identify or reveal personal information about others.",
-    "Self-promotion is not allowed in this community. Self-promotion includes any content that is meant to promote yourself or your own content.",
-    "Low-effort posts are not allowed in this community. Low-effort posts include any content that is meant to be low-quality or low-effort in nature.",
-  ];
+  List<String> rulesTitles = [];
+  List<String> rulesBody = [];
+  String subredditId = '';
+  ApiService apiService = ApiService(TokenDecoder.token);
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    subredditId = ModalRoute.of(context)!.settings.arguments as String;
+    getSubredditRules();
+    super.didChangeDependencies();
+  }
+
+  void getSubredditRules() async {
+    Map<String, dynamic> responseBody =
+        await apiService.getSubredditRules(subredditId);
+    List<dynamic> rules = responseBody['rules'];
+    List<String> titles = [];
+    List<String> bodies = [];
+    for (int i = 0; i < rules.length; i++) {
+      titles.add(rules[i]['ruleText']);
+      bodies.add(rules[i]['fullDescription']);
+    }
+    if (mounted) {
+      setState(() {
+        rulesTitles = titles;
+        rulesBody = bodies;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
