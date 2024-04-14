@@ -1316,7 +1316,8 @@ class _DrawerBottomSheetState extends State<DrawerBottomSheet> {
           isExitPressed
               ? Semantics(
                 identifier: 'second_exit_app_button_identifier',
-                child: GestureDetector(
+                child: SettingsTile(
+                  fontColor: Colors.red,
                     onTap: () {
                       Navigator.popUntil(context, ModalRoute.withName('/'));
                       Navigator.pushNamed(context, LoginScreen.id);
@@ -1324,21 +1325,11 @@ class _DrawerBottomSheetState extends State<DrawerBottomSheet> {
                         prefs.remove('token');
                       });
                     },
-                    child: ButtonBar(
-                      alignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(Icons.exit_to_app, color: Colors.white38),
-                        Text(
-                          'Logout',
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontSize: ScreenSizeHandler.smaller *
-                                kAcknowledgeTextSmallerFontRatio *
-                                1.1,
-                          ),
-                        ),
-                      ],
+                    leadingIcon: Padding(
+                      padding: EdgeInsets.only(right: ScreenSizeHandler.screenWidth*0.03),
+                      child: Icon(Icons.exit_to_app, color: Colors.white38),
                     ),
+                    titleText:'Logout',
                   ),
               )
               : Column(
