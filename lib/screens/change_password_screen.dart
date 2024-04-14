@@ -5,6 +5,8 @@ import 'package:reddit_bel_ham/components/settings_components/settings_text_fiel
 import 'package:reddit_bel_ham/components/settings_components/user_information_card.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
+import 'package:reddit_bel_ham/services/api_service.dart';
+import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
@@ -29,7 +31,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   bool isCurrentPasswordObscure = true;
   bool isNewPasswordObscure = true;
   bool isConfirmPasswordObscure = true;
-  bool doPasswordsMatch = true;
+  FocusNode currentPasswordFocusNode = FocusNode();
+  FocusNode newPasswordFocusNode = FocusNode();
+  FocusNode confirmPasswordFocusNode = FocusNode();
+  ApiService apiService = ApiService(TokenDecoder.token);
 
   @override
   void didChangeDependencies() {
@@ -39,6 +44,78 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         ModalRoute.of(context)!.settings.arguments as Map<String?, String?>?;
     email = args?['email'] ?? "nardo@email.com";
     username = args?['username'] ?? "nardo";
+  }
+
+  void showSnackBar(String snackBarText) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Center(child: Text(snackBarText)),
+          backgroundColor: Colors.white,
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(
+            left: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+            right: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+            bottom: ScreenSizeHandler.screenHeight * 0.05,
+          ),
+          duration: const Duration(seconds: 3),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+        ),
+      );
+    });
+  }
+
+  Future<void> ChangePasswordRequest(
+      String currentPass, String newPass, String confirmPass) async {
+    Map<String, dynamic> response =
+        await apiService.changePassword(currentPass, newPass, confirmPass);
+    if (response['message'] == 'Password changed successfully') {
+      Navigator.pop(context);
+      setState(() {
+        showSnackBar('Woohoo! Your password is updated.');
+      });
+    } else {
+      setState(() {
+        showSnackBar(response['message']);
+      });
+    }
+  }
+
+  bool doPasswordsMatch() {
+    if (newPasswordController.text != confirmPasswordController.text) {
+      showSnackBar("Oops, your passwords don't match. Try that again.");
+      return false;
+    }
+    return true;
+  }
+
+  bool isNewPasswordValid() {
+    if (newPasswordController.text.length < 8) {
+      showSnackBar(
+          'Sorry, your password must be at least 8 characters long. Try that again.');
+      return false;
+    }
+    return true;
+  }
+
+  bool isEmpty() {
+    if (currentPasswordController.text.isEmpty ||
+        newPasswordController.text.isEmpty ||
+        confirmPasswordController.text.isEmpty) {
+      showSnackBar('Oops, you forgot to fill everything out.');
+      return true;
+    }
+    return false;
+  }
+
+  Future<void> saveButton() async {
+    if (isEmpty() || !isNewPasswordValid() || !doPasswordsMatch()) {
+      return;
+    }
+    await ChangePasswordRequest(currentPasswordController.text,
+        newPasswordController.text, confirmPasswordController.text);
   }
 
   @override
@@ -57,6 +134,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         actions: [
           SettingsSaveButton(onPressed: () {
             //TODO: Implement the save button functionality
+            newPasswordFocusNode.unfocus();
+            confirmPasswordFocusNode.unfocus();
+            currentPasswordFocusNode.unfocus();
+            saveButton();
           })
         ],
       ),
@@ -85,6 +166,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                               vertical: ScreenSizeHandler.screenHeight * 0.018),
                           child: SettingsTextField(
                             controller: currentPasswordController,
+                            focusNode: currentPasswordFocusNode,
                             hintText: "Current password",
                             isObscured: true,
                             key: const Key(
@@ -101,6 +183,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                               vertical: ScreenSizeHandler.screenHeight * 0.018),
                           child: SettingsTextField(
                             controller: newPasswordController,
+                            focusNode: newPasswordFocusNode,
                             hintText: "New password",
                             isObscured: true,
                             key: const Key(
@@ -108,31 +191,32 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           )),
                       SettingsTextField(
                           controller: confirmPasswordController,
+                          focusNode: confirmPasswordFocusNode,
                           hintText: "Confirm new password",
                           isObscured: true,
                           key: const Key(
                               'change_password_screen_confirm_password_text_field')),
-                      Padding(
-                          padding: EdgeInsets.only(
-                              top: ScreenSizeHandler.screenHeight * 0.01),
-                          child: Visibility(
-                            visible: !doPasswordsMatch,
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                  left: ScreenSizeHandler.smaller * 0.05),
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  'Passwords do not match!',
-                                  style: TextStyle(
-                                    color: kErrorColor,
-                                    fontSize: ScreenSizeHandler.smaller *
-                                        kErrorMessageSmallerFontRatio,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ))
+                      // Padding(
+                      //     padding: EdgeInsets.only(
+                      //         top: ScreenSizeHandler.screenHeight * 0.01),
+                      //     child: Visibility(
+                      //       visible: !doPasswordsMatch,
+                      //       child: Padding(
+                      //         padding: EdgeInsets.only(
+                      //             left: ScreenSizeHandler.smaller * 0.05),
+                      //         child: Align(
+                      //           alignment: Alignment.centerLeft,
+                      //           child: Text(
+                      //             'Passwords do not match!',
+                      //             style: TextStyle(
+                      //               color: kErrorColor,
+                      //               fontSize: ScreenSizeHandler.smaller *
+                      //                   kErrorMessageSmallerFontRatio,
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ))
                     ],
                   ),
                 );

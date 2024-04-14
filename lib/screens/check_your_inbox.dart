@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'package:timer_count_down/timer_controller.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 import '../utilities/screen_size_handler.dart';
@@ -7,7 +6,7 @@ import '../constants.dart';
 import '../components/general_components/continue_button.dart';
 import '../components/general_components/text_link.dart';
 import '../components/login_components/logo_text_app_bar.dart';
-import 'package:http/http.dart' as http;
+import 'package:reddit_bel_ham/services/api_service.dart';
 
 class CheckYourInboxScreen extends StatefulWidget {
   final String username;
@@ -32,25 +31,9 @@ class _CheckYourInboxScreenState extends State<CheckYourInboxScreen>
   String errorMessage = '';
   CountdownController timerController = CountdownController();
   String snackBarText = '';
-  String _response = '';
   String accountName = '';
-
-  Future<void> ForgotPasswordRequest(String username) async {
-    try {
-      final response = await http.post(
-        Uri.parse('https://reddit-bylham.me/api/auth/forgotPassword'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization':
-              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjVmNzNlY2Q5OGZlZWIyZmRjNWVjYzkwIiwidHlwZSI6Im5vcm1hbCJ9LCJpYXQiOjE3MTA3OTExNjIsImV4cCI6NTAxNzEwNzkxMTYyfQ.Io0wcsk6LS8juXEJOOdFq7qPvjxFzrN_nrwhbYIMoBQ'
-        },
-        body: json.encode({"email": username}),
-      );
-      _response = 'POST Response: ${response.body}';
-    } catch (e) {
-      _response = 'Error: $e';
-    }
-  }
+  ApiService apiService = ApiService('');
+  Map<String, dynamic> response = {};
 
   void showSnackBar() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -77,8 +60,8 @@ class _CheckYourInboxScreenState extends State<CheckYourInboxScreen>
   }
 
   Future<void> resendEmail() async {
-    await ForgotPasswordRequest(widget.username);
-    if (_response.contains('Email sent')) {
+    response = await apiService.forgotPassword(widget.username);
+    if (response['message'] == 'Email sent') {
       showSnackBar();
       setState(() {
         isResending = false;
@@ -90,7 +73,7 @@ class _CheckYourInboxScreenState extends State<CheckYourInboxScreen>
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Error'),
-            content: Text(_response),
+            content: Text(response['message']),
             actions: <Widget>[
               TextButton(
                 child: const Text('Close'),

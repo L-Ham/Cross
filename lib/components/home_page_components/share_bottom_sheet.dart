@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/components/home_page_components/share_to_post_card.dart';
@@ -85,16 +86,15 @@ Widget buildPostModalBottomSheet(BuildContext context, Post post) {
                   FlutterClipboard.copy(post.link).then((result) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 10.0),
-                            child: Text(
-                              'Link copied to clipboard',
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50.0),
-                            )),
+                        content: Text(
+                          'Link copied to clipboard!',
+                        ),
+                            shape: 
+                            RoundedRectangleBorder(borderRadius: BorderRadius.circular(ScreenSizeHandler.screenWidth * 0.05)),
                       ),
+                    
                     );
+
 
                   });
                 },
