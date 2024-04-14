@@ -737,8 +737,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
       upvotes: 78,
       comments: 141,
       type: "text",
-      image: "",
+      image: [""],
       link: "",
+      video: "",
     ),
     Post(
       username: "r/AnnieBakesCakes",
@@ -748,8 +749,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
       upvotes: 20,
       comments: 35,
       type: "image",
-      image: "assets/images/elham_logo.png",
+      image: ["assets/images/elham_logo.png","assets/images/redditAvata2.png","assets/images/peter_nayem.png"],
       link: "",
+      video: "",
     ),
     Post(
       username: "r/JohannaDoesYoga",
@@ -760,8 +762,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
       upvotes: 90,
       comments: 35,
       type: "link",
-      image: "",
+      image: [""],
       link: "https://www.instagram.com",
+      video: "",
     ),
     Post(
       username: "r/JohannaDoesYoga",
@@ -770,8 +773,20 @@ class _HomePageScreenState extends State<HomePageScreen> {
       upvotes: 90,
       comments: 35,
       type: "poll",
-      image: "",
+      image: [""],
       link: "",
+      video: "",
+    ),
+    Post(
+      username: "r/JohannaDoesYoga",
+      contentTitle: "this is a video",
+      content: "enjoy",
+      upvotes: 90,
+      comments: 35,
+      type: "video",
+      image: [""],
+      link: "",
+      video: "assets/videos/video.mp4",
     )
   ];
    final List<TrendingPost> trending = [
@@ -818,49 +833,57 @@ class _HomePageScreenState extends State<HomePageScreen> {
     return PopScope(
       canPop: false,
       child: Scaffold(
-        bottomNavigationBar:BottomNavigationBar(
-      selectedFontSize: kAcknowledgeTextSmallerFontRatio* ScreenSizeHandler.smaller*0.9,
-      unselectedFontSize: kAcknowledgeTextSmallerFontRatio* ScreenSizeHandler.smaller*0.9,
-      type: BottomNavigationBarType.fixed,
-      
-      backgroundColor: kBackgroundColor,
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Home',
-          // backgroundColor: Colors.black,
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.group_outlined),
-          label: 'Communities',
+        bottomNavigationBar:Theme(
+          data: ThemeData(
+            splashColor: kBackgroundColor,
+            highlightColor: kBackgroundColor,
+          ),
 
-          // backgroundColor: Colors.black,
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.add_outlined),
-          label: 'Create',
-          // backgroundColor: Colors.black,
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.messenger_outline_sharp),
-          label: 'Chat',
-          // backgroundColor: Colors.black,
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.notifications_none_rounded),
-          label: 'Inbox',
+
+          child: BottomNavigationBar(
+                selectedFontSize: kAcknowledgeTextSmallerFontRatio* ScreenSizeHandler.smaller*0.9,
+                unselectedFontSize: kAcknowledgeTextSmallerFontRatio* ScreenSizeHandler.smaller*0.9,
+                type: BottomNavigationBarType.fixed,
+                
+                backgroundColor: kBackgroundColor,
+                items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+            // backgroundColor: Colors.black,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.group_outlined),
+            label: 'Communities',
           
-          // backgroundColor: Colors.black,
+            // backgroundColor: Colors.black,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add_outlined),
+            label: 'Create',
+            // backgroundColor: Colors.black,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.messenger_outline_sharp),
+            label: 'Chat',
+            // backgroundColor: Colors.black,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications_none_rounded),
+            label: 'Inbox',
+            
+            // backgroundColor: Colors.black,
+          ),
+                ],
+                currentIndex: navigationBarIndex,
+                selectedItemColor: Colors.white,
+                unselectedItemColor: Colors.grey,
+                unselectedLabelStyle: TextStyle(color: Colors.grey),
+                showUnselectedLabels: true,
+                onTap: _onItemTapped,
+                
+              ),
         ),
-      ],
-      currentIndex: navigationBarIndex,
-      selectedItemColor: Colors.white,
-      unselectedItemColor: Colors.grey,
-      unselectedLabelStyle: TextStyle(color: Colors.grey),
-      showUnselectedLabels: true,
-      onTap: _onItemTapped,
-      
-    ),
         key: _scaffoldKey,
         appBar: AppBar(
           leading:  Padding(
@@ -1324,29 +1347,37 @@ class _DrawerBottomSheetState extends State<DrawerBottomSheet> {
                         radius: ScreenSizeHandler.smaller * 0.03,
                       ),
                       title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            'u/$username',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: ScreenSizeHandler.smaller *
-                                  kAcknowledgeTextSmallerFontRatio *
-                                  1.1,
+                          Expanded(
+                            child: Text(
+                              'u/$username',
+                              softWrap: true,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: ScreenSizeHandler.smaller *
+                                    kAcknowledgeTextSmallerFontRatio *
+                                    1.1,
+                              ),
                             ),
                           ),
-                          Spacer(),
-                          const Icon(Icons.check, color: Colors.blue),
-                          Semantics(
-                            identifier: 'first_exit_app_button_identifier',
-                            child: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  isExitPressed = true;
-                                });
-                              },
-                              icon: const Icon(Icons.exit_to_app),
-                              color: Colors.white38,
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              const Icon(Icons.check, color: Colors.blue),
+                              Semantics(
+                                identifier: 'first_exit_app_button_identifier',
+                                child: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      isExitPressed = true;
+                                    });
+                                  },
+                                  icon: const Icon(Icons.exit_to_app),
+                                  color: Colors.white38,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),

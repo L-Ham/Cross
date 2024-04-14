@@ -43,10 +43,13 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
 
   Future<void> getUserData() async {
     Map<String, dynamic> data = await apiService.getUserAccountSettings();
+    print('Data:$data');
     profileSettings = await apiService.getProfileSettings();
+    print('ProfileSettings:$profileSettings');
     recievedLocation = await apiService.getUserLocation();
+    print('Location:$recievedLocation');
     setState(() {
-      gender = data['accountSettings']['gender'];
+      gender = data['accountSettings']['gender'] ?? "Select";
       connectedEmailAddress = data['accountSettings']['email'];
       //connectedEmailAddress = data['accountSettings']['email'];
       isConnectedToGoogle = data['accountSettings']['connectedToGoogle'];
@@ -107,7 +110,8 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                                 titleText: "Basic Settings"),
                           ),
                           Semantics(
-                            identifier: "account_settings_update_email_address_tile",
+                            identifier:
+                                "account_settings_update_email_address_tile",
                             child: SettingsTile(
                               key: const Key(
                                   "account_settings_update_email_address_tile"),
@@ -127,7 +131,11 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                                     'email': connectedEmailAddress,
                                     'username': username,
                                   },
-                                );
+                                ).then((value) {
+                                  setState(() {
+                                    getUserData();
+                                  });
+                                });
                               },
                             ),
                           ),
