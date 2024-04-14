@@ -13,6 +13,9 @@ class PollPost extends StatefulWidget {
 
 class _PollPostState extends State<PollPost> {
   List<String> options = ['Option 1', 'Option 2', 'Option 3'];
+  List<int> votes = [15, 20, 30];
+  bool isSubmitted = false;
+  int sum = 0;
   String selectedOption = '';
 
   @override
@@ -43,60 +46,136 @@ class _PollPostState extends State<PollPost> {
               children: options.map((option) {
                 return GestureDetector(
                   onTap: () {
-                    setState(() {
-                      selectedOption = option;
-                    });
+                    if (!isSubmitted) {
+                      setState(() {
+                        selectedOption = option;
+                      });
+                    }
                   },
-                  child: Row(
-                    children: [
-                      Radio(
-                        value: option,
-                        groupValue: selectedOption,
-                        activeColor: Colors.white,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedOption = value.toString();
-                          });
-                        },
-                      ),
-                      Text(
-                        option,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: ScreenSizeHandler.screenWidth * 0.028,
+                  child: Container(
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        if (isSubmitted) ...[
+                          Row(
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width *
+                                    (votes[options.indexOf(option)] /
+                                        sum.toDouble()),
+                                child: LinearProgressIndicator(
+                                  value: 1,
+                                  backgroundColor: Colors.transparent,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Color.fromARGB(255, 6, 52, 90)),
+                                  minHeight: 30.0,
+                                ),
+                              ),
+                              Spacer(),
+                            ],
+                          ),
+                        ],
+                        Row(
+                          children: [
+                            if (isSubmitted) ...[
+                              SizedBox(width:ScreenSizeHandler.screenWidth * 0.07,),
+                              Text(
+                                votes[options.indexOf(option)].toString(),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize:
+                                      ScreenSizeHandler.screenWidth * 0.028,
+                                ),
+                              ),
+                              SizedBox(
+                                width: ScreenSizeHandler.screenWidth * 0.03,
+                                height: ScreenSizeHandler.screenHeight * 0.05,
+                              ),
+                              Text(
+                                option,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize:
+                                      ScreenSizeHandler.screenWidth * 0.028,
+                                ),
+                              ),
+                              SizedBox(
+                                width: ScreenSizeHandler.screenWidth * 0.02,
+                              ),
+                              if(selectedOption == option)
+                              Icon(
+                                Icons.check_circle,
+                                color: Colors.white,
+                                size: ScreenSizeHandler.screenWidth * 0.038,
+                              )
+                            ],
+                            if (!isSubmitted) ...[
+                              Radio(
+                                value: option,
+                                groupValue: selectedOption,
+                                activeColor: Colors.white,
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedOption = value.toString();
+                                  });
+                                },
+                              ),
+                              Text(
+                                option,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize:
+                                      ScreenSizeHandler.screenWidth * 0.028,
+                                ),
+                              ),
+                            ],
+                          ],
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 );
               }).toList(),
             ),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  // Add your vote handling logic here
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 20.0,
-                    vertical: 10.0,
+            if (!isSubmitted)
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      if(selectedOption == ''){
+                        return;
+                      }
+                      isSubmitted = true;
+                      votes[options.indexOf(selectedOption)]++;
+                      sum = votes.reduce((value, element) => value + element);
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20.0,
+                      vertical: 10.0,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                          ScreenSizeHandler.smaller * 0.1),
+                    ),
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(ScreenSizeHandler.smaller * 0.1),
-                  ),
-                ),
-                child: Text(
-                  'Vote',
-                  style: TextStyle(
-                    fontSize: ScreenSizeHandler.screenWidth * 0.028,
-                    color: Colors.black,
-
+                  child: Text(
+                    'Vote',
+                    style: TextStyle(
+                      fontSize: ScreenSizeHandler.screenWidth * 0.028,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
               ),
-            ),
           ],
         ),
       ),
