@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:reddit_bel_ham/screens/about_you_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
@@ -55,8 +56,9 @@ class _SubredditScreenState extends State<SubredditScreen> {
       upvotes: 78,
       comments: 141,
       type: "text",
-      image: "",
+      image: [],
       link: "https://www.instagram.com/p/CJ9J9J1h7Zz/",
+      video:'',
     ),
     Post(
       username: "r/AnnieBakesCakes",
@@ -66,8 +68,9 @@ class _SubredditScreenState extends State<SubredditScreen> {
       upvotes: 20,
       comments: 35,
       type: "text",
-      image: "",
+      image: [],
       link: "",
+      video:''
     ),
     Post(
       username: "r/JohannaDoesYoga",
@@ -77,8 +80,9 @@ class _SubredditScreenState extends State<SubredditScreen> {
       upvotes: 90,
       comments: 35,
       type: "text",
-      image: "",
+      image: [],
       link: "",
+      video:''
     ),
   ];
 

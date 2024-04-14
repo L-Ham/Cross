@@ -736,8 +736,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
       upvotes: 78,
       comments: 141,
       type: "text",
-      image: "",
+      image: [""],
       link: "",
+      video: "",
     ),
     Post(
       username: "r/AnnieBakesCakes",
@@ -747,8 +748,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
       upvotes: 20,
       comments: 35,
       type: "image",
-      image: "assets/images/elham_logo.png",
+      image: ["assets/images/elham_logo.png","assets/images/redditAvata2.png","assets/images/peter_nayem.png"],
       link: "",
+      video: "",
     ),
     Post(
       username: "r/JohannaDoesYoga",
@@ -759,8 +761,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
       upvotes: 90,
       comments: 35,
       type: "link",
-      image: "",
+      image: [""],
       link: "https://www.instagram.com",
+      video: "",
     ),
     Post(
       username: "r/JohannaDoesYoga",
@@ -769,8 +772,20 @@ class _HomePageScreenState extends State<HomePageScreen> {
       upvotes: 90,
       comments: 35,
       type: "poll",
-      image: "",
+      image: [""],
       link: "",
+      video: "",
+    ),
+    Post(
+      username: "r/JohannaDoesYoga",
+      contentTitle: "this is a video",
+      content: "enjoy",
+      upvotes: 90,
+      comments: 35,
+      type: "video",
+      image: [""],
+      link: "",
+      video: "assets/videos/video.mp4",
     )
   ];
    final List<TrendingPost> trending = [
