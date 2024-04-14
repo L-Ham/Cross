@@ -299,11 +299,19 @@ class ApiService {
     return result;
   }
 
-  Future<dynamic> connectWithGoogle(String password) async {
+  Future<dynamic> connectWithGoogle(String password, String token) async {
     Map<String, dynamic> sentData;
-    sentData = {"password": password};
+    sentData = {"password": password, "token": token};
     var result = await request('/auth/googleConnect',
         headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> disconnectGoogle(String password) async {
+    var result = await request('/auth/googleDisconnect',
+        headers: headerWithToken,
+        method: 'PATCH',
+        body: {"password": password});
     return result;
   }
 }

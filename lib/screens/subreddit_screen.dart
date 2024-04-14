@@ -36,21 +36,23 @@ class _SubredditScreenState extends State<SubredditScreen> {
   Future<void> getCommunityData() async {
     Map<String, dynamic> data =
         (await apiService.getCommunityDetails(subredditName)) ?? {};
-    setState(() {
-      subredditMembersCount =
-          data['communityDetails']['membersCount'].toString();
-      subredditOnlineCount =
-          data['communityDetails']['currentlyViewingCount'].toString();
-      _isJoined = data['communityDetails']['isMember'];
-      subredditAvatarImage =
-          data['communityDetails']['avatarImage'] ?? subredditAvatarImage;
-      subredditBannerImage =
-          data['communityDetails']['bannerImage'] ?? subredditBannerImage;
-      subredditDescription = data['communityDetails']['description'];
-      subredditMembersNickname = data['communityDetails']['membersNickname'];
-      subredditOnlineNickname =
-          data['communityDetails']['currentlyViewingNickname'];
-    });
+    if (mounted) {
+      setState(() {
+        subredditMembersCount =
+            data['communityDetails']['membersCount'].toString();
+        subredditOnlineCount =
+            data['communityDetails']['currentlyViewingCount'].toString();
+        _isJoined = data['communityDetails']['isMember'];
+        subredditAvatarImage =
+            data['communityDetails']['avatarImage'] ?? subredditAvatarImage;
+        subredditBannerImage =
+            data['communityDetails']['bannerImage'] ?? subredditBannerImage;
+        subredditDescription = data['communityDetails']['description'];
+        subredditMembersNickname = data['communityDetails']['membersNickname'];
+        subredditOnlineNickname =
+            data['communityDetails']['currentlyViewingNickname'];
+      });
+    }
   }
 
   @override
@@ -92,32 +94,30 @@ class _SubredditScreenState extends State<SubredditScreen> {
       type: "text",
       image: [],
       link: "https://www.instagram.com/p/CJ9J9J1h7Zz/",
-      video:'',
+      video: '',
     ),
     Post(
-      username: "r/AnnieBakesCakes",
-      contentTitle: "Curating Culinary Moments on Instagram: Tips & Tricks!",
-      content:
-          "Hey foodies! I've been pondering tellow fthe world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. It's incredible how much competition there is out there, right? I mean, everyone's snapping pics of their avocado toast and artisanal burgers. So, what are your go-to tips for making our food shots pop? Dood lovers! I've been diving deep into the world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. Ihe art of curating culinary moments on Instagram latelto learn from your experien",
-      upvotes: 20,
-      comments: 35,
-      type: "text",
-      image: [],
-      link: "",
-      video:''
-    ),
+        username: "r/AnnieBakesCakes",
+        contentTitle: "Curating Culinary Moments on Instagram: Tips & Tricks!",
+        content:
+            "Hey foodies! I've been pondering tellow fthe world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. It's incredible how much competition there is out there, right? I mean, everyone's snapping pics of their avocado toast and artisanal burgers. So, what are your go-to tips for making our food shots pop? Dood lovers! I've been diving deep into the world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. Ihe art of curating culinary moments on Instagram latelto learn from your experien",
+        upvotes: 20,
+        comments: 35,
+        type: "text",
+        image: [],
+        link: "",
+        video: ''),
     Post(
-      username: "r/JohannaDoesYoga",
-      contentTitle:
-          "Is instagram buggering up for anyone else? I can't post anything",
-      content: "Check this page for more details",
-      upvotes: 90,
-      comments: 35,
-      type: "text",
-      image: [],
-      link: "",
-      video:''
-    ),
+        username: "r/JohannaDoesYoga",
+        contentTitle:
+            "Is instagram buggering up for anyone else? I can't post anything",
+        content: "Check this page for more details",
+        upvotes: 90,
+        comments: 35,
+        type: "text",
+        image: [],
+        link: "",
+        video: ''),
   ];
 
   @override
@@ -365,89 +365,92 @@ class _SubredditScreenState extends State<SubredditScreen> {
                       if (_isJoined)
                         SizedBox(
                           height: ScreenSizeHandler.screenHeight * 0.04,
-                          child: OutlinedButton(
-                            onPressed: () {
-                              setState(() {
-                                showModalBottomSheet(
-                                    isScrollControlled: true,
-                                    backgroundColor:
-                                        Color.fromARGB(255, 10, 10, 10),
-                                    context: context,
-                                    builder: (BuildContext bc) {
-                                      return ClipRRect(
-                                        borderRadius:
-                                            const BorderRadius.vertical(
-                                          top: Radius.circular(20.0),
-                                        ),
-                                        child: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: ScreenSizeHandler
-                                                      .screenWidth *
-                                                  0.05,
-                                              vertical: ScreenSizeHandler
-                                                      .screenHeight *
-                                                  0.03),
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                _isJoined = false;
-                                              });
-                                              Navigator.pop(context);
-                                            },
-                                            child: Row(
-                                              children: [
-                                                FaIcon(
-                                                  FontAwesomeIcons.circleMinus,
-                                                  color: Colors.white,
-                                                ),
-                                                SizedBox(
-                                                  width: ScreenSizeHandler
-                                                          .screenWidth *
-                                                      0.03,
-                                                ),
-                                                Text(
-                                                  'Leave',
-                                                  style: TextStyle(
+                          child: Semantics(
+                            identifier: "subreddit_screen_joined_button",
+                            child: OutlinedButton(
+                              onPressed: () {
+                                setState(() {
+                                  showModalBottomSheet(
+                                      isScrollControlled: true,
+                                      backgroundColor:
+                                          Color.fromARGB(255, 10, 10, 10),
+                                      context: context,
+                                      builder: (BuildContext bc) {
+                                        return ClipRRect(
+                                          borderRadius:
+                                              const BorderRadius.vertical(
+                                            top: Radius.circular(20.0),
+                                          ),
+                                          child: Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: ScreenSizeHandler
+                                                        .screenWidth *
+                                                    0.05,
+                                                vertical: ScreenSizeHandler
+                                                        .screenHeight *
+                                                    0.03),
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  _isJoined = false;
+                                                });
+                                                Navigator.pop(context);
+                                              },
+                                              child: Row(
+                                                children: [
+                                                  FaIcon(
+                                                    FontAwesomeIcons.circleMinus,
                                                     color: Colors.white,
-                                                    fontSize: ScreenSizeHandler
-                                                            .bigger *
-                                                        0.018,
-                                                    fontWeight: FontWeight.bold,
                                                   ),
-                                                ),
-                                              ],
+                                                  SizedBox(
+                                                    width: ScreenSizeHandler
+                                                            .screenWidth *
+                                                        0.03,
+                                                  ),
+                                                  Text(
+                                                    'Leave',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: ScreenSizeHandler
+                                                              .bigger *
+                                                          0.018,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      );
-                                    });
-                              });
-                            },
-                            style: ButtonStyle(
-                              side:
-                                  MaterialStateBorderSide.resolveWith((states) {
-                                return BorderSide(
-                                    color: kSubredditJoinedColor,
-                                    width:
-                                        ScreenSizeHandler.screenWidth * 0.0034);
-                              }),
-                              padding:
-                                  MaterialStateProperty.all(EdgeInsets.zero),
-                              minimumSize: MaterialStateProperty.all(Size.zero),
-                              fixedSize: MaterialStateProperty.all(Size(
-                                ScreenSizeHandler.screenWidth * 0.18,
-                                ScreenSizeHandler.screenHeight * 0.04,
-                              )),
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.all(
-                                  ScreenSizeHandler.bigger * 0.0000001),
-                              child: Text(
-                                'Joined',
-                                style: TextStyle(
-                                    color: kSubredditJoinedColor,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: ScreenSizeHandler.bigger * 0.017),
+                                        );
+                                      });
+                                });
+                              },
+                              style: ButtonStyle(
+                                side:
+                                    MaterialStateBorderSide.resolveWith((states) {
+                                  return BorderSide(
+                                      color: kSubredditJoinedColor,
+                                      width:
+                                          ScreenSizeHandler.screenWidth * 0.0034);
+                                }),
+                                padding:
+                                    MaterialStateProperty.all(EdgeInsets.zero),
+                                minimumSize: MaterialStateProperty.all(Size.zero),
+                                fixedSize: MaterialStateProperty.all(Size(
+                                  ScreenSizeHandler.screenWidth * 0.18,
+                                  ScreenSizeHandler.screenHeight * 0.04,
+                                )),
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.all(
+                                    ScreenSizeHandler.bigger * 0.0000001),
+                                child: Text(
+                                  'Joined',
+                                  style: TextStyle(
+                                      color: kSubredditJoinedColor,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: ScreenSizeHandler.bigger * 0.017),
+                                ),
                               ),
                             ),
                           ),

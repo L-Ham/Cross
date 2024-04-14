@@ -143,42 +143,42 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             },
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: 1,
-              itemBuilder: (BuildContext context, int index) {
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Forgot Password?',
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    'Forgot Password?',
+                    style: TextStyle(
+                      fontSize: ScreenSizeHandler.smaller * 0.05,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: ScreenSizeHandler.screenHeight * 0.02,
+                      horizontal: ScreenSizeHandler.screenWidth * 0.04,
+                    ),
+                    child: Text(
+                      "Enter your email address or username and we'll send you a link to reset your password",
                       style: TextStyle(
-                        fontSize: ScreenSizeHandler.smaller * 0.05,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        fontSize: ScreenSizeHandler.smaller * 0.04,
+                        color: kHintTextColor,
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: ScreenSizeHandler.screenHeight * 0.02,
-                        horizontal: ScreenSizeHandler.screenWidth * 0.04,
-                      ),
-                      child: Text(
-                        "Enter your email address or username and we'll send you a link to reset your password",
-                        style: TextStyle(
-                          fontSize: ScreenSizeHandler.smaller * 0.04,
-                          color: kHintTextColor,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical:
+                          ScreenSizeHandler.screenHeight * kButtonHeightRatio,
+                      horizontal:
+                          ScreenSizeHandler.screenWidth * kButtonWidthRatio,
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical:
-                            ScreenSizeHandler.screenHeight * kButtonHeightRatio,
-                        horizontal:
-                            ScreenSizeHandler.screenWidth * kButtonWidthRatio,
-                      ),
+                    child: Semantics(
+                      identifier: "email_or_username_text_field",
                       child: CredentialsTextField(
                         key: const Key(
                             'forgot_password_screen_email_or_username_text_field'),
@@ -209,48 +209,43 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         },
                       ),
                     ),
-                    Visibility(
-                      visible: !isNameValid,
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                            left: ScreenSizeHandler.screenWidth *
-                                kErrorMessageLeftPaddingRatio),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            errorMessage,
-                            style: TextStyle(
-                              color: kErrorColor,
-                              fontSize: ScreenSizeHandler.smaller *
-                                  kErrorMessageSmallerFontRatio,
-                            ),
+                  ),
+                  Visibility(
+                    visible: !isNameValid,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          left: ScreenSizeHandler.screenWidth *
+                              kErrorMessageLeftPaddingRatio),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          errorMessage,
+                          style: TextStyle(
+                            color: kErrorColor,
+                            fontSize: ScreenSizeHandler.smaller *
+                                kErrorMessageSmallerFontRatio,
                           ),
                         ),
                       ),
                     ),
-                  ],
-                );
-              },
+                  ),
+                ],
+              ),
             ),
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              ContinueButton(
-                key: const Key('forgot_password_screen_reset_Password_button'),
-                text: "Reset Password",
-                isButtonEnabled: isButtonEnabled,
-                color: kOrangeActivatedColor,
-                onPress: () async {
-                  if (isButtonEnabled) {
-                    UesrnameOrEmail = nameController.text;
-                    await ForgotPasswordRequest(UesrnameOrEmail);
-                  } else {
-                    null;
-                  }
-                },
-              ),
-            ],
+          ContinueButton(
+            key: const Key('forgot_password_screen_reset_Password_button'),
+            text: "Reset Password",
+            isButtonEnabled: isButtonEnabled,
+            color: kOrangeActivatedColor,
+            onPress: () async {
+              if (isButtonEnabled) {
+                UesrnameOrEmail = nameController.text;
+                await ForgotPasswordRequest(UesrnameOrEmail);
+              } else {
+                null;
+              }
+            },
           ),
         ],
       ),

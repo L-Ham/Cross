@@ -7,6 +7,7 @@ import 'package:reddit_bel_ham/screens/change_password_screen.dart';
 import 'package:reddit_bel_ham/screens/connected_accounts_disconnect_screen.dart';
 import 'package:reddit_bel_ham/screens/notifications_settings_screen.dart';
 import 'package:reddit_bel_ham/screens/update_email_address_screen.dart';
+import 'package:reddit_bel_ham/services/google_sign_in.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import '../components/general_components/reddit_loading_indicator.dart';
@@ -48,21 +49,19 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
     print('ProfileSettings:$profileSettings');
     recievedLocation = await apiService.getUserLocation();
     print('Location:$recievedLocation');
-    if (mounted)
-    {
-
-    setState(() {
-      gender = data['accountSettings']['gender'] ?? "Select";
-      connectedEmailAddress = data['accountSettings']['email'];
-      //connectedEmailAddress = data['accountSettings']['email'];
-      isConnectedToGoogle = data['accountSettings']['connectedToGoogle'];
-      allowPeopleToFollowYou =
-          profileSettings['profileSettings']['allowFollow'];
-      isLoading = false;
-      username = TokenDecoder.username;
-      location = recievedLocation['location'];
-      gender = gender == "" ? "Select" : gender;
-    });
+    if (mounted) {
+      setState(() {
+        gender = data['accountSettings']['gender'] ?? "Select";
+        connectedEmailAddress = data['accountSettings']['email'];
+        //connectedEmailAddress = data['accountSettings']['email'];
+        isConnectedToGoogle = data['accountSettings']['connectedToGoogle'];
+        allowPeopleToFollowYou =
+            profileSettings['profileSettings']['allowFollow'];
+        isLoading = false;
+        username = TokenDecoder.username;
+        location = recievedLocation['location'];
+        gender = gender == "" ? "Select" : gender;
+      });
     }
   }
 
@@ -242,15 +241,21 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                                         "account_settings_disconnect_google_text_link"),
                                     text: "Disconnect",
                                     isUnderlined: true,
-                                    onTap: () {
-                                      Navigator.pushNamed(
+                                    onTap: () async {
+                                      var resuilt = await Navigator.pushNamed(
                                         context,
                                         DisconnectScreen.id,
                                         arguments: {
                                           'email': connectedEmailAddress,
                                           'username': username,
+                                          'isConnectedToGoogle': true,
                                         },
                                       );
+                                      if (resuilt == false) {
+                                        setState(() {
+                                          isConnectedToGoogle = false;
+                                        });
+                                      }
                                     },
                                     fontSizeRatio: 0.018,
                                   )
@@ -259,16 +264,26 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                                         "account_settings_connect_google_text_link"),
                                     text: "Connect",
                                     isUnderlined: true,
-                                    onTap: () {
+                                    onTap: () async {
                                       //TODO: Implement the connect functionality
-                                      Navigator.pushNamed(
+                                      AuthService authService = AuthService();
+                                      var token =
+                                          await authService.signInWithGoogle();
+                                      var result = await Navigator.pushNamed(
                                         context,
                                         DisconnectScreen.id,
                                         arguments: {
                                           'email': connectedEmailAddress,
                                           'username': username,
+                                          'isConnectedToGoogle': false,
+                                          'googleToken': token,
                                         },
                                       );
+                                      if (result == true) {
+                                        setState(() {
+                                          isConnectedToGoogle = true;
+                                        });
+                                      }
                                     },
                                     fontSizeRatio: 0.018,
                                   ),

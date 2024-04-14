@@ -148,22 +148,28 @@ class _UpdateEmailAddressScreenState extends State<UpdateEmailAddressScreen> {
                       Padding(
                         padding: EdgeInsets.only(
                             top: ScreenSizeHandler.screenHeight * 0.02),
-                        child: SettingsTextField(
-                          controller: emailController,
-                          hintText: 'New email address',
-                          key: const Key(
-                              'update_email_address_email_text_field'),
+                        child: Semantics(
+                          identifier: "update_email_address_email_text_field",
+                          child: SettingsTextField(
+                            controller: emailController,
+                            hintText: 'New email address',
+                            key: const Key(
+                                'update_email_address_email_text_field'),
+                          ),
                         ),
                       ),
                       Padding(
                         padding: EdgeInsets.only(
                             top: ScreenSizeHandler.screenHeight * 0.02),
-                        child: SettingsTextField(
-                          controller: passwordController,
-                          hintText: 'Reddit password',
-                          isObscured: isPasswordObscure,
-                          key: const Key(
-                              'update_email_address_password_text_field'),
+                        child: Semantics(
+                          identifier: "update_email_address_password_text_field",
+                          child: SettingsTextField(
+                            controller: passwordController,
+                            hintText: 'Reddit password',
+                            isObscured: isPasswordObscure,
+                            key: const Key(
+                                'update_email_address_password_text_field'),
+                          ),
                         ),
                       ),
                       Padding(
