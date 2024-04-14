@@ -96,6 +96,13 @@ class CreateUsernameScreenState extends State<CreateUsernameScreen> {
       print(jsonDecode(response.body)['message']);
       if (response.statusCode == 200) {
         message = 'Great Name! It\'s not taken, so it\'s all yours.';
+        isTaken=false;
+      }
+      else
+      {
+        setState(() {
+          isTaken=true;
+        });
       }
     } catch (e) {
       print('Error: $e');
