@@ -263,13 +263,16 @@ class CreateUsernameScreenState extends State<CreateUsernameScreen> {
                                       isButtonEnabled = true;
                                     });
                                   },
-                                  child: Text(firstName,
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: ScreenSizeHandler.smaller *
-                                              kAcknowledgeTextSmallerFontRatio *
-                                              1.2)),
+                                  child: Semantics(
+                                    identifier: "create_username_screen_firstname",
+                                    child: Text(firstName,
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: ScreenSizeHandler.smaller *
+                                                kAcknowledgeTextSmallerFontRatio *
+                                                1.2)),
+                                  ),
                                 ),
                               ),
                               Padding(
@@ -286,14 +289,17 @@ class CreateUsernameScreenState extends State<CreateUsernameScreen> {
                                       isButtonEnabled = true;
                                     });
                                   },
-                                  child: Text(
-                                    secondName,
-                                    textAlign: TextAlign.left,
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: ScreenSizeHandler.smaller *
-                                            kAcknowledgeTextSmallerFontRatio *
-                                            1.2),
+                                  child: Semantics(
+                                    identifier: "create_username_screen_secondname",
+                                    child: Text(
+                                      secondName,
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: ScreenSizeHandler.smaller *
+                                              kAcknowledgeTextSmallerFontRatio *
+                                              1.2),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -311,13 +317,16 @@ class CreateUsernameScreenState extends State<CreateUsernameScreen> {
                                       isButtonEnabled = true;
                                     });
                                   },
-                                  child: Text(thirdName,
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: ScreenSizeHandler.smaller *
-                                              kAcknowledgeTextSmallerFontRatio *
-                                              1.2)),
+                                  child: Semantics(
+                                    identifier: "create_username_screen_thirdname",
+                                    child: Text(thirdName,
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: ScreenSizeHandler.smaller *
+                                                kAcknowledgeTextSmallerFontRatio *
+                                                1.2)),
+                                  ),
                                 ),
                               ),
                               Padding(
