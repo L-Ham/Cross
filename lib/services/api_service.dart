@@ -51,13 +51,7 @@ class ApiService {
         default:
           throw Exception('HTTP method $method not implemented');
       }
-
-      if (response.statusCode == 200) {
-        return jsonDecode(response.body);
-      } else {
-        throw Exception(
-            'Failed to load data with error body ${response.body} and status code ${response.statusCode}');
-      }
+      return jsonDecode(response.body);
     } catch (e) {
       debugPrint("Exception occured: $e");
     }
@@ -256,6 +250,27 @@ class ApiService {
     sentData = {"subRedditName": communityName};
     var result = await request('/subreddit/communityDetails',
         headers: headerWithToken, method: 'GET', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> changePassword(
+      String currentPass, String newPass, String confirmPass) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "oldPassword": currentPass,
+      "newPassword": newPass,
+      "confirmPassword": confirmPass
+    };
+    var result = await request('/auth/changePassword',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> forgotPassword(String username) async {
+    var result = await request('/auth/forgotPassword',
+        headers: {'Content-Type': 'application/json'},
+        method: 'POST',
+        body: {"email": username});
     return result;
   }
 }

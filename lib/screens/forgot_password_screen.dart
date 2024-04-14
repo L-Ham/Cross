@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../utilities/screen_size_handler.dart';
 import '../constants.dart';
@@ -6,8 +5,8 @@ import '../components/general_components/credentials_text_field.dart';
 import '../components/general_components/continue_button.dart';
 import '../components/login_components/logo_text_app_bar.dart';
 import '../utilities/email_regex.dart';
-import 'package:http/http.dart' as http;
 import 'check_your_inbox.dart';
+import 'package:reddit_bel_ham/services/api_service.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   final String username;
@@ -27,23 +26,35 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   bool isNameValid = true;
   bool isMailValid = true;
   String errorMessage = '';
-  String _response = '';
   String UesrnameOrEmail = '';
+  ApiService apiService = ApiService('');
 
   Future<void> ForgotPasswordRequest(String username) async {
-    try {
-      final response = await http.post(
-        Uri.parse('https://reddit-bylham.me/api/auth/forgotPassword'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization':
-              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjVmNzNlY2Q5OGZlZWIyZmRjNWVjYzkwIiwidHlwZSI6Im5vcm1hbCJ9LCJpYXQiOjE3MTA3OTExNjIsImV4cCI6NTAxNzEwNzkxMTYyfQ.Io0wcsk6LS8juXEJOOdFq7qPvjxFzrN_nrwhbYIMoBQ'
+    Map<String, dynamic> response = await apiService.forgotPassword(username);
+    if (response['message'] == 'Email sent') {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  CheckYourInboxScreen(username: UesrnameOrEmail)));
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Error'),
+            content: Text(response['message']),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Close'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
         },
-        body: json.encode({"email": username}),
       );
-      _response = 'POST Response: ${response.body}';
-    } catch (e) {
-      _response = 'Error: $e';
     }
   }
 
@@ -234,32 +245,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   if (isButtonEnabled) {
                     UesrnameOrEmail = nameController.text;
                     await ForgotPasswordRequest(UesrnameOrEmail);
-
-                    if (_response.contains('Email sent')) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CheckYourInboxScreen(
-                                  username: UesrnameOrEmail)));
-                    } else {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text('Error'),
-                            content: Text(_response),
-                            actions: <Widget>[
-                              TextButton(
-                                child: const Text('Close'),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    }
                   } else {
                     null;
                   }
