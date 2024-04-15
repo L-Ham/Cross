@@ -97,6 +97,7 @@ class _AddTagsBottomSheetState extends State<AddTagsBottomSheet> {
               titleFontWeight: FontWeight.w400,
               subtitileFontWeight: FontWeight.w400,
               trailingWidget: CustomSwitch(
+                key: const Key('spoiler_switch'),
                 isSwitched: isSpoiler,
                 onChanged: (bool newValue) {
                   setState(() {
@@ -115,6 +116,7 @@ class _AddTagsBottomSheetState extends State<AddTagsBottomSheet> {
             titleFontWeight: FontWeight.w400,
             subtitileFontWeight: FontWeight.w400,
             trailingWidget: CustomSwitch(
+              key: const Key('brand_affiliate_switch'),
                 isSwitched: isBrandAffiliate,
                 onChanged: (bool newValue) {
                   setState(() {
