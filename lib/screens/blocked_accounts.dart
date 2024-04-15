@@ -3,6 +3,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:reddit_bel_ham/components/general_components/reddit_loading_indicator.dart';
 import '../constants.dart';
 import '../components/empty_dog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -28,6 +30,7 @@ class _BlockedAccountState extends State<BlockedAccount> {
   String authToken = TokenDecoder.token;
   List<BlockedUser> blockedUsers = [];
   List<SearchedUser> searchedUsers = [];
+  bool isLoading = false;
 
   final TextEditingController _controller = TextEditingController();
 
@@ -62,13 +65,22 @@ class _BlockedAccountState extends State<BlockedAccount> {
   }
 
   Future<void> getAllBlockedUsers(String authToken) async {
+    setState(() {
+      isLoading = true;
+    });
     ApiService apiService = ApiService(authToken);
     final response = await apiService.getAllBlockedUsers();
     print(response);
     if (response != null) parseBlockedUsers(response);
+    setState(() {
+      isLoading = false;
+    });
   }
 
   Future<void> getSearchedForUsers(String authToken) async {
+    setState(() {
+      isLoading = true;
+    });
     print(authToken);
     ApiService apiService = ApiService(authToken);
     final response =
@@ -76,6 +88,9 @@ class _BlockedAccountState extends State<BlockedAccount> {
     print(_controller.text);
     print(response);
     if (response != null) parseSearchedUsers(response);
+    setState(() {
+      isLoading = false;
+    });
   }
 
   void _refreshScreen(bool isBlocked) {
@@ -129,116 +144,122 @@ class _BlockedAccountState extends State<BlockedAccount> {
               fontSize: ScreenSizeHandler.bigger * kAppBarTitleFontSizeRatio),
         ),
       ),
-      body: Column(
-        children: [
-          SizedBox(
-            height: ScreenSizeHandler.screenHeight * 0.01,
-          ),
-          Row(
-            children: [
-              Expanded(
-                flex: _isKeyboardVisible ? 6 : 7,
-                child: Padding(
-                  padding: EdgeInsets.all(ScreenSizeHandler.bigger * 0.009),
-                  child: Container(
-                    height: ScreenSizeHandler.screenHeight * 0.054,
-                    child: TextFormField(
-                      key: const Key('blocked_accounts_screen_text_field'),
-                      controller: _controller,
-                      focusNode: _focusNode,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.only(
-                          top: ScreenSizeHandler.bigger * 0.01,
-                        ),
-                        filled: true,
-                        fillColor: Color.fromARGB(74, 40, 40, 40),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                        ),
-                        prefixIcon: Icon(
-                          Icons.search,
-                          size: ScreenSizeHandler.bigger *
-                              kSettingsLeadingIconRatio,
-                          color: kHintTextColor,
-                        ),
-                        hintText: 'Block new account',
-                        hintStyle: TextStyle(
+      body: ModalProgressHUD(
+        inAsyncCall: isLoading,
+        blur: 0,
+        opacity: 0,
+        progressIndicator: const RedditLoadingIndicator(),
+        child: Column(
+          children: [
+            SizedBox(
+              height: ScreenSizeHandler.screenHeight * 0.01,
+            ),
+            Row(
+              children: [
+                Expanded(
+                  flex: _isKeyboardVisible ? 6 : 7,
+                  child: Padding(
+                    padding: EdgeInsets.all(ScreenSizeHandler.bigger * 0.009),
+                    child: Container(
+                      height: ScreenSizeHandler.screenHeight * 0.054,
+                      child: TextFormField(
+                        key: const Key('blocked_accounts_screen_text_field'),
+                        controller: _controller,
+                        focusNode: _focusNode,
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.only(
+                            top: ScreenSizeHandler.bigger * 0.01,
+                          ),
+                          filled: true,
+                          fillColor: Color.fromARGB(74, 40, 40, 40),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                          ),
+                          prefixIcon: Icon(
+                            Icons.search,
+                            size: ScreenSizeHandler.bigger *
+                                kSettingsLeadingIconRatio,
                             color: kHintTextColor,
-                            fontSize: ScreenSizeHandler.bigger * 0.02,
-                            fontWeight: FontWeight.normal),
-                        suffixIcon: _isTextFieldEmpty
-                            ? null
-                            : IconButton(
-                                key: const Key(
-                                    'blocked_accounts_screen_text_field_clear_button'),
-                                icon: FaIcon(
-                                  FontAwesomeIcons.circleXmark,
-                                  color: kHintTextColor,
+                          ),
+                          hintText: 'Block new account',
+                          hintStyle: TextStyle(
+                              color: kHintTextColor,
+                              fontSize: ScreenSizeHandler.bigger * 0.02,
+                              fontWeight: FontWeight.normal),
+                          suffixIcon: _isTextFieldEmpty
+                              ? null
+                              : IconButton(
+                                  key: const Key(
+                                      'blocked_accounts_screen_text_field_clear_button'),
+                                  icon: FaIcon(
+                                    FontAwesomeIcons.circleXmark,
+                                    color: kHintTextColor,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _controller.clear();
+                                      _refreshScreen(false);
+                                    });
+                                  },
                                 ),
-                                onPressed: () {
-                                  setState(() {
-                                    _controller.clear();
-                                    _refreshScreen(false);
-                                  });
-                                },
-                              ),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              if (_isKeyboardVisible)
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      _focusNode.unfocus();
-                    },
-                    child: Text(
-                      "Cancel",
-                      style: TextStyle(
-                        color: kHintTextColor,
-                        fontSize: ScreenSizeHandler.bigger * 0.02,
+                if (_isKeyboardVisible)
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        _focusNode.unfocus();
+                      },
+                      child: Text(
+                        "Cancel",
+                        style: TextStyle(
+                          color: kHintTextColor,
+                          fontSize: ScreenSizeHandler.bigger * 0.02,
+                        ),
                       ),
                     ),
-                  ),
-                )
-            ],
-          ),
-          if (_isBlockedAccountsEmpty && _isTextFieldEmpty)
-            SizedBox(
-              height: ScreenSizeHandler.screenHeight * 0.12,
+                  )
+              ],
             ),
-          if (_isBlockedAccountsEmpty && _isTextFieldEmpty)
-            EmptyDog()
-          else
-            SizedBox(
-              height: ScreenSizeHandler.screenHeight * 0.035,
-            ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  if (_isTextFieldEmpty)
-                    for (BlockedUser blockedUser in blockedUsers)
-                      BlockedAccountTile(
-                        imagePath: 'assets/images/reddit_logo.png',
-                        username: blockedUser.userName,
-                        isAccountBlocked: true,
-                        onActionComplete: _refreshScreen,
-                      )
-                  else
-                    for (SearchedUser searchedUser in searchedUsers)
-                      BlockedAccountTile(
-                        imagePath: 'assets/images/reddit_logo.png',
-                        username: searchedUser.userName,
-                        isAccountBlocked: searchedUser.isBlocked,
-                        onActionComplete: _refreshSearchingScreen,
-                      )
-                ],
+            if (_isBlockedAccountsEmpty && _isTextFieldEmpty)
+              SizedBox(
+                height: ScreenSizeHandler.screenHeight * 0.12,
               ),
-            ),
-          )
-        ],
+            if (_isBlockedAccountsEmpty && _isTextFieldEmpty)
+              EmptyDog()
+            else
+              SizedBox(
+                height: ScreenSizeHandler.screenHeight * 0.035,
+              ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    if (_isTextFieldEmpty)
+                      for (BlockedUser blockedUser in blockedUsers)
+                        BlockedAccountTile(
+                          imagePath: 'assets/images/reddit_logo.png',
+                          username: blockedUser.userName,
+                          isAccountBlocked: true,
+                          onActionComplete: _refreshScreen,
+                        )
+                    else
+                      for (SearchedUser searchedUser in searchedUsers)
+                        BlockedAccountTile(
+                          imagePath: 'assets/images/reddit_logo.png',
+                          username: searchedUser.userName,
+                          isAccountBlocked: searchedUser.isBlocked,
+                          onActionComplete: _refreshSearchingScreen,
+                        )
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
