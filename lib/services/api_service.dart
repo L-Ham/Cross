@@ -31,11 +31,9 @@ class ApiService {
       switch (method) {
         case 'GET':
           if (body != null) {
-            var request = http.Request('GET', url);
-            request.headers.addAll(headers);
-            request.body = jsonEncode(body);
-            var streamedResponse = await request.send();
-            response = await http.Response.fromStream(streamedResponse);
+            url = Uri.parse(
+                "$baseURL$endpoint?${Uri(queryParameters: body).query}");
+            response = await http.get(url, headers: headers);
           } else {
             response = await http.get(url, headers: headers);
           }
@@ -265,6 +263,7 @@ class ApiService {
     sentData = {"subredditId": communityId};
     var result = await request('/subreddit/rule',
         headers: headerWithToken, method: 'GET', body: sentData);
+    return result;
   }
 
   Future<dynamic> changePassword(

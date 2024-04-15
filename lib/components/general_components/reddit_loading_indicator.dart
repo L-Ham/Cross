@@ -9,16 +9,13 @@ class RedditLoadingIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.topCenter,
-      child: SizedBox(
-        width: ScreenSizeHandler.screenHeight * 0.13,
-        height: ScreenSizeHandler.screenHeight * 0.13,
-        child: const LoadingIndicator(
-          indicatorType: Indicator.ballClipRotateMultiple,
-          colors: [Colors.blue],
-          strokeWidth: 2,
-        ),
+    return SizedBox(
+      width: ScreenSizeHandler.screenHeight * 0.13,
+      height: ScreenSizeHandler.screenHeight * 0.13,
+      child: const LoadingIndicator(
+        indicatorType: Indicator.ballClipRotateMultiple,
+        colors: [Colors.blue],
+        strokeWidth: 2,
       ),
     );
   }

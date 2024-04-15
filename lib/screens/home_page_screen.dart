@@ -21,6 +21,7 @@ import 'package:reddit_bel_ham/screens/login_screen.dart';
 
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
+import 'package:reddit_bel_ham/utilities/subreddit_store.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -1323,6 +1324,7 @@ class _DrawerBottomSheetState extends State<DrawerBottomSheet> {
                       Navigator.pushNamed(context, LoginScreen.id);
                       SharedPreferences.getInstance().then((prefs) {
                         prefs.remove('token');
+                        SubredditStore().clearSubreddits();
                       });
                     },
                     leadingIcon: Padding(

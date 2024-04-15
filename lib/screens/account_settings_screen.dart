@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:reddit_bel_ham/components/general_components/custom_switch.dart';
@@ -97,7 +99,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
       ),
       backgroundColor: kSettingsBackGroundColor,
       body: isLoading
-          ? const RedditLoadingIndicator()
+          ? const Align(alignment: Alignment.topCenter,child: RedditLoadingIndicator(),)
           : SafeArea(
               child: Column(
                 children: [
@@ -163,69 +165,77 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                               );
                             },
                           ),
-                          SettingsTile(
-                            key: const Key(
-                                "account_settings_change_gender_tile"),
-                            leadingIcon: const SettingsTileLeadingIcon(
-                              leadingIcon: Icons.person,
+                          Semantics(
+                            identifier: "account_settings_change_gender_tile",
+                            child: SettingsTile(
+                              key: const Key(
+                                  "account_settings_change_gender_tile"),
+                              leadingIcon: const SettingsTileLeadingIcon(
+                                leadingIcon: Icons.person,
+                              ),
+                              titleText: "Gender",
+                              subtitleText: gender,
+                              trailingWidget: const SettingsTileTrailingIcon(
+                                trailingIcon: Icons.arrow_drop_down_sharp,
+                              ),
+                              onTap: () async {
+                                String? newGender = await showModalBottomSheet(
+                                    backgroundColor:
+                                        kBackgroundColor.withOpacity(0),
+                                    context: context,
+                                    builder: (BuildContext bc) {
+                                      return ClipRRect(
+                                        borderRadius:
+                                            const BorderRadius.vertical(
+                                          top: Radius.circular(20.0),
+                                        ),
+                                        child: ChangeGenderBottomSheet(
+                                          initialValue: gender,
+                                        ),
+                                      );
+                                    });
+                                setState(
+                                  () {
+                                    if (newGender != null) {
+                                      gender = newGender;
+                                    }
+                                  },
+                                );
+                              },
                             ),
-                            titleText: "Gender",
-                            subtitleText: gender,
-                            trailingWidget: const SettingsTileTrailingIcon(
-                              trailingIcon: Icons.arrow_drop_down_sharp,
-                            ),
-                            onTap: () async {
-                              String? newGender = await showModalBottomSheet(
-                                  backgroundColor:
-                                      kBackgroundColor.withOpacity(0),
-                                  context: context,
-                                  builder: (BuildContext bc) {
-                                    return ClipRRect(
-                                      borderRadius: const BorderRadius.vertical(
-                                        top: Radius.circular(20.0),
-                                      ),
-                                      child: ChangeGenderBottomSheet(
-                                        initialValue: gender,
-                                      ),
-                                    );
-                                  });
-                              setState(
-                                () {
-                                  if (newGender != null) {
-                                    gender = newGender;
-                                  }
-                                },
-                              );
-                            },
                           ),
-                          SettingsTile(
-                            key: const Key(
-                                "account_settings_location_customization_tile"),
-                            leadingIcon: const SettingsTileLeadingIcon(
-                              leadingIcon: Icons.location_on_outlined,
-                            ),
-                            titleText: "Location Customization",
-                            subtitleText:
-                                "\n$location\n\nSpecify a location to customize your recommendations and feed. Reddit does not track your precise geolocation data.",
-                            trailingWidget: const SettingsTileTrailingIcon(
-                              trailingIcon: Icons.arrow_forward,
-                            ),
-                            onTap: () async {
-                              String? newLocation = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => LocationCustomization(
-                                    initialValue: location,
+                          Semantics(
+                            identifier:
+                                "account_settings_location_customization_tile",
+                            child: SettingsTile(
+                              key: const Key(
+                                  "account_settings_location_customization_tile"),
+                              leadingIcon: const SettingsTileLeadingIcon(
+                                leadingIcon: Icons.location_on_outlined,
+                              ),
+                              titleText: "Location Customization",
+                              subtitleText:
+                                  "\n$location\n\nSpecify a location to customize your recommendations and feed. Reddit does not track your precise geolocation data.",
+                              trailingWidget: const SettingsTileTrailingIcon(
+                                trailingIcon: Icons.arrow_forward,
+                              ),
+                              onTap: () async {
+                                String? newLocation = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => LocationCustomization(
+                                      initialValue: location,
+                                    ),
                                   ),
-                                ),
-                              );
-                              if (newLocation != null) {
-                                setState(() {
-                                  location = newLocation;
-                                  editLocation(location);
-                                });
-                              }
-                            },
+                                );
+                                if (newLocation != null) {
+                                  setState(() {
+                                    location = newLocation;
+                                    editLocation(location);
+                                  });
+                                }
+                              },
+                            ),
                           ),
                           const SettingsSegmentTitle(
                             titleText: "Connected Accounts",
@@ -236,56 +246,64 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                             ),
                             titleText: "Google",
                             trailingWidget: isConnectedToGoogle
-                                ? InteractiveText(
-                                    key: const Key(
-                                        "account_settings_disconnect_google_text_link"),
-                                    text: "Disconnect",
-                                    isUnderlined: true,
-                                    onTap: () async {
-                                      var resuilt = await Navigator.pushNamed(
-                                        context,
-                                        DisconnectScreen.id,
-                                        arguments: {
-                                          'email': connectedEmailAddress,
-                                          'username': username,
-                                          'isConnectedToGoogle': true,
-                                        },
-                                      );
-                                      if (resuilt == false) {
-                                        setState(() {
-                                          isConnectedToGoogle = false;
-                                        });
-                                      }
-                                    },
-                                    fontSizeRatio: 0.018,
+                                ? Semantics(
+                                    identifier:
+                                        "account_settings_disconnect_google_text_link",
+                                    child: InteractiveText(
+                                      key: const Key(
+                                          "account_settings_disconnect_google_text_link"),
+                                      text: "Disconnect",
+                                      isUnderlined: true,
+                                      onTap: () async {
+                                        var resuilt = await Navigator.pushNamed(
+                                          context,
+                                          DisconnectScreen.id,
+                                          arguments: {
+                                            'email': connectedEmailAddress,
+                                            'username': username,
+                                            'isConnectedToGoogle': true,
+                                          },
+                                        );
+                                        if (resuilt == false) {
+                                          setState(() {
+                                            isConnectedToGoogle = false;
+                                          });
+                                        }
+                                      },
+                                      fontSizeRatio: 0.018,
+                                    ),
                                   )
-                                : InteractiveText(
-                                    key: const Key(
-                                        "account_settings_connect_google_text_link"),
-                                    text: "Connect",
-                                    isUnderlined: true,
-                                    onTap: () async {
-                                      //TODO: Implement the connect functionality
-                                      AuthService authService = AuthService();
-                                      var token =
-                                          await authService.signInWithGoogle();
-                                      var result = await Navigator.pushNamed(
-                                        context,
-                                        DisconnectScreen.id,
-                                        arguments: {
-                                          'email': connectedEmailAddress,
-                                          'username': username,
-                                          'isConnectedToGoogle': false,
-                                          'googleToken': token,
-                                        },
-                                      );
-                                      if (result == true) {
-                                        setState(() {
-                                          isConnectedToGoogle = true;
-                                        });
-                                      }
-                                    },
-                                    fontSizeRatio: 0.018,
+                                : Semantics(
+                                    identifier:
+                                        "account_settings_connect_google_text_link",
+                                    child: InteractiveText(
+                                      key: const Key(
+                                          "account_settings_connect_google_text_link"),
+                                      text: "Connect",
+                                      isUnderlined: true,
+                                      onTap: () async {
+                                        //TODO: Implement the connect functionality
+                                        AuthService authService = AuthService();
+                                        var token = await authService
+                                            .signInWithGoogle();
+                                        var result = await Navigator.pushNamed(
+                                          context,
+                                          DisconnectScreen.id,
+                                          arguments: {
+                                            'email': connectedEmailAddress,
+                                            'username': username,
+                                            'isConnectedToGoogle': false,
+                                            'googleToken': token,
+                                          },
+                                        );
+                                        if (result == true) {
+                                          setState(() {
+                                            isConnectedToGoogle = true;
+                                          });
+                                        }
+                                      },
+                                      fontSizeRatio: 0.018,
+                                    ),
                                   ),
                             onTap: () {},
                           ),
