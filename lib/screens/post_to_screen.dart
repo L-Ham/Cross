@@ -71,25 +71,25 @@ class _PostToScreenState extends State<PostToScreen> {
     searchedSubredditNames.clear();
     searchNumOfOnlineUsers.clear();
     for (int i = 0; i < resultsList.length; i++) {
-      if (mounted) {
-        setState(() {
-          if (resultsList[i]["appearance"]["avatarImage"] != null) {
-            searchSubredditImages
-                .add(resultsList[i]["appearance"]["avatarImage"]["url"]);
-          } else {
-            searchSubredditImages.add('assets/images/planet3.png');
-          }
-          searchSubredditId.add(resultsList[i]["_id"]);
-          searchedSubredditNames.add(resultsList[i]["name"]);
-          searchNumOfOnlineUsers.add(resultsList[i]["membersCount"]);
-        });
-      }
-      if (mounted) {
-        setState(() {
-          isLoading = false;
-        });
-      }
+      mounted
+          ? setState(() {
+              if (resultsList[i]["appearance"]["avatarImage"] != null) {
+                searchSubredditImages
+                    .add(resultsList[i]["appearance"]["avatarImage"]["url"]);
+              } else {
+                searchSubredditImages.add('assets/images/planet3.png');
+              }
+              searchSubredditId.add(resultsList[i]["_id"]);
+              searchedSubredditNames.add(resultsList[i]["name"]);
+              searchNumOfOnlineUsers.add(resultsList[i]["membersCount"]);
+            })
+          : null;
     }
+    mounted
+        ? setState(() {
+            isLoading = false;
+          })
+        : null;
   }
 
   void refreshSubreddit(String subredditName) {
