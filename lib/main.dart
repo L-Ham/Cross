@@ -32,6 +32,8 @@ import 'package:reddit_bel_ham/screens/inbox_messages.dart';
 import 'services/google_sign_in.dart';
 import 'screens/profile_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
 

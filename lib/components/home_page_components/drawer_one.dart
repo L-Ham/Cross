@@ -92,12 +92,15 @@ class _DrawerOneState extends State<DrawerOne> {
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(right: 20.0),
-                        child: Text(
-                          'See all',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.grey,
+                        child: Semantics(
+                          key: Key('see_all_button'),
+                          child: Text(
+                            'See all',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey,
+                            ),
                           ),
                         ),
                       ),
@@ -240,10 +243,13 @@ class _DrawerOneState extends State<DrawerOne> {
                                                   favoriteCommunities[index]);
                                             });
                                           },
-                                          icon: Icon(
-                                            Icons.star_rounded,
-                                            color: Colors.grey,
-                                            size: 23,
+                                          icon: Semantics(
+                                            key: Key('favorite_community_button_$index'),
+                                            child: Icon(
+                                              Icons.star_rounded,
+                                              color: Colors.grey,
+                                              size: 23,
+                                            ),
                                           ),
                                         )
                                       ],
