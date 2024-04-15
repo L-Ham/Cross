@@ -76,6 +76,13 @@ class ApiService {
     }
   }
 
+  Future<dynamic> checkSubredditAvailability(String communityName) async {
+    Map<String, dynamic> body = {"subRedditName": communityName};
+    var result = await request('/subreddit/subredditNameAvailability',
+        headers: headerWithToken, body: body, method: 'GET');
+    return result;
+  }
+
   Future<List<Post>> fetchPosts() async {
     //   final response = await http.get('https://MestanyElBackend.com/posts');
 

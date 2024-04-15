@@ -40,14 +40,20 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
         trimmedValue.contains(' ') ||
         ((trimmedValue.length < kCommunityNameMinLength) && value.isNotEmpty) ||
         (trimmedValue.isEmpty && value.isNotEmpty)) {
-      return 'Community names must be be tween $kCommunityNameMinLength-$kCommunityNameMaxLength characters, and can only contain letters, numbers, and underscores';
+      return 'Community names must be between $kCommunityNameMinLength-$kCommunityNameMaxLength characters, and can only contain letters, numbers, and underscores';
     }
+
     //Check if the community name is already taken (LATER IMPLEMENTATION)
-    if (trimmedValue == 'toto') {
-      isCommunityNameTaken = true;
-    } else {
-      isCommunityNameTaken = false;
-    }
+    ApiService apiService = ApiService(TokenDecoder.token);
+    apiService.checkSubredditAvailability(value).then((value) {
+      setState(() {
+        if (value['message'] == 'Name available') {
+          isCommunityNameTaken = false;
+        } else {
+          isCommunityNameTaken = true;
+        }
+      });
+    });
     if (value.length >= kCommunityNameMinLength && isCommunityNameTaken) {
       return 'This community name is already taken';
     }
