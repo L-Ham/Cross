@@ -92,11 +92,19 @@ class CreateUsernameScreenState extends State<CreateUsernameScreen> {
           'Content-Type': 'application/json',
         },
       );
-      message = jsonDecode(response.body)['message'] + '! Try another';
-      print(jsonDecode(response.body)['message']);
+      String recievedMessage = jsonDecode(response.body)['message'];
+      message = '$recievedMessage! Try another';
+      print(recievedMessage);
       if (response.statusCode == 200) {
         message = 'Great Name! It\'s not taken, so it\'s all yours.';
       }
+      setState(() {
+        if (recievedMessage == 'Username already taken') {
+          isTaken = true;
+        } else {
+          isTaken = false;
+        }
+      });
     } catch (e) {
       print('Error: $e');
     } finally {
@@ -178,8 +186,8 @@ class CreateUsernameScreenState extends State<CreateUsernameScreen> {
                                   ? Icon(Icons.error, color: Colors.red[200])
                                   : null,
                           isFocused: isNameFocused,
-                          onChanged: (value) {
-                            checkAvailability(value);
+                          onChanged: (value) async {
+                            await checkAvailability(value);
                             setState(() {
                               isValidName = value.length >= 3 &&
                                   value.length <= 20 &&
@@ -264,12 +272,14 @@ class CreateUsernameScreenState extends State<CreateUsernameScreen> {
                                     });
                                   },
                                   child: Semantics(
-                                    identifier: "create_username_screen_firstname",
+                                    identifier:
+                                        "create_username_screen_firstname",
                                     child: Text(firstName,
                                         textAlign: TextAlign.left,
                                         style: TextStyle(
                                             color: Colors.white,
-                                            fontSize: ScreenSizeHandler.smaller *
+                                            fontSize: ScreenSizeHandler
+                                                    .smaller *
                                                 kAcknowledgeTextSmallerFontRatio *
                                                 1.2)),
                                   ),
@@ -290,7 +300,8 @@ class CreateUsernameScreenState extends State<CreateUsernameScreen> {
                                     });
                                   },
                                   child: Semantics(
-                                    identifier: "create_username_screen_secondname",
+                                    identifier:
+                                        "create_username_screen_secondname",
                                     child: Text(
                                       secondName,
                                       textAlign: TextAlign.left,
@@ -318,12 +329,14 @@ class CreateUsernameScreenState extends State<CreateUsernameScreen> {
                                     });
                                   },
                                   child: Semantics(
-                                    identifier: "create_username_screen_thirdname",
+                                    identifier:
+                                        "create_username_screen_thirdname",
                                     child: Text(thirdName,
                                         textAlign: TextAlign.left,
                                         style: TextStyle(
                                             color: Colors.white,
-                                            fontSize: ScreenSizeHandler.smaller *
+                                            fontSize: ScreenSizeHandler
+                                                    .smaller *
                                                 kAcknowledgeTextSmallerFontRatio *
                                                 1.2)),
                                   ),

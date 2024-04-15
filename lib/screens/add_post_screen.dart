@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:reddit_bel_ham/components/general_components/interactive_text.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/community_rules_screen.dart';
@@ -67,6 +68,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
   ApiService apiService = ApiService(TokenDecoder.token);
   File? videoFile;
   String subredditId = "";
+  bool isLoading = false;
 
   @override
   void didChangeDependencies() {
@@ -355,16 +357,19 @@ class _AddPostScreenState extends State<AddPostScreen> {
                             child: Row(
                               children: [
                                 CircleAvatar(
-                                  radius: ScreenSizeHandler.screenHeight * 0.013,
+                                  radius:
+                                      ScreenSizeHandler.screenHeight * 0.013,
                                   child: subredditImage !=
                                           'assets/images/planet3.png'
                                       ? ClipRRect(
-                                          borderRadius: BorderRadius.circular(35),
+                                          borderRadius:
+                                              BorderRadius.circular(35),
                                           child: Image.network(subredditImage,
                                               fit: BoxFit.cover),
                                         )
                                       : ClipRRect(
-                                          borderRadius: BorderRadius.circular(35),
+                                          borderRadius:
+                                              BorderRadius.circular(35),
                                           child: Image.asset(
                                             'assets/images/planet3.png',
                                             fit: BoxFit.cover,
@@ -373,8 +378,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
                                 ),
                                 Padding(
                                   padding: EdgeInsets.only(
-                                      left:
-                                          ScreenSizeHandler.screenWidth * 0.045),
+                                      left: ScreenSizeHandler.screenWidth *
+                                          0.045),
                                   child: GestureDetector(
                                     onTap: () async {
                                       final result = await Navigator.pushNamed(
@@ -396,8 +401,9 @@ class _AddPostScreenState extends State<AddPostScreen> {
                                         Text(
                                           "r/$subredditName",
                                           style: TextStyle(
-                                              fontSize: ScreenSizeHandler.bigger *
-                                                  0.022,
+                                              fontSize:
+                                                  ScreenSizeHandler.bigger *
+                                                      0.022,
                                               fontWeight: FontWeight.bold),
                                         ),
                                         const Icon(Icons.keyboard_arrow_down),

@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:reddit_bel_ham/components/general_components/reddit_loading_indicator.dart';
 import 'package:reddit_bel_ham/screens/add_post_screen.dart';
 import 'package:reddit_bel_ham/screens/subreddit_screen.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
@@ -29,6 +31,7 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
   bool activated = false;
   bool isCommunityNameTaken = false;
   String errorText = '';
+  bool isLoading = false;
 
   String validateInput(String value) {
     String trimmedValue = value.trim();
@@ -57,6 +60,9 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
 
   Future<void> createCommunity() async {
     ApiService apiService = ApiService(TokenDecoder.token);
+    setState(() {
+      isLoading = true;
+    });
     //print("Community Created Successfully");
     Map<String, dynamic> data = {
       "name": _controller.text,
@@ -69,6 +75,9 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
     Navigator.pushNamed(context, AddPostScreen.id, arguments: {
       "subredditName": _controller.text,
       "subredditId": communityData["_id"]
+    });
+    setState(() {
+      isLoading = false;
     });
   }
 
@@ -94,167 +103,173 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
         ),
       ),
       backgroundColor: kBackgroundColor,
-      body: Padding(
-        padding: EdgeInsets.all(
-            ScreenSizeHandler.screenWidth * kPageEdgesPaddingWidthRatio),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: ScreenSizeHandler.screenHeight * 0.005,
-              ),
-              Text('Community name',
-                  key: const Key('community_name_text'),
-                  style: TextStyle(
-                    fontSize: ScreenSizeHandler.smaller *
-                        kAcknowledgeTextSmallerFontRatio,
-                  )),
-              SizedBox(
-                height: ScreenSizeHandler.screenHeight * 0.01,
-              ),
-              CommunityNameTextBox(
-                key: const Key('community_name_text_box'),
-                controller: _controller,
-                onChanged: (value) {
-                  if (value.length > kCommunityNameMaxLength) {
-                    setState(() {
-                      _controller.text =
-                          value.substring(0, kCommunityNameMaxLength);
-                      _controller.selection = TextSelection.fromPosition(
-                          TextPosition(offset: _controller.text.length));
-                    });
-                  }
-
-                  Future.delayed(
-                      const Duration(
-                          milliseconds: kErrorDisplayDelayTimeMilliseconds),
-                      () {
-                    setState(
-                      () {
-                        errorText = validateInput(value);
-                        if (errorText == 'Empty') {
-                          errorText = '';
-                          activated = false;
-                        } else if (value.length >= kCommunityNameMinLength &&
-                            errorText == '') {
-                          activated = true;
-                        } else {
-                          activated = false;
-                        }
-                      },
-                    );
-                  });
-                },
-                onClear: () {
-                  setState(() {
-                    _controller.clear();
-                    activated = false;
-                  });
-                },
-              ),
-              Visibility(
-                visible: errorText.isNotEmpty,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.only(top: kErrorTextTopBottomPadding),
-                  child: Text(
-                    errorText,
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize:
-                          ScreenSizeHandler.bigger * kErrorTextHeightRatio,
-                    ),
-                  ),
+      body: ModalProgressHUD(
+        inAsyncCall: isLoading,
+        blur: 0,
+        opacity: 0,
+        progressIndicator: const RedditLoadingIndicator(),
+        child: Padding(
+          padding: EdgeInsets.all(
+              ScreenSizeHandler.screenWidth * kPageEdgesPaddingWidthRatio),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: ScreenSizeHandler.screenHeight * 0.005,
                 ),
-              ),
-              Padding(
-                padding:
-                    EdgeInsets.only(top: ScreenSizeHandler.screenHeight * 0.02),
-                child: Text('Community type',
+                Text('Community name',
+                    key: const Key('community_name_text'),
                     style: TextStyle(
                       fontSize: ScreenSizeHandler.smaller *
                           kAcknowledgeTextSmallerFontRatio,
                     )),
-              ),
-              Semantics(
-                identifier: "community_type_selector",
-                child: CommunityTypeSelector(
-                  key: const Key('community_type_selector'),
-                  communityType: communityType,
-                  onCommunityTypeChanged: (type, description) {
+                SizedBox(
+                  height: ScreenSizeHandler.screenHeight * 0.01,
+                ),
+                CommunityNameTextBox(
+                  key: const Key('community_name_text_box'),
+                  controller: _controller,
+                  onChanged: (value) {
+                    if (value.length > kCommunityNameMaxLength) {
+                      setState(() {
+                        _controller.text =
+                            value.substring(0, kCommunityNameMaxLength);
+                        _controller.selection = TextSelection.fromPosition(
+                            TextPosition(offset: _controller.text.length));
+                      });
+                    }
+
+                    Future.delayed(
+                        const Duration(
+                            milliseconds: kErrorDisplayDelayTimeMilliseconds),
+                        () {
+                      setState(
+                        () {
+                          errorText = validateInput(value);
+                          if (errorText == 'Empty') {
+                            errorText = '';
+                            activated = false;
+                          } else if (value.length >= kCommunityNameMinLength &&
+                              errorText == '') {
+                            activated = true;
+                          } else {
+                            activated = false;
+                          }
+                        },
+                      );
+                    });
+                  },
+                  onClear: () {
                     setState(() {
-                      communityType = type;
-                      communityTypeDescription = description;
+                      _controller.clear();
+                      activated = false;
                     });
                   },
                 ),
-              ),
-              Text(communityTypeDescription,
-                  style: TextStyle(
-                    fontSize: ScreenSizeHandler.smaller *
-                        kAcknowledgeTextSmallerFontRatio,
-                    color: Colors.grey,
-                  )),
-              SizedBox(height: ScreenSizeHandler.screenHeight * 0.025),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '18+ community',
-                    key: const Key('age_community_text'),
-                    style: TextStyle(
-                      fontSize: ScreenSizeHandler.smaller *
-                          kButtonSmallerFontRatio *
-                          1.15,
-                      fontWeight: FontWeight.bold,
+                Visibility(
+                  visible: errorText.isNotEmpty,
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.only(top: kErrorTextTopBottomPadding),
+                    child: Text(
+                      errorText,
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize:
+                            ScreenSizeHandler.bigger * kErrorTextHeightRatio,
+                      ),
                     ),
                   ),
-                  CustomSwitch(
-                    key: const Key('age_switch'),
-                    isSwitched: isSwitched,
-                    onChanged: (value) {
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                      top: ScreenSizeHandler.screenHeight * 0.02),
+                  child: Text('Community type',
+                      style: TextStyle(
+                        fontSize: ScreenSizeHandler.smaller *
+                            kAcknowledgeTextSmallerFontRatio,
+                      )),
+                ),
+                Semantics(
+                  identifier: "community_type_selector",
+                  child: CommunityTypeSelector(
+                    key: const Key('community_type_selector'),
+                    communityType: communityType,
+                    onCommunityTypeChanged: (type, description) {
                       setState(() {
-                        isSwitched = value;
+                        communityType = type;
+                        communityTypeDescription = description;
                       });
                     },
                   ),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  SizedBox(
-                    height: ScreenSizeHandler.screenHeight * 0.02,
-                  ),
-                  ContinueButton(
-                    onPress: () async {
-                      if (activated) {
-                        try {
-                          // Store the values you want to pass to the next screen
-                          // String value1 = 'example value 1';
-                          // int value2 = 123;
-                          await createCommunity();
-                        } catch (e) {
-                          print('Exception occurred: $e');
+                ),
+                Text(communityTypeDescription,
+                    style: TextStyle(
+                      fontSize: ScreenSizeHandler.smaller *
+                          kAcknowledgeTextSmallerFontRatio,
+                      color: Colors.grey,
+                    )),
+                SizedBox(height: ScreenSizeHandler.screenHeight * 0.025),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '18+ community',
+                      key: const Key('age_community_text'),
+                      style: TextStyle(
+                        fontSize: ScreenSizeHandler.smaller *
+                            kButtonSmallerFontRatio *
+                            1.15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    CustomSwitch(
+                      key: const Key('age_switch'),
+                      isSwitched: isSwitched,
+                      onChanged: (value) {
+                        setState(() {
+                          isSwitched = value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(
+                      height: ScreenSizeHandler.screenHeight * 0.02,
+                    ),
+                    ContinueButton(
+                      onPress: () async {
+                        if (activated) {
+                          try {
+                            // Store the values you want to pass to the next screen
+                            // String value1 = 'example value 1';
+                            // int value2 = 123;
+                            await createCommunity();
+                          } catch (e) {
+                            print('Exception occurred: $e');
+                          }
+                          //TODO: Navigate to the next screen and pass the values as arguments
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) => CreateCommunityScreen(value1: value1, value2: value2),
+                          //   ),
+                          // );
                         }
-                        //TODO: Navigate to the next screen and pass the values as arguments
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => CreateCommunityScreen(value1: value1, value2: value2),
-                        //   ),
-                        // );
-                      }
-                    },
-                    key: const Key('create_community_button'),
-                    text: 'Create community',
-                    color: Colors.blue,
-                    isButtonEnabled: activated,
-                  ),
-                ],
-              )
-            ],
+                      },
+                      key: const Key('create_community_button'),
+                      text: 'Create community',
+                      color: Colors.blue,
+                      isButtonEnabled: activated,
+                    ),
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),
