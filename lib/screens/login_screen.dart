@@ -17,6 +17,7 @@ import '../screens/home_page_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:reddit_bel_ham/services/google_sign_in.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -39,7 +40,20 @@ class LoginScreenState extends State<LoginScreen> {
   final _focusNode = FocusNode();
   final _focusNode2 = FocusNode();
 
+  GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: [
+      'email',
+      'https://www.googleapis.com/auth/contacts.readonly',
+    ],
+  );
 
+  Future<void> _handleSignIn() async {
+    try {
+      await _googleSignIn.signIn();
+    } catch (error) {
+      print(error);
+    }
+  }
 
   @override
   void initState() {
@@ -77,44 +91,38 @@ class LoginScreenState extends State<LoginScreen> {
         TokenDecoder.updateToken(token);
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => const HomePageScreen()));
-      }
-      else
-      {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        behavior: SnackBarBehavior.floating,
-        margin: EdgeInsets.only(
-            bottom: ScreenSizeHandler.screenHeight * 0.12,
-            left: ScreenSizeHandler.screenWidth * 0.04,
-            right: ScreenSizeHandler.screenWidth * 0.04),
-
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        content: Center(child: Text(message)),
-        duration: const Duration(seconds: 3),
-      ));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(
+              bottom: ScreenSizeHandler.screenHeight * 0.12,
+              left: ScreenSizeHandler.screenWidth * 0.04,
+              right: ScreenSizeHandler.screenWidth * 0.04),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+          content: Center(child: Text(message)),
+          duration: const Duration(seconds: 3),
+        ));
       }
     } catch (e) {
       print(e);
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         behavior: SnackBarBehavior.floating,
         margin: EdgeInsets.only(
             bottom: ScreenSizeHandler.screenHeight * 0.12,
             left: ScreenSizeHandler.screenWidth * 0.04,
             right: ScreenSizeHandler.screenWidth * 0.04),
-
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
         content: Center(child: Text(message)),
         duration: const Duration(seconds: 3),
       ));
-    } 
-    finally {
+    } finally {
       setState(() {
         isLoading = false;
       });
-
     }
   }
 
@@ -142,32 +150,28 @@ class LoginScreenState extends State<LoginScreen> {
         TokenDecoder.updateToken(token);
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => HomePageScreen()));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(
+              bottom: ScreenSizeHandler.screenHeight * 0.12,
+              left: ScreenSizeHandler.screenWidth * 0.04,
+              right: ScreenSizeHandler.screenWidth * 0.04),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+          content: Center(child: Text(message)),
+          duration: const Duration(seconds: 3),
+        ));
       }
-      else 
-      {
+    } catch (e) {
+      print(e);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         behavior: SnackBarBehavior.floating,
         margin: EdgeInsets.only(
             bottom: ScreenSizeHandler.screenHeight * 0.12,
             left: ScreenSizeHandler.screenWidth * 0.04,
             right: ScreenSizeHandler.screenWidth * 0.04),
-
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        content: Center(child: Text(message)),
-        duration: const Duration(seconds: 3),
-      ));
-      }
-    } catch (e) {
-      print(e);
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        behavior: SnackBarBehavior.floating,
-        margin: EdgeInsets.only(
-            bottom: ScreenSizeHandler.screenHeight * 0.12,
-            left: ScreenSizeHandler.screenWidth * 0.04,
-            right: ScreenSizeHandler.screenWidth * 0.04),
-
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
@@ -178,7 +182,6 @@ class LoginScreenState extends State<LoginScreen> {
       setState(() {
         isLoading = false;
       });
-
     }
   }
 
@@ -234,16 +237,8 @@ class LoginScreenState extends State<LoginScreen> {
                         onPress: () async {
                           setState(() {
                             isLoading = true;
-                          });
-                          var check = await AuthService().signInWithGoogle();
-                          if (check == null) {
-                            setState(() {
-                              isLoading = false;
-                            });
-                            return;
-                          } else {
-                            loginWithGoogle(check);
-                          }
+                          });              
+                          await _handleSignIn();            
                         },
                         text: "Continue with Google",
                         icon: Image(
@@ -300,8 +295,8 @@ class LoginScreenState extends State<LoginScreen> {
                           suffixIcon: isNameFocused
                               ? IconButton(
                                   icon: Semantics(
-                                    identifier: 'login_screen_clear_button',
-                                    child: const Icon(Icons.clear_rounded)),
+                                      identifier: 'login_screen_clear_button',
+                                      child: const Icon(Icons.clear_rounded)),
                                   onPressed: () {
                                     setState(() {
                                       nameController.clear();
@@ -344,8 +339,10 @@ class LoginScreenState extends State<LoginScreen> {
                           suffixIcon: isPassFocused
                               ? IconButton(
                                   icon: Semantics(
-                                    identifier: 'login_screen_password_visibility_button',
-                                    child: const Icon(Icons.visibility_rounded)),
+                                      identifier:
+                                          'login_screen_password_visibility_button',
+                                      child:
+                                          const Icon(Icons.visibility_rounded)),
                                   onPressed: () {
                                     setState(() {
                                       isPassObscure = !isPassObscure;
