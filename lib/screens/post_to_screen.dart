@@ -84,9 +84,11 @@ class _PostToScreenState extends State<PostToScreen> {
           searchNumOfOnlineUsers.add(resultsList[i]["membersCount"]);
         });
       }
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 
