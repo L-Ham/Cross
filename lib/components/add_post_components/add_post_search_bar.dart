@@ -27,6 +27,7 @@ class AddPostSearchBar extends StatelessWidget {
         decoration: InputDecoration(
           suffixIcon: searchController.text.isNotEmpty
               ? IconButton(
+                key: const Key('cancel_button'),
                   icon: Icon(
                     Icons.cancel,
                     color: Colors.grey,
