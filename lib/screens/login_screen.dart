@@ -42,8 +42,6 @@ class LoginScreenState extends State<LoginScreen> {
   final _focusNode = FocusNode();
   final _focusNode2 = FocusNode();
 
-
-
   @override
   void initState() {
     super.initState();

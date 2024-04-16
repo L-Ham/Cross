@@ -14,6 +14,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'home_page_screen.dart';
 import 'package:reddit_bel_ham/components/general_components/reddit_loading_indicator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class FirstScreen extends StatefulWidget {
   const FirstScreen({
@@ -34,6 +35,14 @@ class _FirstScreenState extends State<FirstScreen> {
   void initState() {
     super.initState();
     initSharedPrefs();
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        print('User is signed in!');
+        AuthService().signOutWithGoogle();
+      }
+    });
   }
 
   void initSharedPrefs() async {

@@ -65,16 +65,11 @@ void main() {
 
     // Tap on the 'Spoiler' switch
     await tester.tap(find.byKey(const Key('spoiler_switch')));
-    await tester.pump();
-
-    // Verify that the state value has changed
-    //expect(isSpoiler, true);
+    await tester.pumpAndSettle();
 
     // Tap on the 'Brand affiliate' switch
     await tester.tap(find.byKey(const Key('brand_affiliate_switch')));
-    await tester.pump();
+    await tester.pumpAndSettle();
 
-    // Verify that the state value has changed
-    //expect(isBrandAffiliate, true);
   });
 }

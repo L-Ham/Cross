@@ -67,4 +67,26 @@ class SubredditStore {
     await prefs.remove(keyImage);
     await prefs.remove(keyMembers);
   }
+
+  Future<void> deleteSubreddit(int index) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> names = prefs.getStringList(keyName) ?? [];
+    List<String> ids = prefs.getStringList(keyId) ?? [];
+    List<String> images = prefs.getStringList(keyImage) ?? [];
+    List<String> members = prefs.getStringList(keyMembers) ?? [];
+
+    if (index < 0 || index >= names.length) {
+      throw RangeError('Index out of range: $index');
+    }
+
+    names.removeAt(index);
+    ids.removeAt(index);
+    images.removeAt(index);
+    members.removeAt(index);
+
+    await prefs.setStringList(keyName, names);
+    await prefs.setStringList(keyId, ids);
+    await prefs.setStringList(keyImage, images);
+    await prefs.setStringList(keyMembers, members);
+  }
 }
