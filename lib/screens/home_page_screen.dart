@@ -778,17 +778,17 @@ class _HomePageScreenState extends State<HomePageScreen> {
       link: "",
       video: "",
     ),
-    Post(
-      username: "r/JohannaDoesYoga",
-      contentTitle: "this is a video",
-      content: "enjoy",
-      upvotes: 90,
-      comments: 35,
-      type: "video",
-      image: [""],
-      link: "",
-      video: "assets/videos/video.mp4",
-    )
+    // Post(
+    //   username: "r/JohannaDoesYoga",
+    //   contentTitle: "this is a video",
+    //   content: "enjoy",
+    //   upvotes: 90,
+    //   comments: 35,
+    //   type: "video",
+    //   image: [""],
+    //   link: "",
+    //   video: "assets/videos/video.mp4",
+    // )
   ];
    final List<TrendingPost> trending = [
     TrendingPost(
