@@ -99,7 +99,10 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
       ),
       backgroundColor: kSettingsBackGroundColor,
       body: isLoading
-          ? const Align(alignment: Alignment.topCenter,child: RedditLoadingIndicator(),)
+          ? const Align(
+              alignment: Alignment.topCenter,
+              child: RedditLoadingIndicator(),
+            )
           : SafeArea(
               child: Column(
                 children: [
@@ -286,20 +289,23 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                                         AuthService authService = AuthService();
                                         var token = await authService
                                             .signInWithGoogle();
-                                        var result = await Navigator.pushNamed(
-                                          context,
-                                          DisconnectScreen.id,
-                                          arguments: {
-                                            'email': connectedEmailAddress,
-                                            'username': username,
-                                            'isConnectedToGoogle': false,
-                                            'googleToken': token,
-                                          },
-                                        );
-                                        if (result == true) {
-                                          setState(() {
-                                            isConnectedToGoogle = true;
-                                          });
+                                        if (token != null) {
+                                          var result =
+                                              await Navigator.pushNamed(
+                                            context,
+                                            DisconnectScreen.id,
+                                            arguments: {
+                                              'email': connectedEmailAddress,
+                                              'username': username,
+                                              'isConnectedToGoogle': false,
+                                              'googleToken': token,
+                                            },
+                                          );
+                                          if (result == true) {
+                                            setState(() {
+                                              isConnectedToGoogle = true;
+                                            });
+                                          }
                                         }
                                       },
                                       fontSizeRatio: 0.018,

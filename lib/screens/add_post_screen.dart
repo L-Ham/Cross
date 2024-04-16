@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:reddit_bel_ham/components/general_components/interactive_text.dart';
+import 'package:reddit_bel_ham/components/general_components/reddit_loading_indicator.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/community_rules_screen.dart';
 import 'package:reddit_bel_ham/screens/post_to_screen.dart';
@@ -112,8 +113,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
     FilePickerResult? result =
         await FilePicker.platform.pickFiles(type: FileType.video);
     if (result != null) {
-      File videoFile = File(result.files.single.path!);
-      _controller = VideoPlayerController.file(videoFile)
+      videoFile = File(result.files.single.path!);
+      _controller = VideoPlayerController.file(videoFile!)
         ..initialize().then((_) {
           setState(() {
             isVideoChosen = true;
@@ -286,10 +287,30 @@ class _AddPostScreenState extends State<AddPostScreen> {
                       List<File> imageFiles = chosenImages
                           .map((xfile) => File(xfile.path))
                           .toList();
+                      if (mounted) {
+                        setState(() {
+                          isLoading = true;
+                        });
+                      }
                       await apiService.addMediaPost((imageFiles), post);
+                      if (mounted) {
+                        setState(() {
+                          isLoading = false;
+                        });
+                      }
                     } else if (isVideoChosen) {
                       post['type'] = "video";
+                      if (mounted) {
+                        setState(() {
+                          isLoading = true;
+                        });
+                      }
                       await apiService.addMediaPost(([videoFile!]), post);
+                      if (mounted) {
+                        setState(() {
+                          isLoading = false;
+                        });
+                      }
                     } else if (isPollChosen) {
                       DateTime now = DateTime.now();
                       String formattedDate =
@@ -300,20 +321,49 @@ class _AddPostScreenState extends State<AddPostScreen> {
                           DateFormat('yyyy-MM-ddTHH:mm:ssZ')
                               .format(pollEndTime);
                       post['type'] = "poll";
-
                       post["poll.options"] =
                           controllers!.map((e) => e.text).toList();
                       post["poll.votingLength"] = "0";
                       post["poll.startTime"] = formattedDate.toString();
                       post["poll.endTime"] = formattedPollEndTime.toString();
-                      apiService.addPollPost(post);
+                      if (mounted) {
+                        setState(() {
+                          isLoading = true;
+                        });
+                      }
+                      await apiService.addPollPost(post);
+                      if (mounted) {
+                        setState(() {
+                          isLoading = false;
+                        });
+                      }
                     } else if (isLinkChosen) {
                       post['type'] = "link";
                       post['url'] = urlController.text;
-                      apiService.addTextPost(post);
+                      if (mounted) {
+                        setState(() {
+                          isLoading = true;
+                        });
+                      }
+                      await apiService.addTextPost(post);
+                      if (mounted) {
+                        setState(() {
+                          isLoading = false;
+                        });
+                      }
                     } else {
                       post['type'] = "text";
-                      apiService.addTextPost(post);
+                      if (mounted) {
+                        setState(() {
+                          isLoading = true;
+                        });
+                      }
+                      await apiService.addTextPost(post);
+                      if (mounted) {
+                        setState(() {
+                          isLoading = false;
+                        });
+                      }
                     }
                     Navigator.pop(context);
                   }
@@ -334,445 +384,461 @@ class _AddPostScreenState extends State<AddPostScreen> {
           )
         ],
       ),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(
-                    bottom: ScreenSizeHandler.screenHeight * 0.015,
-                    left: ScreenSizeHandler.screenHeight * 0.026,
-                    right: ScreenSizeHandler.screenHeight * 0.026,
-                  ),
-                  child: Column(
-                    children: <Widget>[
-                      Visibility(
-                        visible: isSubredditSelected,
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                              bottom: ScreenSizeHandler.screenHeight * 0.01),
-                          child: Semantics(
-                            identifier: "add_post_screen_select_subreddit",
-                            child: Row(
-                              children: [
-                                CircleAvatar(
-                                  radius:
-                                      ScreenSizeHandler.screenHeight * 0.013,
-                                  child: subredditImage !=
-                                          'assets/images/planet3.png'
-                                      ? ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(35),
-                                          child: Image.network(subredditImage,
-                                              fit: BoxFit.cover),
-                                        )
-                                      : ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(35),
-                                          child: Image.asset(
-                                            'assets/images/planet3.png',
-                                            fit: BoxFit.cover,
+      body: ModalProgressHUD(
+        inAsyncCall: isLoading,
+        progressIndicator: const Center(
+          child: RedditLoadingIndicator(),
+        ),
+        blur: 0,
+        opacity: 0,
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                      bottom: ScreenSizeHandler.screenHeight * 0.015,
+                      left: ScreenSizeHandler.screenHeight * 0.026,
+                      right: ScreenSizeHandler.screenHeight * 0.026,
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        Visibility(
+                          visible: isSubredditSelected,
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                bottom: ScreenSizeHandler.screenHeight * 0.01),
+                            child: Semantics(
+                              identifier: "add_post_screen_select_subreddit",
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius:
+                                        ScreenSizeHandler.screenHeight * 0.013,
+                                    child: subredditImage !=
+                                            'assets/images/planet3.png'
+                                        ? ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(35),
+                                            child: Image.network(subredditImage,
+                                                fit: BoxFit.cover),
+                                          )
+                                        : ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(35),
+                                            child: Image.asset(
+                                              'assets/images/planet3.png',
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
-                                        ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      left: ScreenSizeHandler.screenWidth *
-                                          0.045),
-                                  child: GestureDetector(
-                                    onTap: () async {
-                                      final result = await Navigator.pushNamed(
-                                          context, PostToScreen.id, arguments: {
-                                        "subredditName": subredditName
-                                      }) as Map<String, String>?;
-                                      if (result != null) {
-                                        setState(() {
-                                          subredditName =
-                                              result['subredditName']!;
-                                          subredditImage =
-                                              result['subredditImage']!;
-                                          subredditId = result['subredditId']!;
-                                        });
-                                      }
-                                    },
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          "r/$subredditName",
-                                          style: TextStyle(
-                                              fontSize:
-                                                  ScreenSizeHandler.bigger *
-                                                      0.022,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        const Icon(Icons.keyboard_arrow_down),
-                                      ],
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        left: ScreenSizeHandler.screenWidth *
+                                            0.045),
+                                    child: GestureDetector(
+                                      onTap: () async {
+                                        final result =
+                                            await Navigator.pushNamed(
+                                                context, PostToScreen.id,
+                                                arguments: {
+                                              "subredditName": subredditName
+                                            }) as Map<String, String>?;
+                                        if (result != null) {
+                                          setState(() {
+                                            subredditName =
+                                                result['subredditName']!;
+                                            subredditImage =
+                                                result['subredditImage']!;
+                                            subredditId =
+                                                result['subredditId']!;
+                                          });
+                                        }
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            "r/$subredditName",
+                                            style: TextStyle(
+                                                fontSize:
+                                                    ScreenSizeHandler.bigger *
+                                                        0.022,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          const Icon(Icons.keyboard_arrow_down),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                                const Expanded(child: SizedBox()),
-                                InteractiveText(
-                                  text: "RULES",
-                                  fontSizeRatio: 0.018,
-                                  onTap: () {
-                                    Navigator.pushNamed(
-                                        context, CommunityRulesScreen.id,
-                                        arguments: subredditId);
-                                  },
-                                  isUnderlined: true,
-                                )
-                              ],
+                                  const Expanded(child: SizedBox()),
+                                  InteractiveText(
+                                    text: "RULES",
+                                    fontSizeRatio: 0.018,
+                                    onTap: () {
+                                      Navigator.pushNamed(
+                                          context, CommunityRulesScreen.id,
+                                          arguments: subredditId);
+                                    },
+                                    isUnderlined: true,
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      AddPostTagsRow(
-                          isSpoiler: isSpoiler,
-                          isBrandAffiliate: isBrandAffiliate),
-                      AddPostTextField(
-                        controller: titleController,
-                        hintText: "Title",
-                        fontSizeRatio: 0.032,
-                        isTitle: true,
-                      ),
-                      Visibility(
-                        visible: isSubredditSelected,
-                        child: Padding(
+                        AddPostTagsRow(
+                            isSpoiler: isSpoiler,
+                            isBrandAffiliate: isBrandAffiliate),
+                        AddPostTextField(
+                          controller: titleController,
+                          hintText: "Title",
+                          fontSizeRatio: 0.032,
+                          isTitle: true,
+                        ),
+                        Visibility(
+                          visible: isSubredditSelected,
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                top: ScreenSizeHandler.screenHeight * 0.01),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: RoundedButton(
+                                onTap: () async {
+                                  final result = await showModalBottomSheet(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AddTagsBottomSheet(
+                                        isSpoiler: isSpoiler,
+                                        isBrandAffiliate: isBrandAffiliate,
+                                        setIsBrandAffiliate:
+                                            setIsBrandAffiliateCallback,
+                                        setIsSpoiler: setIsSpoilerCallback,
+                                      );
+                                    },
+                                  );
+                                  if (result != null) {
+                                    setState(() {
+                                      isSpoiler = result['isSpoiler']!;
+                                      isBrandAffiliate =
+                                          result['isBrandAffiliate']!;
+                                      isSubredditSelected = true;
+                                    });
+                                  }
+                                },
+                                buttonColor: kFillingColor,
+                                buttonHeightRatio: 0.038,
+                                buttonWidthRatio: 0.17,
+                                child: Text(
+                                  'Add tags (optional)',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize:
+                                          ScreenSizeHandler.bigger * 0.015,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Visibility(
+                          visible: isLinkChosen,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: SizedBox(
+                                  child: AddPostTextField(
+                                    controller: urlController,
+                                    focusNode: urlFocus,
+                                    hintText: "URL",
+                                    onChanged: (p0) {
+                                      setState(() {
+                                        if (isValidUrl(p0) || p0.isEmpty) {
+                                          showLinkError = false;
+                                        } else {
+                                          showLinkError = true;
+                                        }
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                              IconButtonWithCaption(
+                                icon: Icons.clear,
+                                onTap: () {
+                                  setState(() {
+                                    removeURL();
+                                  });
+                                },
+                                backgroundColor: kFillingColor,
+                                iconRadiusRatio: 0.018,
+                                isIconEnabled: true,
+                                hasCaption: false,
+                              )
+                            ],
+                          ),
+                        ),
+                        Visibility(
+                          visible: showLinkError,
+                          child: const InvalidLinkError(),
+                        ),
+                        Padding(
                           padding: EdgeInsets.only(
                               top: ScreenSizeHandler.screenHeight * 0.01),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: RoundedButton(
-                              onTap: () async {
-                                final result = await showModalBottomSheet(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AddTagsBottomSheet(
-                                      isSpoiler: isSpoiler,
-                                      isBrandAffiliate: isBrandAffiliate,
-                                      setIsBrandAffiliate:
-                                          setIsBrandAffiliateCallback,
-                                      setIsSpoiler: setIsSpoilerCallback,
-                                    );
-                                  },
-                                );
-                                if (result != null) {
-                                  setState(() {
-                                    isSpoiler = result['isSpoiler']!;
-                                    isBrandAffiliate =
-                                        result['isBrandAffiliate']!;
-                                    isSubredditSelected = true;
-                                  });
-                                }
+                          child: Visibility(
+                            visible: isImageChosen,
+                            child: ImageEditViewer(
+                              initialChoices: chosenImages,
+                              removeImage: () {
+                                removeImage();
                               },
-                              buttonColor: kFillingColor,
-                              buttonHeightRatio: 0.038,
-                              buttonWidthRatio: 0.17,
-                              child: Text(
-                                'Add tags (optional)',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: ScreenSizeHandler.bigger * 0.015,
-                                    fontWeight: FontWeight.w500),
-                              ),
+                              updateXFileList: (newList) {
+                                updateXFileList(newList);
+                              },
                             ),
                           ),
                         ),
-                      ),
-                      Visibility(
-                        visible: isLinkChosen,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: SizedBox(
-                                child: AddPostTextField(
-                                  controller: urlController,
-                                  focusNode: urlFocus,
-                                  hintText: "URL",
-                                  onChanged: (p0) {
+                        Visibility(
+                          visible: isVideoChosen,
+                          child: VideoViewer(
+                            removeVideo: removeVideo,
+                            controller: _controller,
+                          ),
+                        ),
+                        AddPostTextField(
+                            controller: bodyController,
+                            hintText: "body text (optional)",
+                            maxLines: isPollChosen ? 1 : 20),
+                        Visibility(
+                          visible: isPollChosen,
+                          child: PollEdit(
+                            removePoll: () {
+                              removePoll();
+                            },
+                            updateNumOfDays: (newPollDays) {
+                              updateNumOfDays(newPollDays);
+                            },
+                            updatePollOptions: (int newNumOfPollOptions,
+                                List<TextEditingController> newList) {
+                              updatePollOptions(newNumOfPollOptions, newList);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (MediaQuery.of(context).viewInsets.bottom == 0)
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  height: ScreenSizeHandler.bigger / 7,
+                  width: ScreenSizeHandler.screenWidth,
+                  color: kFillingColor,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        top: ScreenSizeHandler.screenHeight * 0.01),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(
+                              bottom: ScreenSizeHandler.screenHeight * 0.028),
+                          child: Text(
+                            areIconsEnabled()
+                                ? "What do you want to add?"
+                                : 'You can only add one type of attachment for now.',
+                            style: TextStyle(
+                                fontSize: ScreenSizeHandler.bigger * .015,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: ScreenSizeHandler.screenWidth * 0.07),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              IconButtonWithCaption(
+                                icon: FontAwesomeIcons.link,
+                                isFontAwesomeIcons: true,
+                                caption: "Link",
+                                onTap: () async {
+                                  if (!isIconChosen()) {
                                     setState(() {
-                                      if (isValidUrl(p0) || p0.isEmpty) {
-                                        showLinkError = false;
-                                      } else {
-                                        showLinkError = true;
-                                      }
+                                      addURL();
                                     });
-                                  },
-                                ),
+                                  } else {
+                                    final choice = await showModalBottomSheet(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return const ChangePostTypeBottomSheet();
+                                      },
+                                    );
+                                    if (choice == "continue") {
+                                      removeAllAttatchmens();
+                                      addURL();
+                                    }
+                                  }
+                                },
+                                isIconChosen: isLinkChosen,
+                                isIconEnabled: areIconsEnabled(),
                               ),
-                            ),
-                            IconButtonWithCaption(
-                              icon: Icons.clear,
-                              onTap: () {
-                                setState(() {
-                                  removeURL();
-                                });
-                              },
-                              backgroundColor: kFillingColor,
-                              iconRadiusRatio: 0.018,
-                              isIconEnabled: true,
-                              hasCaption: false,
-                            )
-                          ],
-                        ),
-                      ),
-                      Visibility(
-                        visible: showLinkError,
-                        child: const InvalidLinkError(),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: ScreenSizeHandler.screenHeight * 0.01),
-                        child: Visibility(
-                          visible: isImageChosen,
-                          child: ImageEditViewer(
-                            initialChoices: chosenImages,
-                            removeImage: () {
-                              removeImage();
-                            },
-                            updateXFileList: (newList) {
-                              updateXFileList(newList);
-                            },
+                              IconButtonWithCaption(
+                                icon: FontAwesomeIcons.image,
+                                isFontAwesomeIcons: true,
+                                caption: "Image",
+                                onTap: () async {
+                                  if (!isIconChosen()) {
+                                    addImage();
+                                  } else {
+                                    final choice = await showModalBottomSheet(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return const ChangePostTypeBottomSheet();
+                                      },
+                                    );
+                                    if (choice == "continue") {
+                                      removeAllAttatchmens();
+                                      addImage();
+                                    }
+                                  }
+                                },
+                                isIconChosen: isImageChosen,
+                                isIconEnabled: areIconsEnabled(),
+                              ),
+                              IconButtonWithCaption(
+                                icon: FontAwesomeIcons.play,
+                                caption: "Video",
+                                isFontAwesomeIcons: true,
+                                onTap: () async {
+                                  if (!isIconChosen()) {
+                                    pickVideo();
+                                  } else {
+                                    final choice = await showModalBottomSheet(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return const ChangePostTypeBottomSheet();
+                                      },
+                                    );
+                                    if (choice == "continue") {
+                                      removeAllAttatchmens();
+                                      pickVideo();
+                                    }
+                                  }
+                                },
+                                isIconChosen: isVideoChosen,
+                                isIconEnabled: areIconsEnabled(),
+                              ),
+                              IconButtonWithCaption(
+                                icon: FontAwesomeIcons.squarePollHorizontal,
+                                isFontAwesomeIcons: true,
+                                caption: "Poll",
+                                onTap: () async {
+                                  if (!isIconChosen()) {
+                                    addPoll();
+                                  } else {
+                                    final choice = await showModalBottomSheet(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return const ChangePostTypeBottomSheet();
+                                      },
+                                    );
+                                    if (choice == "continue") {
+                                      removeAllAttatchmens();
+                                      addPoll();
+                                    }
+                                  }
+                                },
+                                isIconChosen: isPollChosen,
+                                isIconEnabled: areIconsEnabled(),
+                              ),
+                            ],
                           ),
-                        ),
-                      ),
-                      Visibility(
-                        visible: isVideoChosen,
-                        child: VideoViewer(
-                          removeVideo: removeVideo,
-                          controller: _controller,
-                        ),
-                      ),
-                      AddPostTextField(
-                          controller: bodyController,
-                          hintText: "body text (optional)",
-                          maxLines: isPollChosen ? 1 : 20),
-                      Visibility(
-                        visible: isPollChosen,
-                        child: PollEdit(
-                          removePoll: () {
-                            removePoll();
-                          },
-                          updateNumOfDays: (newPollDays) {
-                            updateNumOfDays(newPollDays);
-                          },
-                          updatePollOptions: (int newNumOfPollOptions,
-                              List<TextEditingController> newList) {
-                            updatePollOptions(newNumOfPollOptions, newList);
-                          },
-                        ),
-                      ),
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ],
-            ),
-          ),
-          if (MediaQuery.of(context).viewInsets.bottom == 0)
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                height: ScreenSizeHandler.bigger / 7,
-                width: ScreenSizeHandler.screenWidth,
-                color: kFillingColor,
-                child: Padding(
-                  padding: EdgeInsets.only(
-                      top: ScreenSizeHandler.screenHeight * 0.01),
-                  child: Column(
+              ),
+            if (MediaQuery.of(context).viewInsets.bottom != 0)
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  color: kFillingColor,
+                  height: ScreenSizeHandler.screenHeight * 0.05,
+                  child: Row(
                     children: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                            bottom: ScreenSizeHandler.screenHeight * 0.028),
-                        child: Text(
-                          areIconsEnabled()
-                              ? "What do you want to add?"
-                              : 'You can only add one type of attachment for now.',
-                          style: TextStyle(
-                              fontSize: ScreenSizeHandler.bigger * .015,
-                              fontWeight: FontWeight.w500),
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            if (areIconsEnabled()) {
+                              addURL();
+                            }
+                          });
+                        },
+                        icon: Icon(
+                          size: ScreenSizeHandler.bigger * 0.024,
+                          FontAwesomeIcons.link,
+                          color: areIconsEnabled()
+                              ? Colors.white
+                              : Colors.grey[700],
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: ScreenSizeHandler.screenWidth * 0.07),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            IconButtonWithCaption(
-                              icon: FontAwesomeIcons.link,
-                              isFontAwesomeIcons: true,
-                              caption: "Link",
-                              onTap: () async {
-                                if (!isIconChosen()) {
-                                  setState(() {
-                                    addURL();
-                                  });
-                                } else {
-                                  final choice = await showModalBottomSheet(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return const ChangePostTypeBottomSheet();
-                                    },
-                                  );
-                                  if (choice == "continue") {
-                                    removeAllAttatchmens();
-                                    addURL();
-                                  }
-                                }
-                              },
-                              isIconChosen: isLinkChosen,
-                              isIconEnabled: areIconsEnabled(),
-                            ),
-                            IconButtonWithCaption(
-                              icon: FontAwesomeIcons.image,
-                              isFontAwesomeIcons: true,
-                              caption: "Image",
-                              onTap: () async {
-                                if (!isIconChosen()) {
-                                  addImage();
-                                } else {
-                                  final choice = await showModalBottomSheet(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return const ChangePostTypeBottomSheet();
-                                    },
-                                  );
-                                  if (choice == "continue") {
-                                    removeAllAttatchmens();
-                                    addImage();
-                                  }
-                                }
-                              },
-                              isIconChosen: isImageChosen,
-                              isIconEnabled: areIconsEnabled(),
-                            ),
-                            IconButtonWithCaption(
-                              icon: FontAwesomeIcons.play,
-                              caption: "Video",
-                              isFontAwesomeIcons: true,
-                              onTap: () async {
-                                if (!isIconChosen()) {
-                                  pickVideo();
-                                } else {
-                                  final choice = await showModalBottomSheet(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return const ChangePostTypeBottomSheet();
-                                    },
-                                  );
-                                  if (choice == "continue") {
-                                    removeAllAttatchmens();
-                                    pickVideo();
-                                  }
-                                }
-                              },
-                              isIconChosen: isVideoChosen,
-                              isIconEnabled: areIconsEnabled(),
-                            ),
-                            IconButtonWithCaption(
-                              icon: FontAwesomeIcons.squarePollHorizontal,
-                              isFontAwesomeIcons: true,
-                              caption: "Poll",
-                              onTap: () async {
-                                if (!isIconChosen()) {
-                                  addPoll();
-                                } else {
-                                  final choice = await showModalBottomSheet(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return const ChangePostTypeBottomSheet();
-                                    },
-                                  );
-                                  if (choice == "continue") {
-                                    removeAllAttatchmens();
-                                    addPoll();
-                                  }
-                                }
-                              },
-                              isIconChosen: isPollChosen,
-                              isIconEnabled: areIconsEnabled(),
-                            ),
-                          ],
+                      IconButton(
+                        onPressed: () {
+                          if (areIconsEnabled()) {
+                            addImage();
+                          }
+                        },
+                        icon: Icon(
+                          size: ScreenSizeHandler.bigger * 0.024,
+                          FontAwesomeIcons.image,
+                          color: areIconsEnabled()
+                              ? Colors.white
+                              : Colors.grey[700],
                         ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          if (areIconsEnabled()) pickVideo();
+                        },
+                        icon: Icon(
+                          size: ScreenSizeHandler.bigger * 0.024,
+                          FontAwesomeIcons.play,
+                          color: areIconsEnabled()
+                              ? Colors.white
+                              : Colors.grey[700],
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          if (areIconsEnabled()) addPoll();
+                        },
+                        icon: Icon(
+                          FontAwesomeIcons.squarePollHorizontal,
+                          size: ScreenSizeHandler.bigger * 0.024,
+                          color: areIconsEnabled()
+                              ? Colors.white
+                              : Colors.grey[700],
+                        ),
+                      ),
+                      const Expanded(child: SizedBox()),
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            FocusScope.of(context).unfocus();
+                          });
+                        },
+                        icon: const Icon(Icons.keyboard_arrow_down),
                       )
                     ],
                   ),
                 ),
-              ),
-            ),
-          if (MediaQuery.of(context).viewInsets.bottom != 0)
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                color: kFillingColor,
-                height: ScreenSizeHandler.screenHeight * 0.05,
-                child: Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        setState(() {
-                          if (areIconsEnabled()) {
-                            addURL();
-                          }
-                        });
-                      },
-                      icon: Icon(
-                        size: ScreenSizeHandler.bigger * 0.024,
-                        FontAwesomeIcons.link,
-                        color:
-                            areIconsEnabled() ? Colors.white : Colors.grey[700],
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        if (areIconsEnabled()) {
-                          addImage();
-                        }
-                      },
-                      icon: Icon(
-                        size: ScreenSizeHandler.bigger * 0.024,
-                        FontAwesomeIcons.image,
-                        color:
-                            areIconsEnabled() ? Colors.white : Colors.grey[700],
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        if (areIconsEnabled()) pickVideo();
-                      },
-                      icon: Icon(
-                        size: ScreenSizeHandler.bigger * 0.024,
-                        FontAwesomeIcons.play,
-                        color:
-                            areIconsEnabled() ? Colors.white : Colors.grey[700],
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        if (areIconsEnabled()) addPoll();
-                      },
-                      icon: Icon(
-                        FontAwesomeIcons.squarePollHorizontal,
-                        size: ScreenSizeHandler.bigger * 0.024,
-                        color:
-                            areIconsEnabled() ? Colors.white : Colors.grey[700],
-                      ),
-                    ),
-                    const Expanded(child: SizedBox()),
-                    IconButton(
-                      onPressed: () {
-                        setState(() {
-                          FocusScope.of(context).unfocus();
-                        });
-                      },
-                      icon: const Icon(Icons.keyboard_arrow_down),
-                    )
-                  ],
-                ),
-              ),
-            )
-        ],
+              )
+          ],
+        ),
       ),
     );
   }

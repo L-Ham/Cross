@@ -77,6 +77,13 @@ class ApiService {
     }
   }
 
+  Future<dynamic> checkSubredditAvailability(String communityName) async {
+    Map<String, dynamic> body = {"subRedditName": communityName};
+    var result = await request('/subreddit/subredditNameAvailability',
+        headers: headerWithToken, body: body, method: 'GET');
+    return result;
+  }
+
   Future<List<Post>> fetchPosts() async {
     //   final response = await http.get('https://MestanyElBackend.com/posts');
 
@@ -211,6 +218,7 @@ class ApiService {
     request.fields['title'] = body['title'];
     request.fields['text'] = body['text'];
     request.fields['type'] = body['type'];
+    print(body['subRedditId']);
     request.fields['subRedditId'] = body['subRedditId'];
     request.fields['isNSFW'] = false.toString();
     request.fields['isSpoiler'] = body['isSpoiler'].toString();
@@ -221,11 +229,25 @@ class ApiService {
       request.files
           .add(await http.MultipartFile.fromPath('file', imageFile.path));
     }
-    var response = await request.send();
+    var response;
+    try {
+      response = await request.send();
+      // Handle the response...
+    } on SocketException catch (e) {
+      debugPrint('SocketException: $e');
+      // Handle the exception...
+    }
     if (response.statusCode == 200) {
       debugPrint('Media uploaded successfully');
     } else {
       debugPrint(response.statusCode.toString());
+      String responseBody = await response.stream.bytesToString();
+
+      // Parse the string as JSON
+      Map<String, dynamic> responseJson = jsonDecode(responseBody);
+
+      debugPrint(response.statusCode.toString());
+      debugPrint('Response body: $responseBody');
       debugPrint('Media upload failed');
     }
   }
@@ -264,6 +286,7 @@ class ApiService {
     sentData = {"subredditId": communityId};
     var result = await request('/subreddit/rule',
         headers: headerWithToken, method: 'GET', body: sentData);
+    print(result);
     return result;
   }
 

@@ -84,16 +84,16 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     }
   }
 
-  bool doPasswordsMatch() {
-    if (newPasswordController.text != confirmPasswordController.text) {
+  bool doPasswordsMatch(String newPassword, String confirmPassword) {
+    if (newPassword != confirmPassword) {
       showSnackBar("Oops, your passwords don't match. Try that again.");
       return false;
     }
     return true;
   }
 
-  bool isNewPasswordValid() {
-    if (newPasswordController.text.length < 8) {
+  bool isNewPasswordValid(String newPassword) {
+    if (newPassword.length < 8) {
       showSnackBar(
           'Sorry, your password must be at least 8 characters long. Try that again.');
       return false;
@@ -101,10 +101,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     return true;
   }
 
-  bool isEmpty() {
-    if (currentPasswordController.text.isEmpty ||
-        newPasswordController.text.isEmpty ||
-        confirmPasswordController.text.isEmpty) {
+  bool isEmpty(String currentPass, String newPass, String confirmPass) {
+    if (currentPass.isEmpty || newPass.isEmpty || confirmPass.isEmpty) {
       showSnackBar('Oops, you forgot to fill everything out.');
       return true;
     }
@@ -112,7 +110,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   }
 
   Future<void> saveButton() async {
-    if (isEmpty() || !isNewPasswordValid() || !doPasswordsMatch()) {
+    if (isEmpty(currentPasswordController.text, newPasswordController.text,
+            confirmPasswordController.text) ||
+        !isNewPasswordValid(newPasswordController.text) ||
+        !doPasswordsMatch(
+            newPasswordController.text, confirmPasswordController.text)) {
       return;
     }
     await ChangePasswordRequest(currentPasswordController.text,

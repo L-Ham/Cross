@@ -46,6 +46,7 @@ const kOnlineStatusIconSize = 15.0;
 const kOnlineStatusFontSizeRatio = 0.03;
 const kSideBarCloseIconSizeRatio = 0.04;
 const kOnlineStatusColor = Color.fromARGB(255, 0, 204, 120);
+const kOfflineStatusColor = Colors.grey;
 const kSideBarCircleAvatarRadiusRatio = 0.09;
 const Color kBackgroundColor = Color.fromARGB(255, 20, 20, 20);
 const Color kSettingsBackGroundColor = Colors.black;

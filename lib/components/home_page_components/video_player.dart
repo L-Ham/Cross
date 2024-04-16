@@ -57,7 +57,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
             allowScrubbing: true,
             padding: EdgeInsets.all(8.0),
             colors: VideoProgressColors(
-              playedColor: Colors.amber,
+              playedColor: Color.fromARGB(255, 7, 98, 255),
               bufferedColor: Colors.grey,
               backgroundColor: Colors.black,
             ),
