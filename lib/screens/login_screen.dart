@@ -18,6 +18,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:reddit_bel_ham/services/google_sign_in.dart';
 
+const String baseURL = "https://reddit-bylham.me/api/";
+//const String baseURL = "https://67a0936f-f89d-42fc-8dd0-045bbbfa3506.mock.pstmn.io/api";
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
@@ -50,7 +53,7 @@ class LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> login(String userName, String password) async {
-    final url = Uri.parse('https://reddit-bylham.me/api/auth/login');
+    final url = Uri.parse('$baseURL/auth/login');
 
     final Map<String, dynamic> requestData = {
       'email': userName,

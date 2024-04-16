@@ -1,9 +1,8 @@
-bool isValidUrl(String url) {
-  Uri? uri = Uri.tryParse(url);
-
-  if (uri == null) {
+bool isValidUrl(String? url) {
+  if (url == null) {
     return false;
   }
+  Uri? uri = Uri.tryParse(url);
 
   List<String> validTlds = [
     '.com',
