@@ -9,6 +9,7 @@ import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
+import 'package:reddit_bel_ham/utilities/post_voting.dart';
 
 class Post {
   final String username;
@@ -25,17 +26,16 @@ class Post {
   int? pollVotes = 0;
   var previewData;
 
-  Post({
-    required this.username,
-    required this.contentTitle,
-    required this.content,
-    required this.upvotes,
-    required this.comments,
-    required this.type,
-    required this.link,
-    required this.image,
-    required this.video
-  });
+  Post(
+      {required this.username,
+      required this.contentTitle,
+      required this.content,
+      required this.upvotes,
+      required this.comments,
+      required this.type,
+      required this.link,
+      required this.image,
+      required this.video});
 
   static fromJson(json) {}
 }
@@ -52,7 +52,6 @@ class PostCard extends StatefulWidget {
 }
 
 class _PostCardState extends State<PostCard> {
-  
   @override
   Widget build(BuildContext context) {
     final isTypeImage = widget.post.type == 'image';
@@ -72,6 +71,7 @@ class _PostCardState extends State<PostCard> {
   }
 
   bool isExpanded = false;
+
 
   Widget buildPostCard(Post post, bool isTypeImage, bool isTypeText,
       bool isTypePoll, bool isTypeLink, bool isOwner, BuildContext context) {
@@ -236,18 +236,7 @@ class _PostCardState extends State<PostCard> {
                               GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    if (post.isUpvoted) {
-                                      post.upvotes--;
-                                      post.isUpvoted = !post.isUpvoted;
-                                      post.isDownvoted = false;
-                                    } else if (post.isDownvoted) {
-                                      post.upvotes += 2;
-                                      post.isUpvoted = true;
-                                      post.isDownvoted = false;
-                                    } else {
-                                      post.upvotes++;
-                                      post.isUpvoted = !post.isUpvoted;
-                                    }
+                                    upVoteHandler(post);
                                   });
                                 },
                                 child: Padding(
@@ -298,17 +287,7 @@ class _PostCardState extends State<PostCard> {
                               GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    if (post.isDownvoted) {
-                                      post.upvotes++;
-                                      post.isDownvoted = !post.isDownvoted;
-                                    } else if (post.isUpvoted) {
-                                      post.upvotes -= 2;
-                                      post.isDownvoted = true;
-                                      post.isUpvoted = false;
-                                    } else {
-                                      post.upvotes--;
-                                      post.isDownvoted = !post.isDownvoted;
-                                    }
+                                    downVoteHandler(post);
                                   });
                                 },
                                 child: Padding(
