@@ -13,6 +13,9 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../components/general_components/reddit_loading_indicator.dart';
 
+const String baseURL = "https://reddit-bylham.me/api";
+//const String baseURL = "https://e895ac26-6dc5-4b44-8937-20b3ad854396.mock.pstmn.io/api";
+
 class AboutYouScreen extends StatefulWidget {
   const AboutYouScreen({Key? key}) : super(key: key);
 
@@ -48,7 +51,7 @@ class AboutYouScreenState extends State<AboutYouScreen> {
 
   Future<void> signUp(
     String userName, String email, String password, String gender) async {
-    final url = Uri.parse('https://reddit-bylham.me/api/auth/signUp');
+    final url = Uri.parse('$baseURL/auth/signUp');
 
     final Map<String, dynamic> requestData = {
       'userName': userName,
