@@ -17,7 +17,7 @@ class _PollPostState extends State<PollPost> {
   bool isSubmitted = false;
   int sum = 0;
   String selectedOption = '';
-
+  
   @override
   Widget build(BuildContext context) {
     return Padding(
