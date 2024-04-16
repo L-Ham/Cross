@@ -12,6 +12,8 @@ import '../components/create_community_components/community_type_selector.dart';
 import '../utilities/screen_size_handler.dart';
 import '../constants.dart';
 import '../services/api_service.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class CreateCommunityScreen extends StatefulWidget {
   const CreateCommunityScreen({Key? key}) : super(key: key);
@@ -32,6 +34,42 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
   bool isCommunityNameTaken = false;
   String errorText = '';
   bool isLoading = false;
+  late String message;
+
+  Future<void> getValidCommunityName(String communityname) async {
+    String token = TokenDecoder.token;
+    final url = Uri.parse(
+        'https://reddit-bylham.me/api/subreddit/subredditNameAvailability?name=$communityname');
+    late final response;
+    try {
+      response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      String recievedMessage = jsonDecode(response.body)['message'];
+      message = '$recievedMessage! Try another';
+      print(recievedMessage);
+      if (response.statusCode == 200) {
+        message = 'Great Name! It\'s not taken, so it\'s all yours.';
+      }
+      setState(() {
+        if (recievedMessage == 'Name already taken') {
+          isCommunityNameTaken = true;
+        } else {
+          isCommunityNameTaken = false;
+        }
+      });
+    } catch (e) {
+      print('Error: $e');
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   String validateInput(String value) {
     String trimmedValue = value.trim();
@@ -42,18 +80,6 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
         (trimmedValue.isEmpty && value.isNotEmpty)) {
       return 'Community names must be between $kCommunityNameMinLength-$kCommunityNameMaxLength characters, and can only contain letters, numbers, and underscores';
     }
-
-    //Check if the community name is already taken (LATER IMPLEMENTATION)
-    ApiService apiService = ApiService(TokenDecoder.token);
-    apiService.checkSubredditAvailability(value).then((value) {
-      setState(() {
-        if (value['message'] == 'Name available') {
-          isCommunityNameTaken = false;
-        } else {
-          isCommunityNameTaken = true;
-        }
-      });
-    });
     if (value.length >= kCommunityNameMinLength && isCommunityNameTaken) {
       return 'This community name is already taken';
     }
@@ -136,7 +162,8 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                 CommunityNameTextBox(
                   key: const Key('community_name_text_box'),
                   controller: _controller,
-                  onChanged: (value) {
+                  onChanged: (value) async {
+                    await getValidCommunityName(value);
                     if (value.length > kCommunityNameMaxLength) {
                       setState(() {
                         _controller.text =
@@ -145,26 +172,20 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                             TextPosition(offset: _controller.text.length));
                       });
                     }
-
-                    Future.delayed(
-                        const Duration(
-                            milliseconds: kErrorDisplayDelayTimeMilliseconds),
-                        () {
-                      setState(
-                        () {
-                          errorText = validateInput(value);
-                          if (errorText == 'Empty') {
-                            errorText = '';
-                            activated = false;
-                          } else if (value.length >= kCommunityNameMinLength &&
-                              errorText == '') {
-                            activated = true;
-                          } else {
-                            activated = false;
-                          }
-                        },
-                      );
-                    });
+                    setState(
+                      () {
+                        errorText = validateInput(value);
+                        if (errorText == 'Empty') {
+                          errorText = '';
+                          activated = false;
+                        } else if (value.length >= kCommunityNameMinLength &&
+                            errorText == '') {
+                          activated = true;
+                        } else {
+                          activated = false;
+                        }
+                      },
+                    );
                   },
                   onClear: () {
                     setState(() {
