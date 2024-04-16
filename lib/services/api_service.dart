@@ -78,9 +78,8 @@ class ApiService {
   }
 
   Future<dynamic> checkSubredditAvailability(String communityName) async {
-    Map<String, dynamic> body = {"subRedditName": communityName};
-    var result = await request('/subreddit/subredditNameAvailability',
-        headers: headerWithToken, body: body, method: 'GET');
+    var result = await request('/subreddit/subredditNameAvailability?name=$communityName',
+        headers: headerWithToken, method: 'GET');
     return result;
   }
 
