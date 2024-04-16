@@ -10,6 +10,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../components/general_components/reddit_loading_indicator.dart';
 
+const String baseURL = "https://reddit-bylham.me/api";
+//const String baseURL = "https://e895ac26-6dc5-4b44-8937-20b3ad854396.mock.pstmn.io/api";
+
 class CreateUsernameScreen extends StatefulWidget {
   const CreateUsernameScreen({Key? key}) : super(key: key);
 
@@ -27,7 +30,7 @@ class CreateUsernameScreenState extends State<CreateUsernameScreen> {
 
   Future<void> generateUsernames() async {
     final url =
-        Uri.parse('https://reddit-bylham.me/api/auth/generateUsernames');
+        Uri.parse('$baseURL/auth/generateUsernames');
 
     late final response;
     String message = 'Fetch successful.';
@@ -82,7 +85,7 @@ class CreateUsernameScreenState extends State<CreateUsernameScreen> {
 
   Future<void> checkAvailability(String username) async {
     final url = Uri.parse(
-        'https://reddit-bylham.me/api/user/usernameAvailability?username=$username');
+        '$baseURL/user/usernameAvailability?username=$username');
 
     late final response;
     try {
