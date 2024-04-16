@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:reddit_bel_ham/constants.dart';
+import 'package:reddit_bel_ham/utilities/email_regex.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 
@@ -306,7 +307,7 @@ class ApiService {
     var result = await request('/auth/forgotPassword',
         headers: {'Content-Type': 'application/json'},
         method: 'POST',
-        body: {"email": username});
+        body: isEmailValid(username) ? {"email": username} : {"username": username});
     return result;
   }
 
