@@ -90,11 +90,12 @@ class RedditByLham extends StatelessWidget {
         PostToScreen.id: (context) => const PostToScreen(),
         ProfileScreen.id: (context) => ProfileScreen(),
       },
-      initialRoute: (token == null)
-          ? FirstScreen.id
-          : (JwtDecoder.isExpired(TokenDecoder.token))
-              ? LoginScreen.id
-              : HomePageScreen.id,
+      initialRoute: FirstScreen.id,
+      // (token == null)
+          // ? FirstScreen.id
+          // : (JwtDecoder.isExpired(TokenDecoder.token))
+          //     ? LoginScreen.id
+          //     : HomePageScreen.id,
     );
   }
 }
