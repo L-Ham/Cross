@@ -141,8 +141,8 @@ class _FirstScreenState extends State<FirstScreen> {
                           key: const Key('first_screen_logo_image'),
                           image: const AssetImage(
                               'assets/images/elham_final_logo.png'),
-                          height: ScreenSizeHandler.screenHeight * 0.2,
-                          width: ScreenSizeHandler.screenWidth * 0.3,
+                          height: ScreenSizeHandler.screenHeight * 0.15,
+                          width: ScreenSizeHandler.screenWidth * 0.25,
                         ),
                       ),
                     ),
