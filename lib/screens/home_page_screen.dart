@@ -15,6 +15,7 @@ import 'package:reddit_bel_ham/components/settings_components/settings_tile.dart
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_leading_icon.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/add_post_screen.dart';
+import 'package:reddit_bel_ham/screens/comments_screen.dart';
 import 'package:reddit_bel_ham/screens/community_rules_screen.dart';
 import 'package:reddit_bel_ham/screens/home_page_seach_screen.dart';
 import 'package:reddit_bel_ham/screens/inbox_messages.dart';
@@ -467,7 +468,16 @@ class _HomePageScreenState extends State<HomePageScreen> {
                               shrinkWrap: true,
                               itemCount: posts.length,
                               itemBuilder: (context, index) {
-                                return PostCard(post: posts[index]);
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                        context, CommentsScreen.id,
+                                        arguments: posts[index]);
+                                  },
+                                  child: PostCard(
+                                    post: posts[index],
+                                  ),
+                                );
                               },
                             ),
                           ),

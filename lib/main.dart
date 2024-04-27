@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/screens/add_post_screen.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:provider/provider.dart';
 import 'package:reddit_bel_ham/screens/about_you_screen.dart';
 import 'package:reddit_bel_ham/screens/change_password_screen.dart';
+import 'package:reddit_bel_ham/screens/comments_screen.dart';
 import 'package:reddit_bel_ham/screens/community_rules_screen.dart';
 import 'package:reddit_bel_ham/screens/connected_accounts_disconnect_screen.dart';
 import 'package:reddit_bel_ham/screens/post_to_screen.dart';
@@ -36,13 +36,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   await Firebase.initializeApp(
-  options: DefaultFirebaseOptions.currentPlatform,
-);
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   String? token = prefs.getString('token');
   if (token != null) {
     TokenDecoder.updateToken(token);
@@ -76,26 +75,23 @@ class RedditByLham extends StatelessWidget {
         LoginScreen.id: (context) => const LoginScreen(),
         ForgotPasswordScreen.id: (context) =>
             const ForgotPasswordScreen(username: ''),
-        HomePageScreen.id: (context) => HomePageScreen(),
+        HomePageScreen.id: (context) => const HomePageScreen(),
         BlockedAccount.id: (context) => const BlockedAccount(),
         SubredditScreen.id: (context) => const SubredditScreen(),
-        //Resolved
-        // SearchScreen.id: (context) => SearchScreen(),
         SubredditSearchScreen.id: (context) => const SubredditSearchScreen(),
-
         AddPostScreen.id: (context) => const AddPostScreen(),
         CreateUsernameScreen.id: (context) => const CreateUsernameScreen(),
         AboutYouScreen.id: (context) => const AboutYouScreen(),
         CommunityRulesScreen.id: (context) => const CommunityRulesScreen(),
         PostToScreen.id: (context) => const PostToScreen(),
         ProfileScreen.id: (context) => ProfileScreen(),
+        CommentsScreen.id: (context) => const CommentsScreen(),
       },
-      initialRoute: FirstScreen.id,
-      // (token == null)
-          // ? FirstScreen.id
-          // : (JwtDecoder.isExpired(TokenDecoder.token))
-          //     ? LoginScreen.id
-          //     : HomePageScreen.id,
+      initialRoute: (token == null)
+          ? FirstScreen.id
+          : (JwtDecoder.isExpired(TokenDecoder.token))
+              ? LoginScreen.id
+              : HomePageScreen.id,
     );
   }
 }

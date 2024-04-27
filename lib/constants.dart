@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 const double kPageTitleFontSizeHeightRatio = 0.026;
 const double kPageTtleTopBottomPaddingRatio = 0.02;
 const double kErrorTextTopBottomPadding = 10.0;
@@ -51,6 +52,7 @@ const kSideBarCircleAvatarRadiusRatio = 0.09;
 const Color kBackgroundColor = Color.fromARGB(255, 20, 20, 20);
 const Color kSettingsBackGroundColor = Colors.black;
 const Color kFillingColor = Color.fromARGB(255, 40, 40, 40);
+const Color kPostColor = Color.fromARGB(255, 16, 16, 16);
 const Color kHintTextColor = Color.fromARGB(255, 122, 122, 122);
 const Color kGreenGrayColor = Color.fromARGB(255, 144, 178, 185);
 const Color kCursorColor = Color.fromARGB(255, 66, 34, 179);
@@ -109,4 +111,3 @@ const kErrorMessageSmallerFontRatio = 0.03;
 const kErrorMessageLeftPaddingRatio = 0.05;
 Color kErrorColor = Colors.red.shade200;
 Color kOrangeActivatedColor = Colors.orange.shade900;
-
