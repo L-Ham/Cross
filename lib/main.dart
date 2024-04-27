@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_bel_ham/screens/add_comment_screen.dart';
 import 'package:reddit_bel_ham/screens/add_post_screen.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:reddit_bel_ham/screens/about_you_screen.dart';
@@ -86,6 +87,7 @@ class RedditByLham extends StatelessWidget {
         PostToScreen.id: (context) => const PostToScreen(),
         ProfileScreen.id: (context) => ProfileScreen(),
         CommentsScreen.id: (context) => const CommentsScreen(),
+        AddCommentScreen.id: (context) => const AddCommentScreen(),
       },
       initialRoute: (token == null)
           ? FirstScreen.id
