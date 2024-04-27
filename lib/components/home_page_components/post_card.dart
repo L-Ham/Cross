@@ -76,7 +76,7 @@ class _PostCardState extends State<PostCard> {
   Widget buildPostCard(Post post, bool isTypeImage, bool isTypeText,
       bool isTypePoll, bool isTypeLink, bool isOwner, BuildContext context) {
     return Container(
-      color: Colors.black,
+      color: kPostColor,
       child: SingleChildScrollView(
         child: Column(
           children: [
@@ -224,7 +224,7 @@ class _PostCardState extends State<PostCard> {
                             left: ScreenSizeHandler.screenWidth * 0.02),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.black,
+                            color: kPostColor,
                             borderRadius: BorderRadius.circular(
                                 ScreenSizeHandler.screenWidth * 0.05),
                             border: Border.all(
@@ -330,7 +330,7 @@ class _PostCardState extends State<PostCard> {
                                 children: [
                                   Container(
                                       decoration: BoxDecoration(
-                                        color: Colors.black,
+                                        color: kPostColor,
                                         borderRadius: BorderRadius.circular(
                                             ScreenSizeHandler.screenWidth *
                                                 0.05),
