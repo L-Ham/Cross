@@ -16,6 +16,7 @@ import 'package:reddit_bel_ham/components/settings_components/settings_tile_lead
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/add_post_screen.dart';
 import 'package:reddit_bel_ham/screens/comments_screen.dart';
+import 'package:reddit_bel_ham/screens/communities_screen.dart';
 import 'package:reddit_bel_ham/screens/community_rules_screen.dart';
 import 'package:reddit_bel_ham/screens/home_page_seach_screen.dart';
 import 'package:reddit_bel_ham/screens/inbox_messages.dart';
@@ -421,20 +422,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
           ],
         ),
         body: navigationBarIndex == 1
-            ? Padding(
-                padding: EdgeInsets.only(
-                  left: ScreenSizeHandler.screenWidth * 0.15,
-                ),
-                child: Center(
-                  child: Text(
-                    'Communities',
-                    style: TextStyle(
-                        fontSize: ScreenSizeHandler.smaller *
-                            kButtonSmallerFontRatio *
-                            1.1),
-                  ),
-                ),
-              )
+            ? const CommunitiesScreen()
             : navigationBarIndex == 3
                 ? Padding(
                     padding: EdgeInsets.only(
