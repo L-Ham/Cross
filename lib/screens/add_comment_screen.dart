@@ -210,7 +210,7 @@ class _AddCommentScreenState extends State<AddCommentScreen> {
                       ),
                       AddPostTextField(
                         controller: commentController,
-                        hintText: isReply ? "Your reply" : "Your comment",
+                        hintText: isReply ? "Your Reply" : "Your comment",
                         fontSizeRatio: 0.018,
                         maxLines: null,
                       ),
