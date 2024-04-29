@@ -76,7 +76,7 @@ class _TrendingTopCommunitiesScreenState
       appBar: AppBar(
         centerTitle: true,
         elevation: 0,
-        backgroundColor: kBackgroundColor,
+        backgroundColor: Colors.black,
         title: Text(
           isTrending ? '🔥 Tending globally' : '🌍  Top globally',
           style: TextStyle(

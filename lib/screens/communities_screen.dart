@@ -1,9 +1,6 @@
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/TrendingTopCommunitiesScreen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 
