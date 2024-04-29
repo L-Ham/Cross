@@ -209,7 +209,7 @@ class TrendingPreviewTile extends StatelessWidget {
         Divider(
           color: Colors.grey[600]!,
           thickness: 0.5,
-          height: ScreenSizeHandler.screenHeight * 0.05,
+          height: ScreenSizeHandler.screenHeight * 0.04,
         )
       ],
     );
