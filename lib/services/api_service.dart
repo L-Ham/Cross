@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/utilities/email_regex.dart';
-import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 
 const String baseURL = "https://reddit-bylham.me/api";
+
 //const String baseURL = "https://e895ac26-6dc5-4b44-8937-20b3ad854396.mock.pstmn.io/api";
 class ApiService {
   String token = '';
@@ -78,8 +78,10 @@ class ApiService {
   }
 
   Future<dynamic> checkSubredditAvailability(String communityName) async {
-    var result = await request('/subreddit/subredditNameAvailability?name=$communityName',
-        headers: headerWithToken, method: 'GET');
+    var result = await request(
+        '/subreddit/subredditNameAvailability?name=$communityName',
+        headers: headerWithToken,
+        method: 'GET');
     return result;
   }
 
@@ -285,7 +287,6 @@ class ApiService {
     sentData = {"subredditId": communityId};
     var result = await request('/subreddit/rule',
         headers: headerWithToken, method: 'GET', body: sentData);
-    print(result);
     return result;
   }
 
@@ -306,7 +307,9 @@ class ApiService {
     var result = await request('/auth/forgotPassword',
         headers: {'Content-Type': 'application/json'},
         method: 'POST',
-        body: isEmailValid(username) ? {"email": username} : {"username": username});
+        body: isEmailValid(username)
+            ? {"email": username}
+            : {"username": username});
     return result;
   }
 
@@ -334,6 +337,25 @@ class ApiService {
         headers: headerWithToken,
         method: 'PATCH',
         body: {"password": password});
+    return result;
+  }
+
+  Future<dynamic> getAllInbox() async {
+    var result = await request('/message/getAllInbox',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+
+    Future<dynamic> getAllSent() async {
+    var result = await request('/message/getSentMessages',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+
+  Future<dynamic> composeMessage(Map<String, dynamic> body) async {
+    var result = await request('/message/compose',
+        headers: headerWithToken, method: 'POST', body: body);
+    print(result);
     return result;
   }
 }

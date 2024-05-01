@@ -7,6 +7,8 @@ import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/utilities/is_valid_url.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 
+import '../components/general_components/insert_link_popup.dart';
+
 class AddCommentScreen extends StatefulWidget {
   const AddCommentScreen({super.key});
 
@@ -17,10 +19,7 @@ class AddCommentScreen extends StatefulWidget {
 }
 
 class _AddCommentScreenState extends State<AddCommentScreen> {
-  TextEditingController urlNameController = TextEditingController();
-  TextEditingController urlLinkController = TextEditingController();
   TextEditingController commentController = TextEditingController();
-  ValueNotifier<bool> isButtonEnabled = ValueNotifier<bool>(false);
   late String postTitle;
   late String postContent;
   late String postType;
@@ -40,25 +39,6 @@ class _AddCommentScreenState extends State<AddCommentScreen> {
     isReply = args['isReply']! as bool;
 
     super.didChangeDependencies();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    urlNameController.addListener(updateButtonState);
-    urlLinkController.addListener(updateButtonState);
-  }
-
-  @override
-  void dispose() {
-    urlNameController.removeListener(updateButtonState);
-    urlLinkController.removeListener(updateButtonState);
-    super.dispose();
-  }
-
-  void updateButtonState() {
-    isButtonEnabled.value =
-        urlNameController.text.isNotEmpty && isValidUrl(urlLinkController.text);
   }
 
   @override
@@ -123,18 +103,21 @@ class _AddCommentScreenState extends State<AddCommentScreen> {
                                           userName + " • " + postTime,
                                           style: TextStyle(
                                             color: Colors.grey,
-                                            fontSize:
-                                                ScreenSizeHandler.bigger * 0.015,
+                                            fontSize: ScreenSizeHandler.bigger *
+                                                0.015,
                                           ),
                                         ),
                                       ),
                                       Padding(
-                                        padding: EdgeInsets.only(top: ScreenSizeHandler.screenHeight*0.02),
+                                        padding: EdgeInsets.only(
+                                            top:
+                                                ScreenSizeHandler.screenHeight *
+                                                    0.02),
                                         child: Text(
                                           replyString,
                                           style: TextStyle(
-                                            fontSize:
-                                                ScreenSizeHandler.bigger * 0.016,
+                                            fontSize: ScreenSizeHandler.bigger *
+                                                0.016,
                                           ),
                                         ),
                                       ),
@@ -236,106 +219,7 @@ class _AddCommentScreenState extends State<AddCommentScreen> {
                         final result = showDialog(
                           context: context,
                           builder: (BuildContext context) {
-                            return AlertDialog(
-                              shape: const RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.zero, // Add this line
-                              ),
-                              backgroundColor: kBackgroundColor,
-                              shadowColor: kBackgroundColor,
-                              surfaceTintColor: kBackgroundColor,
-                              title: Text(
-                                'Insert a link',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: ScreenSizeHandler.bigger * 0.024,
-                                ),
-                              ),
-                              content: Padding(
-                                padding: EdgeInsets.only(
-                                    top: ScreenSizeHandler.screenHeight * 0.01),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    TextFormField(
-                                      controller: urlNameController,
-                                      decoration: InputDecoration(
-                                          hintText: 'Name',
-                                          border: InputBorder.none,
-                                          hintStyle: TextStyle(
-                                              fontSize:
-                                                  ScreenSizeHandler.bigger *
-                                                      0.018)),
-                                    ),
-                                    TextFormField(
-                                      controller: urlLinkController,
-                                      decoration: InputDecoration(
-                                          hintText: 'Link',
-                                          border: InputBorder.none,
-                                          hintStyle: TextStyle(
-                                              fontSize:
-                                                  ScreenSizeHandler.bigger *
-                                                      0.018)),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                          top: ScreenSizeHandler.screenHeight *
-                                              0.02),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          RoundedButton(
-                                            onTap: () {
-                                              Navigator.of(context).pop();
-                                              urlLinkController.clear();
-                                              urlNameController.clear();
-                                            },
-                                            buttonWidthRatio: 0.14,
-                                            buttonHeightRatio: 0.065,
-                                            buttonColor: kBackgroundColor,
-                                            child: const Text('Cancel'),
-                                          ),
-                                          ValueListenableBuilder<bool>(
-                                            valueListenable: isButtonEnabled,
-                                            builder: (BuildContext context,
-                                                bool isEnabled, Widget? child) {
-                                              return RoundedButton(
-                                                onTap: () {
-                                                  Navigator.pop(
-                                                    context,
-                                                    {
-                                                      'name': urlNameController
-                                                          .text,
-                                                      'link': urlLinkController
-                                                          .text,
-                                                    },
-                                                  );
-                                                  urlLinkController.clear();
-                                                  urlNameController.clear();
-                                                },
-                                                buttonWidthRatio: 0.14,
-                                                buttonHeightRatio: 0.06,
-                                                buttonColor: Colors.blue,
-                                                child: Text(
-                                                  'Insert',
-                                                  style: TextStyle(
-                                                    color: isEnabled
-                                                        ? Colors.white
-                                                        : Colors.white
-                                                            .withOpacity(0.5),
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            );
+                            return const InsertLinkPopUp();
                           },
                         );
                         result.then(

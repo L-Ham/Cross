@@ -35,6 +35,7 @@ dependencies:
   mockito: ^5.4.4
   firebase_auth: ^4.19.1
   firebase_core: ^2.29.0
+  flutter_linkify: ^6.0.0
   
 dev_dependencies:
   flutter_test:

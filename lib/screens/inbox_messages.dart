@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_bel_ham/components/home_page_components/profile_icon_with_indicator.dart';
-import 'package:reddit_bel_ham/components/more_bottom_sheet_inbox.dart';
+import 'package:reddit_bel_ham/screens/messages_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 
 class InboxMessagesScreen extends StatefulWidget {
   const InboxMessagesScreen({Key? key}) : super(key: key);
-  static const id = 'home_page_screen';
+  static const id = 'inbox_messages_screen';
 
   @override
   State<InboxMessagesScreen> createState() => _InboxMessagesScreenState();
@@ -54,7 +53,7 @@ class _InboxMessagesScreenState extends State<InboxMessagesScreen>
         controller: _tabController,
         children: [
           Center(child: Text('Activity Screen')),
-          Center(child: Text('Messages Screen')),
+          MessagesScreen(),
         ],
       ),
     );

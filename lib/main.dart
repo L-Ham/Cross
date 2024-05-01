@@ -9,9 +9,13 @@ import 'package:reddit_bel_ham/screens/comments_screen.dart';
 import 'package:reddit_bel_ham/screens/communities_screen.dart';
 import 'package:reddit_bel_ham/screens/community_rules_screen.dart';
 import 'package:reddit_bel_ham/screens/connected_accounts_disconnect_screen.dart';
+import 'package:reddit_bel_ham/screens/message_reply_screen.dart';
+import 'package:reddit_bel_ham/screens/messages_screen.dart';
+import 'package:reddit_bel_ham/screens/new_message_screen.dart';
 import 'package:reddit_bel_ham/screens/post_to_screen.dart';
 import 'package:reddit_bel_ham/screens/settings_screen.dart';
 import 'package:reddit_bel_ham/screens/create_username_screen.dart';
+import 'package:reddit_bel_ham/screens/testscreen.dart';
 import 'package:reddit_bel_ham/screens/update_email_address_screen.dart';
 import 'package:reddit_bel_ham/screens/create_community_screen.dart';
 import 'package:reddit_bel_ham/utilities/subreddit_store.dart';
@@ -93,6 +97,11 @@ class RedditByLham extends StatelessWidget {
         CommunitiesScreen.id: (context) => const CommunitiesScreen(),
         TrendingTopCommunitiesScreen.id: (context) =>
             const TrendingTopCommunitiesScreen(),
+        TestScreen.id: (context) => const TestScreen(),
+        InboxMessagesScreen.id: (context) => const InboxMessagesScreen(),
+        MessagesScreen.id: (context) => const MessagesScreen(),
+        MessageReplyScreen.id: (context) => const MessageReplyScreen(),
+        NewMessageScreen.id: (context) => const NewMessageScreen(),
       },
       initialRoute: (token == null)
           ? FirstScreen.id

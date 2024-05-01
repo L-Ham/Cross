@@ -43,6 +43,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
   bool isPostButtonActivated = false;
   bool isSubredditSelected = false;
   FocusNode urlFocus = FocusNode();
+  FocusNode titleFocus = FocusNode();
   List<XFile> chosenImages = [];
   final ImagePicker _picker = ImagePicker();
   TextEditingController titleController = TextEditingController();
@@ -73,6 +74,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
 
   @override
   void didChangeDependencies() {
+    titleFocus.requestFocus();
     Map<String, dynamic>? args =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
     if (args == null) {
@@ -492,6 +494,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                             isBrandAffiliate: isBrandAffiliate),
                         AddPostTextField(
                           controller: titleController,
+                          focusNode: titleFocus,
                           hintText: "Title",
                           fontSizeRatio: 0.032,
                           isTitle: true,

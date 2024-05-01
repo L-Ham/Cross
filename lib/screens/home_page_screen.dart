@@ -23,6 +23,7 @@ import 'package:reddit_bel_ham/screens/inbox_messages.dart';
 import 'package:reddit_bel_ham/screens/about_you_screen.dart';
 import 'package:reddit_bel_ham/screens/home_page_seach_screen.dart';
 import 'package:reddit_bel_ham/screens/login_screen.dart';
+import 'package:reddit_bel_ham/screens/notifications_settings_screen.dart';
 
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
@@ -33,6 +34,8 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:reddit_bel_ham/screens/settings_screen.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:reddit_bel_ham/components/home_page_components/trending_posts.dart';
+
+import '../components/messaging_components/inbox_bottom_sheet.dart';
 
 class HomePageScreen extends StatefulWidget {
   const HomePageScreen({super.key});
@@ -352,7 +355,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
                           style: TextStyle(
                               fontSize: ScreenSizeHandler.smaller *
                                   kButtonSmallerFontRatio *
-                                  1.1),
+                                  1.1,
+                              fontWeight: FontWeight.w600),
                         ),
                       ),
                     )
@@ -367,7 +371,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
                               style: TextStyle(
                                   fontSize: ScreenSizeHandler.smaller *
                                       kButtonSmallerFontRatio *
-                                      1.1),
+                                      1.1,
+                                  fontWeight: FontWeight.w600),
                             ),
                           ),
                         )
@@ -382,7 +387,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                   style: TextStyle(
                                       fontSize: ScreenSizeHandler.smaller *
                                           kButtonSmallerFontRatio *
-                                          1.1),
+                                          1.1,
+                                      fontWeight: FontWeight.w600),
                                 ),
                               ),
                             )
@@ -407,6 +413,24 @@ class _HomePageScreenState extends State<HomePageScreen> {
                     size: ScreenSizeHandler.smaller * 0.095,
                     color: Colors.white,
                   ),
+                ),
+              ),
+            ),
+            Visibility(
+              visible: navigationBarIndex == 4,
+              child: GestureDetector(
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const InboxBottomSheet();
+                    },
+                  );
+                },
+                child: Icon(
+                  Icons.more_horiz,
+                  color: Colors.white,
+                  size: ScreenSizeHandler.bigger * 0.032,
                 ),
               ),
             ),
