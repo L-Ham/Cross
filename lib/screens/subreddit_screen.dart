@@ -41,9 +41,11 @@ class _SubredditScreenState extends State<SubredditScreen> {
   Future<void> getCommunityData() async {
     Map<String, dynamic> data =
         (await apiService.getCommunityDetails(subredditName)) ?? {};
-    setState(() {
-      isLoading = true;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+      });
+    }
     if (mounted) {
       setState(() {
         subredditMembersCount =
@@ -64,9 +66,11 @@ class _SubredditScreenState extends State<SubredditScreen> {
       SubredditStore().addSubreddit(subredditName, subredditId,
           subredditAvatarImage, int.parse(subredditMembersCount));
     }
-    setState(() {
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override

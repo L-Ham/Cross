@@ -7,12 +7,14 @@ import 'package:reddit_bel_ham/screens/about_you_screen.dart';
 import 'package:reddit_bel_ham/screens/change_password_screen.dart';
 import 'package:reddit_bel_ham/screens/comments_screen.dart';
 import 'package:reddit_bel_ham/screens/communities_screen.dart';
+import 'package:reddit_bel_ham/screens/communities_search_screen.dart';
 import 'package:reddit_bel_ham/screens/community_rules_screen.dart';
 import 'package:reddit_bel_ham/screens/connected_accounts_disconnect_screen.dart';
 import 'package:reddit_bel_ham/screens/message_reply_screen.dart';
 import 'package:reddit_bel_ham/screens/messages_screen.dart';
 import 'package:reddit_bel_ham/screens/new_message_screen.dart';
 import 'package:reddit_bel_ham/screens/post_to_screen.dart';
+import 'package:reddit_bel_ham/screens/searching_screen.dart';
 import 'package:reddit_bel_ham/screens/settings_screen.dart';
 import 'package:reddit_bel_ham/screens/create_username_screen.dart';
 import 'package:reddit_bel_ham/screens/update_email_address_screen.dart';
@@ -100,6 +102,7 @@ class RedditByLham extends StatelessWidget {
         MessagesScreen.id: (context) => const MessagesScreen(),
         MessageReplyScreen.id: (context) => const MessageReplyScreen(),
         NewMessageScreen.id: (context) => const NewMessageScreen(),
+        SearchingScreen.id: (context) => const SearchingScreen(),
       },
       initialRoute: (token == null)
           ? FirstScreen.id

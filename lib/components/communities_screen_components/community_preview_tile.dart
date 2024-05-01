@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/constants.dart';
-
-import '../../screens/communities_screen.dart';
 import '../../screens/subreddit_screen.dart';
 import '../../utilities/screen_size_handler.dart';
 import '../general_components/avatar.dart';
