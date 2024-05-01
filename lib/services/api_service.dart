@@ -346,7 +346,7 @@ class ApiService {
     return result;
   }
 
-    Future<dynamic> getAllSent() async {
+  Future<dynamic> getAllSent() async {
     var result = await request('/message/getSentMessages',
         headers: headerWithToken, method: 'GET');
     return result;
@@ -356,6 +356,18 @@ class ApiService {
     var result = await request('/message/compose',
         headers: headerWithToken, method: 'POST', body: body);
     print(result);
+    return result;
+  }
+
+  Future<dynamic> getPopularCommunites() async {
+    var result = await request('/subreddit/popularCommunity',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+
+  Future<dynamic> getTrendingCommunities() async {
+    var result = await request('/subreddit/trendingCommunity',
+        headers: headerWithToken, method: 'GET');
     return result;
   }
 }

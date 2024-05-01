@@ -1,8 +1,14 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:reddit_bel_ham/components/general_components/reddit_loading_indicator.dart';
 import 'package:reddit_bel_ham/screens/TrendingTopCommunitiesScreen.dart';
+import 'package:reddit_bel_ham/screens/subreddit_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
+
+import '../services/api_service.dart';
+import '../utilities/token_decoder.dart';
 
 class CommunitiesScreen extends StatefulWidget {
   const CommunitiesScreen({super.key});
@@ -14,124 +20,148 @@ class CommunitiesScreen extends StatefulWidget {
 }
 
 class _CommunitiesScreenState extends State<CommunitiesScreen> {
-  List<String> trendingCommunities = [
-    'FlutterDev',
-    'Dart',
-    'Firebase',
-    'Flutter',
-    'FlutterDev',
-    'Dart',
-    'Firebase',
-    'Flutter',
-    'batates'
-  ];
+  List<String> trendingCommunities = [];
+  List<int> trendingCommunitiesMembers = [];
+  List<String> trendingAvatarImages = [];
+  List<String> trendingCommunityDesciptions = [];
 
-  List<String> trendingCommunitiesMembers = [
-    "1.2M",
-    "4.5M",
-    "3.2M",
-    "2.1M",
-    "1.2M",
-    "4.5M",
-    "3.2M",
-    "2.1M",
-    '1k'
-  ];
+  List<String> topCommunities = [];
+  List<int> topCommunitiesMembers = [];
+  List<String> topAvatarImages = [];
+  List<String> topCommunitiesDesciptions = [];
 
-  List<String> trendingAvatarImages = [
-    'assets/images/planet3.png',
-    'assets/images/planet3.png',
-    'assets/images/planet3.png',
-    'assets/images/planet3.png',
-    'assets/images/planet3.png',
-    'assets/images/planet3.png',
-    'assets/images/planet3.png',
-    'assets/images/planet3.png',
-    'assets/images/planet3.png',
-  ];
+  bool isLoading = false;
 
-  List<String> trendingCommunityDesciptions = [
-    'Welcome to FlutterDev, the largest Flutter communityyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy',
-    'Welcome to Dart, the largest Dart community',
-    'Welcome to Firebase, the largest Firebase community',
-    'Welcome to Flutter, the largest Flutter community',
-    'Welcome to FlutterDev, the largest Flutter community',
-    'Welcome to Dart, the largest Dart community',
-    'Welcome to Firebase, the largest Firebase community',
-    'Welcome to Flutter, the largest Flutter community',
-    'hehe'
-  ];
+  void getTopCommunities() async {
+    setState(() {
+      isLoading = true;
+    });
+    ApiService apiService = ApiService(TokenDecoder.token);
+    var response = await apiService.getPopularCommunites();
+    response = response['popularCommunities'];
+    setState(() {
+      for (var community in response) {
+        topCommunities.add(community['name']);
+        topCommunitiesMembers.add(community['memberCount']);
+        if (community['avatarImageUrl'] == null) {
+          topAvatarImages.add('assets/images/planet3.png');
+        } else {
+          topAvatarImages.add(community['avatarImageUrl']);
+        }
+        topCommunitiesDesciptions.add(
+            "Welcome to ${community['name']}, the largest ${community['name']} community");
+      }
+    });
+  }
+
+  void getTrendingCommunities() async {
+    ApiService apiService = ApiService(TokenDecoder.token);
+    var response = await apiService.getTrendingCommunities();
+    response = response['TrendingCommunities'];
+    setState(() {
+      for (var community in response) {
+        trendingCommunities.add(community['name']);
+        trendingCommunitiesMembers.add(community['memberCount']);
+        if (community['avatarImageUrl'] == null) {
+          trendingAvatarImages.add('assets/images/planet3.png');
+        } else {
+          trendingAvatarImages.add(community['avatarImageUrl']);
+        }
+        trendingCommunityDesciptions.add(
+            "Welcome to ${community['name']}, the largest ${community['name']} community");
+      }
+    });
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    getTopCommunities();
+    getTrendingCommunities();
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: ScreenSizeHandler.screenWidth * 0.05),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CommunitiesScreenHeader(
-                title: '🔥 Tending globally',
-                onTap: () {
-                  Navigator.pushNamed(context, TrendingTopCommunitiesScreen.id,
-                      arguments: true);
-                },
-              ),
-              SizedBox(
-                height: ScreenSizeHandler.screenHeight * 0.3,
-                child: GridView.builder(
-                  scrollDirection: Axis.horizontal,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    mainAxisExtent: ScreenSizeHandler.bigger * 0.38,
-                    crossAxisCount: 2,
-                    crossAxisSpacing: ScreenSizeHandler.screenWidth * 0.028,
-                    mainAxisSpacing: ScreenSizeHandler.screenWidth * 0.028,
-                  ),
-                  itemCount: min(trendingCommunities.length, 24),
-                  itemBuilder: (context, index) {
-                    return CommunityPreviewTile(
-                      id: 'id$index',
-                      subredditName: trendingCommunities[index],
-                      numOfMembers: trendingCommunitiesMembers[index],
-                      description: trendingCommunityDesciptions[index],
-                      image: trendingAvatarImages[index],
-                    );
+      body: ModalProgressHUD(
+        inAsyncCall: isLoading,
+        progressIndicator: const RedditLoadingIndicator(),
+        color: Colors.black,
+        opacity: 0.5,
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: ScreenSizeHandler.screenWidth * 0.05),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CommunitiesScreenHeader(
+                  title: '🔥 Tending globally',
+                  onTap: () {
+                    Navigator.pushNamed(
+                        context, TrendingTopCommunitiesScreen.id,
+                        arguments: true);
                   },
                 ),
-              ),
-              CommunitiesScreenHeader(
-                title: '🌍  Top globally',
-                onTap: () {
-                  Navigator.pushNamed(context, TrendingTopCommunitiesScreen.id,
-                      arguments: false);
-                },
-              ),
-              SizedBox(
-                height: ScreenSizeHandler.screenHeight * 0.3,
-                child: GridView.builder(
-                  scrollDirection: Axis.horizontal,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    mainAxisExtent: ScreenSizeHandler.bigger * 0.38,
-                    crossAxisCount: 2,
-                    crossAxisSpacing: ScreenSizeHandler.screenWidth * 0.028,
-                    mainAxisSpacing: ScreenSizeHandler.screenWidth * 0.028,
+                SizedBox(
+                  height: ScreenSizeHandler.screenHeight * 0.3,
+                  child: GridView.builder(
+                    scrollDirection: Axis.horizontal,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      mainAxisExtent: ScreenSizeHandler.bigger * 0.38,
+                      crossAxisCount: 2,
+                      crossAxisSpacing: ScreenSizeHandler.screenWidth * 0.028,
+                      mainAxisSpacing: ScreenSizeHandler.screenWidth * 0.028,
+                    ),
+                    itemCount: min(trendingCommunities.length, 24),
+                    itemBuilder: (context, index) {
+                      return CommunityPreviewTile(
+                        id: 'id$index',
+                        subredditName: trendingCommunities[index],
+                        numOfMembers:
+                            trendingCommunitiesMembers[index].toString(),
+                        description: trendingCommunityDesciptions[index],
+                        image: trendingAvatarImages[index],
+                      );
+                    },
                   ),
-                  itemCount: trendingCommunities.length,
-                  itemBuilder: (context, index) {
-                    return CommunityPreviewTile(
-                      id: 'id$index',
-                      subredditName: trendingCommunities[index],
-                      numOfMembers: trendingCommunitiesMembers[index],
-                      description: trendingCommunityDesciptions[index],
-                      image: trendingAvatarImages[index],
-                    );
+                ),
+                CommunitiesScreenHeader(
+                  title: '🌍  Top globally',
+                  onTap: () {
+                    Navigator.pushNamed(
+                        context, TrendingTopCommunitiesScreen.id,
+                        arguments: false);
                   },
                 ),
-              ),
-            ],
+                SizedBox(
+                  height: ScreenSizeHandler.screenHeight * 0.3,
+                  child: GridView.builder(
+                    scrollDirection: Axis.horizontal,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      mainAxisExtent: ScreenSizeHandler.bigger * 0.38,
+                      crossAxisCount: 2,
+                      crossAxisSpacing: ScreenSizeHandler.screenWidth * 0.028,
+                      mainAxisSpacing: ScreenSizeHandler.screenWidth * 0.028,
+                    ),
+                    itemCount: topCommunities.length,
+                    itemBuilder: (context, index) {
+                      return CommunityPreviewTile(
+                        id: 'id$index',
+                        subredditName: topCommunities[index],
+                        numOfMembers: topCommunitiesMembers[index].toString(),
+                        description: topCommunitiesDesciptions[index],
+                        image: topAvatarImages[index],
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -158,7 +188,10 @@ class CommunityPreviewTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.pushNamed(context, SubredditScreen.id,
+            arguments: subredditName);
+      },
       child: Container(
         padding: EdgeInsets.only(
             top: ScreenSizeHandler.screenHeight * 0.01,
@@ -210,8 +243,8 @@ class CommunityPreviewTile extends StatelessWidget {
             Align(
               alignment: Alignment.centerLeft,
               child: Padding(
-                padding:
-                    EdgeInsets.only(top: ScreenSizeHandler.screenHeight * 0.006),
+                padding: EdgeInsets.only(
+                    top: ScreenSizeHandler.screenHeight * 0.006),
                 child: Text(
                   description,
                   overflow: TextOverflow.ellipsis,
