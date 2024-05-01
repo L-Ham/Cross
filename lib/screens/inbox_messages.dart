@@ -30,6 +30,7 @@ class _InboxMessagesScreenState extends State<InboxMessagesScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       key: _scaffoldKey,
       appBar: AppBar(
         automaticallyImplyLeading: false,

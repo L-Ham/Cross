@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:reddit_bel_ham/components/general_components/reddit_loading_indicator.dart';
 import 'package:reddit_bel_ham/constants.dart';
-import 'package:reddit_bel_ham/screens/communities_screen.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
+
+import '../components/communities_screen_components/community_preview_tile.dart';
 
 class TrendingTopCommunitiesScreen extends StatefulWidget {
   const TrendingTopCommunitiesScreen({super.key});

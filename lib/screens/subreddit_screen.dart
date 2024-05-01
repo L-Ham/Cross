@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 import 'package:reddit_bel_ham/components/subreddit_components/subreddit_navbar_icon.dart';
 import 'package:reddit_bel_ham/screens/subreddit_search_screen.dart';
+import 'package:reddit_bel_ham/utilities/subreddit_store.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import '../constants.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
@@ -32,6 +33,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
   String subredditOnlineNickname = 'online';
   String subredditBannerImage = 'assets/images/blue2.jpg';
   String subredditAvatarImage = 'assets/images/planet3.png';
+  String subredditId = "";
   bool _isJoined = true;
   ApiService apiService = ApiService(TokenDecoder.token);
   bool isLoading = true;
@@ -57,7 +59,10 @@ class _SubredditScreenState extends State<SubredditScreen> {
         subredditMembersNickname = data['communityDetails']['membersNickname'];
         subredditOnlineNickname =
             data['communityDetails']['currentlyViewingNickname'];
+        subredditId = data['communityDetails']['subredditId'];
       });
+      SubredditStore().addSubreddit(subredditName, subredditId,
+          subredditAvatarImage, int.parse(subredditMembersCount));
     }
     setState(() {
       isLoading = false;
