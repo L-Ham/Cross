@@ -10,6 +10,7 @@ import 'package:reddit_bel_ham/screens/communities_screen.dart';
 import 'package:reddit_bel_ham/screens/community_rules_screen.dart';
 import 'package:reddit_bel_ham/screens/connected_accounts_disconnect_screen.dart';
 import 'package:reddit_bel_ham/screens/post_to_screen.dart';
+import 'package:reddit_bel_ham/screens/saved_screen.dart';
 import 'package:reddit_bel_ham/screens/settings_screen.dart';
 import 'package:reddit_bel_ham/screens/create_username_screen.dart';
 import 'package:reddit_bel_ham/screens/update_email_address_screen.dart';
@@ -80,6 +81,7 @@ class RedditByLham extends StatelessWidget {
             const ForgotPasswordScreen(username: ''),
         HomePageScreen.id: (context) => const HomePageScreen(),
         BlockedAccount.id: (context) => const BlockedAccount(),
+        SavedScreen.id: (context) => const SavedScreen(),
         SubredditScreen.id: (context) => const SubredditScreen(),
         SubredditSearchScreen.id: (context) => const SubredditSearchScreen(),
         AddPostScreen.id: (context) => const AddPostScreen(),

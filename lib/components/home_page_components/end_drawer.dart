@@ -143,7 +143,9 @@ class EndDrawer extends StatelessWidget {
                     leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.bookmarks_outlined),
                     titleText: "Saved",
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(context, 'saved_screen');
+                    },
                   ),
                   SettingsTile(
                     leadingIcon: const SettingsTileLeadingIcon(
