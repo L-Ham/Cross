@@ -22,7 +22,7 @@ class AddPostTextField extends StatelessWidget {
 
   final String hintText;
   final double fontSizeRatio;
-  final int maxLines;
+  final int? maxLines;
   final bool isTitle;
   final bool hasClearButton;
   final Function() onClearTap;
@@ -34,7 +34,7 @@ class AddPostTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
-      maxLines: null,
+      maxLines: maxLines,
       minLines: maxLines,
       focusNode: focusNode != null ? focusNode : null,
       style: TextStyle(
