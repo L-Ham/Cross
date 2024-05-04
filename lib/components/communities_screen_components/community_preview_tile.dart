@@ -53,24 +53,29 @@ class CommunityPreviewTile extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(
                       left: ScreenSizeHandler.screenWidth * 0.02),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        subredditName,
-                        style: TextStyle(
-                            fontSize: ScreenSizeHandler.bigger * 0.018,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white),
-                      ),
-                      Text(
-                        '$numOfMembers members',
-                        style: TextStyle(
-                            fontSize: ScreenSizeHandler.bigger * 0.015,
-                            color: Colors.grey[600],
-                            fontWeight: FontWeight.w500),
-                      ),
-                    ],
+                  child: SizedBox(
+                    width: ScreenSizeHandler.screenWidth * 0.4,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                          subredditName,
+                          style: TextStyle(
+                              fontSize: ScreenSizeHandler.bigger * 0.018,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white),
+                        ),
+                        Text(
+                          '$numOfMembers members',
+                          style: TextStyle(
+                              fontSize: ScreenSizeHandler.bigger * 0.015,
+                              color: Colors.grey[600],
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 const Spacer(),

@@ -49,8 +49,7 @@ class _CommunitiesScreenState extends State<CommunitiesScreen> {
         } else {
           topAvatarImages.add(community['avatarImageUrl']);
         }
-        topCommunitiesDesciptions.add(
-            "Welcome to ${community['name']}, the largest ${community['name']} community");
+        topCommunitiesDesciptions.add(community['description']);
       }
     });
   }
@@ -68,8 +67,7 @@ class _CommunitiesScreenState extends State<CommunitiesScreen> {
         } else {
           trendingAvatarImages.add(community['avatarImageUrl']);
         }
-        trendingCommunityDesciptions.add(
-            "Welcome to ${community['name']}, the largest ${community['name']} community");
+        trendingCommunityDesciptions.add(community['description']);
       }
     });
     setState(() {

@@ -23,7 +23,7 @@ class _InboxMessagesScreenState extends State<InboxMessagesScreen>
 
   @override
   void dispose() {
-    _tabController?.dispose();
+    _tabController.dispose();
     super.dispose();
   }
 
@@ -40,7 +40,8 @@ class _InboxMessagesScreenState extends State<InboxMessagesScreen>
           labelColor: Colors.white,
           indicator: UnderlineTabIndicator(
               borderSide: BorderSide(
-                  width: ScreenSizeHandler.screenWidth*0.01, color: Color.fromARGB(255, 70, 111, 205)),
+                  width: ScreenSizeHandler.screenWidth * 0.01,
+                  color: Color.fromARGB(255, 70, 111, 205)),
               insets: EdgeInsets.symmetric(horizontal: 80.0)),
           unselectedLabelColor: Colors.white,
           tabs: const [

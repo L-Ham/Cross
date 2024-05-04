@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/message_reply_screen.dart';
+import 'package:reddit_bel_ham/services/api_service.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
+import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 
 import '../general_components/linkified_text.dart';
 
 class MessageTile extends StatelessWidget {
   const MessageTile(
       {super.key,
+      required this.messageId,
       required this.userName,
       required this.isRead,
       required this.publishedWhen,
       required this.subject,
       required this.message,
-      required this.replies});
+      required this.replies,
+      required this.onTap});
 
   final String userName;
   final bool isRead;
@@ -21,15 +25,24 @@ class MessageTile extends StatelessWidget {
   final String subject;
   final String message;
   final List<dynamic> replies;
+  final String messageId;
+  final Function onTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
+        final String lastMsgId = replies.last['messageId'];
+        ApiService apiService = ApiService(TokenDecoder.token);
         Navigator.pushNamed(context, MessageReplyScreen.id, arguments: {
           "subject": subject,
           "to": userName,
-          "replies": replies
+          "replies": replies,
+          "parentMessageId": messageId,
+          "onTap": onTap,
+        }).then((_) async {
+          await apiService.markAsRead(lastMsgId);
+          await onTap();
         });
       },
       child: Container(

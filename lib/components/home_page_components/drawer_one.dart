@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:reddit_bel_ham/screens/subreddit_screen.dart';
+import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:reddit_bel_ham/utilities/subreddit_store.dart';
 
 class DrawerOne extends StatefulWidget {
@@ -50,7 +51,6 @@ class _DrawerOneState extends State<DrawerOne> {
       setState(() {
         recentlyVisitedCommunities = value['names']!;
         subredditImages = value['images']!;
-        
       });
     });
   }
@@ -146,14 +146,18 @@ class _DrawerOneState extends State<DrawerOne> {
                                         height: 23,
                                       ),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        'r/' +
-                                            recentlyVisitedCommunities[index],
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 15,
+                                    SizedBox(
+                                      width: ScreenSizeHandler.screenWidth*0.6,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                          'r/' +
+                                              recentlyVisitedCommunities[index],
+                                          style: TextStyle(
+                                            overflow: TextOverflow.ellipsis,
+                                            color: Colors.white,
+                                            fontSize: 15,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -244,7 +248,8 @@ class _DrawerOneState extends State<DrawerOne> {
                                             });
                                           },
                                           icon: Semantics(
-                                            key: Key('favorite_community_button_$index'),
+                                            key: Key(
+                                                'favorite_community_button_$index'),
                                             child: Icon(
                                               Icons.star_rounded,
                                               color: Colors.grey,

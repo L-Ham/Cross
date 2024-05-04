@@ -63,9 +63,6 @@ class _SearchScreenState extends State<SearchScreen> {
   ];
 
   void getSearchesFromBack() async {
-    setState(() {
-      isLoading = true;
-    });
     Map<String, dynamic> results =
         await apiService.searchSubredditByName(_searchController.text);
     List<dynamic> resultsList = results['matchingNames'];
@@ -76,8 +73,10 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void searchPeople(List<dynamic> resultsList) {
-    userNames.clear();
-    userAvatarImages.clear();
+    setState(() {
+      userNames.clear();
+      userAvatarImages.clear();
+    });
     for (int i = 0; i < resultsList.length; i++) {
       mounted
           ? setState(() {
@@ -99,10 +98,11 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void searchSubreddit(List<dynamic> resultsList) {
-    subredditNames.clear();
-    subredditMembers.clear();
-    subredditAvatarImages.clear();
-
+    setState(() {
+      subredditNames.clear();
+      subredditMembers.clear();
+      subredditAvatarImages.clear();
+    });
     for (int i = 0; i < resultsList.length; i++) {
       mounted
           ? setState(() {

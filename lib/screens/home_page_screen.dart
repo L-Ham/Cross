@@ -5,10 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:reddit_bel_ham/components/general_components/continue_button.dart';
+import 'package:reddit_bel_ham/components/general_components/reddit_loading_indicator.dart';
 import 'package:reddit_bel_ham/components/home_page_components/drawer_one.dart';
 import 'package:reddit_bel_ham/components/home_page_components/drawer_two.dart';
 import 'package:reddit_bel_ham/components/home_page_components/end_Drawer.dart';
+import 'package:reddit_bel_ham/components/home_page_components/mark_all_as_read.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 import 'package:reddit_bel_ham/components/home_page_components/profile_icon_with_indicator.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile.dart';
@@ -66,6 +69,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
       isRecentlyVisitedDrawerVisible = value;
     });
   }
+
+  bool isMarkingAllAsRead = false;
 
   late String email;
 
@@ -419,13 +424,16 @@ class _HomePageScreenState extends State<HomePageScreen> {
             Visibility(
               visible: navigationBarIndex == 4,
               child: GestureDetector(
-                onTap: () {
-                  showModalBottomSheet(
+                onTap: () async {
+                  var choice = await showModalBottomSheet(
                     context: context,
                     builder: (BuildContext context) {
                       return const InboxBottomSheet();
                     },
                   );
+                  if (choice == 2) {
+                    Provider.of<MarkAllAsRead>(context, listen: false).notify();
+                  }
                 },
                 child: Icon(
                   Icons.more_horiz,
@@ -463,7 +471,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
                     ),
                   )
                 : navigationBarIndex == 4
-                    ? InboxMessagesScreen()
+                    ? isMarkingAllAsRead
+                        ? const Center(child: RedditLoadingIndicator())
+                        : const InboxMessagesScreen()
                     : PageView(
                         controller: controller,
                         onPageChanged: (value) => setState(() {

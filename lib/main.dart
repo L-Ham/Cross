@@ -1,4 +1,7 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:reddit_bel_ham/components/home_page_components/mark_all_as_read.dart';
 import 'package:reddit_bel_ham/screens/TrendingTopCommunitiesScreen.dart';
 import 'package:reddit_bel_ham/screens/add_comment_screen.dart';
 import 'package:reddit_bel_ham/screens/add_post_screen.dart';
@@ -7,7 +10,6 @@ import 'package:reddit_bel_ham/screens/about_you_screen.dart';
 import 'package:reddit_bel_ham/screens/change_password_screen.dart';
 import 'package:reddit_bel_ham/screens/comments_screen.dart';
 import 'package:reddit_bel_ham/screens/communities_screen.dart';
-import 'package:reddit_bel_ham/screens/communities_search_screen.dart';
 import 'package:reddit_bel_ham/screens/community_rules_screen.dart';
 import 'package:reddit_bel_ham/screens/connected_accounts_disconnect_screen.dart';
 import 'package:reddit_bel_ham/screens/message_reply_screen.dart';
@@ -19,7 +21,6 @@ import 'package:reddit_bel_ham/screens/settings_screen.dart';
 import 'package:reddit_bel_ham/screens/create_username_screen.dart';
 import 'package:reddit_bel_ham/screens/update_email_address_screen.dart';
 import 'package:reddit_bel_ham/screens/create_community_screen.dart';
-import 'package:reddit_bel_ham/utilities/subreddit_store.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'screens/account_settings_screen.dart';
 import 'utilities/screen_size_handler.dart';
@@ -30,18 +31,12 @@ import 'screens/signup_screen.dart';
 import 'screens/forgot_password_screen.dart';
 import 'screens/home_page_screen.dart';
 import 'screens/blocked_accounts.dart';
-
 import 'screens/subreddit_screen.dart';
 import 'screens/subreddit_search_screen.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:reddit_bel_ham/screens/inbox_messages.dart';
-
-import 'services/google_sign_in.dart';
 import 'screens/profile_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -54,7 +49,12 @@ void main() async {
   if (token != null) {
     TokenDecoder.updateToken(token);
   }
-  runApp(RedditByLham(token: token));
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => MarkAllAsRead(),
+      child: RedditByLham(token: token),
+    ),
+  );
 }
 
 class RedditByLham extends StatelessWidget {
@@ -62,6 +62,9 @@ class RedditByLham extends StatelessWidget {
   const RedditByLham({@required this.token, Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    FirebaseMessaging.instance.getToken().then((value) {
+      print("VALUE IS $value");
+    });
     ScreenSizeHandler.initialize(
         MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
     return MaterialApp(

@@ -44,8 +44,7 @@ class _TrendingTopCommunitiesScreenState
         } else {
           avatarImages.add(community['avatarImageUrl']);
         }
-        communityDesciptions.add(
-            "Welcome to ${community['name']}, the largest ${community['name']} community");
+        communityDesciptions.add(community['description']);
       }
     });
     setState(() {
@@ -66,8 +65,7 @@ class _TrendingTopCommunitiesScreenState
         } else {
           avatarImages.add(community['avatarImageUrl']);
         }
-        communityDesciptions.add(
-            "Welcome to ${community['name']}, the largest ${community['name']} community");
+        communityDesciptions.add(community['description']);
       }
     });
     setState(() {

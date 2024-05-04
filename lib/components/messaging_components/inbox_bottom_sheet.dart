@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_bel_ham/services/api_service.dart';
 
 import '../../constants.dart';
 import '../../screens/new_message_screen.dart';
 import '../../screens/notifications_settings_screen.dart';
 import '../../utilities/screen_size_handler.dart';
+import '../../utilities/token_decoder.dart';
 import '../settings_components/settings_tile.dart';
 import '../settings_components/settings_tile_leading_icon.dart';
 
@@ -11,6 +13,7 @@ class InboxBottomSheet extends StatelessWidget {
   const InboxBottomSheet({
     super.key,
   });
+
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +41,6 @@ class InboxBottomSheet extends StatelessWidget {
             GestureDetector(
               onTap: () {
                 Navigator.pop(context, 2);
-                //TODO: MAKE IT READ ALL HERE
               },
               child: Padding(
                 padding: EdgeInsets.symmetric(

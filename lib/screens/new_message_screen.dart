@@ -4,7 +4,6 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:reddit_bel_ham/components/general_components/interactive_text.dart';
 import 'package:reddit_bel_ham/components/general_components/reddit_loading_indicator.dart';
 import 'package:reddit_bel_ham/constants.dart';
-import 'package:reddit_bel_ham/main.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
@@ -24,6 +23,7 @@ class _NewMessageScreenState extends State<NewMessageScreen> {
   TextEditingController userNameController = TextEditingController();
   TextEditingController subjectController = TextEditingController();
   TextEditingController messageController = TextEditingController();
+  String? messageId;
 
   FocusNode userNameFocus = FocusNode();
   FocusNode subjectFocus = FocusNode();
@@ -78,6 +78,7 @@ class _NewMessageScreenState extends State<NewMessageScreen> {
     if (isReply) {
       subjectController.text = args["subject"];
       userNameController.text = args["userName"];
+      messageId = args["parentMessageId"];
       messageFocus.requestFocus();
     } else {
       userNameFocus.requestFocus();
@@ -121,6 +122,7 @@ class _NewMessageScreenState extends State<NewMessageScreen> {
                     "receiverName": userNameController.text,
                     "subject": subjectController.text,
                     "message": messageController.text,
+                    "parentMessageId": messageId,
                     "isSubreddit": false,
                   };
                   ApiService apiService = ApiService(TokenDecoder.token);
@@ -133,10 +135,10 @@ class _NewMessageScreenState extends State<NewMessageScreen> {
                   });
                   if (response['message'] == "Message sent") {
                     if (mounted) {
-                      Navigator.pop(context);
+                      Navigator.pop(context,messageController.text);
                     }
-                  } else if (response['message'] == "Receiver not found") {
-                    showSnackBar("Reciever not found");
+                  } else {
+                    showSnackBar(response['message']);
                   }
                 }
               },
