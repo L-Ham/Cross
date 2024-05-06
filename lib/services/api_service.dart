@@ -350,6 +350,19 @@ class ApiService {
     print(result);
     return result;
   }
+  Future<dynamic> editCommunityDetails(String subredditID, String membersNickname, String currentlyViewingNickname, String communityDescription) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "subredditId": subredditID,
+      "membersNickname": membersNickname,
+      "currentlyViewingNickname": currentlyViewingNickname,
+      "communityDescription": communityDescription
+    };
+    var result = await request('/subreddit/communityDetails',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    // print(result);
+    return result;
+  }
 
   // Future<List> getSavedPosts(String username, int page, int limit) async {
   //   try {

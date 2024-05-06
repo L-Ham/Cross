@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:reddit_bel_ham/components/general_components/custom_switch.dart';
 import 'package:reddit_bel_ham/constants.dart';
-import 'package:reddit_bel_ham/screens/account_settings_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_segment_tile.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_leading_icon.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_trailing_icon.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
+import 'package:reddit_bel_ham/screens/describe_your_community_screen.dart';
+import 'package:reddit_bel_ham/screens/community_type_screen.dart';
 
 class ModToolsScreen extends StatefulWidget {
   const ModToolsScreen({super.key});
@@ -90,7 +90,9 @@ class _ModToolsScreenState extends State<ModToolsScreen> {
                       trailingWidget: const SettingsTileTrailingIcon(
                         trailingIcon: Icons.arrow_forward,
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(context, DescribeCommunityScreen.id);
+                      },
                     ),
                    SettingsTile(
                       key: const Key("mod_tools_screen_community_type_tile"),
@@ -101,12 +103,14 @@ class _ModToolsScreenState extends State<ModToolsScreen> {
                       trailingWidget: const SettingsTileTrailingIcon(
                         trailingIcon: Icons.arrow_forward,
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(context, CommunityTypeScreen.id);
+                      },
                     ),
                     SettingsTile(
                       key: const Key("mod_tools_screen_post_types_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
-                        leadingIcon: FontAwesomeIcons.rectangleList,
+                        leadingIcon: Icons.library_books_outlined,
                       ),
                       titleText: "Post types",
                       trailingWidget: const SettingsTileTrailingIcon(
@@ -115,6 +119,44 @@ class _ModToolsScreenState extends State<ModToolsScreen> {
                       onTap: () {},
                     ),
                      Padding(
+                      padding: EdgeInsets.only(
+                          top: ScreenSizeHandler.screenHeight * 0.03),
+                      child: const SettingsSegmentTitle(titleText: "CONTENT & REGULATION"),
+                    ),
+                    SettingsTile(
+                      key: const Key("mod_tools_screen_queues_tile"),
+                      leadingIcon: const SettingsTileLeadingIcon(
+                        leadingIcon: Icons.library_books,
+                      ),
+                      titleText: "Queues",
+                      trailingWidget: const SettingsTileTrailingIcon(
+                        trailingIcon: Icons.arrow_forward,
+                      ),
+                      onTap: () {},
+                    ),
+                    SettingsTile(
+                      key: const Key("mod_tools_screen_rules_tile"),
+                      leadingIcon: const SettingsTileLeadingIcon(
+                        leadingIcon: Icons.format_list_numbered_outlined,
+                      ),
+                      titleText: "Rules",
+                      trailingWidget: const SettingsTileTrailingIcon(
+                        trailingIcon: Icons.arrow_forward,
+                      ),
+                      onTap: () {},
+                    ),
+                    SettingsTile(
+                      key: const Key("mod_tools_screen_removal_reasons_tile"),
+                      leadingIcon: const SettingsTileLeadingIcon(
+                        leadingIcon: FontAwesomeIcons.x,
+                      ),
+                      titleText: "Removal Reasons",
+                      trailingWidget: const SettingsTileTrailingIcon(
+                        trailingIcon: Icons.arrow_forward,
+                      ),
+                      onTap: () {},
+                    ),
+                    Padding(
                       padding: EdgeInsets.only(
                           top: ScreenSizeHandler.screenHeight * 0.03),
                       child: const SettingsSegmentTitle(titleText: "USER MANAGEMENT"),
@@ -130,12 +172,12 @@ class _ModToolsScreenState extends State<ModToolsScreen> {
                       ),
                       onTap: () {},
                     ),
-                      SettingsTile(
+                    SettingsTile(                     
                       key: const Key("mod_tools_screen_approved_users_tile"),
-                      leadingIcon:  ImageIcon(
-                          const AssetImage('assets/images/approved_user_icon.png'),
+                      leadingIcon: ImageIcon(
+                          const AssetImage('assets/images/approved_icon.png'),
                           color: Colors.grey,
-                          size: ScreenSizeHandler.bigger * 0.05),
+                          size: ScreenSizeHandler.bigger * 0.048),
                       titleText: "Approved users",
                       trailingWidget: const SettingsTileTrailingIcon(
                         trailingIcon: Icons.arrow_forward,
@@ -148,6 +190,33 @@ class _ModToolsScreenState extends State<ModToolsScreen> {
                         leadingIcon: FontAwesomeIcons.hammer,
                       ),
                       titleText: "Banned users",
+                      trailingWidget: const SettingsTileTrailingIcon(
+                        trailingIcon: Icons.arrow_forward,
+                      ),
+                      onTap: () {},
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                          top: ScreenSizeHandler.screenHeight * 0.03),
+                      child: const SettingsSegmentTitle(titleText: "RESOURCE LINKS"),
+                    ),
+                    SettingsTile(
+                      key: const Key("mod_tools_screen_mod_help_center_tile"),
+                      leadingIcon: const SettingsTileLeadingIcon(
+                        leadingIcon: Icons.help_outline_rounded,
+                      ),
+                      titleText: "Mod Help Center",
+                      trailingWidget: const SettingsTileTrailingIcon(
+                        trailingIcon: Icons.arrow_forward,
+                      ),
+                      onTap: () {},
+                    ),
+                     SettingsTile(
+                      key: const Key("mod_tools_screen_mod_code_of_conduct_tile"),
+                      leadingIcon: const SettingsTileLeadingIcon(
+                        leadingIcon: Icons.format_list_numbered_rounded,
+                      ),
+                      titleText: "Mod Code of Conduct",
                       trailingWidget: const SettingsTileTrailingIcon(
                         trailingIcon: Icons.arrow_forward,
                       ),
