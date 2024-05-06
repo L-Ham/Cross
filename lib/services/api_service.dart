@@ -8,6 +8,7 @@ import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 
 const String baseURL = "https://reddit-bylham.me/api";
+
 //const String baseURL = "https://e895ac26-6dc5-4b44-8937-20b3ad854396.mock.pstmn.io/api";
 class ApiService {
   String token = '';
@@ -78,8 +79,10 @@ class ApiService {
   }
 
   Future<dynamic> checkSubredditAvailability(String communityName) async {
-    var result = await request('/subreddit/subredditNameAvailability?name=$communityName',
-        headers: headerWithToken, method: 'GET');
+    var result = await request(
+        '/subreddit/subredditNameAvailability?name=$communityName',
+        headers: headerWithToken,
+        method: 'GET');
     return result;
   }
 
@@ -306,7 +309,9 @@ class ApiService {
     var result = await request('/auth/forgotPassword',
         headers: {'Content-Type': 'application/json'},
         method: 'POST',
-        body: isEmailValid(username) ? {"email": username} : {"username": username});
+        body: isEmailValid(username)
+            ? {"email": username}
+            : {"username": username});
     return result;
   }
 
@@ -336,4 +341,36 @@ class ApiService {
         body: {"password": password});
     return result;
   }
+
+  Future<dynamic> getSavedPosts(String username, int page, int limit) async {
+    Map<String, dynamic> sentData;
+    sentData = {"username": username, "page": page, "limit": limit};
+    var result = await request('/user/savedPosts',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    print(result);
+    return result;
+  }
+
+  // Future<List> getSavedPosts(String username, int page, int limit) async {
+  //   try {
+  //     final response = await http.get(
+  //       Uri.parse(
+  //           '$baseURL/user/savedPosts?username=$username&page=$page&limit=$limit'),
+  //       headers: headerWithToken,
+  //     );
+
+  //     if (response.statusCode == 200) {
+  //       final List<dynamic> responseData = jsonDecode(response.body);
+  //       final List savedPosts =
+  //           responseData.map((postJson) => Post.fromJson(postJson)).toList();
+  //       return savedPosts;
+  //     } else if (response.statusCode == 404) {
+  //       throw Exception('User not found');
+  //     } else {
+  //       throw Exception('Failed to load saved posts: ${response.statusCode}');
+  //     }
+  //   } catch (e) {
+  //     throw Exception('Failed to load saved posts: $e');
+  //   }
+  // }
 }
