@@ -22,10 +22,10 @@ class _AddCommentScreenState extends State<AddCommentScreen> {
   TextEditingController commentController = TextEditingController();
   late String postTitle;
   late String postContent;
-  late String postType;
+  String postType = "";
   late bool isReply;
   String userName = "Gintoki1204";
-  String postTime = "2h";
+  String commentTime = "2h";
   String replyString =
       "Brother come ti India 70% of all goat college seats are reserved for peiple who didn't earn it";
 
@@ -33,10 +33,16 @@ class _AddCommentScreenState extends State<AddCommentScreen> {
   void didChangeDependencies() {
     final Map<String, dynamic> args =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    postTitle = args['postTitle']!;
-    postContent = args['postContent']!;
-    postType = args['postType']!;
     isReply = args['isReply']! as bool;
+    if (isReply) {
+      userName = args['userName']!;
+      commentTime = args['postTime']!;
+      replyString = args['replyString']!;
+    } else {
+      postTitle = args['postTitle']!;
+      postContent = args['postContent']!;
+      postType = args['postType']!;
+    }
 
     super.didChangeDependencies();
   }
@@ -100,7 +106,7 @@ class _AddCommentScreenState extends State<AddCommentScreen> {
                                       Align(
                                         alignment: Alignment.centerLeft,
                                         child: Text(
-                                          userName + " • " + postTime,
+                                          userName + " • " + commentTime,
                                           style: TextStyle(
                                             color: Colors.grey,
                                             fontSize: ScreenSizeHandler.bigger *
