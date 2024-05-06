@@ -11,6 +11,7 @@ import 'package:reddit_bel_ham/screens/settings_screen.dart';
 import 'package:reddit_bel_ham/screens/create_username_screen.dart';
 import 'package:reddit_bel_ham/screens/update_email_address_screen.dart';
 import 'package:reddit_bel_ham/screens/create_community_screen.dart';
+import 'package:reddit_bel_ham/screens/mod_tools_screen.dart';
 import 'package:reddit_bel_ham/utilities/subreddit_store.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'screens/account_settings_screen.dart';
@@ -86,12 +87,14 @@ class RedditByLham extends StatelessWidget {
         PostToScreen.id: (context) => const PostToScreen(),
         ProfileScreen.id: (context) => ProfileScreen(),
         CommentsScreen.id: (context) => const CommentsScreen(),
+        ModToolsScreen.id: (context) => const ModToolsScreen(),
       },
       initialRoute: (token == null)
           ? FirstScreen.id
           : (JwtDecoder.isExpired(TokenDecoder.token))
               ? LoginScreen.id
               : HomePageScreen.id,
+      // initialRoute: ModToolsScreen.id,
     );
   }
 }
