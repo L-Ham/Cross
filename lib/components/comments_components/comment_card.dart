@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:reddit_bel_ham/components/comments_components/line_painter.dart';
-import 'package:reddit_bel_ham/components/settings_components/settings_tile.dart';
 import 'package:reddit_bel_ham/constants.dart';
+import 'package:reddit_bel_ham/screens/add_comment_screen.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
@@ -17,12 +16,14 @@ class Comment {
   bool collapsed = false;
   bool isUsernameBlocked = false;
   bool isUsernameTileClicked = false;
+  String submittedTime = '2h';
   final List<Comment> replies; // List of replies
 
   Comment({
     required this.username,
     required this.content,
     required this.upvotes,
+    required this.submittedTime,
     this.replies = const [], // Initialize replies as an empty list
   });
 }
@@ -85,7 +86,7 @@ class _CommentCardState extends State<CommentCard> {
                   widget.comment.isUsernameBlocked &&
                           !widget.comment.isUsernameTileClicked
                       ? 'Blocked Author'
-                      : "${widget.comment.username}",
+                      : "${widget.comment.username} ${widget.comment.submittedTime}",
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 12,
@@ -403,10 +404,16 @@ class _CommentCardState extends State<CommentCard> {
                 ),
               ),
               IconButton(
-                onPressed: () {},
-                icon: Icon(
+                onPressed: () {
+                  Navigator.pushNamed(context, AddCommentScreen.id, arguments: {
+                    "userName": widget.comment.username,
+                    "isReply": true,
+                    "replyString": widget.comment.content,
+                    "postTime": widget.comment.submittedTime,
+                  });
+                },
+                icon: const Icon(
                   Icons.reply_rounded,
-                  color: widget.comment.isUpvoted ? Colors.green : Colors.white,
                 ),
               ),
               IconButton(
@@ -424,12 +431,17 @@ class _CommentCardState extends State<CommentCard> {
                 },
                 icon: Icon(
                   Icons.arrow_upward,
-                  color: widget.comment.isUpvoted ? Colors.green : Colors.white,
+                  color: widget.comment.isUpvoted ? Colors.red : Colors.white,
                 ),
               ),
               Text(
                 widget.comment.upvotes.toString(),
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(
+                    color: widget.comment.isUpvoted
+                        ? Colors.red
+                        : widget.comment.isDownvoted
+                            ? Colors.deepPurple
+                            : Colors.white),
               ),
               IconButton(
                 onPressed: () {
@@ -446,7 +458,9 @@ class _CommentCardState extends State<CommentCard> {
                 },
                 icon: Icon(
                   Icons.arrow_downward,
-                  color: widget.comment.isDownvoted ? Colors.red : Colors.white,
+                  color: widget.comment.isDownvoted
+                      ? Colors.deepPurple
+                      : Colors.white,
                 ),
               ),
             ],

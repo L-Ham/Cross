@@ -1,11 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:reddit_bel_ham/components/add_post_components/add_post_text_field.dart';
-import 'package:reddit_bel_ham/components/general_components/interactive_text.dart';
-import 'package:reddit_bel_ham/components/general_components/rounded_button.dart';
 import 'package:reddit_bel_ham/components/home_page_components/profile_icon_with_indicator.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/add_comment_screen.dart';
@@ -33,16 +26,19 @@ class _CommentsScreenState extends State<CommentsScreen> {
   final List<Comment> comments = [
     Comment(
       username: "JohnnyBanana",
+      submittedTime: "3d",
       content:
           "I swear by natural lighting! It makes the food look so much more appetizing. I also like to play around with the angles to get the best shot. As for editing, I usually just adjust the brightness and contrast a bit to make the colors pop. And for captions, I think it's all about finding your own voice and being authentic. People can tell when you're being genuine, so just have fun with it!",
       replies: [
         Comment(
           username: "dani",
+          submittedTime: "2d",
           content:
               "I'm all about the editing tricks! I use Lightroom to enhance the colors People love to connect with the person behind the food!",
           replies: [
             Comment(
               username: "dani",
+              submittedTime: "2d",
               content:
                   "I swear by natural lighting! It makes the food look so much more appetizing. I also like to play around with the angles to get the best shot. As for editing, I usually just adjust the brightness and contrast a bit to make the colors pop. And for captions, I think it's all about finding your own voice and being authentic. People can tell when you're being genuine, so just have fun with it!",
               upvotes: 12,
@@ -51,6 +47,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
           upvotes: 8,
         ),
         Comment(
+          submittedTime: "2d",
           username: "EmilyEats",
           content:
               "I'm a big fan of natural lighting too! It just makes everything look so much better. I also like to use props to add some visual interest to my photos. And for editing, I usually just adjust the exposure and contrast a bit to make the colors pop. As for captions, I think it's all about being authentic and sharing a bit of yourself with your followers. People love to see the person behind the food!",
@@ -61,11 +58,13 @@ class _CommentsScreenState extends State<CommentsScreen> {
     ),
     Comment(
       username: "SallySweets",
+      submittedTime: "2d",
       content:
           "I'm all about the editing tricks! I use Lightroom to enhance the colors People love to connect with the person behind the food!",
       upvotes: 8,
     ),
     Comment(
+      submittedTime: "1d",
       username: "EmilyEats",
       content:
           "I'm a big fan of natural lighting too! It just makes everything look so much better. I also like to use props to add some visual interest to my photos. And for editing, I usually just adjust the exposure and contrast a bit to make the colors pop. As for captions, I think it's all about being authentic and sharing a bit of yourself with your followers. People love to see the person behind the food!",
@@ -157,7 +156,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                   //TODO: PUT COMMENTS HERE YA PETER
                   ListView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: comments.length,
                     itemBuilder: (context, index) {
                       return CommentCard(comment: comments[index]);
@@ -228,184 +227,8 @@ class _CommentsScreenState extends State<CommentsScreen> {
                 ],
               ),
             ),
-          // if (commentFocusNode.hasFocus || isCommenting)
-          //   GestureDetector(
-          //     onVerticalDragStart: (details) {
-          //       if (maxLines == 16) {
-          //         setState(() {
-          //           maxLines = 1;
-          //         });
-          //       } else {
-          //         FocusScope.of(context).unfocus();
-          //       }
-          //     },
-          //     onVerticalDragEnd: (details) {
-          //       setState(() {
-          //         FocusScope.of(context).requestFocus();
-          //         maxLines = 16;
-          //       });
-          //     },
-          //     child: Container(
-          //       width: ScreenSizeHandler.screenWidth,
-          //       color: kPostColor,
-          //       child: Column(
-          //         crossAxisAlignment: CrossAxisAlignment.start,
-          //         children: [
-          //           SingleChildScrollView(
-          //             child: Column(
-          //               children: [
-          //                 Align(
-          //                   alignment: Alignment.center,
-          //                   child: Padding(
-          //                     padding: EdgeInsets.only(
-          //                         top: 6,
-          //                         bottom:
-          //                             ScreenSizeHandler.screenHeight * 0.012),
-          //                     child: Container(
-          //                       height: 3.5,
-          //                       width: ScreenSizeHandler.screenWidth * 0.1,
-          //                       decoration: BoxDecoration(
-          //                         color: Colors.grey[700],
-          //                         borderRadius: BorderRadius.circular(
-          //                             2.0), // Set the borderRadius
-          //                       ),
-          //                     ),
-          //                   ),
-          //                 ),
-          //                 Align(
-          //                   alignment: Alignment.centerLeft,
-          //                   child: Padding(
-          //                     padding: EdgeInsets.symmetric(
-          //                         horizontal:
-          //                             ScreenSizeHandler.screenWidth * 0.028),
-          //                     child: InteractiveText(
-          //                       text:
-          //                           "Please follow community rules when commenting",
-          //                       onTap: () {
-          //                         //TODO: Push the community rules screen
-          //                       },
-          //                       fontSizeRatio: 0.0145,
-          //                       fontWeight: FontWeight.normal,
-          //                       isUnderlined: true,
-          //                     ),
-          //                   ),
-          //                 ),
-          //                 Padding(
-          //                   padding: EdgeInsets.symmetric(
-          //                       horizontal:
-          //                           ScreenSizeHandler.screenWidth * 0.028),
-          //                   child: AddPostTextField(
-          //                     controller: commentController,
-          //                     hintText: "Add a comment",
-          //                     fontSizeRatio: 0.017,
-          //                     focusNode: textFieldFocusNode,
-          //                     maxLines: maxLines,
-          //                   ),
-          //                 ),
-          //               ],
-          //             ),
-          //           ),
-          //           const Divider(
-          //             color: kFillingColor,
-          //             thickness: 0.5,
-          //           ),
-          //           Padding(
-          //             padding: EdgeInsets.symmetric(
-          //                 horizontal: ScreenSizeHandler.screenWidth * 0.01),
-          //             child: Row(
-          //               children: [
-          //                 Padding(
-          //                   padding: EdgeInsets.symmetric(
-          //                       horizontal:
-          //                           ScreenSizeHandler.screenWidth * 0.017),
-          //                   child: Icon(
-          //                     FontAwesomeIcons.keyboard,
-          //                     color: Colors.grey,
-          //                     size: ScreenSizeHandler.bigger * 0.025,
-          //                   ),
-          //                 ),
-          //                 Padding(
-          //                   padding: EdgeInsets.symmetric(
-          //                       horizontal:
-          //                           ScreenSizeHandler.screenWidth * 0.017),
-          //                   child: Icon(
-          //                     FontAwesomeIcons.link,
-          //                     color: Colors.grey,
-          //                     size: ScreenSizeHandler.bigger * 0.025,
-          //                   ),
-          //                 ),
-          //                 Padding(
-          //                   padding: EdgeInsets.symmetric(
-          //                       horizontal:
-          //                           ScreenSizeHandler.screenWidth * 0.017),
-          //                   child: Icon(
-          //                     FontAwesomeIcons.image,
-          //                     color: Colors.grey,
-          //                     size: ScreenSizeHandler.bigger * 0.025,
-          //                   ),
-          //                 ),
-          //                 const Spacer(),
-          //                 RoundedThinButton(
-          //                     commentController: commentController)
-          //               ],
-          //             ),
-          //           ),
-          //         ],
-          //       ),
-          //     ),
-          //   )
         ],
       ),
-    );
-  }
-}
-
-class RoundedThinButton extends StatelessWidget {
-  const RoundedThinButton({
-    super.key,
-    required this.commentController,
-  });
-
-  final TextEditingController commentController;
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: commentController,
-      builder: (BuildContext context, TextEditingValue value, Widget? child) {
-        return GestureDetector(
-          onTap: () {
-            //TODO: Implement the comment functionality
-          },
-          child: Container(
-            height: ScreenSizeHandler.bigger * 0.036,
-            width: ScreenSizeHandler.smaller * 0.15,
-            decoration: BoxDecoration(
-              color: commentController.text.isNotEmpty
-                  ? const Color.fromARGB(255, 150, 144, 233)
-                  : const Color.fromARGB(120, 150, 144, 233),
-              borderRadius: BorderRadius.circular(16.0),
-            ),
-            child: Center(
-              child: Text(
-                'Reply',
-                style: TextStyle(
-                  color: commentController.text.isNotEmpty
-                      ? Colors.white
-                      : Colors.grey[500],
-                  fontWeight: FontWeight.w500,
-                  fontSize: ScreenSizeHandler.bigger * 0.015,
-                  decoration: TextDecoration.underline,
-                  decorationThickness: 2.5,
-                  decorationColor: commentController.text.isNotEmpty
-                      ? Colors.white
-                      : Colors.grey[500],
-                ),
-              ),
-            ),
-          ),
-        );
-      },
     );
   }
 }
