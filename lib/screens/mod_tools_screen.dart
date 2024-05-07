@@ -12,7 +12,8 @@ import 'package:reddit_bel_ham/screens/community_type_screen.dart';
 import 'package:reddit_bel_ham/screens/approved_users_screen.dart';
 
 class ModToolsScreen extends StatefulWidget {
-  const ModToolsScreen({super.key});
+  final String communityName, subredditID, membersNickname, currentlyViewingNickname, communityDescription;
+  const ModToolsScreen({super.key, required this.communityName, required this.subredditID, required this.membersNickname, required this.currentlyViewingNickname, required this.communityDescription});
 
   static const String id = 'mod_tools_screen';
 
@@ -92,7 +93,20 @@ class _ModToolsScreenState extends State<ModToolsScreen> {
                         trailingIcon: Icons.arrow_forward,
                       ),
                       onTap: () {
-                        Navigator.pushNamed(context, DescribeCommunityScreen.id);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DescribeCommunityScreen(
+                                subredditID: widget.subredditID,
+                                membersNickname:
+                                    widget.membersNickname,
+                                currentlyViewingNickname:
+                                    widget.currentlyViewingNickname,
+                                communityDescription:
+                                    widget.communityDescription,
+                              )
+                            )
+                          );
                       },
                     ),
                    SettingsTile(
@@ -184,7 +198,14 @@ class _ModToolsScreenState extends State<ModToolsScreen> {
                         trailingIcon: Icons.arrow_forward,
                       ),
                       onTap: () {
-                        Navigator.pushNamed(context, ApprovedUsersScreen.id);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ApprovedUsersScreen(
+                                communityName: widget.communityName,
+                              )
+                            )
+                          );
                       },
                     ),
                     SettingsTile(

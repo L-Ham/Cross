@@ -178,10 +178,10 @@ class RedditByLham extends StatelessWidget {
         MessageReplyScreen.id: (context) => const MessageReplyScreen(),
         NewMessageScreen.id: (context) => const NewMessageScreen(),
         SearchingScreen.id: (context) => const SearchingScreen(),
-        ModToolsScreen.id: (context) => const ModToolsScreen(),
-        DescribeCommunityScreen.id: (context) => const DescribeCommunityScreen(),
+        ModToolsScreen.id: (context) => const ModToolsScreen(communityName: '', subredditID: '', membersNickname: '', currentlyViewingNickname: '', communityDescription: ''),
+        DescribeCommunityScreen.id: (context) => const DescribeCommunityScreen( subredditID: '', membersNickname: '', currentlyViewingNickname: '', communityDescription: ''),
         CommunityTypeScreen.id: (context) => const CommunityTypeScreen(),
-        ApprovedUsersScreen.id: (context) => const ApprovedUsersScreen(),
+        ApprovedUsersScreen.id: (context) => const ApprovedUsersScreen(communityName: '',),
         AddApprovedUserScreen.id: (context) => const AddApprovedUserScreen(),
       },
       initialRoute: (token == null)

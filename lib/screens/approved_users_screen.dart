@@ -8,10 +8,13 @@ import 'package:reddit_bel_ham/components/mod_tools_components/user_tile.dart';
 import 'package:reddit_bel_ham/components/mod_tools_components/user_bottom_sheet_tile.dart';
 import 'package:reddit_bel_ham/components/general_components/continue_button.dart';
 import 'package:reddit_bel_ham/screens/add_approved_user_screen.dart';
+import 'package:reddit_bel_ham/screens/new_message_screen.dart';
+
 
 
 class ApprovedUsersScreen extends StatefulWidget {
-  const ApprovedUsersScreen({super.key});
+  final String communityName;
+  const ApprovedUsersScreen({super.key, required this.communityName});
 
   static const String id = 'approved_users_screen';
 
@@ -21,11 +24,10 @@ class ApprovedUsersScreen extends StatefulWidget {
 
 class _ApprovedUsersScreenState extends State<ApprovedUsersScreen> {
   ApiService apiService = ApiService(TokenDecoder.token);
-  // String username = TokenDecoder.username;
   List<dynamic> approvedUsers = [];
 
   Future<void> getApprovedUsers () async {
-    Map<String, dynamic> response = await apiService.getApprovedUsers("Dragon Oath");
+    Map<String, dynamic> response = await apiService.getApprovedUsers(widget.communityName);
     if (response['message'] == "Retrieved subreddit Approved Users Successfully") {
       setState(() {
         approvedUsers = response['approvedMembers'];
@@ -37,7 +39,7 @@ class _ApprovedUsersScreenState extends State<ApprovedUsersScreen> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Error'),
-            content: Text(response['message']),
+            content: Text('${widget.communityName}: ${response['message']}'),
             actions: [
               TextButton(
                 onPressed: () {
@@ -55,11 +57,10 @@ class _ApprovedUsersScreenState extends State<ApprovedUsersScreen> {
   @override
   void initState() {
     super.initState();
-    //get the current user's community description
     getApprovedUsers();
   }
 
-  void userOptions() async {
+  void userOptions(String username) async {
     String? newGender = await showModalBottomSheet(
         context: context,
         builder: (BuildContext bc) {
@@ -81,7 +82,10 @@ class _ApprovedUsersScreenState extends State<ApprovedUsersScreen> {
                             0.8,
                         color: Colors.grey,
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(context, NewMessageScreen.id,
+                        arguments: {"isReply": false, "userName": username});
+                      },
                     ),
                     UserBottomSheetTile(
                       text: 'View profile',
@@ -106,7 +110,9 @@ class _ApprovedUsersScreenState extends State<ApprovedUsersScreen> {
                       onTap: () {},
                     ),
                     ContinueButton(
-                      onPress: () {},
+                      onPress: () {
+                        Navigator.pop(context);
+                      },
                       text: 'Cancel',
                       color: Colors.grey[800],
                     ),
@@ -179,12 +185,12 @@ class _ApprovedUsersScreenState extends State<ApprovedUsersScreen> {
                     child: Column(
                       children: [
                         UserTile(
-                          titleText: approvedUsers[index]['userName'], //change this to 'u/$username',
+                          titleText: approvedUsers[index]['userName'], 
                           subtitleText: '1 wk ago',
                           onTap: () {},
                           avatarLink: approvedUsers[index]['avatarImage'],
                           onIconTap: () {
-                            userOptions();
+                            userOptions(approvedUsers[index]['userName']);
                           },
                         ),
                       ],

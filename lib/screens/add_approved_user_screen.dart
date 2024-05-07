@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
-import 'package:reddit_bel_ham/components/mod_tools_components/user_tile.dart';
-import 'package:reddit_bel_ham/components/mod_tools_components/user_bottom_sheet_tile.dart';
 import 'package:reddit_bel_ham/components/general_components/continue_button.dart';
 
 class AddApprovedUserScreen extends StatefulWidget {
@@ -20,40 +16,10 @@ class AddApprovedUserScreen extends StatefulWidget {
 
 class _AddApprovedUserScreenState extends State<AddApprovedUserScreen> {
   ApiService apiService = ApiService(TokenDecoder.token);
-  // String username = TokenDecoder.username;
   final FocusNode _focusNode = FocusNode();
   final TextEditingController _controller = TextEditingController();
   bool isFocused = false;
   bool hasText = false;
-
- Future<void> chackUsername (String username) async {
-    Map<String, dynamic> response = await apiService.getApprovedUsers("nardoZeh2et");
-    if (response['message'] == "Retrieved subreddit Approved Users Successfully") {
-      setState(() {
-        // approvedUsers = response['approvedMembers'];
-      });
-    }
-    else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Error'),
-            content: Text(response['message']),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        }, 
-      );
-    }
-   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -167,7 +133,7 @@ class _AddApprovedUserScreenState extends State<AddApprovedUserScreen> {
                     text: 'Add',
                     onPress: () {
                       if (hasText) {
-                        chackUsername(_controller.text);
+                        // chackUsername(_controller.text);
                         }
                     },
                     isButtonEnabled: hasText,

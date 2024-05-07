@@ -6,7 +6,11 @@ import 'package:reddit_bel_ham/services/api_service.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 
 class DescribeCommunityScreen extends StatefulWidget {
-  const DescribeCommunityScreen({super.key});
+  final String subredditID,
+      membersNickname,
+      currentlyViewingNickname,
+      communityDescription;
+  const DescribeCommunityScreen({super.key, required this.subredditID, required this.membersNickname, required this.currentlyViewingNickname, required this.communityDescription});
 
   static const String id = 'describe_community_screen';
 
@@ -20,33 +24,12 @@ class _DescribeCommunityScreenState extends State<DescribeCommunityScreen> {
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   bool isButtonEnabled = false;
-  String subredditID = '',
-      membersNickname = '',
-      currentlyViewingNickname = '',
-      communityDescription = '';
-
-  // to be changed lama amerge m3 zaki w pass parameters
-  Future<void> getCommunityDetails() async {
-    Map<String, dynamic> response =
-        await apiService.getCommunityDetails("nardoZeh2et");
-    if (response['message'] ==
-        "Subreddit's Community Details Retrieved Successfully") {
-      setState(() {
-        subredditID = response['communityDetails']['subredditId'];
-        membersNickname = response['communityDetails']['membersNickname'];
-        currentlyViewingNickname =
-            response['communityDetails']['currentlyViewingNickname'];
-        communityDescription = response['communityDetails']['description'];
-        _controller.text = communityDescription;
-      });
-    }
-  }
 
   Future<void> editCommunityDetails() async {
     Map<String, dynamic> response = await apiService.editCommunityDetails(
-        subredditID,
-        membersNickname,
-        currentlyViewingNickname,
+        widget.subredditID,
+        widget.membersNickname,
+        widget.currentlyViewingNickname,
         _controller.text);
     if (response['message'] ==
         "Subreddit's Community Details Edited Successfully") {
@@ -76,8 +59,7 @@ class _DescribeCommunityScreenState extends State<DescribeCommunityScreen> {
   @override
   void initState() {
     super.initState();
-    //get the current user's community description
-    getCommunityDetails();
+    _controller.text = widget.communityDescription;
     _focusNode.requestFocus();
   }
 
@@ -91,7 +73,6 @@ class _DescribeCommunityScreenState extends State<DescribeCommunityScreen> {
         actions: [
           SettingsSaveButton(
             onPressed: () {
-              //TODO: Implement the save button functionality
               editCommunityDetails();
             },
             isUnderlined: false,
@@ -139,7 +120,7 @@ class _DescribeCommunityScreenState extends State<DescribeCommunityScreen> {
                       ),
                       focusedBorder: const UnderlineInputBorder(
                         borderSide: BorderSide(
-                            color: Colors.white), // Desired color
+                            color: Colors.white), 
                       ),
                     ),
                     style: TextStyle(
@@ -150,7 +131,7 @@ class _DescribeCommunityScreenState extends State<DescribeCommunityScreen> {
                     ),
                     onChanged: (value) {
                       setState(() {
-                        isButtonEnabled = (value != communityDescription);
+                        isButtonEnabled = (value != widget.communityDescription);
                       });
                     },
                   ),
