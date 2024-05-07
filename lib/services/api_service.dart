@@ -8,6 +8,7 @@ import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 
 const String baseURL = "https://reddit-bylham.me/api";
+
 //const String baseURL = "https://e895ac26-6dc5-4b44-8937-20b3ad854396.mock.pstmn.io/api";
 class ApiService {
   String token = '';
@@ -78,8 +79,10 @@ class ApiService {
   }
 
   Future<dynamic> checkSubredditAvailability(String communityName) async {
-    var result = await request('/subreddit/subredditNameAvailability?name=$communityName',
-        headers: headerWithToken, method: 'GET');
+    var result = await request(
+        '/subreddit/subredditNameAvailability?name=$communityName',
+        headers: headerWithToken,
+        method: 'GET');
     return result;
   }
 
@@ -306,7 +309,9 @@ class ApiService {
     var result = await request('/auth/forgotPassword',
         headers: {'Content-Type': 'application/json'},
         method: 'POST',
-        body: isEmailValid(username) ? {"email": username} : {"username": username});
+        body: isEmailValid(username)
+            ? {"email": username}
+            : {"username": username});
     return result;
   }
 
@@ -335,5 +340,21 @@ class ApiService {
         method: 'PATCH',
         body: {"password": password});
     return result;
+  }
+
+  Future<dynamic> getUserChats() async {
+    var response = await request('/conversation/getUserChats',
+        headers: headerWithToken, method: 'GET');
+    return response;
+  }
+
+  Future<dynamic> sendMessage(
+      String conversationId, String message, String type) async {
+    var response = await request('/chat/sendMessage',
+        headers: headerWithToken,
+        method: 'POST',
+        body: {"chatId": conversationId, "type": type, "message": message});
+        print('${response["message"]}zzzzzzzzzzzzzzzzzzzzz');
+    return response;
   }
 }

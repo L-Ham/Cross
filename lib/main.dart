@@ -25,6 +25,8 @@ import 'screens/blocked_accounts.dart';
 
 import 'screens/subreddit_screen.dart';
 import 'screens/subreddit_search_screen.dart';
+import 'screens/inside_chat_screen.dart';
+import 'screens/chatting_screen.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:reddit_bel_ham/screens/inbox_messages.dart';
@@ -36,13 +38,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   await Firebase.initializeApp(
-  options: DefaultFirebaseOptions.currentPlatform,
-);
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   String? token = prefs.getString('token');
   if (token != null) {
     TokenDecoder.updateToken(token);
@@ -89,13 +90,14 @@ class RedditByLham extends StatelessWidget {
         CommunityRulesScreen.id: (context) => const CommunityRulesScreen(),
         PostToScreen.id: (context) => const PostToScreen(),
         ProfileScreen.id: (context) => ProfileScreen(),
+        ChattingScreen.id: (context) => ChattingScreen(),
       },
       initialRoute: FirstScreen.id,
       // (token == null)
-          // ? FirstScreen.id
-          // : (JwtDecoder.isExpired(TokenDecoder.token))
-          //     ? LoginScreen.id
-          //     : HomePageScreen.id,
+      // ? FirstScreen.id
+      // : (JwtDecoder.isExpired(TokenDecoder.token))
+      //     ? LoginScreen.id
+      //     : HomePageScreen.id,
     );
   }
 }

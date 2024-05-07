@@ -31,6 +31,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:reddit_bel_ham/screens/settings_screen.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:reddit_bel_ham/components/home_page_components/trending_posts.dart';
+import 'package:reddit_bel_ham/screens/inside_chat_screen.dart';
 
 class HomePageScreen extends StatefulWidget {
   const HomePageScreen({super.key});
@@ -207,6 +208,13 @@ class _HomePageScreenState extends State<HomePageScreen> {
     });
     if (index == 2) {
       Navigator.pushNamed(context, AddPostScreen.id);
+      setState(() {
+        navigationBarIndex = oldIndex;
+      });
+    }
+    else if (index ==3)
+    {
+      Navigator.pushNamed(context, InsideChattingScreen.id);
       setState(() {
         navigationBarIndex = oldIndex;
       });

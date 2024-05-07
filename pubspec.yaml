@@ -35,6 +35,9 @@ dependencies:
   mockito: ^5.4.4
   firebase_auth: ^4.19.1
   firebase_core: ^2.29.0
+  cloud_firestore: 4.16.1
+  web_socket_channel: ^2.1.0
+  socket_io_client: ^2.0.0
   
 dev_dependencies:
   flutter_test:
