@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 const double kPageTitleFontSizeHeightRatio = 0.026;
 const double kPageTtleTopBottomPaddingRatio = 0.02;
 const double kErrorTextTopBottomPadding = 10.0;
@@ -45,7 +46,7 @@ const kNotificationSettingsModNotificationsSwitchIndex = 10;
 const kOnlineStatusIconSize = 15.0;
 const kOnlineStatusFontSizeRatio = 0.03;
 const kSideBarCloseIconSizeRatio = 0.04;
-const kOnlineStatusColor = Color.fromARGB(255, 0, 204, 120);
+const kOnlineStatusColor = Color.fromARGB(255, 0, 185, 52);
 const kOfflineStatusColor = Colors.grey;
 const kSideBarCircleAvatarRadiusRatio = 0.09;
 const Color kBackgroundColor = Color.fromARGB(255, 20, 20, 20);
@@ -109,4 +110,3 @@ const kErrorMessageSmallerFontRatio = 0.03;
 const kErrorMessageLeftPaddingRatio = 0.05;
 Color kErrorColor = Colors.red.shade200;
 Color kOrangeActivatedColor = Colors.orange.shade900;
-

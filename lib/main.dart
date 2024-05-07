@@ -36,13 +36,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   await Firebase.initializeApp(
-  options: DefaultFirebaseOptions.currentPlatform,
-);
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   String? token = prefs.getString('token');
   if (token != null) {
     TokenDecoder.updateToken(token);
@@ -81,8 +80,6 @@ class RedditByLham extends StatelessWidget {
         SubredditScreen.id: (context) => const SubredditScreen(),
         //Resolved
         // SearchScreen.id: (context) => SearchScreen(),
-        SubredditSearchScreen.id: (context) => const SubredditSearchScreen(),
-
         AddPostScreen.id: (context) => const AddPostScreen(),
         CreateUsernameScreen.id: (context) => const CreateUsernameScreen(),
         AboutYouScreen.id: (context) => const AboutYouScreen(),
@@ -91,11 +88,11 @@ class RedditByLham extends StatelessWidget {
         ProfileScreen.id: (context) => ProfileScreen(),
       },
       initialRoute: FirstScreen.id,
-      // (token == null)
-          // ? FirstScreen.id
-          // : (JwtDecoder.isExpired(TokenDecoder.token))
-          //     ? LoginScreen.id
-          //     : HomePageScreen.id,
+      // (token == null)rty
+      // ? FirstScreen.id
+      // : (JwtDecoder.isExpired(TokenDecoder.token))
+      //     ? LoginScreen.id
+      //     : HomePageScreen.id,
     );
   }
 }
