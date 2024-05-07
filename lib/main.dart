@@ -1,4 +1,3 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_bel_ham/components/home_page_components/mark_all_as_read.dart';
@@ -62,8 +61,10 @@ void main() async {
       FlutterLocalNotificationsPlugin();
   final AndroidInitializationSettings initializationSettingsAndroid =
       const AndroidInitializationSettings('elham_final_logo');
-  final InitializationSettings initializationSettings =
-      InitializationSettings(android: initializationSettingsAndroid);
+  final DarwinInitializationSettings initializationSettingsIOS =
+      DarwinInitializationSettings();
+  final InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
 
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
@@ -80,6 +81,7 @@ void main() async {
 
     RemoteNotification? notification = message.notification;
     AndroidNotification? android = message.notification?.android;
+    AppleNotification? apple = message.notification?.apple;
 
     if (android != null) {
       flutterLocalNotificationsPlugin.show(
@@ -95,6 +97,20 @@ void main() async {
               enableVibration: true,
               priority: Priority.high,
               importance: Importance.max,
+            ),
+          ));
+    }
+
+    if (apple != null) {
+      flutterLocalNotificationsPlugin.show(
+          notification.hashCode,
+          notification?.title,
+          notification?.body,
+          const NotificationDetails(
+            iOS: DarwinNotificationDetails(
+              presentAlert: true,
+              presentBadge: true,
+              presentSound: true,
             ),
           ));
     }
