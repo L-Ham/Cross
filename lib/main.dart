@@ -153,7 +153,6 @@ class RedditByLham extends StatelessWidget {
         BlockedAccount.id: (context) => const BlockedAccount(),
         SavedScreen.id: (context) => const SavedScreen(),
         SubredditScreen.id: (context) => const SubredditScreen(),
-        SubredditSearchScreen.id: (context) => const SubredditSearchScreen(),
         AddPostScreen.id: (context) => const AddPostScreen(),
         CreateUsernameScreen.id: (context) => const CreateUsernameScreen(),
         AboutYouScreen.id: (context) => const AboutYouScreen(),
