@@ -106,54 +106,54 @@ class _DescribeCommunityScreenState extends State<DescribeCommunityScreen> {
               itemCount: 1,
               itemBuilder: (BuildContext context, int index) {
                 return Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: ScreenSizeHandler.screenHeight *
+                  padding: EdgeInsets.only(
+                    top: ScreenSizeHandler.screenHeight * 0.07,
+                    bottom: ScreenSizeHandler.screenHeight *
                         kSettingsVerticalPaddingHeightRatio,
-                    horizontal: kSettingsHorizontalPaddingHeightRatio *
+                    left: kSettingsHorizontalPaddingHeightRatio *
+                        ScreenSizeHandler.screenWidth,
+                    right: kSettingsHorizontalPaddingHeightRatio *
                         ScreenSizeHandler.screenWidth,
                   ),
-                  child: Padding(
-                      padding: EdgeInsets.only(
-                          top: ScreenSizeHandler.screenHeight * 0.07),
-                      child: TextFormField(
-                        controller: _controller,
-                        focusNode: _focusNode,
-                        maxLines: null,
-                        maxLength: 500,
-                        cursorColor: Colors.white,
-                        decoration: InputDecoration(
-                          counterStyle: TextStyle(
-                            color: kHintTextColor,
-                            fontSize: ScreenSizeHandler.smaller *
-                                kButtonSmallerFontRatio,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          hintText: _controller.text.isEmpty
-                              ? 'Describe your community'
-                              : '',
-                          hintStyle: TextStyle(
-                            color: kHintTextColor,
-                            fontSize: ScreenSizeHandler.bigger *
-                                kButtonSmallerFontRatio *
-                                0.85,
-                          ),
-                          focusedBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Colors.white), // Desired color
-                          ),
-                        ),
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: ScreenSizeHandler.bigger *
-                              kButtonSmallerFontRatio *
-                              0.85,
-                        ),
-                        onChanged: (value) {
-                          setState(() {
-                            isButtonEnabled = (value != communityDescription);
-                          });
-                        },
-                      )),
+                  child: TextFormField(
+                    controller: _controller,
+                    focusNode: _focusNode,
+                    maxLines: null,
+                    maxLength: 500,
+                    cursorColor: Colors.white,
+                    decoration: InputDecoration(
+                      counterStyle: TextStyle(
+                        color: kHintTextColor,
+                        fontSize: ScreenSizeHandler.smaller *
+                            kButtonSmallerFontRatio,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      hintText: _controller.text.isEmpty
+                          ? 'Describe your community'
+                          : '',
+                      hintStyle: TextStyle(
+                        color: kHintTextColor,
+                        fontSize: ScreenSizeHandler.bigger *
+                            kButtonSmallerFontRatio *
+                            0.85,
+                      ),
+                      focusedBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Colors.white), // Desired color
+                      ),
+                    ),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: ScreenSizeHandler.bigger *
+                          kButtonSmallerFontRatio *
+                          0.85,
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        isButtonEnabled = (value != communityDescription);
+                      });
+                    },
+                  ),
                 );
               },
             ),

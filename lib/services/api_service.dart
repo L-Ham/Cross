@@ -35,6 +35,7 @@ class ApiService {
           if (body != null) {
             url = Uri.parse(
                 "$baseURL$endpoint?${Uri(queryParameters: body).query}");
+                print(url);
             response = await http.get(url, headers: headers);
           } else {
             response = await http.get(url, headers: headers);
@@ -360,6 +361,14 @@ class ApiService {
     };
     var result = await request('/subreddit/communityDetails',
         headers: headerWithToken, method: 'PATCH', body: sentData);
+    // print(result);
+    return result;
+  }
+    Future<dynamic> getApprovedUsers(String communityName) async {
+    Map<String, dynamic> sentData;
+    sentData = {"subredditName": communityName};
+    var result = await request('/subreddit/users/approved',
+        headers: headerWithToken, method: 'GET', body: sentData);
     // print(result);
     return result;
   }

@@ -9,6 +9,7 @@ import 'package:reddit_bel_ham/components/settings_components/settings_tile_trai
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'package:reddit_bel_ham/screens/describe_your_community_screen.dart';
 import 'package:reddit_bel_ham/screens/community_type_screen.dart';
+import 'package:reddit_bel_ham/screens/approved_users_screen.dart';
 
 class ModToolsScreen extends StatefulWidget {
   const ModToolsScreen({super.key});
@@ -182,7 +183,9 @@ class _ModToolsScreenState extends State<ModToolsScreen> {
                       trailingWidget: const SettingsTileTrailingIcon(
                         trailingIcon: Icons.arrow_forward,
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(context, ApprovedUsersScreen.id);
+                      },
                     ),
                     SettingsTile(
                       key: const Key("mod_tools_screen_banned_users_tile"),
