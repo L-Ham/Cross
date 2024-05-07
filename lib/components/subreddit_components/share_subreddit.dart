@@ -53,7 +53,7 @@ buildSharetoSubreddit(BuildContext context, Subreddit subreddit) {
                   "r/${subreddit.name}",
                   style: TextStyle(
                     color: Color.fromARGB(255, 173, 164, 164),
-                    fontSize: ScreenSizeHandler.screenWidth * 0.035,
+                    fontSize: ScreenSizeHandler.screenWidth * 0.036,
                   ),
                 ),
               ],
@@ -72,7 +72,7 @@ buildSharetoSubreddit(BuildContext context, Subreddit subreddit) {
                   maxLines: 2,
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: ScreenSizeHandler.screenWidth * 0.047,
+                    fontSize: ScreenSizeHandler.screenWidth * 0.045,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -81,7 +81,9 @@ buildSharetoSubreddit(BuildContext context, Subreddit subreddit) {
           ),
         ),
         Padding(
-          padding: EdgeInsets.only(left: ScreenSizeHandler.screenWidth * 0.025),
+          padding: EdgeInsets.only(
+              left: ScreenSizeHandler.screenWidth * 0.025,
+              top: ScreenSizeHandler.screenWidth * 0.01),
           child: Text(
             "${subreddit.followersCount} followers . ${subreddit.onlineCount} online",
             style: TextStyle(

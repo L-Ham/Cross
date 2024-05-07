@@ -83,7 +83,9 @@ class _SubredditScreenState extends State<SubredditScreen> {
         subredditID = data['communityDetails']['subredditId'];
         _isJoined = data['communityDetails']['isMember'];
         isMuted = data['communityDetails']['isMuted'];
+        subredditLink = "http://https://reddit-bylham.me/r/${subredditName}";
       });
+
       subreddit = Subreddit(
           name: subredditName,
           description: subredditDescription,
