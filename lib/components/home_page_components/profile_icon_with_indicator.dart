@@ -5,19 +5,21 @@ class ProfileIconWithIndicator extends StatelessWidget {
   const ProfileIconWithIndicator({
     required this.isOnline,
     this.imageURL,
+    this.radius = 20,
     super.key,
   });
 
   final bool isOnline;
   final String? imageURL;
+  final double radius;
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
         CircleAvatar(
-          backgroundColor: Colors.orange,
-          radius: 25,
+          backgroundColor: Colors.transparent,
+          radius: radius,
           child: CircleAvatar(
             backgroundImage:
                 AssetImage(imageURL ?? 'assets/images/reddit_logo.png'),
@@ -26,14 +28,14 @@ class ProfileIconWithIndicator extends StatelessWidget {
         ),
         if (isOnline)
           Positioned(
-            bottom: -ScreenSizeHandler.screenHeight * 0.002,
-            left: ScreenSizeHandler.screenWidth * 0.0195,
-            child: const CircleAvatar(
+            bottom: -radius * 0,
+            left: radius * 0,
+            child: CircleAvatar(
               backgroundColor: Colors.black,
-              radius: 7,
+              radius: radius*0.32,
               child: CircleAvatar(
                 backgroundColor: Colors.green,
-                radius: 5,
+                radius: radius*0.23,
               ),
             ),
           ),

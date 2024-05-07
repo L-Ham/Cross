@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/utilities/email_regex.dart';
-import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 
 const String baseURL = "https://reddit-bylham.me/api";
@@ -262,6 +261,53 @@ class ApiService {
     }
   }
 
+  Future<void> addMediaPostScheduled(
+      List<File> imageFiles, Map<String, dynamic> body) async {
+    var request =
+        http.MultipartRequest('POST', Uri.parse('$baseURL/post/scheduledPost'));
+
+    request.headers.addAll({
+      'Content-Type': 'multipart/form-data',
+      'Authorization': "Bearer $token",
+    });
+
+    request.fields['title'] = body['title'];
+    request.fields['text'] = body['text'];
+    request.fields['type'] = body['type'];
+    request.fields['scheduledMinutes'] = body['scheduledMinutes'].toString();
+    request.fields['subRedditId'] = body['subRedditId'];
+    request.fields['isNSFW'] = false.toString();
+    request.fields['isSpoiler'] = body['isSpoiler'].toString();
+    request.fields['isLocked'] = false.toString();
+
+    for (var imageFile in imageFiles) {
+      debugPrint('Image file path: ${imageFile.path}');
+      request.files
+          .add(await http.MultipartFile.fromPath('file', imageFile.path));
+    }
+    var response;
+    try {
+      response = await request.send();
+      // Handle the response...
+    } on SocketException catch (e) {
+      debugPrint('SocketException: $e');
+      // Handle the exception...
+    }
+    if (response.statusCode == 200) {
+      debugPrint('Media uploaded successfully');
+    } else {
+      debugPrint(response.statusCode.toString());
+      String responseBody = await response.stream.bytesToString();
+
+      // Parse the string as JSON
+      Map<String, dynamic> responseJson = jsonDecode(responseBody);
+
+      debugPrint(response.statusCode.toString());
+      debugPrint('Response body: $responseBody');
+      debugPrint('Media upload failed');
+    }
+  }
+
   Future<dynamic> addTextPost(Map<String, dynamic> body) async {
     debugPrint('success');
     var result = await request('/post/createPost',
@@ -269,9 +315,24 @@ class ApiService {
     return result;
   }
 
+  Future<dynamic> addTextPostScheduled(Map<String, dynamic> body) async {
+    debugPrint('success');
+    var result = await request('/post/scheduledPost',
+        headers: headerWithToken, method: 'POST', body: body);
+    print(result);
+    return result;
+  }
+
   Future<dynamic> addPollPost(Map<String, dynamic> body) async {
     var result = await request('/post/createPost',
         headers: headerWithToken, method: 'POST', body: body);
+    return result;
+  }
+
+  Future<dynamic> addPollPostScheduled(Map<String, dynamic> body) async {
+    var result = await request('/post/scheduledPost',
+        headers: headerWithToken, method: 'POST', body: body);
+    print(result);
     return result;
   }
 
@@ -296,7 +357,6 @@ class ApiService {
     sentData = {"subredditId": communityId};
     var result = await request('/subreddit/rule',
         headers: headerWithToken, method: 'GET', body: sentData);
-    print(result);
     return result;
   }
 
@@ -391,4 +451,85 @@ class ApiService {
         headers: headerWithToken, method: 'GET', body: sentData);
     return result;
   }
+  Future<dynamic> getAllInbox() async {
+    var result = await request('/message/getAllInbox',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+
+  Future<dynamic> getAllSent() async {
+    var result = await request('/message/getSentMessages',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+
+  Future<dynamic> composeMessage(Map<String, dynamic> body) async {
+    var result = await request('/message/compose',
+        headers: headerWithToken, method: 'POST', body: body);
+    return result;
+  }
+
+  Future<dynamic> getSavedPosts(String username, int page, int limit) async {
+    Map<String, dynamic> sentData;
+    sentData = {"username": username, "page": page, "limit": limit};
+    var result = await request('/user/savedPosts',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    print(result);
+    return result;
+  }
+
+  Future<dynamic> getPopularCommunites() async {
+    var result = await request('/subreddit/popularCommunity',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+
+  Future<dynamic> getTrendingCommunities() async {
+    var result = await request('/subreddit/trendingCommunity',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+
+  Future<dynamic> markAsRead(String messageId) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "messageId": messageId,
+    };
+    var result = await request('/message/read',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> markAsUnread(String messageId) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "messageId": messageId,
+    };
+    var result = await request('/message/unread',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  // Future<List> getSavedPosts(String username, int page, int limit) async {
+  //   try {
+  //     final response = await http.get(
+  //       Uri.parse(
+  //           '$baseURL/user/savedPosts?username=$username&page=$page&limit=$limit'),
+  //       headers: headerWithToken,
+  //     );
+
+  //     if (response.statusCode == 200) {
+  //       final List<dynamic> responseData = jsonDecode(response.body);
+  //       final List savedPosts =
+  //           responseData.map((postJson) => Post.fromJson(postJson)).toList();
+  //       return savedPosts;
+  //     } else if (response.statusCode == 404) {
+  //       throw Exception('User not found');
+  //     } else {
+  //       throw Exception('Failed to load saved posts: ${response.statusCode}');
+  //     }
+  //   } catch (e) {
+  //     throw Exception('Failed to load saved posts: $e');
+  //   }
+  // }
 }

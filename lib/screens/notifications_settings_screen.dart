@@ -74,7 +74,8 @@ class _NotificationSettingsScreenState
         ),
       ),
       body: isLoading
-          ? const RedditLoadingIndicator()
+          ? const Align(
+              alignment: Alignment.topCenter, child: RedditLoadingIndicator())
           : SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

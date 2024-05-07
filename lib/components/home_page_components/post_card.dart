@@ -87,7 +87,7 @@ class _PostCardState extends State<PostCard> {
   Widget buildPostCard(Post post, bool isTypeImage, bool isTypeText,
       bool isTypePoll, bool isTypeLink, bool isOwner, BuildContext context) {
     return Container(
-      color: Colors.black,
+      color: kPostColor,
       child: SingleChildScrollView(
         child: Column(
           children: [
@@ -99,7 +99,7 @@ class _PostCardState extends State<PostCard> {
                   child: CircleAvatar(
                     radius: ScreenSizeHandler.screenWidth * 0.03,
                     backgroundImage:
-                        AssetImage('assets/images/avatarDaniel.png'),
+                        const AssetImage('assets/images/avatarDaniel.png'),
                   ),
                 ),
                 SizedBox(width: ScreenSizeHandler.screenWidth * 0.02),
@@ -136,7 +136,7 @@ class _PostCardState extends State<PostCard> {
                           right: ScreenSizeHandler.screenWidth * 0.04),
                       child: Icon(
                         Icons.more_horiz_outlined,
-                        color: Color.fromARGB(255, 191, 188, 188),
+                        color: const Color.fromARGB(255, 191, 188, 188),
                         size: ScreenSizeHandler.screenWidth * 0.05,
                       ),
                     ),
@@ -176,10 +176,10 @@ class _PostCardState extends State<PostCard> {
                                 bottom: ScreenSizeHandler.screenHeight * 0.05,
                                 right: ScreenSizeHandler.screenWidth * 0.02),
                             metadataTextStyle:
-                                TextStyle(fontSize: 0, height: 0),
+                                const TextStyle(fontSize: 0, height: 0),
                             metadataTitleStyle:
-                                TextStyle(fontSize: 0, height: 0),
-                            textStyle: TextStyle(fontSize: 0, height: 0),
+                                const TextStyle(fontSize: 0, height: 0),
+                            textStyle: const TextStyle(fontSize: 0, height: 0),
                             enableAnimation: true,
                             onPreviewDataFetched: (data) {
                               setState(() {
@@ -245,7 +245,7 @@ class _PostCardState extends State<PostCard> {
                             left: ScreenSizeHandler.screenWidth * 0.02),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.black,
+                            color: kPostColor,
                             borderRadius: BorderRadius.circular(
                                 ScreenSizeHandler.screenWidth * 0.05),
                             border: Border.all(
@@ -297,7 +297,7 @@ class _PostCardState extends State<PostCard> {
                                               ScreenSizeHandler.bigger * 0.001,
                                           height:
                                               ScreenSizeHandler.bigger * 0.02,
-                                          color: Color.fromARGB(
+                                          color: const Color.fromARGB(
                                               102, 127, 126, 126),
                                         ),
                                       )
@@ -351,7 +351,7 @@ class _PostCardState extends State<PostCard> {
                                 children: [
                                   Container(
                                       decoration: BoxDecoration(
-                                        color: Colors.black,
+                                        color: kPostColor,
                                         borderRadius: BorderRadius.circular(
                                             ScreenSizeHandler.screenWidth *
                                                 0.05),
@@ -509,7 +509,7 @@ class _PostCardState extends State<PostCard> {
                 ],
               ),
             ),
-            Divider(
+            const Divider(
               color: kFillingColor,
               thickness: 1,
             ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:reddit_bel_ham/components/general_components/reddit_loading_indicator.dart';
 import 'package:reddit_bel_ham/screens/about_you_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -59,10 +61,16 @@ class _SubredditScreenState extends State<SubredditScreen> {
       });
     }
   }
+  bool isLoading = true;
 
   Future<void> getCommunityData() async {
     Map<String, dynamic> data =
         (await apiService.getCommunityDetails('Dragon Oath')) ?? {};
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+      });
+    }
     if (mounted) {
       setState(() {
         subredditMembersCount =
@@ -274,8 +282,13 @@ class _SubredditScreenState extends State<SubredditScreen> {
         ),
       ),
       backgroundColor: kBackgroundColor,
-      body: CustomScrollView(
-        controller: _scrollController,
+      body:ModalProgressHUD(
+        inAsyncCall: isLoading,
+        color: Colors.black,
+        opacity: 0.5,
+        progressIndicator: const RedditLoadingIndicator(),
+        child: CustomScrollView(
+          controller: _scrollController,
         slivers: [
           SliverAppBar(
             title: _showTitleInAppBar
@@ -811,7 +824,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
               ),
             ),
         ],
-      ),
+      ),)
     );
   }
 }
