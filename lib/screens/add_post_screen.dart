@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -12,6 +10,7 @@ import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/community_rules_screen.dart';
 import 'package:reddit_bel_ham/screens/post_to_screen.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
+import 'package:reddit_bel_ham/utilities/calculate_Scheduled_Time_In_Minutes.dart';
 import 'package:reddit_bel_ham/utilities/is_valid_url.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,6 +24,7 @@ import '../components/add_post_components/icon_button_with_caption.dart';
 import '../components/add_post_components/image_edit_viewer.dart';
 import '../components/add_post_components/invalid_link_error.dart';
 import '../components/add_post_components/poll_edit.dart';
+import '../components/add_post_components/post_settings_bottom_sheet.dart';
 import '../components/add_post_components/video_viewer.dart';
 import '../components/general_components/rounded_button.dart';
 
@@ -43,6 +43,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
   bool isPostButtonActivated = false;
   bool isSubredditSelected = false;
   FocusNode urlFocus = FocusNode();
+  FocusNode titleFocus = FocusNode();
   List<XFile> chosenImages = [];
   final ImagePicker _picker = ImagePicker();
   TextEditingController titleController = TextEditingController();
@@ -70,6 +71,9 @@ class _AddPostScreenState extends State<AddPostScreen> {
   File? videoFile;
   String subredditId = "";
   bool isLoading = false;
+  bool isScheduled = false;
+  DateTime? selectedDate;
+  TimeOfDay? selectedTime;
 
   @override
   void didChangeDependencies() {
@@ -91,6 +95,15 @@ class _AddPostScreenState extends State<AddPostScreen> {
       subredditId = args['subredditId'];
     }
     super.didChangeDependencies();
+  }
+
+  void schedulePostCallback(
+      bool scheduled, DateTime postDate, TimeOfDay postTime) {
+    setState(() {
+      isScheduled = scheduled;
+      selectedDate = postDate;
+      selectedTime = postTime;
+    });
   }
 
   void addURL() {
@@ -221,6 +234,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
   @override
   void initState() {
     super.initState();
+    titleFocus.requestFocus();
     urlFocus.addListener(() {
       setState(() {});
     });
@@ -248,15 +262,29 @@ class _AddPostScreenState extends State<AddPostScreen> {
           },
         ),
         actions: <Widget>[
-          IconButton(
-              onPressed: () {}, icon: const Icon(Icons.more_horiz_sharp)),
+          if (isSubredditSelected)
+            IconButton(
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return PostSettingsBottomSheet(
+                      schedulePostCallback: schedulePostCallback,
+                      selectedDate: selectedDate,
+                      selectedTime: selectedTime,
+                    );
+                  },
+                );
+              },
+              icon: const Icon(Icons.more_horiz_sharp),
+            ),
           Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: ScreenSizeHandler.screenWidth * 0.02,
                 vertical: ScreenSizeHandler.screenHeight * 0.013),
             child: RoundedButton(
               buttonHeightRatio: 0.05,
-              buttonWidthRatio: 0.08,
+              buttonWidthRatio: isScheduled ? 0.13 : 0.08,
               onTap: () async {
                 if (isPostButtonActivated) {
                   if (!isSubredditSelected) {
@@ -292,7 +320,14 @@ class _AddPostScreenState extends State<AddPostScreen> {
                           isLoading = true;
                         });
                       }
-                      await apiService.addMediaPost((imageFiles), post);
+                      if (isScheduled) {
+                        post['scheduledTime'] = calculateScheduledTimeInMinutes(
+                            selectedDate!, selectedTime!);
+                        await apiService.addMediaPostScheduled(
+                            imageFiles, post);
+                      } else {
+                        await apiService.addMediaPost((imageFiles), post);
+                      }
                       if (mounted) {
                         setState(() {
                           isLoading = false;
@@ -305,7 +340,14 @@ class _AddPostScreenState extends State<AddPostScreen> {
                           isLoading = true;
                         });
                       }
-                      await apiService.addMediaPost(([videoFile!]), post);
+                      if (isScheduled) {
+                        post['scheduledTime'] = calculateScheduledTimeInMinutes(
+                            selectedDate!, selectedTime!);
+                        await apiService
+                            .addMediaPostScheduled([videoFile!], post);
+                      } else {
+                        await apiService.addMediaPost(([videoFile!]), post);
+                      }
                       if (mounted) {
                         setState(() {
                           isLoading = false;
@@ -331,7 +373,13 @@ class _AddPostScreenState extends State<AddPostScreen> {
                           isLoading = true;
                         });
                       }
-                      await apiService.addPollPost(post);
+                      if (isScheduled) {
+                        post['scheduledTime'] = calculateScheduledTimeInMinutes(
+                            selectedDate!, selectedTime!);
+                        await apiService.addPollPostScheduled(post);
+                      } else {
+                        await apiService.addPollPost(post);
+                      }
                       if (mounted) {
                         setState(() {
                           isLoading = false;
@@ -345,7 +393,13 @@ class _AddPostScreenState extends State<AddPostScreen> {
                           isLoading = true;
                         });
                       }
-                      await apiService.addTextPost(post);
+                      if (isScheduled) {
+                        post['scheduledTime'] = calculateScheduledTimeInMinutes(
+                            selectedDate!, selectedTime!);
+                        await apiService.addTextPostScheduled(post);
+                      } else {
+                        await apiService.addTextPost(post);
+                      }
                       if (mounted) {
                         setState(() {
                           isLoading = false;
@@ -358,7 +412,13 @@ class _AddPostScreenState extends State<AddPostScreen> {
                           isLoading = true;
                         });
                       }
-                      await apiService.addTextPost(post);
+                      if (isScheduled) {
+                        post['scheduledTime'] = calculateScheduledTimeInMinutes(
+                            selectedDate!, selectedTime!);
+                        await apiService.addTextPostScheduled(post);
+                      } else {
+                        await apiService.addTextPost(post);
+                      }
                       if (mounted) {
                         setState(() {
                           isLoading = false;
@@ -372,7 +432,11 @@ class _AddPostScreenState extends State<AddPostScreen> {
               buttonColor:
                   isPostButtonActivated ? kSwitchOnColor : Colors.grey[900]!,
               child: Text(
-                isSubredditSelected ? "Post" : "Next",
+                isSubredditSelected
+                    ? isScheduled
+                        ? "Schedule"
+                        : "Post"
+                    : "Next",
                 style: TextStyle(
                   fontSize: ScreenSizeHandler.screenHeight * 0.019,
                   fontWeight: FontWeight.bold,
@@ -492,6 +556,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                             isBrandAffiliate: isBrandAffiliate),
                         AddPostTextField(
                           controller: titleController,
+                          focusNode: titleFocus,
                           hintText: "Title",
                           fontSizeRatio: 0.032,
                           isTitle: true,
@@ -842,14 +907,4 @@ class _AddPostScreenState extends State<AddPostScreen> {
       ),
     );
   }
-
-  // @override
-  // void dispose() {
-  //   urlFocus.dispose();
-  //   super.dispose();
-  //   titleController.removeListener(() {});
-  //   titleController.dispose();
-
-  //   super.dispose();
-  // }
 }

@@ -11,6 +11,7 @@ class SettingsTile extends StatelessWidget {
   final FontWeight titleFontWeight;
   final FontWeight subtitileFontWeight;
   final Color? fontColor;
+  final double titleTextSizeRatio;
 
   const SettingsTile({
     Key? key,
@@ -21,6 +22,7 @@ class SettingsTile extends StatelessWidget {
     this.onTap,
     this.titleFontWeight = FontWeight.w500,
     this.subtitileFontWeight = FontWeight.w500,
+    this.titleTextSizeRatio = kSettingsTileTextRatio,
     this.fontColor,
   }) : super(key: key);
 
@@ -31,42 +33,43 @@ class SettingsTile extends StatelessWidget {
       child: Container(
         color: kBackgroundColor,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: ScreenSizeHandler.screenWidth * 0.04, vertical: ScreenSizeHandler.screenHeight*0.008),
+          padding: EdgeInsets.symmetric(
+              horizontal: ScreenSizeHandler.screenWidth * 0.04,
+              vertical: ScreenSizeHandler.screenHeight * 0.008),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               leadingIcon,
               Expanded(
                 child: Padding(
-                  padding: EdgeInsets.only(right: ScreenSizeHandler.screenWidth*0.03),
+                  padding: EdgeInsets.only(
+                      right: ScreenSizeHandler.screenWidth * 0.03),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         titleText,
-
                         style: kSettingsIconTextStyle.copyWith(
-                          fontSize: ScreenSizeHandler.bigger *
-                              kSettingsTileTextRatio, fontWeight: titleFontWeight,
+                          fontSize:
+                              ScreenSizeHandler.bigger * titleTextSizeRatio,
+                          fontWeight: titleFontWeight,
                           color: fontColor,
                         ),
-                        
                       ),
                       if (subtitleText != null)
                         Text(
                           subtitleText!,
                           style: kSettingsIconTextStyle.copyWith(
-                            fontSize: ScreenSizeHandler.bigger *
-                                kSettingsTileSubtextRatio,
-                            color: Colors.grey,
-                            fontWeight: subtitileFontWeight
-                          ),
+                              fontSize: ScreenSizeHandler.bigger *
+                                  kSettingsTileSubtextRatio,
+                              color: Colors.grey,
+                              fontWeight: subtitileFontWeight),
                         ),
                     ],
                   ),
                 ),
               ),
-              if (trailingWidget != null) trailingWidget !,
+              if (trailingWidget != null) trailingWidget!,
             ],
           ),
         ),
