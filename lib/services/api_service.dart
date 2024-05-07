@@ -142,6 +142,14 @@ class ApiService {
     return result;
   }
 
+  Future<dynamic> getUserInfo(String id) async {
+    Map<String, dynamic> sentData;
+    sentData = {"userId": id};
+    var result = await request('/user/info',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    return result;
+  }
+
   Future<dynamic> patchGender(String newGender) async {
     var result = await request('/user/gender',
         headers: headerWithToken, method: 'PATCH', body: {"gender": newGender});
@@ -401,6 +409,7 @@ class ApiService {
         body: {"password": password});
     return result;
   }
+
   Future<dynamic> getAllInbox() async {
     var result = await request('/message/getAllInbox',
         headers: headerWithToken, method: 'GET');
