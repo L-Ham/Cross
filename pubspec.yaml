@@ -35,6 +35,12 @@ dependencies:
   mockito: ^5.4.4
   firebase_auth: ^4.19.1
   firebase_core: ^2.29.0
+  share: ^2.0.4
+  firebase_messaging: ^14.9.1
+  flutter_local_notifications: ^17.1.1
+  flutter_linkify: ^6.0.0
+
+
   
 dev_dependencies:
   flutter_test:

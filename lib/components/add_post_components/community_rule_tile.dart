@@ -51,15 +51,18 @@ class _CommunityRuleTileState extends State<CommunityRuleTile> {
               ],
             ),
             if (isExpanded)
-              Padding(
-                padding: EdgeInsets.only(
-                    top: ScreenSizeHandler.screenHeight * 0.013),
-                child: Text(
-                  widget.ruleDescription,
-                  style: TextStyle(
-                    fontSize: ScreenSizeHandler.bigger * 0.0167,
-                    height: 1.2,
-                    fontWeight: FontWeight.w400,
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                      top: ScreenSizeHandler.screenHeight * 0.013),
+                  child: Text(
+                    widget.ruleDescription,
+                    style: TextStyle(
+                      fontSize: ScreenSizeHandler.bigger * 0.0167,
+                      height: 1.2,
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
                 ),
               ),

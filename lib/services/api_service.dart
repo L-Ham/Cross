@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/utilities/email_regex.dart';
-import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 
 const String baseURL = "https://reddit-bylham.me/api";
@@ -28,7 +27,6 @@ class ApiService {
       dynamic body}) async {
     var url = Uri.parse(baseURL + endpoint);
     http.Response response;
-
     try {
       switch (method) {
         case 'GET':
@@ -48,6 +46,15 @@ class ApiService {
         case 'PATCH':
           response =
               await http.patch(url, headers: headers, body: jsonEncode(body));
+          break;
+        case 'DELETE':
+          var request = http.Request('DELETE', url);
+          request.headers.addAll(headers);
+          if (body != null) {
+            request.body = jsonEncode(body);
+          }
+          var streamedResponse = await request.send();
+          response = await http.Response.fromStream(streamedResponse);
           break;
         default:
           throw Exception('HTTP method $method not implemented');
@@ -255,6 +262,53 @@ class ApiService {
     }
   }
 
+  Future<void> addMediaPostScheduled(
+      List<File> imageFiles, Map<String, dynamic> body) async {
+    var request =
+        http.MultipartRequest('POST', Uri.parse('$baseURL/post/scheduledPost'));
+
+    request.headers.addAll({
+      'Content-Type': 'multipart/form-data',
+      'Authorization': "Bearer $token",
+    });
+
+    request.fields['title'] = body['title'];
+    request.fields['text'] = body['text'];
+    request.fields['type'] = body['type'];
+    request.fields['scheduledMinutes'] = body['scheduledMinutes'].toString();
+    request.fields['subRedditId'] = body['subRedditId'];
+    request.fields['isNSFW'] = false.toString();
+    request.fields['isSpoiler'] = body['isSpoiler'].toString();
+    request.fields['isLocked'] = false.toString();
+
+    for (var imageFile in imageFiles) {
+      debugPrint('Image file path: ${imageFile.path}');
+      request.files
+          .add(await http.MultipartFile.fromPath('file', imageFile.path));
+    }
+    var response;
+    try {
+      response = await request.send();
+      // Handle the response...
+    } on SocketException catch (e) {
+      debugPrint('SocketException: $e');
+      // Handle the exception...
+    }
+    if (response.statusCode == 200) {
+      debugPrint('Media uploaded successfully');
+    } else {
+      debugPrint(response.statusCode.toString());
+      String responseBody = await response.stream.bytesToString();
+
+      // Parse the string as JSON
+      Map<String, dynamic> responseJson = jsonDecode(responseBody);
+
+      debugPrint(response.statusCode.toString());
+      debugPrint('Response body: $responseBody');
+      debugPrint('Media upload failed');
+    }
+  }
+
   Future<dynamic> addTextPost(Map<String, dynamic> body) async {
     debugPrint('success');
     var result = await request('/post/createPost',
@@ -262,9 +316,24 @@ class ApiService {
     return result;
   }
 
+  Future<dynamic> addTextPostScheduled(Map<String, dynamic> body) async {
+    debugPrint('success');
+    var result = await request('/post/scheduledPost',
+        headers: headerWithToken, method: 'POST', body: body);
+    print(result);
+    return result;
+  }
+
   Future<dynamic> addPollPost(Map<String, dynamic> body) async {
     var result = await request('/post/createPost',
         headers: headerWithToken, method: 'POST', body: body);
+    return result;
+  }
+
+  Future<dynamic> addPollPostScheduled(Map<String, dynamic> body) async {
+    var result = await request('/post/scheduledPost',
+        headers: headerWithToken, method: 'POST', body: body);
+    print(result);
     return result;
   }
 
@@ -289,7 +358,6 @@ class ApiService {
     sentData = {"subredditId": communityId};
     var result = await request('/subreddit/rule',
         headers: headerWithToken, method: 'GET', body: sentData);
-    print(result);
     return result;
   }
 
@@ -343,6 +411,65 @@ class ApiService {
     return result;
   }
 
+  Future<dynamic> joinCommunity(String subredditID) async {
+    var result = await request('/user/joinCommunity',
+        headers: headerWithToken,
+        method: 'PATCH',
+        body: {"subRedditId": subredditID});
+    return result;
+  }
+
+  Future<dynamic> leaveCommunity(String subredditID) async {
+    var result = await request('/user/unjoinCommunity',
+        headers: headerWithToken,
+        method: 'DELETE',
+        body: {"subRedditId": subredditID});
+
+    return result;
+  }
+
+  Future<dynamic> muteCommunity(String subredditName) async {
+    var result = await request('/user/muteCommunity',
+        headers: headerWithToken,
+        method: 'PATCH',
+        body: {"subRedditName": subredditName});
+    return result;
+  }
+
+  Future<dynamic> unmuteCommunity(String subredditName) async {
+    var result = await request('/user/unmuteCommunity',
+        headers: headerWithToken,
+        method: 'DELETE',
+        body: {"subRedditName": subredditName});
+
+    return result;
+  }
+
+  Future<dynamic> getCommunityModerators(String communityName) async {
+    Map<String, dynamic> sentData;
+    sentData = {"subredditName": communityName};
+    var result = await request('/subreddit/moderators',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    return result;
+  }
+  Future<dynamic> getAllInbox() async {
+    var result = await request('/message/getAllInbox',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+
+  Future<dynamic> getAllSent() async {
+    var result = await request('/message/getSentMessages',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+
+  Future<dynamic> composeMessage(Map<String, dynamic> body) async {
+    var result = await request('/message/compose',
+        headers: headerWithToken, method: 'POST', body: body);
+    return result;
+  }
+
   Future<dynamic> getSavedPosts(String username, int page, int limit) async {
     Map<String, dynamic> sentData;
     sentData = {"username": username, "page": page, "limit": limit};
@@ -370,6 +497,38 @@ class ApiService {
     var result = await request('/subreddit/users/approved',
         headers: headerWithToken, method: 'GET', body: sentData);
     // print(result);
+    return result;
+  }
+
+  Future<dynamic> getPopularCommunites() async {
+    var result = await request('/subreddit/popularCommunity',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+
+  Future<dynamic> getTrendingCommunities() async {
+    var result = await request('/subreddit/trendingCommunity',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+
+  Future<dynamic> markAsRead(String messageId) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "messageId": messageId,
+    };
+    var result = await request('/message/read',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> markAsUnread(String messageId) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "messageId": messageId,
+    };
+    var result = await request('/message/unread',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
     return result;
   }
 

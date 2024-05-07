@@ -1,14 +1,15 @@
-import 'dart:ffi';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:reddit_bel_ham/components/general_components/continue_button.dart';
+import 'package:reddit_bel_ham/components/general_components/reddit_loading_indicator.dart';
 import 'package:reddit_bel_ham/components/home_page_components/drawer_one.dart';
 import 'package:reddit_bel_ham/components/home_page_components/drawer_two.dart';
 import 'package:reddit_bel_ham/components/home_page_components/end_Drawer.dart';
+import 'package:reddit_bel_ham/components/home_page_components/mark_all_as_read.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 import 'package:reddit_bel_ham/components/home_page_components/profile_icon_with_indicator.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile.dart';
@@ -23,6 +24,7 @@ import 'package:reddit_bel_ham/screens/inbox_messages.dart';
 import 'package:reddit_bel_ham/screens/about_you_screen.dart';
 import 'package:reddit_bel_ham/screens/home_page_seach_screen.dart';
 import 'package:reddit_bel_ham/screens/login_screen.dart';
+import 'package:reddit_bel_ham/screens/notifications_settings_screen.dart';
 
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
@@ -33,6 +35,8 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:reddit_bel_ham/screens/settings_screen.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:reddit_bel_ham/components/home_page_components/trending_posts.dart';
+
+import '../components/messaging_components/inbox_bottom_sheet.dart';
 
 class HomePageScreen extends StatefulWidget {
   const HomePageScreen({super.key});
@@ -63,6 +67,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
       isRecentlyVisitedDrawerVisible = value;
     });
   }
+
+  bool isMarkingAllAsRead = false;
 
   late String email;
 
@@ -352,7 +358,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
                           style: TextStyle(
                               fontSize: ScreenSizeHandler.smaller *
                                   kButtonSmallerFontRatio *
-                                  1.1),
+                                  1.1,
+                              fontWeight: FontWeight.w600),
                         ),
                       ),
                     )
@@ -367,7 +374,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
                               style: TextStyle(
                                   fontSize: ScreenSizeHandler.smaller *
                                       kButtonSmallerFontRatio *
-                                      1.1),
+                                      1.1,
+                                  fontWeight: FontWeight.w600),
                             ),
                           ),
                         )
@@ -382,7 +390,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                   style: TextStyle(
                                       fontSize: ScreenSizeHandler.smaller *
                                           kButtonSmallerFontRatio *
-                                          1.1),
+                                          1.1,
+                                      fontWeight: FontWeight.w600),
                                 ),
                               ),
                             )
@@ -407,6 +416,27 @@ class _HomePageScreenState extends State<HomePageScreen> {
                     size: ScreenSizeHandler.smaller * 0.095,
                     color: Colors.white,
                   ),
+                ),
+              ),
+            ),
+            Visibility(
+              visible: navigationBarIndex == 4,
+              child: GestureDetector(
+                onTap: () async {
+                  var choice = await showModalBottomSheet(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const InboxBottomSheet();
+                    },
+                  );
+                  if (choice == 2) {
+                    Provider.of<MarkAllAsRead>(context, listen: false).notify();
+                  }
+                },
+                child: Icon(
+                  Icons.more_horiz,
+                  color: Colors.white,
+                  size: ScreenSizeHandler.bigger * 0.032,
                 ),
               ),
             ),
@@ -439,7 +469,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
                     ),
                   )
                 : navigationBarIndex == 4
-                    ? InboxMessagesScreen()
+                    ? isMarkingAllAsRead
+                        ? const Center(child: RedditLoadingIndicator())
+                        : const InboxMessagesScreen()
                     : PageView(
                         controller: controller,
                         onPageChanged: (value) => setState(() {

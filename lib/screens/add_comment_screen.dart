@@ -7,6 +7,8 @@ import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/utilities/is_valid_url.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 
+import '../components/general_components/insert_link_popup.dart';
+
 class AddCommentScreen extends StatefulWidget {
   const AddCommentScreen({super.key});
 
@@ -17,16 +19,13 @@ class AddCommentScreen extends StatefulWidget {
 }
 
 class _AddCommentScreenState extends State<AddCommentScreen> {
-  TextEditingController urlNameController = TextEditingController();
-  TextEditingController urlLinkController = TextEditingController();
   TextEditingController commentController = TextEditingController();
-  ValueNotifier<bool> isButtonEnabled = ValueNotifier<bool>(false);
   late String postTitle;
   late String postContent;
-  late String postType;
+  String postType = "";
   late bool isReply;
   String userName = "Gintoki1204";
-  String postTime = "2h";
+  String commentTime = "2h";
   String replyString =
       "Brother come ti India 70% of all goat college seats are reserved for peiple who didn't earn it";
 
@@ -34,31 +33,18 @@ class _AddCommentScreenState extends State<AddCommentScreen> {
   void didChangeDependencies() {
     final Map<String, dynamic> args =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    postTitle = args['postTitle']!;
-    postContent = args['postContent']!;
-    postType = args['postType']!;
     isReply = args['isReply']! as bool;
+    if (isReply) {
+      userName = args['userName']!;
+      commentTime = args['postTime']!;
+      replyString = args['replyString']!;
+    } else {
+      postTitle = args['postTitle']!;
+      postContent = args['postContent']!;
+      postType = args['postType']!;
+    }
 
     super.didChangeDependencies();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    urlNameController.addListener(updateButtonState);
-    urlLinkController.addListener(updateButtonState);
-  }
-
-  @override
-  void dispose() {
-    urlNameController.removeListener(updateButtonState);
-    urlLinkController.removeListener(updateButtonState);
-    super.dispose();
-  }
-
-  void updateButtonState() {
-    isButtonEnabled.value =
-        urlNameController.text.isNotEmpty && isValidUrl(urlLinkController.text);
   }
 
   @override
@@ -120,21 +106,24 @@ class _AddCommentScreenState extends State<AddCommentScreen> {
                                       Align(
                                         alignment: Alignment.centerLeft,
                                         child: Text(
-                                          userName + " • " + postTime,
+                                          userName + " • " + commentTime,
                                           style: TextStyle(
                                             color: Colors.grey,
-                                            fontSize:
-                                                ScreenSizeHandler.bigger * 0.015,
+                                            fontSize: ScreenSizeHandler.bigger *
+                                                0.015,
                                           ),
                                         ),
                                       ),
                                       Padding(
-                                        padding: EdgeInsets.only(top: ScreenSizeHandler.screenHeight*0.02),
+                                        padding: EdgeInsets.only(
+                                            top:
+                                                ScreenSizeHandler.screenHeight *
+                                                    0.02),
                                         child: Text(
                                           replyString,
                                           style: TextStyle(
-                                            fontSize:
-                                                ScreenSizeHandler.bigger * 0.016,
+                                            fontSize: ScreenSizeHandler.bigger *
+                                                0.016,
                                           ),
                                         ),
                                       ),
@@ -236,106 +225,7 @@ class _AddCommentScreenState extends State<AddCommentScreen> {
                         final result = showDialog(
                           context: context,
                           builder: (BuildContext context) {
-                            return AlertDialog(
-                              shape: const RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.zero, // Add this line
-                              ),
-                              backgroundColor: kBackgroundColor,
-                              shadowColor: kBackgroundColor,
-                              surfaceTintColor: kBackgroundColor,
-                              title: Text(
-                                'Insert a link',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: ScreenSizeHandler.bigger * 0.024,
-                                ),
-                              ),
-                              content: Padding(
-                                padding: EdgeInsets.only(
-                                    top: ScreenSizeHandler.screenHeight * 0.01),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    TextFormField(
-                                      controller: urlNameController,
-                                      decoration: InputDecoration(
-                                          hintText: 'Name',
-                                          border: InputBorder.none,
-                                          hintStyle: TextStyle(
-                                              fontSize:
-                                                  ScreenSizeHandler.bigger *
-                                                      0.018)),
-                                    ),
-                                    TextFormField(
-                                      controller: urlLinkController,
-                                      decoration: InputDecoration(
-                                          hintText: 'Link',
-                                          border: InputBorder.none,
-                                          hintStyle: TextStyle(
-                                              fontSize:
-                                                  ScreenSizeHandler.bigger *
-                                                      0.018)),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                          top: ScreenSizeHandler.screenHeight *
-                                              0.02),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          RoundedButton(
-                                            onTap: () {
-                                              Navigator.of(context).pop();
-                                              urlLinkController.clear();
-                                              urlNameController.clear();
-                                            },
-                                            buttonWidthRatio: 0.14,
-                                            buttonHeightRatio: 0.065,
-                                            buttonColor: kBackgroundColor,
-                                            child: const Text('Cancel'),
-                                          ),
-                                          ValueListenableBuilder<bool>(
-                                            valueListenable: isButtonEnabled,
-                                            builder: (BuildContext context,
-                                                bool isEnabled, Widget? child) {
-                                              return RoundedButton(
-                                                onTap: () {
-                                                  Navigator.pop(
-                                                    context,
-                                                    {
-                                                      'name': urlNameController
-                                                          .text,
-                                                      'link': urlLinkController
-                                                          .text,
-                                                    },
-                                                  );
-                                                  urlLinkController.clear();
-                                                  urlNameController.clear();
-                                                },
-                                                buttonWidthRatio: 0.14,
-                                                buttonHeightRatio: 0.06,
-                                                buttonColor: Colors.blue,
-                                                child: Text(
-                                                  'Insert',
-                                                  style: TextStyle(
-                                                    color: isEnabled
-                                                        ? Colors.white
-                                                        : Colors.white
-                                                            .withOpacity(0.5),
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            );
+                            return const InsertLinkPopUp();
                           },
                         );
                         result.then(
