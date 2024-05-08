@@ -16,26 +16,38 @@ import 'package:reddit_bel_ham/components/subreddit_components/moderator_post_bo
 import 'package:reddit_bel_ham/utilities/post_voting.dart';
 
 class Post {
-  final String username;
-  final String content;
-  final String contentTitle;
-  final String type;
-  final String link;
-  final String video;
-  final List<String> image;
+  String postId;
+  String userId;
+  //String userAvatarImage
+  //String userName
+  String subredditName;
+  String content;
+  String contentTitle;
+  String type;
+  String link;
+  String video;
+  List<String> image;
+  String createdFrom;
   int upvotes;
   int comments;
+  int spamCount = 0;
   bool isUpvoted = false;
   bool isDownvoted = false;
+  bool isNSFW = false;
+  bool isSpoiler = false;
   bool isLocked = false;
-  bool isMarkedSpoiler = false;
-  bool isApproved = true;
+  bool isApproved = false;
   bool isNSFW = false;
   int? pollVotes = 0;
+
   var previewData;
 
   Post({
-    required this.username,
+    required this.postId,
+    required this.subredditName,
+
+    //required this.username,
+
     required this.contentTitle,
     required this.content,
     required this.upvotes,
@@ -44,6 +56,8 @@ class Post {
     required this.link,
     required this.image,
     required this.video,
+    required this.createdFrom,
+    required this.userId,
     this.isUpvoted = false,
     this.isDownvoted = false,
     this.isLocked = false,
@@ -72,7 +86,7 @@ class _PostCardState extends State<PostCard> {
     final isTypeText = widget.post.type == 'text';
     final isTypeLink = widget.post.type == 'link';
     final isTypePoll = widget.post.type == 'poll';
-    final isOwner = widget.post.username == 'r/DanielAdel';
+    final isOwner = widget.post.subredditName == 'r/DanielAdel';
     final isTypeVideo = widget.post.type == 'video';
     return buildPostCard(widget.post, isTypeImage, isTypeText, isTypeLink,
         isOwner, isTypePoll, context);
@@ -107,7 +121,7 @@ class _PostCardState extends State<PostCard> {
                 SizedBox(width: ScreenSizeHandler.screenWidth * 0.02),
                 Expanded(
                   child: Text(
-                    '${post.username}   7h',
+                    '${post.subredditName}   ${post.createdFrom}',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: ScreenSizeHandler.screenWidth * 0.025,
@@ -269,10 +283,17 @@ class _PostCardState extends State<PostCard> {
                       child: PageView.builder(
                         itemCount: post.image.length,
                         itemBuilder: (context, index) {
-                          return Image.asset(
-                            post.image[index],
-                            fit: BoxFit.cover,
-                          );
+                          print("BOSSS HENAAAA");
+                          print(post.image[index]);
+                          return widget.post.image[index].startsWith("http")
+                              ? Image.network(
+                                  post.image[index],
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.asset(
+                                  post.image[index],
+                                  fit: BoxFit.cover,
+                                );
                         },
                       ),
                     ),

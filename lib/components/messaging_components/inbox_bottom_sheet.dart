@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_bel_ham/services/api_service.dart';
 
 import '../../constants.dart';
 import '../../screens/new_message_screen.dart';
 import '../../screens/notifications_settings_screen.dart';
 import '../../utilities/screen_size_handler.dart';
-import '../../utilities/token_decoder.dart';
 import '../settings_components/settings_tile.dart';
 import '../settings_components/settings_tile_leading_icon.dart';
 

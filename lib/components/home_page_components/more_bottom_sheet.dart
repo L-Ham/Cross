@@ -59,7 +59,7 @@ Widget buildMoreModalBottomSheet(BuildContext context, Post post) {
                   ],
                 ),
                 SizedBox(height: ScreenSizeHandler.screenHeight * 0.02),
-                if(post.username=='r/DanielAdel')...
+                if(post.subredditName=='r/DanielAdel')...
                [ Row(
                   children: [
                     Padding(
@@ -110,7 +110,7 @@ Widget buildMoreModalBottomSheet(BuildContext context, Post post) {
                     Text('Crosspost to a community', style: TextStyle(color: Colors.white)),
                   ],
                 ),
-                if(post.username!="r/DanielAdel")...
+                if(post.subredditName!="r/DanielAdel")...
                 [SizedBox(height: ScreenSizeHandler.screenHeight * 0.02),
                 Row(
                   children: [
