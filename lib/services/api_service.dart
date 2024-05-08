@@ -34,6 +34,7 @@ class ApiService {
           if (body != null) {
             url = Uri.parse(
                 "$baseURL$endpoint?${Uri(queryParameters: body).query}");
+            print(url);
             response = await http.get(url, headers: headers);
           } else {
             response = await http.get(url, headers: headers);
@@ -50,6 +51,7 @@ class ApiService {
         default:
           throw Exception('HTTP method $method not implemented');
       }
+      print(response.body);
       return jsonDecode(response.body);
     } catch (e) {
       debugPrint("Exception occured: $e");
@@ -401,6 +403,7 @@ class ApiService {
         body: {"password": password});
     return result;
   }
+
   Future<dynamic> getAllInbox() async {
     var result = await request('/message/getAllInbox',
         headers: headerWithToken, method: 'GET');
@@ -457,6 +460,45 @@ class ApiService {
     };
     var result = await request('/message/unread',
         headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> getTrendingPosts() async {
+    var result = await request('/post/trending',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+
+  Future<dynamic> searchPosts(Map<String, dynamic> body) async {
+    print("NOW");
+    var result = await request('/post/searchPosts',
+        headers: headerWithToken, method: 'GET', body: body);
+    print("FOCUS ON NEXT");
+    print(result);
+    return result;
+  }
+
+  Future<dynamic> searchComments(Map<String, dynamic> body) async {
+    print("NOW");
+    var result = await request('/comment/searchComments',
+        headers: headerWithToken, method: 'GET', body: body);
+    print("FOCUS ON NEXT");
+    print(result);
+    return result;
+  }
+
+  Future<dynamic> getPostFromId(String postId) async {
+    Map<String, dynamic> sentData;
+    sentData = {"postId": postId};
+    var result = await request('/post/get',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    return result;
+  }
+
+    Future<dynamic> getCommentsFromPostId(Map<String,dynamic> body) async {
+    Map<String, dynamic> sentData;
+    var result = await request('/post/comments',
+        headers: headerWithToken, method: 'GET', body: body);
     return result;
   }
 

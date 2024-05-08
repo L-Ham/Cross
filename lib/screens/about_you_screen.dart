@@ -5,7 +5,6 @@ import 'package:reddit_bel_ham/screens/home_page_screen.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import '../utilities/screen_size_handler.dart';
 import '../constants.dart';
-import '../components/general_components/credentials_text_field.dart';
 import '../components/general_components/continue_button.dart';
 import '../components/login_components/logo_text_app_bar.dart';
 import 'package:http/http.dart' as http;
