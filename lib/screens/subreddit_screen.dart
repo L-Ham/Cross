@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:reddit_bel_ham/components/general_components/reddit_loading_indicator.dart';
-import 'package:reddit_bel_ham/screens/about_you_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
@@ -163,7 +161,10 @@ class _SubredditScreenState extends State<SubredditScreen> {
 
   final List<Post> posts = [
     Post(
-      username: "r/DanielAdel",
+      userId: "1",
+      postId: "1",
+      createdFrom: "7d",
+      subredditName: "r/DanielAdel",
       contentTitle: "Foodie Instagrammers, Let's Talk Strategy!",
       content:
           "Hey fellow food lovers! I've been diving deep into the world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. It's incredible how much competition there is out there, right? I mean, everyone's snapping pics of their avocado toast and artisanal burgers. So, what are your go-to tips for making our food shots pop? Do you swear by natural lighting or do you have some secret editing tricks up your sleeve? And let's talk about captions too! I'm always struggling to strike the right balance between informative and witty. Let's share some wisdom and help each other elevate our Instagram game to the next level! 🍕✨",
@@ -175,56 +176,35 @@ class _SubredditScreenState extends State<SubredditScreen> {
       video: "",
     ),
     Post(
-      username: "r/AnnieBakesCakes",
-      contentTitle: "Curating Culinary Moments on Instagram: Tips & Tricks!",
-      content:
-          "Hey foodies! I've been pondering tellow fthe world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. It's incredible how much competition there is out there, right? I mean, everyone's snapping pics of their avocado toast and artisanal burgers. So, what are your go-to tips for making our food shots pop? Dood lovers! I've been diving deep into the world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. Ihe art of curating culinary moments on Instagram latelto learn from your experien",
-      upvotes: 20,
-      comments: 35,
-      type: "image",
-      image: [
-        "assets/images/elham_logo.png",
-        "assets/images/redditAvata2.png",
-        "assets/images/peter_nayem.png"
-      ],
-      link: "",
-      video: "",
-    ),
+
+        userId: "2",
+        postId: "3",
+        createdFrom: "1d",
+        subredditName: "r/AnnieBakesCakes",
+        contentTitle: "Curating Culinary Moments on Instagram: Tips & Tricks!",
+        content:
+            "Hey foodies! I've been pondering tellow fthe world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. It's incredible how much competition there is out there, right? I mean, everyone's snapping pics of their avocado toast and artisanal burgers. So, what are your go-to tips for making our food shots pop? Dood lovers! I've been diving deep into the world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. Ihe art of curating culinary moments on Instagram latelto learn from your experien",
+        upvotes: 20,
+        comments: 35,
+        type: "text",
+        image: [],
+        link: "",
+        video: ''),
     Post(
-      username: "r/JohannaDoesYoga",
-      contentTitle:
-          "Is instagram buggering up for anyone else? I can't post anything",
-      content:
-          "Check this page for more detailsjrhgshejaiajirjsijijfiarjgiajeijgiohgijaerigjiorhgiqjarigvja",
-      upvotes: 90,
-      comments: 35,
-      type: "link",
-      image: [""],
-      link: "https://www.instagram.com",
-      video: "",
-    ),
-    Post(
-      username: "r/JohannaDoesYoga",
-      contentTitle: "instagram",
-      content: "Check this page for more details",
-      upvotes: 90,
-      comments: 35,
-      type: "poll",
-      image: [""],
-      link: "",
-      video: "",
-    ),
-    // Post(
-    //   username: "r/JohannaDoesYoga",
-    //   contentTitle: "this is a video",
-    //   content: "enjoy",
-    //   upvotes: 90,
-    //   comments: 35,
-    //   type: "video",
-    //   image: [""],
-    //   link: "",
-    //   video: "assets/videos/video.mp4",
-    // )
+        userId: "3",
+        postId: "4",
+        createdFrom: "2d",
+        subredditName: "r/JohannaDoesYoga",
+        contentTitle:
+            "Is instagram buggering up for anyone else? I can't post anything",
+        content: "Check this page for more details",
+        upvotes: 90,
+        comments: 35,
+        type: "text",
+        image: [],
+        link: "",
+        video: ''),
+
   ];
 
   @override

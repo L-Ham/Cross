@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:reddit_bel_ham/components/general_components/avatar.dart';
 import 'package:reddit_bel_ham/components/general_components/interactive_text.dart';
 import 'package:reddit_bel_ham/constants.dart';
@@ -20,29 +19,10 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  List<String> titles = [
-    "Nardo Nayma!",
-    "Habouba Nayma!",
-    "David Nayem!",
-    "Peter Nayem!",
-    "DANIEL HAYMAWETNAAAAA33"
-  ];
-  List<String> descriptions = [
-    "el7a2ooonaaaaaaa",
-    "el7a2ooonaaaaaaa",
-    "el7a2ooonaaaaaaa",
-    "el7a2ooonaaaaaaa",
-    "el7a2ooonaaaaaaa33333",
-    "I WILL KILL YOU MWAHAHAHA!"
-  ];
-
-  List<String> images = [
-    "assets/images/nardo_nayma.png",
-    "assets/images/habouba_nayma.png",
-    "assets/images/david_nayem.png",
-    "assets/images/peter_nayem.png",
-    "assets/images/daniel_haymawetna.png",
-  ];
+  
+  List<String> trendingPostTitles = [];
+  List<String> trendingPostDescriptions = [];
+  List<String> trendingPostImages = [];
 
   final TextEditingController _searchController = TextEditingController();
   bool isSearching = false;
@@ -56,11 +36,7 @@ class _SearchScreenState extends State<SearchScreen> {
   List<String> userNames = [];
   List<String> userAvatarImages = [];
 
-  List<String> searchHistory = [
-    'Flutter',
-    'Dart',
-    'Mobile Development',
-  ];
+  List<String> searchHistory = [];
 
   void getSearchesFromBack() async {
     Map<String, dynamic> results =
@@ -80,12 +56,11 @@ class _SearchScreenState extends State<SearchScreen> {
     for (int i = 0; i < resultsList.length; i++) {
       mounted
           ? setState(() {
-              // if (resultsList[i]["avatarImage"] != null) {
-              //   userAvatarImages.add(resultsList[i]["avatarImage"]);
-              // } else {
-              //   userAvatarImages.add('assets/images/redditAvata2.png');
-              // }
-              userAvatarImages.add('assets/images/redditAvata2.png');
+              if (resultsList[i]["avatarImageUrl"] != null) {
+                userAvatarImages.add(resultsList[i]["avatarImageUrl"]);
+              } else {
+                userAvatarImages.add('assets/images/redditAvata2.png');
+              }
               userNames.add(resultsList[i]["userName"]);
             })
           : null;
@@ -131,6 +106,24 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
+  void getTrendingPosts() async {
+    var response = await apiService.getTrendingPosts();
+    response = response["trendingPosts"];
+    setState(() {
+      trendingPostTitles.clear();
+      trendingPostDescriptions.clear();
+      trendingPostImages.clear();
+    });
+
+    for (var trendingPost in response) {
+      setState(() {
+        trendingPostTitles.add(trendingPost["title"]);
+        trendingPostDescriptions.add(trendingPost["text"]);
+        trendingPostImages.add(trendingPost["image"]);
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -143,6 +136,12 @@ class _SearchScreenState extends State<SearchScreen> {
       });
     });
     getRecentSearches();
+  }
+
+  @override
+  void didChangeDependencies() {
+    getTrendingPosts();
+    super.didChangeDependencies();
   }
 
   @override
@@ -293,6 +292,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     thickness: 10,
                     color: Colors.black,
                   ),
+                  if (trendingPostTitles.isNotEmpty)
                   Padding(
                     padding: EdgeInsets.symmetric(
                         horizontal: ScreenSizeHandler.screenWidth * 0.06),
@@ -311,11 +311,13 @@ class _SearchScreenState extends State<SearchScreen> {
                             ),
                           ),
                         ),
-                        for (int i = 0; i < min(6, images.length); i++)
+                        for (int i = 0;
+                            i < min(6, trendingPostImages.length);
+                            i++)
                           TrendingPreviewTile(
-                              image: images[i],
-                              title: titles[i],
-                              description: descriptions[i])
+                              image: trendingPostImages[i],
+                              title: trendingPostTitles[i],
+                              description: trendingPostDescriptions[i])
                       ],
                     ),
                   )
@@ -451,49 +453,56 @@ class TrendingPreviewTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: ScreenSizeHandler.screenWidth * 0.7,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                        color: const Color.fromARGB(255, 140, 140, 244),
-                        fontWeight: FontWeight.bold,
-                        fontSize: ScreenSizeHandler.bigger * 0.018),
-                  ),
-                  Text(
-                    description,
-                    style: TextStyle(
-                        overflow: TextOverflow.ellipsis,
-                        color: Colors.grey,
-                        fontSize: ScreenSizeHandler.bigger * 0.015),
-                    maxLines: 2,
-                  )
-                ],
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, SearchingScreen.id, arguments: title);
+      },
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: ScreenSizeHandler.screenWidth * 0.7,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                          color: const Color.fromARGB(255, 140, 140, 244),
+                          fontWeight: FontWeight.bold,
+                          fontSize: ScreenSizeHandler.bigger * 0.018),
+                    ),
+                    Text(
+                      description,
+                      style: TextStyle(
+                          overflow: TextOverflow.ellipsis,
+                          color: Colors.grey,
+                          fontSize: ScreenSizeHandler.bigger * 0.015),
+                      maxLines: 2,
+                    )
+                  ],
+                ),
               ),
-            ),
-            Image.asset(
-              image,
-              height: ScreenSizeHandler.bigger * 0.08,
-              width: ScreenSizeHandler.bigger * 0.085,
-            )
-          ],
-        ),
-        Divider(
-          color: Colors.grey[600]!,
-          thickness: 0.5,
-          height: ScreenSizeHandler.screenHeight * 0.04,
-        )
-      ],
+              Padding(
+                padding: EdgeInsets.only(right: ScreenSizeHandler.screenWidth * 0.02),
+                child: Image.network(
+                  image,
+                  width: ScreenSizeHandler.screenWidth * 0.15,
+                ),
+              )
+            ],
+          ),
+          Divider(
+            color: Colors.grey[600]!,
+            thickness: 0.5,
+            height: ScreenSizeHandler.screenHeight * 0.04,
+          )
+        ],
+      ),
     );
   }
 }

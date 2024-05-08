@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reddit_bel_ham/components/add_post_components/add_post_text_field.dart';
 import 'package:reddit_bel_ham/components/general_components/interactive_text.dart';
-import 'package:reddit_bel_ham/components/general_components/rounded_button.dart';
 import 'package:reddit_bel_ham/constants.dart';
-import 'package:reddit_bel_ham/utilities/is_valid_url.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 
 import '../components/general_components/insert_link_popup.dart';
