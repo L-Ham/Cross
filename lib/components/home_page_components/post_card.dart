@@ -43,6 +43,7 @@ class Post {
   bool isSpoiler = false;
   bool isLocked = false;
   bool isApproved = false;
+  bool isDisapproved = false;
   int? pollVotes = 0;
 
   var previewData;
