@@ -1,3 +1,5 @@
+import 'dart:ui';
+import 'dart:convert'; // for jsonDecode
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:reddit_bel_ham/components/general_components/reddit_loading_indicator.dart';
@@ -68,10 +70,10 @@ class _SubredditScreenState extends State<SubredditScreen> {
 
   Future<void> getCommunityData() async {
     Map<String, dynamic> data =
-        (await apiService.getCommunityDetails('Dragon Oath')) ?? {};
+        (await apiService.getCommunityDetails(subredditName)) ?? {};
     if (mounted) {
       setState(() {
-        isLoading = true;
+        isLoading = false;
       });
     }
     if (mounted) {
@@ -95,6 +97,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
         _isJoined = data['communityDetails']['isMember'];
         isMuted = data['communityDetails']['isMuted'];
         subredditLink = "http://https://reddit-bylham.me/r/${subredditName}";
+        print(TokenDecoder.token);
       });
 
       subreddit = Subreddit(
@@ -332,13 +335,27 @@ class _SubredditScreenState extends State<SubredditScreen> {
                 expandedHeight: ScreenSizeHandler.screenHeight * 0.002,
                 pinned: true,
                 flexibleSpace: FlexibleSpaceBar(
-                    background: subredditBannerImage !=
-                            'assets/images/blue2.jpg'
-                        ? Image.network(subredditBannerImage, fit: BoxFit.cover)
-                        : Image.asset(
-                            'assets/images/blue2.jpg',
-                            fit: BoxFit.cover,
-                          )),
+                  background: _showTitleInAppBar
+                      ? ImageFiltered(
+                          imageFilter:
+                              ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                          child:
+                              subredditBannerImage != 'assets/images/blue2.jpg'
+                                  ? Image.network(subredditBannerImage,
+                                      fit: BoxFit.cover)
+                                  : Image.asset(
+                                      'assets/images/blue2.jpg',
+                                      fit: BoxFit.cover,
+                                    ),
+                        )
+                      : subredditBannerImage != 'assets/images/blue2.jpg'
+                          ? Image.network(subredditBannerImage,
+                              fit: BoxFit.cover)
+                          : Image.asset(
+                              'assets/images/blue2.jpg',
+                              fit: BoxFit.cover,
+                            ),
+                ),
                 actions: [
                   if (isModerator && _showTitleInAppBar)
                     SizedBox(
@@ -513,43 +530,99 @@ class _SubredditScreenState extends State<SubredditScreen> {
                                       ScreenSizeHandler.screenHeight * 0.002,
                                 ),
                               if (!_isJoined && !isModerator)
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      '$subredditMembersCount $subredditMembersNickname',
-                                      style: TextStyle(
-                                        fontSize:
-                                            ScreenSizeHandler.bigger * 0.016,
-                                        color: kDisabledButtonColor,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                        width: ScreenSizeHandler.screenWidth *
-                                            0.03),
-                                    Row(
-                                      children: [
-                                        CircleAvatar(
-                                          radius:
-                                              ScreenSizeHandler.bigger * 0.005,
-                                          backgroundColor: kOnlineStatusColor,
-                                        ),
-                                        SizedBox(
-                                            width:
-                                                ScreenSizeHandler.screenWidth *
-                                                    0.01),
-                                        Text(
-                                          '$subredditOnlineCount $subredditOnlineNickname',
-                                          style: TextStyle(
-                                            fontSize: ScreenSizeHandler.bigger *
-                                                0.016,
-                                            color: kDisabledButtonColor,
+                                LayoutBuilder(
+                                  builder: (context, constraints) {
+                                    if (constraints.maxWidth >
+                                        ScreenSizeHandler.screenWidth * 0.6) {
+                                      return Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '$subredditMembersCount $subredditMembersNickname',
+                                            style: TextStyle(
+                                              fontSize:
+                                                  ScreenSizeHandler.bigger *
+                                                      0.016,
+                                              color: kDisabledButtonColor,
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
+                                          SizedBox(
+                                              width: ScreenSizeHandler
+                                                      .screenWidth *
+                                                  0.03),
+                                          Row(
+                                            children: [
+                                              CircleAvatar(
+                                                radius:
+                                                    ScreenSizeHandler.bigger *
+                                                        0.0043,
+                                                backgroundColor:
+                                                    kOnlineStatusColor,
+                                              ),
+                                              SizedBox(
+                                                  width: ScreenSizeHandler
+                                                          .screenWidth *
+                                                      0.007),
+                                              Text(
+                                                  '$subredditOnlineCount $subredditOnlineNickname',
+                                                  style: TextStyle(
+                                                    fontSize: ScreenSizeHandler
+                                                            .bigger *
+                                                        0.016,
+                                                    color: kDisabledButtonColor,
+                                                  ))
+                                            ],
+                                          ),
+                                        ],
+                                      );
+                                    } else {
+                                      return Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            '$subredditMembersCount $subredditMembersNickname',
+                                            style: TextStyle(
+                                              fontSize:
+                                                  ScreenSizeHandler.bigger *
+                                                      0.016,
+                                              color: kDisabledButtonColor,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                              width: ScreenSizeHandler
+                                                      .screenWidth *
+                                                  0.03),
+                                          Row(
+                                            children: [
+                                              CircleAvatar(
+                                                radius:
+                                                    ScreenSizeHandler.bigger *
+                                                        0.005,
+                                                backgroundColor:
+                                                    kOnlineStatusColor,
+                                              ),
+                                              SizedBox(
+                                                  width: ScreenSizeHandler
+                                                          .screenWidth *
+                                                      0.01),
+                                              Text(
+                                                '$subredditOnlineCount $subredditOnlineNickname',
+                                                style: TextStyle(
+                                                  fontSize:
+                                                      ScreenSizeHandler.bigger *
+                                                          0.016,
+                                                  color: kDisabledButtonColor,
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      );
+                                    }
+                                  },
                                 )
                               else
                                 Column(
@@ -755,14 +828,18 @@ class _SubredditScreenState extends State<SubredditScreen> {
                         height: ScreenSizeHandler.bigger * 0.015,
                       ),
                       Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            subredditDescription,
-                            textAlign: TextAlign.left,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: ScreenSizeHandler.bigger * 0.016,
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              subredditDescription,
+                              textAlign: TextAlign.left,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: ScreenSizeHandler.bigger * 0.016,
+                              ),
                             ),
                           ),
                           SizedBox(
@@ -830,6 +907,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
                 SliverToBoxAdapter(
                   child: PostCard(
                     post: post,
+                    isModertor: isModerator,
                   ),
                 ),
             ],

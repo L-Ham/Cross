@@ -1,5 +1,8 @@
+import 'package:any_link_preview/any_link_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_link_previewer/flutter_link_previewer.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reddit_bel_ham/components/home_page_components/more_bottom_sheet.dart';
 import 'package:reddit_bel_ham/components/home_page_components/poll_post_card.dart';
 import 'package:reddit_bel_ham/components/home_page_components/share_bottom_sheet.dart';
@@ -41,13 +44,11 @@ class Post {
   bool isLocked = false;
   bool isApproved = false;
   bool isDisapproved = false;
-
   int? pollVotes = 0;
 
   var previewData;
 
   Post({
-
     required this.postId,
     required this.subredditName,
 
@@ -61,7 +62,6 @@ class Post {
     required this.link,
     required this.image,
     required this.video,
-
     required this.createdFrom,
     required this.userId,
     this.options = const [],
@@ -79,7 +79,6 @@ class Post {
     this.isApproved = false,
     this.isDisapproved = false,
     this.pollVotes = 0,
-
   });
 
   static fromJson(json) {}
@@ -87,9 +86,9 @@ class Post {
 
 class PostCard extends StatefulWidget {
   final Post post;
-  final bool isModertor = true;
+  late bool isModertor = false;
 
-  PostCard({required this.post});
+  PostCard({required this.post, this.isModertor = false});
 
   @override
   _PostCardState createState() => _PostCardState();
@@ -144,7 +143,17 @@ class _PostCardState extends State<PostCard> {
                     ),
                   ),
                 ),
-                if (post.isApproved)
+                if (post.isLocked)
+                  Padding(
+                    padding: EdgeInsets.only(
+                        right: ScreenSizeHandler.screenWidth * 0.02),
+                    child: Icon(
+                      FontAwesomeIcons.lock,
+                      color: Colors.amber[400],
+                      size: ScreenSizeHandler.screenWidth * 0.03,
+                    ),
+                  ),
+                if (post.isApproved && widget.isModertor)
                   Padding(
                     padding: EdgeInsets.only(
                         right: ScreenSizeHandler.screenWidth * 0.02),
@@ -175,6 +184,46 @@ class _PostCardState extends State<PostCard> {
                   ),
                 )
               ],
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                  left: ScreenSizeHandler.screenWidth * 0.04,
+                  top: ScreenSizeHandler.screenWidth * 0.01),
+              child: Row(
+                children: [
+                  if (post.isNSFW)
+                    Icon(
+                      Icons.eighteen_up_rating,
+                      color: Colors.pink,
+                      size: ScreenSizeHandler.screenWidth * 0.055,
+                    ),
+                  if (post.isNSFW)
+                    Text(
+                      'NSFW',
+                      style: TextStyle(
+                        color: Colors.pink,
+                        fontSize: ScreenSizeHandler.screenWidth * 0.035,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  SizedBox(width: ScreenSizeHandler.screenWidth * 0.01),
+                  if (post.isSpoiler)
+                    Icon(
+                      FontAwesomeIcons.circleExclamation,
+                      color: Colors.white,
+                      size: ScreenSizeHandler.screenWidth * 0.04,
+                    ),
+                  if (post.isSpoiler)
+                    Text(
+                      ' SPOILER',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: ScreenSizeHandler.screenWidth * 0.035,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                ],
+              ),
             ),
             Padding(
               padding: EdgeInsets.only(
