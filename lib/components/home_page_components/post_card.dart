@@ -7,6 +7,9 @@ import 'package:reddit_bel_ham/components/home_page_components/video_player.dart
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:video_player/video_player.dart';
+import 'package:reddit_bel_ham/components/subreddit_components/moderator_post_bottom_sheet.dart';
+
 import 'package:reddit_bel_ham/utilities/post_voting.dart';
 
 class Post {
@@ -17,7 +20,7 @@ class Post {
   List<String> options = [];
   List<int> numOfVotersPerOption = [];
   bool isPollVoted = false;
-  String? selectedPollOption;n 
+  String? selectedPollOption;
   DateTime? startTime;
   DateTime? endTime;
   String subredditName;
@@ -38,13 +41,18 @@ class Post {
   bool isLocked = false;
   bool isApproved = false;
   bool isDisapproved = false;
+
   int? pollVotes = 0;
 
   var previewData;
 
   Post({
+
     required this.postId,
     required this.subredditName,
+
+    //required this.username,
+
     required this.contentTitle,
     required this.content,
     required this.upvotes,
@@ -53,6 +61,7 @@ class Post {
     required this.link,
     required this.image,
     required this.video,
+
     required this.createdFrom,
     required this.userId,
     this.options = const [],
@@ -78,10 +87,9 @@ class Post {
 
 class PostCard extends StatefulWidget {
   final Post post;
-  const PostCard({
-    required this.post,
-    Key? key,
-  }) : super(key: key);
+  final bool isModertor = true;
+
+  PostCard({required this.post});
 
   @override
   _PostCardState createState() => _PostCardState();
@@ -136,6 +144,16 @@ class _PostCardState extends State<PostCard> {
                     ),
                   ),
                 ),
+                if (post.isApproved)
+                  Padding(
+                    padding: EdgeInsets.only(
+                        right: ScreenSizeHandler.screenWidth * 0.02),
+                    child: Icon(
+                      Icons.check,
+                      color: kOnlineStatusColor,
+                      size: ScreenSizeHandler.screenWidth * 0.05,
+                    ),
+                  ),
                 Padding(
                   padding: EdgeInsets.only(
                       right: ScreenSizeHandler.screenWidth * 0.02),
@@ -429,18 +447,77 @@ class _PostCardState extends State<PostCard> {
                       ),
                     ],
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (BuildContext context) =>
-                            buildPostModalBottomSheet(context, widget.post),
-                      );
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                          right: ScreenSizeHandler.screenWidth * 0.04),
-                      child: Container(
+                  if (!widget.isModertor)
+                    GestureDetector(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (BuildContext context) =>
+                              buildPostModalBottomSheet(context, widget.post),
+                        );
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            right: ScreenSizeHandler.screenWidth * 0.04),
+                        child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(18.0),
+                              border: Border.all(
+                                color: kFillingColor,
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    top: ScreenSizeHandler.screenWidth * 0.015,
+                                    bottom:
+                                        ScreenSizeHandler.screenWidth * 0.015,
+                                    left: ScreenSizeHandler.screenWidth * 0.012,
+                                    right:
+                                        ScreenSizeHandler.screenWidth * 0.012,
+                                  ),
+                                  child: Icon(
+                                    Icons.share,
+                                    size: ScreenSizeHandler.screenWidth * 0.037,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      left:
+                                          ScreenSizeHandler.screenWidth * 0.01,
+                                      right:
+                                          ScreenSizeHandler.screenWidth * 0.02,
+                                      top: ScreenSizeHandler.screenWidth * 0.01,
+                                      bottom:
+                                          ScreenSizeHandler.screenWidth * 0.01),
+                                  child: Text("147",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize:
+                                            ScreenSizeHandler.screenWidth *
+                                                0.025,
+                                      )),
+                                ),
+                              ],
+                            )),
+                      ),
+                    )
+                  else
+                    GestureDetector(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (BuildContext context) =>
+                              ModeratorPostBottomSheet(post: post),
+                        );
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            right: ScreenSizeHandler.screenWidth * 0.04),
+                        child: Container(
+                          width: ScreenSizeHandler.screenWidth * 0.1,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(18.0),
                             border: Border.all(
@@ -448,6 +525,7 @@ class _PostCardState extends State<PostCard> {
                             ),
                           ),
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Padding(
                                 padding: EdgeInsets.only(
@@ -457,29 +535,16 @@ class _PostCardState extends State<PostCard> {
                                   right: ScreenSizeHandler.screenWidth * 0.012,
                                 ),
                                 child: Icon(
-                                  Icons.share,
+                                  Icons.shield_outlined,
                                   size: ScreenSizeHandler.screenWidth * 0.037,
                                   color: Colors.white,
                                 ),
                               ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    left: ScreenSizeHandler.screenWidth * 0.01,
-                                    right: ScreenSizeHandler.screenWidth * 0.02,
-                                    top: ScreenSizeHandler.screenWidth * 0.01,
-                                    bottom:
-                                        ScreenSizeHandler.screenWidth * 0.01),
-                                child: Text("147",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize:
-                                          ScreenSizeHandler.screenWidth * 0.025,
-                                    )),
-                              ),
                             ],
-                          )),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),

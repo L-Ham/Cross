@@ -102,6 +102,8 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
       "ageRestriction": isSwitched
     };
     Map<String, dynamic> communityData = await apiService.createCommunity(data);
+    Navigator.pop(context);
+    Navigator.pop(context);
     Navigator.pushNamed(context, SubredditScreen.id,
         arguments: _controller.text);
     Navigator.pushNamed(context, AddPostScreen.id, arguments: {

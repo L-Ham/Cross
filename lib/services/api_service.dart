@@ -27,7 +27,6 @@ class ApiService {
       dynamic body}) async {
     var url = Uri.parse(baseURL + endpoint);
     http.Response response;
-
     try {
       switch (method) {
         case 'GET':
@@ -47,6 +46,15 @@ class ApiService {
         case 'PATCH':
           response =
               await http.patch(url, headers: headers, body: jsonEncode(body));
+          break;
+        case 'DELETE':
+          var request = http.Request('DELETE', url);
+          request.headers.addAll(headers);
+          if (body != null) {
+            request.body = jsonEncode(body);
+          }
+          var streamedResponse = await request.send();
+          response = await http.Response.fromStream(streamedResponse);
           break;
         default:
           throw Exception('HTTP method $method not implemented');
@@ -401,6 +409,49 @@ class ApiService {
         headers: headerWithToken,
         method: 'PATCH',
         body: {"password": password});
+    return result;
+  }
+
+
+  Future<dynamic> joinCommunity(String subredditID) async {
+    var result = await request('/user/joinCommunity',
+        headers: headerWithToken,
+        method: 'PATCH',
+        body: {"subRedditId": subredditID});
+    return result;
+  }
+
+  Future<dynamic> leaveCommunity(String subredditID) async {
+    var result = await request('/user/unjoinCommunity',
+        headers: headerWithToken,
+        method: 'DELETE',
+        body: {"subRedditId": subredditID});
+
+    return result;
+  }
+
+  Future<dynamic> muteCommunity(String subredditName) async {
+    var result = await request('/user/muteCommunity',
+        headers: headerWithToken,
+        method: 'PATCH',
+        body: {"subRedditName": subredditName});
+    return result;
+  }
+
+  Future<dynamic> unmuteCommunity(String subredditName) async {
+    var result = await request('/user/unmuteCommunity',
+        headers: headerWithToken,
+        method: 'DELETE',
+        body: {"subRedditName": subredditName});
+
+    return result;
+  }
+
+  Future<dynamic> getCommunityModerators(String communityName) async {
+    Map<String, dynamic> sentData;
+    sentData = {"subredditName": communityName};
+    var result = await request('/subreddit/moderators',
+        headers: headerWithToken, method: 'GET', body: sentData);
     return result;
   }
 
