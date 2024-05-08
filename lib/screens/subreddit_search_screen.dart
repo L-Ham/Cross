@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_bel_ham/components/general_components/interactive_text.dart';
+import 'package:reddit_bel_ham/screens/searching_in_subreddit_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../screens/home_page_seach_screen.dart';
@@ -241,7 +243,33 @@ class _SubredditSearchScreenState extends State<SubredditSearchScreen> {
                             )
                           ],
                         ),
-                      )
+                      ),
+                      if (_controller.text.isNotEmpty)
+                        Container(
+                          color: kBackgroundColor,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal:
+                                    ScreenSizeHandler.screenWidth * 0.07,
+                                vertical:
+                                    ScreenSizeHandler.screenHeight * 0.015),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: InteractiveText(
+                                text: 'Search for "${_controller.text}"',
+                                fontSizeRatio: 0.02,
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                      context, SearchingInSubreddit.id,
+                                      arguments: {
+                                        "search": _controller.text,
+                                        "subredditName": widget.subredditName
+                                      });
+                                },
+                              ),
+                            ),
+                          ),
+                        )
                     ],
                   ),
                 ),

@@ -33,7 +33,6 @@ class ApiService {
           if (body != null) {
             url = Uri.parse(
                 "$baseURL$endpoint?${Uri(queryParameters: body).query}");
-            print(url);
             response = await http.get(url, headers: headers);
           } else {
             response = await http.get(url, headers: headers);
@@ -216,7 +215,7 @@ class ApiService {
     return result;
   }
 
-  Future<void> addMediaPost(
+  Future<dynamic> addMediaPost(
       List<File> imageFiles, Map<String, dynamic> body) async {
     var request =
         http.MultipartRequest('POST', Uri.parse('$baseURL/post/createPost'));
@@ -243,6 +242,8 @@ class ApiService {
     var response;
     try {
       response = await request.send();
+      response = await http.Response.fromStream(response);
+      return jsonDecode(response.body);
       // Handle the response...
     } on SocketException catch (e) {
       debugPrint('SocketException: $e');
@@ -260,6 +261,9 @@ class ApiService {
       debugPrint(response.statusCode.toString());
       debugPrint('Response body: $responseBody');
       debugPrint('Media upload failed');
+
+      response = await http.Response.fromStream(response);
+      return jsonDecode(response.body);
     }
   }
 
@@ -302,7 +306,7 @@ class ApiService {
       String responseBody = await response.stream.bytesToString();
 
       // Parse the string as JSON
-      Map<String, dynamic> responseJson = jsonDecode(responseBody);
+      Map<String, dynamic> responseJson = jsonDecode(response);
 
       debugPrint(response.statusCode.toString());
       debugPrint('Response body: $responseBody');
@@ -411,7 +415,6 @@ class ApiService {
         body: {"password": password});
     return result;
   }
-
 
   Future<dynamic> joinCommunity(String subredditID) async {
     var result = await request('/user/joinCommunity',
@@ -546,7 +549,7 @@ class ApiService {
     return result;
   }
 
-    Future<dynamic> getCommentsFromPostId(Map<String,dynamic> body) async {
+  Future<dynamic> getCommentsFromPostId(Map<String, dynamic> body) async {
     Map<String, dynamic> sentData;
     var result = await request('/post/comments',
         headers: headerWithToken, method: 'GET', body: body);

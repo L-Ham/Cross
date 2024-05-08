@@ -16,6 +16,7 @@ import 'package:reddit_bel_ham/screens/message_reply_screen.dart';
 import 'package:reddit_bel_ham/screens/messages_screen.dart';
 import 'package:reddit_bel_ham/screens/new_message_screen.dart';
 import 'package:reddit_bel_ham/screens/post_to_screen.dart';
+import 'package:reddit_bel_ham/screens/searching_in_subreddit_screen.dart';
 import 'package:reddit_bel_ham/screens/searching_screen.dart';
 import 'package:reddit_bel_ham/screens/saved_screen.dart';
 import 'package:reddit_bel_ham/screens/settings_screen.dart';
@@ -169,6 +170,7 @@ class RedditByLham extends StatelessWidget {
         MessageReplyScreen.id: (context) => const MessageReplyScreen(),
         NewMessageScreen.id: (context) => const NewMessageScreen(),
         SearchingScreen.id: (context) => const SearchingScreen(),
+        SearchingInSubreddit.id:(context) => const SearchingInSubreddit()
       },
       initialRoute: (token == null)
           ? FirstScreen.id
