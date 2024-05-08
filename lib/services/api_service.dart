@@ -412,7 +412,6 @@ class ApiService {
     return result;
   }
 
-
   Future<dynamic> joinCommunity(String subredditID) async {
     var result = await request('/user/joinCommunity',
         headers: headerWithToken,
@@ -546,7 +545,7 @@ class ApiService {
     return result;
   }
 
-    Future<dynamic> getCommentsFromPostId(Map<String,dynamic> body) async {
+  Future<dynamic> getCommentsFromPostId(Map<String, dynamic> body) async {
     Map<String, dynamic> sentData;
     var result = await request('/post/comments',
         headers: headerWithToken, method: 'GET', body: body);
@@ -576,7 +575,7 @@ class ApiService {
   //   }
   // }
 
-   Future<dynamic> markAsSpoiler(String postId) async {
+  Future<dynamic> markAsSpoiler(String postId) async {
     Map<String, dynamic> sentData;
     sentData = {
       "postId": postId,
@@ -646,10 +645,23 @@ class ApiService {
     return result;
   }
 
-   Future<dynamic> getPostDetails(String postId) async {
+  Future<dynamic> getPostDetails(String postId) async {
     Map<String, dynamic> sentData;
     sentData = {"postId": postId};
     var result = await request('/post/get',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> getSubredditFeed(String postId, String sortType) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "subredditName": postId,
+      "sort": sortType,
+      "page": 1,
+      "limit": 3
+    };
+    var result = await request('/subreddit/feed',
         headers: headerWithToken, method: 'GET', body: sentData);
     return result;
   }

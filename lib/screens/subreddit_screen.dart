@@ -1,5 +1,5 @@
 import 'dart:ui';
-
+import 'dart:convert'; // for jsonDecode
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:reddit_bel_ham/components/general_components/reddit_loading_indicator.dart';
@@ -180,7 +180,6 @@ class _SubredditScreenState extends State<SubredditScreen> {
       video: "",
     ),
     Post(
-
         userId: "2",
         postId: "3",
         createdFrom: "1d",
@@ -208,7 +207,6 @@ class _SubredditScreenState extends State<SubredditScreen> {
         image: [],
         link: "",
         video: ''),
-
   ];
 
   @override
