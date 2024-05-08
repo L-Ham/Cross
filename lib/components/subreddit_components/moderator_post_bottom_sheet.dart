@@ -7,10 +7,42 @@ import '../settings_components/settings_tile.dart';
 import '../settings_components/settings_tile_leading_icon.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
+import 'package:reddit_bel_ham/services/api_service.dart';
+import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 
 class ModeratorPostBottomSheet extends StatelessWidget {
   final Post post;
   ModeratorPostBottomSheet({required this.post});
+
+  ApiService apiService = ApiService(TokenDecoder.token);
+
+  Future<void> markAsNSFW(String postId) async {
+    await apiService.markAsNSFW(postId);
+  }
+
+  Future<void> unmarkAsNSFW(String postId) async {
+    await apiService.unmarkAsNSFW(postId);
+  }
+
+  Future<void> markAsSpoiler(String postId) async {
+    await apiService.markAsSpoiler(postId);
+  }
+
+  Future<void> unmarkAsSpoiler(String postId) async {
+    await apiService.unmarkAsSpoiler(postId);
+  }
+
+  Future<void> lockPost(String postId) async {
+    await apiService.lockPost(postId);
+  }
+
+  Future<void> unlockPost(String postId) async {
+    await apiService.unlockPost(postId); 
+  }
+
+  Future<void> approvePosts(String postId) async {
+    await apiService.approvePost(postId);
+  }
 
   @override
   Widget build(BuildContext context) {

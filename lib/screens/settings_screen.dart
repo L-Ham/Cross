@@ -12,7 +12,8 @@ import 'package:reddit_bel_ham/components/settings_components/settings_tile_trai
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key});
+  late String avatarImage;
+  SettingsScreen({this.avatarImage = "assets/images/reddit_logo.png"});
 
   static const String id = 'settings_screen';
 
@@ -64,20 +65,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     Semantics(
                       identifier: 'settings_screen_account_settings_tile',
                       child: SettingsTile(
-                        key: const Key(
-                            "settings_screen_account_settings_tile"),
-                        leadingIcon:
-                         Padding(
-                           padding:
-                            EdgeInsets.only(
-                              right: ScreenSizeHandler.screenWidth * 0.04,
-                            ),
-                           child: Image(
-                            image: const AssetImage('assets/images/avatarDaniel.png'),
-                            height: ScreenSizeHandler.screenHeight * 0.05,
-                            width: ScreenSizeHandler.screenWidth * 0.05,
-                            ),
-                         ),
+                        key: const Key("settings_screen_account_settings_tile"),
+                        leadingIcon: Padding(
+                          padding: EdgeInsets.only(
+                            right: ScreenSizeHandler.screenWidth * 0.04,
+                          ),
+                          child: CircleAvatar(
+                            radius: ScreenSizeHandler.bigger * 0.015,
+                            backgroundImage: widget.avatarImage !=
+                                    'assets/images/reddit_logo.png'
+                                ? NetworkImage(widget.avatarImage)
+                                : const AssetImage(
+                                        'assets/images/reddit_logo.png')
+                                    as ImageProvider,
+                          ),
+                        ),
                         titleText: 'u/$username',
                         trailingWidget: const SettingsTileTrailingIcon(
                           trailingIcon: Icons.arrow_forward,
@@ -116,23 +118,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     SettingsTile(
                       key: const Key("settings_screen_change_app_icon_tile"),
                       leadingIcon: Padding(
-                         padding:
-                          EdgeInsets.only(
-                            right: ScreenSizeHandler.screenWidth * 0.04,
-                          ),
-                         child: Image(
-                          image: const AssetImage('assets/images/reddit_logo.png'),
+                        padding: EdgeInsets.only(
+                          right: ScreenSizeHandler.screenWidth * 0.04,
+                        ),
+                        child: Image(
+                          image:
+                              const AssetImage('assets/images/reddit_logo.png'),
                           height: ScreenSizeHandler.screenHeight * 0.05,
                           width: ScreenSizeHandler.screenWidth * 0.05,
-                          ),
-                       ),
+                        ),
+                      ),
                       titleText: "Change app icon",
                       trailingWidget: const SettingsTileTrailingIcon(
                         trailingIcon: Icons.arrow_forward,
                       ),
-                      onTap: ()  {
-                        
-                      },
+                      onTap: () {},
                     ),
                     SettingsTile(
                       key: const Key("settings_screen_style_avatar_tile"),
@@ -141,20 +141,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                       titleText: "Style Avatar",
                       trailingWidget: const SettingsTileTrailingIcon(
-                       trailingIcon: Icons.arrow_forward,
+                        trailingIcon: Icons.arrow_forward,
                       ),
-                      onTap: ()  {
-                       
-                      },
+                      onTap: () {},
                     ),
-
                     const SettingsSegmentTitle(
                       titleText: "FEED OPTIONS",
                     ),
                     SettingsTile(
-                      leadingIcon: ImageIcon(const AssetImage('assets/images/banana_icon.png'), color: Colors.grey, size: ScreenSizeHandler.bigger * 0.05),
+                      leadingIcon: ImageIcon(
+                          const AssetImage('assets/images/banana_icon.png'),
+                          color: Colors.grey,
+                          size: ScreenSizeHandler.bigger * 0.05),
                       titleText: "Banana Counter",
-                      trailingWidget:  CustomSwitch(
+                      trailingWidget: CustomSwitch(
                         key: const Key("settings_screen_banana_counter_switch"),
                         isSwitched: isBananaEnabled,
                         onChanged: (value) {
@@ -178,9 +178,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         trailingIcon: Icons.arrow_forward,
                       ),
                       onTap: () {
-                      //   Navigator.pushNamed(
-                      //       context, NotificationSettingsScreen.id,
-                      //       arguments: notificationsSwitchStates);
+                        //   Navigator.pushNamed(
+                        //       context, NotificationSettingsScreen.id,
+                        //       arguments: notificationsSwitchStates);
                       },
                     ),
                     SettingsTile(
@@ -193,17 +193,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         trailingIcon: Icons.arrow_forward,
                       ),
                       onTap: () {
-                      //   Navigator.pushNamed(
-                      //       context, NotificationSettingsScreen.id,
-                      //       arguments: notificationsSwitchStates);
+                        //   Navigator.pushNamed(
+                        //       context, NotificationSettingsScreen.id,
+                        //       arguments: notificationsSwitchStates);
                       },
                     ),
                     const SettingsSegmentTitle(
                       titleText: "VIEW OPTIONS",
                     ),
                     SettingsTile(
-                      key: const Key(
-                          "settings_screen_default_view_tile"),
+                      key: const Key("settings_screen_default_view_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.table_rows_outlined,
                       ),
@@ -216,8 +215,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       },
                     ),
                     SettingsTile(
-                      key: const Key(
-                          "settings_screen_autoplay_tile"),
+                      key: const Key("settings_screen_autoplay_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.play_arrow_outlined,
                       ),
@@ -230,8 +228,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       },
                     ),
                     SettingsTile(
-                      key: const Key(
-                          "settings_screen_thumbnails_tile"),
+                      key: const Key("settings_screen_thumbnails_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.table_rows_outlined,
                       ),
@@ -244,8 +241,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       },
                     ),
                     SettingsTile(
-                      key: const Key(
-                          "settings_screen_text_size_tile"),
+                      key: const Key("settings_screen_text_size_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.text_fields_rounded,
                       ),
@@ -257,17 +253,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         //Navigator.pushNamed(context, BlockedAccount.id);
                       },
                     ),
-                    const SettingsSegmentTitle(
-                      titleText: "ADVANCED"
-                    ),
+                    const SettingsSegmentTitle(titleText: "ADVANCED"),
                     SettingsTile(
-                      key: const Key(
-                          "settings_screen_mute_videos_tile"),
+                      key: const Key("settings_screen_mute_videos_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.volume_off_outlined,
                       ),
                       titleText: "Mute videos by default",
-                      trailingWidget:  CustomSwitch(
+                      trailingWidget: CustomSwitch(
                         key: const Key("settings_screen_mute_videos_switch"),
                         isSwitched: isMuted,
                         onChanged: (value) {
@@ -280,15 +273,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         //Navigator.pushNamed(context, BlockedAccount.id);
                       },
                     ),
-                      SettingsTile(
-                      key: const Key(
-                          "settings_screen_recent_communities_tile"),
+                    SettingsTile(
+                      key: const Key("settings_screen_recent_communities_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.history_toggle_off,
                       ),
                       titleText: "Recent communities",
-                      trailingWidget:  CustomSwitch(
-                        key: const Key("settings_screen_recent_communities_switch"),
+                      trailingWidget: CustomSwitch(
+                        key: const Key(
+                            "settings_screen_recent_communities_switch"),
                         isSwitched: recentCommunities,
                         onChanged: (value) {
                           setState(() {
@@ -300,15 +293,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         //Navigator.pushNamed(context, BlockedAccount.id);
                       },
                     ),
-                      SettingsTile(
-                      key: const Key(
-                          "settings_screen_recent_comment_sort_tile"),
+                    SettingsTile(
+                      key:
+                          const Key("settings_screen_recent_comment_sort_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.comment,
                       ),
                       titleText: "Default comment sort",
                       trailingWidget: const SettingsTileTrailingIcon(
-                        trailingIcon: Icons.arrow_drop_down_sharp,),
+                        trailingIcon: Icons.arrow_drop_down_sharp,
+                      ),
                       onTap: () {
                         //Navigator.pushNamed(context, BlockedAccount.id);
                       },
@@ -326,12 +320,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         //Navigator.pushNamed(context, BlockedAccount.id);
                       },
                     ),
-                    const SettingsSegmentTitle(
-                      titleText: "ABOUT"
-                    ),
+                    const SettingsSegmentTitle(titleText: "ABOUT"),
                     SettingsTile(
-                      key: const Key(
-                          "settings_screen_content_policy_tile"),
+                      key: const Key("settings_screen_content_policy_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.list_alt_rounded,
                       ),
@@ -341,8 +332,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       },
                     ),
                     SettingsTile(
-                      key: const Key(
-                          "settings_screen_privacy_policy_tile"),
+                      key: const Key("settings_screen_privacy_policy_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.vpn_key_outlined,
                       ),
@@ -352,8 +342,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       },
                     ),
                     SettingsTile(
-                      key: const Key(
-                          "settings_screen_user_agreement_tile"),
+                      key: const Key("settings_screen_user_agreement_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.person_2_outlined,
                       ),
@@ -363,8 +352,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       },
                     ),
                     SettingsTile(
-                      key: const Key(
-                          "settings_screen_acknowledgements_tile"),
+                      key: const Key("settings_screen_acknowledgements_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.list_alt_rounded,
                       ),
@@ -373,12 +361,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         //Navigator.pushNamed(context, BlockedAccount.id);
                       },
                     ),
-                    const SettingsSegmentTitle(
-                      titleText: "SUPPORT"
-                    ),
+                    const SettingsSegmentTitle(titleText: "SUPPORT"),
                     SettingsTile(
-                      key: const Key(
-                          "settings_screen_help_center_tile"),
+                      key: const Key("settings_screen_help_center_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.help_outline_outlined,
                       ),
