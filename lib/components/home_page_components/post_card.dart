@@ -37,7 +37,6 @@ class Post {
   bool isSpoiler = false;
   bool isLocked = false;
   bool isApproved = false;
-  bool isNSFW = false;
   int? pollVotes = 0;
 
   var previewData;
@@ -61,7 +60,7 @@ class Post {
     this.isUpvoted = false,
     this.isDownvoted = false,
     this.isLocked = false,
-    this.isMarkedSpoiler = false,
+    this.isSpoiler = false,
     this.isApproved = true,
     this.isNSFW = false,
   });
@@ -192,13 +191,13 @@ class _PostCardState extends State<PostCard> {
                       ),
                     ),
                   SizedBox(width: ScreenSizeHandler.screenWidth * 0.01),
-                  if (post.isMarkedSpoiler)
+                  if (post.isSpoiler)
                     Icon(
                       FontAwesomeIcons.circleExclamation,
                       color: Colors.white,
                       size: ScreenSizeHandler.screenWidth * 0.04,
                     ),
-                  if (post.isMarkedSpoiler)
+                  if (post.isSpoiler)
                     Text(
                       ' SPOILER',
                       style: TextStyle(
