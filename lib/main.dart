@@ -138,7 +138,7 @@ class RedditByLham extends StatelessWidget {
         FirstScreen.id: (context) => const FirstScreen(),
         CreateCommunityScreen.id: (context) => const CreateCommunityScreen(),
         AccountSettingsScreen.id: (context) => const AccountSettingsScreen(),
-        SettingsScreen.id: (context) => const SettingsScreen(),
+        SettingsScreen.id: (context) => SettingsScreen(),
         NotificationSettingsScreen.id: (context) =>
             const NotificationSettingsScreen(),
         DisconnectScreen.id: (context) => const DisconnectScreen(),

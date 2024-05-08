@@ -30,12 +30,12 @@ buildSharetoSubreddit(BuildContext context, Subreddit subreddit) {
     width: ScreenSizeHandler.screenWidth * 0.9,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Padding(
             padding: EdgeInsets.only(
               left: ScreenSizeHandler.screenWidth * 0.025,
               right: ScreenSizeHandler.screenWidth * 0.025,
-              top: ScreenSizeHandler.screenWidth * 0.03,
             ),
             child: Row(
               children: [
@@ -60,8 +60,8 @@ buildSharetoSubreddit(BuildContext context, Subreddit subreddit) {
             )),
         Padding(
           padding: EdgeInsets.symmetric(
-              horizontal: ScreenSizeHandler.screenWidth * 0.025,
-              vertical: ScreenSizeHandler.screenWidth * 0.012),
+            horizontal: ScreenSizeHandler.screenWidth * 0.025,
+          ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -82,8 +82,8 @@ buildSharetoSubreddit(BuildContext context, Subreddit subreddit) {
         ),
         Padding(
           padding: EdgeInsets.only(
-              left: ScreenSizeHandler.screenWidth * 0.025,
-              top: ScreenSizeHandler.screenWidth * 0.01),
+            left: ScreenSizeHandler.screenWidth * 0.025,
+          ),
           child: Text(
             "${subreddit.followersCount} followers . ${subreddit.onlineCount} online",
             style: TextStyle(
