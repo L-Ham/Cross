@@ -14,6 +14,12 @@ class Post {
   String userId;
   //String userAvatarImage
   //String userName
+  List<String> options = [];
+  List<int> numOfVotersPerOption = [];
+  bool isPollVoted = false;
+  String? selectedPollOption;n 
+  DateTime? startTime;
+  DateTime? endTime;
   String subredditName;
   String content;
   String contentTitle;
@@ -49,6 +55,22 @@ class Post {
     required this.video,
     required this.createdFrom,
     required this.userId,
+    this.options = const [],
+    this.numOfVotersPerOption = const [],
+    this.isPollVoted = false,
+    this.selectedPollOption,
+    this.startTime,
+    this.endTime,
+    this.spamCount = 0,
+    this.isUpvoted = false,
+    this.isDownvoted = false,
+    this.isNSFW = false,
+    this.isSpoiler = false,
+    this.isLocked = false,
+    this.isApproved = false,
+    this.isDisapproved = false,
+    this.pollVotes = 0,
+
   });
 
   static fromJson(json) {}
