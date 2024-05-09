@@ -147,6 +147,7 @@ class RedditByLham extends StatelessWidget {
   Widget build(BuildContext context) {
     FirebaseMessaging.instance.getToken().then((value) {
       print("VALUE IS $value");
+      
     });
     ScreenSizeHandler.initialize(
         MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
