@@ -20,6 +20,49 @@ class _AddApprovedUserScreenState extends State<AddApprovedUserScreen> {
   final TextEditingController _controller = TextEditingController();
   bool isFocused = false;
   bool hasText = false;
+  String communityName = '';
+
+
+  @override
+  void didChangeDependencies() {
+    Map<String, dynamic> args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    communityName = args["communityName"];
+    super.didChangeDependencies();
+  }
+
+  void showSnackBar(String snackBarText) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(snackBarText),
+          backgroundColor: Colors.white,
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(
+            left: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+            right: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+            bottom: ScreenSizeHandler.screenHeight * 0.09,
+          ),
+          duration: const Duration(seconds: 3),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+        ),
+      );
+    });
+  }
+
+
+   Future<void> addApprovedUser() async {
+    Map<String, dynamic> response = await apiService.addApprovedUser(communityName, _controller.text);
+    if (response['message'] == "User approved successfully") {
+      showSnackBar('u/ ${_controller.text} was added');
+      Navigator.pop(context);
+    } else {
+      showSnackBar('Error: ${response['message']}');
+      _focusNode.unfocus();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -133,8 +176,8 @@ class _AddApprovedUserScreenState extends State<AddApprovedUserScreen> {
                     text: 'Add',
                     onPress: () {
                       if (hasText) {
-                        // chackUsername(_controller.text);
-                        }
+                        addApprovedUser();
+                      }
                     },
                     isButtonEnabled: hasText,
                   )),

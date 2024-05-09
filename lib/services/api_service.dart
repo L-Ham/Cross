@@ -992,4 +992,24 @@ class ApiService {
 
     return result;
   }
+  Future<dynamic> addApprovedUser(String communityName, String userName) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "subredditName": communityName,
+      "userName": userName,
+    };
+    var result = await request('/subreddit/user/forcedApproved',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+    Future<dynamic> removeApprovedUser(String communityName, String userName) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "subredditName": communityName,
+      "userName": userName,
+    };
+    var result = await request('/subreddit/user/forcedRemove',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
 }
