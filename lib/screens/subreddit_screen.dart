@@ -16,7 +16,10 @@ import 'package:reddit_bel_ham/components/subreddit_components/subreddit_share_b
 import 'package:reddit_bel_ham/components/subreddit_components/subreddit_ellipsis_bottom_sheet.dart';
 import 'package:reddit_bel_ham/screens/subreddit_seemore_screen.dart';
 import 'package:reddit_bel_ham/screens/add_post_screen.dart';
+import 'package:reddit_bel_ham/components/subreddit_components/subreddit_sortype_bottom_sheet.dart';
+
 import 'package:reddit_bel_ham/screens/mod_tools_screen.dart';
+
 
 class SubredditScreen extends StatefulWidget {
   const SubredditScreen({Key? key}) : super(key: key);
@@ -44,8 +47,13 @@ class _SubredditScreenState extends State<SubredditScreen> {
   bool isMuted = false;
   String subredditLink = '';
   var moderators = [];
+  List<Post> feed = [];
+  List<Post> newPosts = [];
   bool isModerator = false;
   ApiService apiService = ApiService(TokenDecoder.token);
+  String sortType = "Hot";
+  int page = 1;
+  bool isFeedCalled = false;
 
   int navigationBarIndex = 0;
   int oldIndex = 0;
@@ -113,6 +121,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
           onlineNickname: subredditOnlineNickname,
           id: subredditID);
     }
+    print("cccccccccccccccccccccccccccccccccccccccccc");
   }
 
   Future<void> joinCommunity(String subredditID) async {
@@ -135,15 +144,41 @@ class _SubredditScreenState extends State<SubredditScreen> {
             isModerator = true;
           }
         }
-      });
-    }
+      }
+    });
+    print('mmmmmmmmmmmmmmmmmmmmmmmmm');
+  }
+
+  Future<void> getSubredditFeed(String sortType, int page) async {
+    Map<String, dynamic> data = (await apiService.getSubredditFeed(
+            subredditName, sortType, page.toString())) ??
+        {};
+
+    List<dynamic> jsonPosts = data['subredditPosts'];
+    setState(() {
+      newPosts = jsonPosts.map((json) => Post.fromJson(json)).toList();
+      if (page == 1) {
+        feed = newPosts;
+      } else {
+        feed.addAll(newPosts);
+      }
+      isFeedCalled = true;
+    });
+    print("llllllllllllllllllllllllllllllllllllllllllllllllllllllllll");
   }
 
   @override
   void initState() {
     super.initState();
-
+    Future.delayed(Duration.zero, () {
+      subredditName = ModalRoute.of(context)!.settings.arguments as String? ??
+          'Dragon Oath';
+      getCommunityData();
+      getCommunityModerators();
+      getSubredditFeed(sortType, page);
+    });
     _scrollController.addListener(_updateAppBarText);
+    _scrollController.addListener(getNewPostsForFeed);
   }
 
   @override
@@ -159,61 +194,30 @@ class _SubredditScreenState extends State<SubredditScreen> {
     });
   }
 
-  @override
-  void didChangeDependencies() {
-    subredditName =
-        ModalRoute.of(context)!.settings.arguments as String? ?? 'Dragon Oath';
-    getCommunityData();
-    getCommunityModerators();
-
-    super.didChangeDependencies();
+  void getNewPostsForFeed() {
+    if (_scrollController.offset > ScreenSizeHandler.screenHeight * 0.11) {
+      if (isFeedCalled) {
+        setState(() {
+          getSubredditFeed(sortType, page);
+          isFeedCalled = false;
+          page++;
+          print(page);
+          print("dddddddddddddddddddddddddddddddddddddddddddddddddddddddd");
+        });
+      }
+    }
   }
 
-  final List<Post> posts = [
-    Post(
-      userId: "1",
-      postId: "1",
-      createdFrom: "7d",
-      subredditName: "r/DanielAdel",
-      contentTitle: "Foodie Instagrammers, Let's Talk Strategy!",
-      content:
-          "Hey fellow food lovers! I've been diving deep into the world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. It's incredible how much competition there is out there, right? I mean, everyone's snapping pics of their avocado toast and artisanal burgers. So, what are your go-to tips for making our food shots pop? Do you swear by natural lighting or do you have some secret editing tricks up your sleeve? And let's talk about captions too! I'm always struggling to strike the right balance between informative and witty. Let's share some wisdom and help each other elevate our Instagram game to the next level! 🍕✨",
-      upvotes: 78,
-      comments: 141,
-      type: "text",
-      image: [""],
-      link: "",
-      video: "",
-    ),
-    Post(
-        userId: "2",
-        postId: "3",
-        createdFrom: "1d",
-        subredditName: "r/AnnieBakesCakes",
-        contentTitle: "Curating Culinary Moments on Instagram: Tips & Tricks!",
-        content:
-            "Hey foodies! I've been pondering tellow fthe world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. It's incredible how much competition there is out there, right? I mean, everyone's snapping pics of their avocado toast and artisanal burgers. So, what are your go-to tips for making our food shots pop? Dood lovers! I've been diving deep into the world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. Ihe art of curating culinary moments on Instagram latelto learn from your experien",
-        upvotes: 20,
-        comments: 35,
-        type: "text",
-        image: [],
-        link: "",
-        video: ''),
-    Post(
-        userId: "3",
-        postId: "4",
-        createdFrom: "2d",
-        subredditName: "r/JohannaDoesYoga",
-        contentTitle:
-            "Is instagram buggering up for anyone else? I can't post anything",
-        content: "Check this page for more details",
-        upvotes: 90,
-        comments: 35,
-        type: "text",
-        image: [],
-        link: "",
-        video: ''),
-  ];
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // subredditName =
+    //     ModalRoute.of(context)!.settings.arguments as String? ?? 'Dragon Oath';
+    // getCommunityData();
+    // getCommunityModerators();
+    // getSubredditFeed(sortType, page);
+    // page++;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -924,11 +928,89 @@ class _SubredditScreenState extends State<SubredditScreen> {
                   ),
                 ),
               ),
-              for (var post in posts)
+              SliverToBoxAdapter(
+                child: Container(
+                  height: ScreenSizeHandler.screenHeight * 0.05,
+                  color: Colors.black,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        left: ScreenSizeHandler.screenWidth * 0.03),
+                    child: GestureDetector(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (BuildContext context) =>
+                              SubredditFeedSortTypeBottomSheet(
+                                  sortType: sortType),
+                        ).then((value) {
+                          if (value != null) {
+                            if (value != sortType) {
+                              setState(() {
+                                sortType = value;
+                                page = 1;
+                                getSubredditFeed(sortType, page);
+                              });
+                            }
+                          }
+                        });
+                      },
+                      child: Row(
+                        children: [
+                          if (sortType == "Hot")
+                            Icon(
+                              FontAwesomeIcons.fire,
+                              color: kDisabledButtonColor,
+                              size: ScreenSizeHandler.bigger * 0.015,
+                            ),
+                          if (sortType == "New")
+                            Icon(
+                              Icons.settings_outlined,
+                              color: kDisabledButtonColor,
+                              size: ScreenSizeHandler.bigger * 0.015,
+                            ),
+                          if (sortType == "Top")
+                            Icon(
+                              FontAwesomeIcons.arrowUpFromBracket,
+                              color: kDisabledButtonColor,
+                              size: ScreenSizeHandler.bigger * 0.015,
+                            ),
+                          if (sortType == "Rising")
+                            Icon(
+                              FontAwesomeIcons.arrowTrendUp,
+                              color: kDisabledButtonColor,
+                              size: ScreenSizeHandler.bigger * 0.015,
+                            ),
+                          SizedBox(
+                            width: ScreenSizeHandler.screenWidth * 0.01,
+                          ),
+                          Text(
+                            "${sortType.toUpperCase()} POSTS",
+                            style: TextStyle(
+                              color: kDisabledButtonColor,
+                              fontSize: ScreenSizeHandler.bigger * 0.015,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(
+                            width: ScreenSizeHandler.screenWidth * 0.01,
+                          ),
+                          Icon(
+                            FontAwesomeIcons.chevronDown,
+                            color: kDisabledButtonColor,
+                            size: ScreenSizeHandler.bigger * 0.015,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              for (var post in feed)
                 SliverToBoxAdapter(
                   child: PostCard(
                     post: post,
                     isModertor: isModerator,
+                    isCommunityFeed: true,
                   ),
                 ),
             ],
