@@ -33,6 +33,8 @@ class ApiService {
           if (body != null) {
             url = Uri.parse(
                 "$baseURL$endpoint?${Uri(queryParameters: body).query}");
+            print("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
+            print(url);
             response = await http.get(url, headers: headers);
           } else {
             response = await http.get(url, headers: headers);
@@ -653,13 +655,13 @@ class ApiService {
   }
 
   Future<dynamic> getSubredditFeed(
-      String subredditName, String sortType, String page) async {
+      String subredditName, String sortType, String page, String limit) async {
     Map<String, dynamic> sentData;
     sentData = {
       "subredditName": subredditName,
       "sort": sortType,
       "page": page,
-      "limit": "3"
+      "limit": limit
     };
     var result = await request('/subreddit/feed',
         headers: headerWithToken, method: 'GET', body: sentData);

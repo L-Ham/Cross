@@ -373,8 +373,8 @@ class _PostCardState extends State<PostCard> {
                       child: PageView.builder(
                         itemCount: post.image.length,
                         itemBuilder: (context, index) {
-                          print("BOSSS HENAAAA");
-                          print(post.image[index]);
+                          // print("BOSSS HENAAAA");
+                          // print(post.image[index]);
                           return widget.post.image[index].startsWith("http")
                               ? Image.network(
                                   post.image[index],
