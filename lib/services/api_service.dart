@@ -49,6 +49,7 @@ class ApiService {
               await http.delete(url, headers: headers, body: jsonEncode(body));
           break;
         case 'PATCH':
+          print(url);
           response =
               await http.patch(url, headers: headers, body: jsonEncode(body));
           break;
@@ -898,6 +899,8 @@ class ApiService {
     };
     var result = await request('/post/markAsSpoiler',
         headers: headerWithToken, method: 'PATCH', body: sentData);
+    print(result);
+
     return result;
   }
 
@@ -908,6 +911,7 @@ class ApiService {
     };
     var result = await request('/post/unmarkAsSpoiler',
         headers: headerWithToken, method: 'PATCH', body: sentData);
+    print(result);
     return result;
   }
 
@@ -918,6 +922,7 @@ class ApiService {
     };
     var result = await request('/post/markAsNSFW',
         headers: headerWithToken, method: 'PATCH', body: sentData);
+    print(result);
     return result;
   }
 
@@ -928,6 +933,7 @@ class ApiService {
     };
     var result = await request('/post/unmarkAsNSFW',
         headers: headerWithToken, method: 'PATCH', body: sentData);
+    print(result);
     return result;
   }
 
@@ -958,6 +964,7 @@ class ApiService {
     };
     var result = await request('/post/approvePost',
         headers: headerWithToken, method: 'PATCH', body: sentData);
+    print(result);
     return result;
   }
 
@@ -1155,6 +1162,16 @@ class ApiService {
     sentData = {"username": username, "page": page, "limit": limit};
     var result = await request('/user/comments',
         headers: headerWithToken, method: 'GET', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> removePost(String postId) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "postId": postId,
+    };
+    var result = await request('/post/removePost',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
     return result;
   }
 
