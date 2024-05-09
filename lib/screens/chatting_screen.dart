@@ -39,9 +39,13 @@ class _ChattingScreenState extends State<ChattingScreen> {
     // Check if the response is null
     if (fetchedConversations != null) {
       // Update the state of the widget
+      if (mounted)
+      {
       setState(() {
         conversations = fetchedConversations;
       });
+
+      }
     } else {
       print('getUserChats returned null');
     }
