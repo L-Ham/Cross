@@ -159,7 +159,6 @@ class _HomePageScreenState extends State<HomePageScreen> {
         trending.clear();
       });
     }
-
     for (var trendingPost in response) {
       if (mounted) {
         setState(() {

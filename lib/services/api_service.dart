@@ -1233,6 +1233,22 @@ class ApiService {
         headers: headerWithToken, method: 'GET');
     return result;
   }
+  Future<dynamic> getUpvotedPosts(
+      String username, String page, String limit) async {
+    Map<String, dynamic> sentData;
+    sentData = {"username": username, "page": page, "limit": limit};
+    var response = await request('/user/upvotedPosts',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    return response;
+  }
+  Future<dynamic> getDownVotedPosts(
+      String username, String page, String limit) async {
+    Map<String, dynamic> sentData;
+    sentData = {"username": username, "page": page, "limit": limit};
+    var response = await request('/user/downvotedPosts',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    return response;
+  }
 
   Future<dynamic> getCommunityType(String communityName) async {
         Map<String, dynamic> sentData;
