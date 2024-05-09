@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:reddit_bel_ham/components/general_components/rounded_button.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
@@ -12,6 +13,9 @@ import '../components/general_components/custom_switch.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import '../components/general_components/reddit_loading_indicator.dart';
+
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -39,6 +43,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   bool contentVisibility=false;
   bool communitiesVisibility=false;
   bool hasCalledAddSocialLink = false;
+  bool isLoading = false;
+  bool isContentVisibilityToggled = false;
+  bool isShowActiveCommunitiesToggled = false;
+  FocusNode displayFocusNode = FocusNode();
+  FocusNode aboutFocusNode = FocusNode();
 
   @override
   void didChangeDependencies() {
@@ -95,9 +104,31 @@ if (isAddSocialLinkPressed && !hasCalledAddSocialLink) {
 
   void uploadAvatarImageAPI(XFile chosenImage) async {
     await apiService.uploadAvatarImage(File(chosenImage.path));
+    getAvatarImage();
   }
     void uploadBannerImageAPI(XFile chosenImage) async {
     await apiService.uploadBannerImage(File(chosenImage.path));
+    getBannerImage();
+
+  }
+
+  Future<void> getAvatarImage() async {
+    Map<String, dynamic> data = (await apiService.getAvatarImage()) ?? {};
+    if (mounted) {
+      setState(() {
+        avatarImage = data['url'] as String;
+        isLoading = false;
+      });
+    }
+  }
+    Future<void> getBannerImage() async {
+    Map<String, dynamic> data = (await apiService.getBannerImage()) ?? {};
+    if (mounted) {
+      setState(() {
+        avatarImage = data['url'] as String;
+        isLoading = false;
+      });
+    }
   }
 
   Future<void> removeSocialLinkAPI(linkId) async {
@@ -118,6 +149,10 @@ if (isAddSocialLinkPressed && !hasCalledAddSocialLink) {
     Map<String, dynamic> data =
         (await apiService.editProfileInfo(displayName,about,contentVisibility, communitiesVisibility)) ?? {};
     print(data);
+    setState(() {
+      isLoading=false;
+    });
+    Navigator.pop(context);
   }
 
   @override
@@ -1059,20 +1094,42 @@ if (isAddSocialLinkPressed && !hasCalledAddSocialLink) {
   }
 
   void addImage() async {
-    chosenImage = await _picker.pickImage(source: ImageSource.gallery);
+  chosenImage = await _picker.pickImage(source: ImageSource.gallery);
+  final filePath = chosenImage!.path;
+  final lastIndex = filePath.lastIndexOf(new RegExp(r'.jp'));
+  final splitted = filePath.substring(0, (lastIndex));
+  final outPath = "${splitted}_compressed.jpg";
+
+  final compressedImage = await FlutterImageCompress.compressAndGetFile(
+    chosenImage!.path,
+    outPath,
+    quality: 88,
+  );
     if (chosenImage != null) {
       setState(() {
-        chosenImage = chosenImage;
-        uploadAvatarImageAPI(chosenImage!);
+        isLoading = true;
+        chosenImage = compressedImage;
+        uploadAvatarImageAPI(compressedImage!);
       });
     }
   }
 
   void addCoverImage() async {
-    chosenCoverImage = await _picker.pickImage(source: ImageSource.gallery);
+  chosenCoverImage = await _picker.pickImage(source: ImageSource.gallery);
+  final filePath = chosenCoverImage!.path;
+  final lastIndex = filePath.lastIndexOf(new RegExp(r'.jp'));
+  final splitted = filePath.substring(0, (lastIndex));
+  final outPath = "${splitted}_compressed.jpg";
+
+  final compressedImage = await FlutterImageCompress.compressAndGetFile(
+    chosenCoverImage!.path,
+    outPath,
+    quality: 88,
+  );
     if (chosenCoverImage != null) {
       setState(() {
-        chosenCoverImage = chosenCoverImage;
+        isLoading = true;
+        chosenCoverImage = compressedImage;
         uploadBannerImageAPI(chosenCoverImage!);
       });
     }
@@ -1083,341 +1140,419 @@ if (isAddSocialLinkPressed && !hasCalledAddSocialLink) {
   bool isShowActiveCommunitiesSwitched = false;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Edit Profile'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        actions: [
-          ElevatedButton(
+    return ModalProgressHUD(
+      inAsyncCall: isLoading,
+      progressIndicator: const RedditLoadingIndicator(),
+      blur: 0,
+      opacity: 0,
+      offset: Offset(ScreenSizeHandler.screenWidth * 0.38,
+          ScreenSizeHandler.screenHeight * 0.6),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Edit Profile'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
             onPressed: () {
-              setState(() {
-                
-              editProfileInfo(displayTextField.isEmpty?displayName:displayTextField, aboutTextField.isEmpty?about:aboutTextField,isContentVisibilitySwitched,isShowActiveCommunitiesSwitched);
-              });
+              Navigator.pop(context);
             },
-            child: Text(
-              'Save',
-              style: TextStyle(color: Colors.white),
-            ),
           ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              height: 250,
-              child: Stack(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        child: chosenCoverImage != null
-                            ? Image.file(File(chosenCoverImage!.path),
-                                height: 200,
-                                width: double.infinity,
-                                fit: BoxFit.cover)
-                            : Image.network(
-                                bannerImage,
-                                height: 200,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                              )),
-                  ),
-                  Positioned(
-                    top: 10,
-                    left: 350,
-                    child: CircleAvatar(
-                      backgroundColor: kFillingColor,
-                      radius: 18,
-                      child: IconButton(
-                        icon: Icon(Icons.edit_outlined, size: 18),
-                        onPressed: () {
-                          addCoverImage();
-                        },
+          actions: [
+            ElevatedButton(
+              
+              onPressed: () {
+                if (displayTextField.isEmpty && aboutTextField.isEmpty && !isContentVisibilityToggled && !isShowActiveCommunitiesToggled) {
+                  return;
+                }
+                setState(() {
+                displayFocusNode.unfocus();
+                aboutFocusNode.unfocus();
+                isLoading=true;
+                
+                editProfileInfo(displayTextField.isEmpty?displayName:displayTextField, aboutTextField.isEmpty?about:aboutTextField,isContentVisibilitySwitched,isShowActiveCommunitiesSwitched);
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: displayTextField.isEmpty && aboutTextField.isEmpty && !isContentVisibilityToggled && !isShowActiveCommunitiesToggled
+                    ? kDisabledButtonColor
+                    : Colors.blue,
+              ),
+              child: Text(
+                'Save',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 250,
+                child: Stack(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          child: bannerImage.isEmpty
+                              ? Container(
+                                  color: Colors.grey,
+                                  height: 200,
+                                  width: double.infinity,
+                                )
+                              : Image.network(
+                                  bannerImage,
+                                  height: 200,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                )),
+                    ),
+                    Positioned(
+                      top: 10,
+                      left: 350,
+                      child: CircleAvatar(
+                        backgroundColor: kFillingColor,
+                        radius: 18,
+                        child: IconButton(
+                          icon: Icon(Icons.edit_outlined, size: 18),
+                          onPressed: () {
+                            addCoverImage();
+                          },
+                        ),
                       ),
                     ),
-                  ),
-                  Positioned(
-                    top: 140,
-                    left: 155,
-                    child: chosenImage != null
-                        ? ClipRRect(
-                            borderRadius: BorderRadius.circular(80),
-                            child: Image(
-                                image: FileImage(File(chosenImage!.path)),
+                    Positioned(
+                      top: 140,
+                      left: 150,
+                      child: avatarImage.isEmpty
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(80),
+                              child: Icon(
+                                Icons.account_circle,
+                                size: 100,
+                                color: Colors.white,
+                              ),
+                              )
+                          : ClipRRect(
+                              borderRadius: BorderRadius.circular(80),
+                              child: Image.network(
+                                avatarImage,
                                 height: 100,
                                 width: 100,
-                                fit: BoxFit.cover))
-                        : ClipRRect(
-                            borderRadius: BorderRadius.circular(80),
-                            child: Image.network(
-                              avatarImage,
-                              height: 100,
-                              width: 100,
-                              fit: BoxFit.cover,
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                          ),
-                  ),
-                  Positioned(
-                    top: 210,
-                    left: 210,
-                    child: CircleAvatar(
-                      backgroundColor: kFillingColor,
-                      radius: 18,
-                      child: IconButton(
-                        icon: Icon(Icons.edit_outlined, size: 18),
-                        onPressed: () {
-                          addImage();
+                    ),
+                    Positioned(
+                      top: 210,
+                      left: 210,
+                      child: CircleAvatar(
+                        backgroundColor: kFillingColor,
+                        radius: 18,
+                        child: IconButton(
+                          icon: Icon(Icons.edit_outlined, size: 18),
+                          onPressed: () {
+                            addImage();
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: Stack(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        focusNode: displayFocusNode,
+                        onChanged: (value)
+                        {
+                        setState(() {
+                          displayTextField = value;
+                        });
                         },
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16.0),
-              child: Stack(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextField(
-                      onChanged: (value) => displayTextField = value,
-                      maxLength: 30,
-                      maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                      decoration: InputDecoration(
-                        labelText: 'Display name - optional',
-                        labelStyle: TextStyle(color: kHintTextColor),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          borderSide: BorderSide(color: Colors.white, width: 2),
+                        maxLength: 30,
+                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                        decoration: InputDecoration(
+                          labelText: 'Display name - optional',
+                          labelStyle: TextStyle(color: kHintTextColor),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide(color: Colors.white, width: 2),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Positioned(
-                    left: 16,
-                    top: 75,
-                    child: Text(
-                      'This will be displayed to viewers of your profile page \nand does not change your username.',
-                      style: TextStyle(
-                          color: kHintTextColor,
-                          fontSize: kAcknowledgeTextSmallerFontRatio *
-                              ScreenSizeHandler.smaller),
+                    Positioned(
+                      left: 16,
+                      top: 75,
+                      child: Text(
+                        'This will be displayed to viewers of your profile page \nand does not change your username.',
+                        style: TextStyle(
+                            color: kHintTextColor,
+                            fontSize: kAcknowledgeTextSmallerFontRatio *
+                                ScreenSizeHandler.smaller),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                onChanged: (value) => aboutTextField = value,
-                maxLength: 200,
-                maxLines: 8,
-                maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                decoration: InputDecoration(
-                  labelText: 'About you - optional',
-                  labelStyle: TextStyle(
-                    color: kHintTextColor,
-                  ),
-                  alignLabelWithHint: true,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide(color: Colors.white, width: 2),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  focusNode: aboutFocusNode,
+                  onChanged: (value)
+                  {
+                    setState(() {
+                      
+                  aboutTextField = value;
+                    });
+                  },
+                  maxLength: 200,
+                  maxLines: 8,
+                  maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                  decoration: InputDecoration(
+                    labelText: 'About you - optional',
+                    labelStyle: TextStyle(
+                      color: kHintTextColor,
+                    ),
+                    alignLabelWithHint: true,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: BorderSide(color: Colors.white, width: 2),
+                    ),
                   ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(
-                'Social Links (5 max)',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize:
-                        kButtonSmallerFontRatio * ScreenSizeHandler.smaller,
-                    fontWeight: FontWeight.bold),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  'Social Links (5 max)',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize:
+                          kButtonSmallerFontRatio * ScreenSizeHandler.smaller,
+                      fontWeight: FontWeight.bold),
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(
-                'People who visit your Reddit-byLham profile will see your social links.',
-                style: TextStyle(
-                    color: kHintTextColor,
-                    fontSize: kAcknowledgeTextSmallerFontRatio *
-                        ScreenSizeHandler.smaller),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  'People who visit your Reddit-byLham profile will see your social links.',
+                  style: TextStyle(
+                      color: kHintTextColor,
+                      fontSize: kAcknowledgeTextSmallerFontRatio *
+                          ScreenSizeHandler.smaller),
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Row(
-                children: [
-                  // ElevatedButton(
-                  //   onPressed: () {
-                  //     addSocialLink();
-                  //   },
-                  //   child: Row(
-                  //     mainAxisSize: MainAxisSize.min,
-                  //     children: [
-                  //       Icon(Icons.add, color: Colors.white),
-                  //       Text('Add social link',
-                  //           style:
-                  //               TextStyle(color: Colors.white, fontSize: 13)),
-                  //     ],
-                  //   ),
-                  //   style: ElevatedButton.styleFrom(
-                  //     backgroundColor: kBackgroundColor,
-                  //     shape: RoundedRectangleBorder(
-                  //       borderRadius: BorderRadius.circular(100.0),
-                  //     ),
-                  //   ),
-                  // ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        height: socialLinks.length < 2
-                            ? 50
-                            : socialLinks.length < 4
-                                ? 100
-                                : 150,
-                        child: GridView.builder(
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2, mainAxisExtent: 50),
-                            itemCount: socialLinks.length + 1,
-                            itemBuilder: (context, index) {
-                              var iconName =
-                                            index < socialLinks.length
-                                                ? socialLinks[index]['appName']
-                                                : '';
-                                        var icon = iconMapping[iconName];
-                              return index == socialLinks.length
-                                  ? Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          if (socialLinks.length > 4) {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(SnackBar(
-                                              behavior:
-                                                  SnackBarBehavior.floating,
-                                              margin: EdgeInsets.only(
-                                                  bottom: ScreenSizeHandler
-                                                          .screenHeight *
-                                                      0.12,
-                                                  left: ScreenSizeHandler
-                                                          .screenWidth *
-                                                      0.04,
-                                                  right: ScreenSizeHandler
-                                                          .screenWidth *
-                                                      0.04),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(30.0),
-                                              ),
-                                              content: Center(
-                                                  child: Text('You can'
-                                                      't add more than 5 links')),
-                                              duration:
-                                                  const Duration(seconds: 3),
-                                            ));
-                                          } else {
-                                            addSocialLink();
-                                          }
-                                        },
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Icon(Icons.add,
-                                                color: Colors.white),
-                                            Text('Add social link',
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 13)),
-                                          ],
-                                        ),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: kBackgroundColor,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(100.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Row(
+                  children: [
+                    // ElevatedButton(
+                    //   onPressed: () {
+                    //     addSocialLink();
+                    //   },
+                    //   child: Row(
+                    //     mainAxisSize: MainAxisSize.min,
+                    //     children: [
+                    //       Icon(Icons.add, color: Colors.white),
+                    //       Text('Add social link',
+                    //           style:
+                    //               TextStyle(color: Colors.white, fontSize: 13)),
+                    //     ],
+                    //   ),
+                    //   style: ElevatedButton.styleFrom(
+                    //     backgroundColor: kBackgroundColor,
+                    //     shape: RoundedRectangleBorder(
+                    //       borderRadius: BorderRadius.circular(100.0),
+                    //     ),
+                    //   ),
+                    // ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          height: socialLinks.length < 2
+                              ? 50
+                              : socialLinks.length < 4
+                                  ? 100
+                                  : 150,
+                          child: GridView.builder(
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2, mainAxisExtent: 50),
+                              itemCount: socialLinks.length + 1,
+                              itemBuilder: (context, index) {
+                                var iconName =
+                                              index < socialLinks.length
+                                                  ? socialLinks[index]['appName']
+                                                  : '';
+                                          var icon = iconMapping[iconName];
+                                return index == socialLinks.length
+                                    ? Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            if (socialLinks.length > 4) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(SnackBar(
+                                                behavior:
+                                                    SnackBarBehavior.floating,
+                                                margin: EdgeInsets.only(
+                                                    bottom: ScreenSizeHandler
+                                                            .screenHeight *
+                                                        0.12,
+                                                    left: ScreenSizeHandler
+                                                            .screenWidth *
+                                                        0.04,
+                                                    right: ScreenSizeHandler
+                                                            .screenWidth *
+                                                        0.04),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(30.0),
+                                                ),
+                                                content: Center(
+                                                    child: Text('You can'
+                                                        't add more than 5 links')),
+                                                duration:
+                                                    const Duration(seconds: 3),
+                                              ));
+                                            } else {
+                                              addSocialLink();
+                                            }
+                                          },
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(Icons.add,
+                                                  color: Colors.white),
+                                              Text('Add social link',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 13)),
+                                            ],
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: kBackgroundColor,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(100.0),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    )
-                                  : Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: RoundedButton(
-                                        onTap: () {},
-                                        buttonHeightRatio: 0.06,
-                                        buttonWidthRatio: 0.1,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            icon!,
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 8.0),
-                                              child: Text(
-                                                socialLinks[index]['displayText'],
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 13),
+                                      )
+                                    : Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: RoundedButton(
+                                          onTap: () {},
+                                          buttonHeightRatio: 0.06,
+                                          buttonWidthRatio: 0.1,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              icon!,
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 8.0),
+                                                child: Text(
+                                                  socialLinks[index]['displayText'],
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 13),
+                                                ),
                                               ),
-                                            ),
-                                            IconButton(
-                                                onPressed: () {
-                                                  setState(() {
-                                                    // socialLinks.removeAt(index);
-                                                    // socialIcons.removeAt(index);
-                                                    // socialType.removeAt(index);
-                                                    removeSocialLinkAPI(socialLinks[index]['_id']);
-                                                  });
-                                                },
-                                                icon: Icon(Icons.clear))
-                                          ],
+                                              IconButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      // socialLinks.removeAt(index);
+                                                      // socialIcons.removeAt(index);
+                                                      // socialType.removeAt(index);
+                                                      removeSocialLinkAPI(socialLinks[index]['_id']);
+                                                    });
+                                                  },
+                                                  icon: Icon(Icons.clear))
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    );
-                            }),
+                                      );
+                              }),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 16, right: 8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Column(
+              Padding(
+                padding: const EdgeInsets.only(top: 16, right: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Text(
+                              'Content Visibility',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: kButtonSmallerFontRatio *
+                                      ScreenSizeHandler.smaller,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Text(
+                              'All posts to this profile will appear in r/all \nand your profile can be discovered in /users.',
+                              style: TextStyle(
+                                  color: kHintTextColor,
+                                  fontSize: kAcknowledgeTextSmallerFontRatio *
+                                      ScreenSizeHandler.smaller),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    CustomSwitch(
+                        isSwitched: isContentVisibilitySwitched,
+                        onChanged: (value) {
+                          setState(() {
+                            isContentVisibilityToggled=true;
+                            isContentVisibilitySwitched =
+                                !isContentVisibilitySwitched;
+                          });
+                        }),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 16, right: 8.0, bottom: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: Text(
-                            'Content Visibility',
+                            'Show active communities',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: kButtonSmallerFontRatio *
@@ -1428,7 +1563,7 @@ if (isAddSocialLinkPressed && !hasCalledAddSocialLink) {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: Text(
-                            'All posts to this profile will appear in r/all \nand your profile can be discovered in /users.',
+                            'Decide wether to show the communities \nyou are active in on your profile.',
                             style: TextStyle(
                                 color: kHintTextColor,
                                 fontSize: kAcknowledgeTextSmallerFontRatio *
@@ -1437,61 +1572,20 @@ if (isAddSocialLinkPressed && !hasCalledAddSocialLink) {
                         ),
                       ],
                     ),
-                  ),
-                  CustomSwitch(
-                      isSwitched: isContentVisibilitySwitched,
-                      onChanged: (value) {
-                        setState(() {
-                          isContentVisibilitySwitched =
-                              !isContentVisibilitySwitched;
-                        });
-                      }),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 16, right: 8.0, bottom: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Text(
-                          'Show active communities',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: kButtonSmallerFontRatio *
-                                  ScreenSizeHandler.smaller,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Text(
-                          'Decide wether to show the communities \nyou are active in on your profile.',
-                          style: TextStyle(
-                              color: kHintTextColor,
-                              fontSize: kAcknowledgeTextSmallerFontRatio *
-                                  ScreenSizeHandler.smaller),
-                        ),
-                      ),
-                    ],
-                  ),
-                  CustomSwitch(
-                      isSwitched: isShowActiveCommunitiesSwitched,
-                      onChanged: (value) {
-                        setState(() {
-                          isShowActiveCommunitiesSwitched =
-                              !isShowActiveCommunitiesSwitched;
-                        });
-                      }),
-                ],
-              ),
-            )
-          ],
+                    CustomSwitch(
+                        isSwitched: isShowActiveCommunitiesSwitched,
+                        onChanged: (value) {
+                          setState(() {
+                            isShowActiveCommunitiesToggled=true;
+                            isShowActiveCommunitiesSwitched =
+                                !isShowActiveCommunitiesSwitched;
+                          });
+                        }),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

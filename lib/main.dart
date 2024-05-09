@@ -179,12 +179,12 @@ class RedditByLham extends StatelessWidget {
         EditProfileScreen.id: (context) => const EditProfileScreen(),
       },
       initialRoute:
-      //  (token == null)
-      //     ? FirstScreen.id
-      //     : (JwtDecoder.isExpired(TokenDecoder.token))
-      //         ? LoginScreen.id
-      //         : HomePageScreen.id,
-      ProfileScreen.id,
+       (token == null)
+          ? FirstScreen.id
+          : (JwtDecoder.isExpired(TokenDecoder.token))
+              ? LoginScreen.id
+              : HomePageScreen.id,
+      // ProfileScreen.id,
     );
   }
 }
