@@ -75,6 +75,7 @@ class _NewMessageScreenState extends State<NewMessageScreen> {
   void didChangeDependencies() {
     Map<String, dynamic> args =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    isReply = args["isReply"];
     if (args['isReply'] != null) {
       if (isReply) {
         subjectController.text = args["subject"];
@@ -83,9 +84,8 @@ class _NewMessageScreenState extends State<NewMessageScreen> {
         messageFocus.requestFocus();
       } else {
         userNameFocus.requestFocus();
-              userNameController.text = args["userName"] ?? "";
+        userNameController.text = args["userName"] ?? "";
       }
-      isReply = args["isReply"];
     }
     if (args['isSubreddit'] != null) {
       isSubreddit = args["isSubreddit"];

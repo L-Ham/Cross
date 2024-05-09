@@ -22,7 +22,6 @@ class _InviteModeratorScreenState extends State<InviteModeratorScreen> {
   bool hasText = false;
   String communityName = '';
 
-
   @override
   void didChangeDependencies() {
     Map<String, dynamic> args =
@@ -52,14 +51,22 @@ class _InviteModeratorScreenState extends State<InviteModeratorScreen> {
     });
   }
 
-
-   Future<void> inviteModerator() async {
-    Map<String, dynamic> response = await apiService.inviteModerator(communityName, _controller.text);
+  Future<void> inviteModerator() async {
+    Map<String, dynamic> response =
+        await apiService.inviteModerator(communityName, _controller.text);
     if (response['message'] == "Moderator invited successfully") {
-      showSnackBar('u/ ${_controller.text} was added as a moderator');
+      if (mounted) {
+        setState(() {
+          showSnackBar('u/ ${_controller.text} was added as a moderator');
+        });
+      }
       Navigator.pop(context);
     } else {
-      showSnackBar('Error: ${response['message']}');
+      if (mounted) {
+        setState(() {
+          showSnackBar('Error: ${response['message']}');
+        });
+      }
       _focusNode.unfocus();
     }
   }
@@ -104,11 +111,10 @@ class _InviteModeratorScreenState extends State<InviteModeratorScreen> {
                             color: Colors.white,
                             fontWeight: FontWeight.normal,
                           ),
-                          onTap: (){
+                          onTap: () {
                             setState(() {
                               isFocused = true;
                             });
-                          
                           },
                           onChanged: (value) => setState(() {
                             hasText = value.isNotEmpty;
@@ -146,8 +152,7 @@ class _InviteModeratorScreenState extends State<InviteModeratorScreen> {
                           ),
                         ),
                       ],
-                    )
-                  );
+                    ));
               },
             ),
           ),

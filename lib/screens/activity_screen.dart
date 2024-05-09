@@ -97,9 +97,11 @@ class _ActivityScreenState extends State<ActivityScreen> {
       return activity.actualUpdatedAt.isBefore(today);
     }).toList();
 
-    setState(() {
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override

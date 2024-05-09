@@ -22,7 +22,6 @@ class _AddApprovedUserScreenState extends State<AddApprovedUserScreen> {
   bool hasText = false;
   String communityName = '';
 
-
   @override
   void didChangeDependencies() {
     Map<String, dynamic> args =
@@ -52,14 +51,22 @@ class _AddApprovedUserScreenState extends State<AddApprovedUserScreen> {
     });
   }
 
-
-   Future<void> addApprovedUser() async {
-    Map<String, dynamic> response = await apiService.addApprovedUser(communityName, _controller.text);
+  Future<void> addApprovedUser() async {
+    Map<String, dynamic> response =
+        await apiService.addApprovedUser(communityName, _controller.text);
     if (response['message'] == "User approved successfully") {
-      showSnackBar('u/ ${_controller.text} was added');
+      if (mounted) {
+        setState(() {
+          showSnackBar('u/ ${_controller.text} was added');
+        });
+      }
       Navigator.pop(context);
     } else {
-      showSnackBar('Error: ${response['message']}');
+      if (mounted) {
+        setState(() {
+          showSnackBar('Error: ${response['message']}');
+        });
+      }
       _focusNode.unfocus();
     }
   }
@@ -104,11 +111,10 @@ class _AddApprovedUserScreenState extends State<AddApprovedUserScreen> {
                             color: Colors.white,
                             fontWeight: FontWeight.normal,
                           ),
-                          onTap: (){
+                          onTap: () {
                             setState(() {
                               isFocused = true;
                             });
-                          
                           },
                           onChanged: (value) => setState(() {
                             hasText = value.isNotEmpty;
@@ -154,7 +160,8 @@ class _AddApprovedUserScreenState extends State<AddApprovedUserScreen> {
                               'This user will be able to submit content to \nyour community',
                               style: kSettingsIconTextStyle.copyWith(
                                 fontSize: ScreenSizeHandler.bigger *
-                                    kSettingsTileSubtextRatio * 1.1,
+                                    kSettingsTileSubtextRatio *
+                                    1.1,
                                 color: Colors.grey,
                               ),
                             ),

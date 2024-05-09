@@ -69,12 +69,13 @@ class _MessageReplyScreenState extends State<MessageReplyScreen> {
               itemBuilder: (context, i) {
                 if (replies[i] != []) {
                   return MessageReplyTile(
+                    subject: subject,
                     userName: replies[i]["sender"],
                     publishedFrom: timeAgo(replies[i]["createdAt"]),
                     message: replies[i]["message"],
                   );
                 } else {
-                  return Container(); // return an empty container when replies[i] is empty
+                  return Container();
                 }
               },
             ),

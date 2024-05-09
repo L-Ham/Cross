@@ -171,7 +171,7 @@ class CommentSearchCardTile extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "${commentSearchCard.postUpvotes} upvotes • 15 comments",
+                  "${commentSearchCard.postUpvotes} upvotes • ${commentSearchCard.postComments} comments",
                   style: TextStyle(
                       fontSize: ScreenSizeHandler.bigger * 0.016,
                       color: Colors.grey[400]),
