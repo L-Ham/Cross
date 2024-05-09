@@ -14,7 +14,6 @@ import '../utilities/time_ago.dart';
 
 class CommentsScreen extends StatefulWidget {
   static const id = 'comments_screen';
-
   const CommentsScreen({Key? key}) : super(key: key);
 
   @override
@@ -26,6 +25,9 @@ class _CommentsScreenState extends State<CommentsScreen> {
   ApiService apiService = ApiService(TokenDecoder.token);
   bool isLoading = false;
   bool isCommentLoading = false;
+
+  String avatarImageReturned = '';
+
   bool refreshComments = false;
   bool firstTime = true;
   int pageNum = 1;
@@ -252,6 +254,11 @@ class _CommentsScreenState extends State<CommentsScreen> {
   void didChangeDependencies() {
     Map<String, dynamic> args =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    if (args.containsKey('avatar')) {
+      setState(() {
+        avatarImageReturned = args['avatar'] as String;
+      });
+    }
     if (args.containsKey('post')) {
       pushedPost = args['post'] as Post;
     } else {
@@ -356,7 +363,8 @@ class _CommentsScreenState extends State<CommentsScreen> {
             Padding(
               padding:
                   EdgeInsets.only(left: ScreenSizeHandler.screenWidth * 0.016),
-              child: const ProfileIconWithIndicator(isOnline: true, radius: 15),
+              child: ProfileIconWithIndicator(
+                  isOnline: true, radius: 15, imageURL: avatarImageReturned),
             ),
           ],
         ),

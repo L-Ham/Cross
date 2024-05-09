@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -56,17 +57,36 @@ class _HomePageScreenState extends State<HomePageScreen> {
   Color onlineStatusColor = kOnlineStatusColor;
   double onlineStatusWidth = ScreenSizeHandler.smaller * 0.5;
 
+  String avatarImageReturned = 'assets/images/reddit_logo.png';
   ApiService apiService = ApiService(TokenDecoder.token);
 
-  Future<void> logout() async {
-    await apiService.logout();
+  Future<void> logout(String? fcm) async {
+    var result = await apiService.logout(fcm);
+    print(result);
+  }
+
+  Future<void> getUserSelfInfo() async {
+    Map<String, dynamic> data = (await apiService.getUserSelfInfo()) ?? {};
+    setState(() {
+      avatarImageReturned =
+          data['user']['avatar'] ?? 'assets/images/reddit_logo.png';
+    });
+
+    print("avataaaaaar$avatarImageReturned");
   }
 
   @override
   void initState() {
+    getUserSelfInfo();
     super.initState();
     username = TokenDecoder.username;
     email = TokenDecoder.email;
+  }
+
+  @override
+  void didChangeDependencies() {
+    getUserSelfInfo();
+    super.didChangeDependencies();
   }
 
   bool isRecentlyVisitedDrawerVisible = false;
@@ -469,7 +489,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
                 onTap: () {
                   _scaffoldKey.currentState?.openEndDrawer();
                 },
-                child: ProfileIconWithIndicator(isOnline: onlineStatusToggle),
+                child: ProfileIconWithIndicator(
+                    isOnline: onlineStatusToggle,
+                    imageURL: avatarImageReturned),
               ),
             ),
           ],
@@ -515,7 +537,10 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                   onTap: () {
                                     Navigator.pushNamed(
                                         context, CommentsScreen.id,
-                                        arguments: {"post": posts[index]});
+                                        arguments: {
+                                          "post": posts[index],
+                                          "avatar": avatarImageReturned,
+                                        });
                                   },
                                   child: PostCard(
                                     post: posts[index],
@@ -592,21 +617,22 @@ class _HomePageScreenState extends State<HomePageScreen> {
                       setIsRecentlyVisitedDrawerVisibleCbk),
         ),
         endDrawer: EndDrawer(
-          username: username,
-          onlineStatusToggle: onlineStatusToggle,
-          onlineStatusString: onlineStatusString,
-          onlineStatusColor: onlineStatusColor,
-          onlineStatusWidth: onlineStatusWidth,
-          toggleOnlineStatus: (p0) => setState(() {
-            onlineStatusToggle = p0;
-            onlineStatusString = onlineStatusToggle ? "On" : "Off";
-            onlineStatusColor =
-                onlineStatusToggle ? kOnlineStatusColor : kOfflineStatusColor;
-            onlineStatusWidth = onlineStatusToggle
-                ? ScreenSizeHandler.smaller * 0.5
-                : ScreenSizeHandler.smaller * 0.42;
-          }),
-        ),
+            username: username,
+            onlineStatusToggle: onlineStatusToggle,
+            onlineStatusString: onlineStatusString,
+            onlineStatusColor: onlineStatusColor,
+            onlineStatusWidth: onlineStatusWidth,
+            toggleOnlineStatus: (p0) => setState(() {
+                  onlineStatusToggle = p0;
+                  onlineStatusString = onlineStatusToggle ? "On" : "Off";
+                  onlineStatusColor = onlineStatusToggle
+                      ? kOnlineStatusColor
+                      : kOfflineStatusColor;
+                  onlineStatusWidth = onlineStatusToggle
+                      ? ScreenSizeHandler.smaller * 0.5
+                      : ScreenSizeHandler.smaller * 0.42;
+                }),
+            avatarImage: avatarImageReturned),
       ),
     );
   }
@@ -614,13 +640,23 @@ class _HomePageScreenState extends State<HomePageScreen> {
 
 class DrawerBottomSheet extends StatefulWidget {
   // final bool isExitPressed;
-  const DrawerBottomSheet({super.key});
+  final String avatarImage;
+  const DrawerBottomSheet({super.key, required this.avatarImage});
   @override
   State<DrawerBottomSheet> createState() => _DrawerBottomSheetState();
 }
 
 class _DrawerBottomSheetState extends State<DrawerBottomSheet> {
   late String username;
+
+  String? getFCMtoken() {
+    FirebaseMessaging.instance.getToken().then((String? token) {
+      assert(token != null);
+      print('Push Messaging token: $token');
+      return token;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -671,8 +707,8 @@ class _DrawerBottomSheetState extends State<DrawerBottomSheet> {
                   child: SettingsTile(
                     fontColor: Colors.red,
                     onTap: () async {
-                      var result = await apiService.logout();
-                      print(result['']);
+                      var result = await apiService.logout(getFCMtoken());
+                      print(result);
                       Navigator.popUntil(context, ModalRoute.withName('/'));
                       Navigator.pushNamed(context, LoginScreen.id);
                       SharedPreferences.getInstance().then((prefs) {
@@ -692,9 +728,14 @@ class _DrawerBottomSheetState extends State<DrawerBottomSheet> {
                   children: [
                     ListTile(
                       leading: CircleAvatar(
+                        backgroundImage: widget.avatarImage ==
+                                'assets/images/reddit_logo.png'
+                            ? const AssetImage('assets/images/reddit_logo.png')
+                            : NetworkImage(
+                                widget.avatarImage,
+                              ) as ImageProvider,
                         backgroundColor: Colors.white,
                         radius: ScreenSizeHandler.smaller * 0.03,
-                        child: Text('P'),
                       ),
                       title: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

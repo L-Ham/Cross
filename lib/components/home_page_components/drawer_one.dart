@@ -1,7 +1,6 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:reddit_bel_ham/screens/subreddit_screen.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
@@ -25,14 +24,15 @@ class Community {
   final String name;
   final String avatar;
   final bool isFavorite;
-  final bool isModerator;
+  late bool isModerator;
 
-  Community(
-      {required this.id,
-      required this.name,
-      required this.avatar,
-      required this.isFavorite,
-      required this.isModerator});
+  Community({
+    required this.id,
+    required this.name,
+    required this.avatar,
+    required this.isFavorite,
+    this.isModerator = false,
+  });
 }
 
 class _DrawerOneState extends State<DrawerOne> {
@@ -44,7 +44,7 @@ class _DrawerOneState extends State<DrawerOne> {
   List<String> recentlyVisitedCommunities = [];
 
   List<String> favSubredditImages = [];
-  List<String> favoriteCommunities = [];
+  List<Community> favoriteCommunities = [];
 
   List<Community> moderatingCommunities = [];
   List<Community> yourCommunities = [];
@@ -62,52 +62,62 @@ class _DrawerOneState extends State<DrawerOne> {
 
   Future<void> getYourCommunities() async {
     Map<String, dynamic> data = (await apiService.getYourCommunities()) ?? {};
-    print(data);
-    setState(() {
-      yourCommunities = (data['communities'] as List).map((community) {
-        Community newCommunity = Community(
-          id: community['communityId'],
-          name: community['communityName'],
-          avatar: community['communityAvatar'] != null
-              ? community['communityAvatar']
-              : 'assets/images/community_logo.png',
-          isFavorite: community['isFavorite'],
-          isModerator: true,
-        );
-        if (newCommunity.isModerator) {
-          moderatingCommunities.add(newCommunity);
-        }
-        return newCommunity;
-      }).toList();
-    });
+    if (mounted) {
+      setState(() {
+        moderatingCommunities.clear();
+        yourCommunities = (data['communities'] as List).map((community) {
+          Community newCommunity = Community(
+            id: community['communityId'],
+            name: community['communityName'],
+            avatar: community['communityAvatar'] ??
+                'assets/images/community_logo.png',
+            isFavorite: community['isFavorite'],
+            isModerator: community['isModerator'],
+          );
+          if (newCommunity.isModerator) {
+            moderatingCommunities.add(newCommunity);
+          }
+          return newCommunity;
+        }).toList();
+      });
+    }
   }
 
   Future<void> getFavouriteCommunities() async {
-    List<dynamic> data = (await apiService.getFavouriteCommunities()) ?? [];
-    List<String> favoriteCommunities = [];
-
-    for (var community in data) {
-      favoriteCommunities.add(community['name']);
+    Map<String, dynamic> data =
+        (await apiService.getFavouriteCommunities()) ?? {};
+    if (mounted) {
+      setState(() {
+        favoriteCommunities = (data['communitiesWithAvatar'] as List).map((community) {
+          Community newCommunity = Community(
+            id: community['id'],
+            name: community['name'],
+            avatar: community['avatar'] ?? 'assets/images/community_logo.png',
+            isFavorite: true,
+          );
+          return newCommunity;
+        }).toList();
+      });
     }
-
-    setState(() {
-      // Assuming favoriteCommunities is a state variable
-      this.favoriteCommunities = favoriteCommunities;
-    });
   }
 
   Future<void> favouriteSubreddit(String subredditID) async {
-    var result = await apiService.favouriteSubreddit(subredditID);
+    await apiService.favouriteSubreddit(subredditID);
+    getFavouriteCommunities();
+    getYourCommunities();
   }
 
   Future<void> unfavouriteSubreddit(String subredditID) async {
-    var result = await apiService.unfavouriteSubreddit(subredditID);
+    await apiService.unfavouriteSubreddit(subredditID);
+    getFavouriteCommunities();
+    getYourCommunities();
   }
 
   @override
   void didChangeDependencies() {
     getRecentSubreddits();
     getYourCommunities();
+    getFavouriteCommunities();
     super.didChangeDependencies();
   }
 
@@ -177,9 +187,11 @@ class _DrawerOneState extends State<DrawerOne> {
                               child: ListTile(
                                 onTap: () {
                                   Navigator.pushNamed(
-                                      context, SubredditScreen.id,
-                                      arguments:
-                                          recentlyVisitedCommunities[index]);
+                                    context,
+                                    SubredditScreen.id,
+                                    arguments:
+                                        recentlyVisitedCommunities[index],
+                                  );
                                 },
                                 title: Row(
                                   children: [
@@ -261,59 +273,70 @@ class _DrawerOneState extends State<DrawerOne> {
                 children: [
                   Flexible(
                     child: isFavoritesPressed
-                        ? Container(
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: favoriteCommunities.length,
-                              itemBuilder: (context, index) {
-                                return SizedBox(
-                                  height: 50,
-                                  child: ListTile(
-                                    title: Row(
-                                      children: [
-                                        favoriteCommunities[index] ==
-                                                'Custom Feeds'
-                                            ? Icon(Icons.feed_outlined)
-                                            : Image(
-                                                image: const AssetImage(
-                                                    'assets/images/community_logo.png'),
-                                                height: 23,
-                                              ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            'r/${favoriteCommunities[index]}',
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 15,
+                        ? ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: favoriteCommunities.length,
+                            itemBuilder: (context, index) {
+                              return SizedBox(
+                                height: 50,
+                                child: ListTile(
+                                  title: Row(
+                                    children: [
+                                      favoriteCommunities[index].avatar ==
+                                              'Custom Feeds'
+                                          ? Icon(Icons.feed_outlined)
+                                          : Image(
+                                              image: favoriteCommunities[index]
+                                                          .avatar !=
+                                                      'assets/images/community_logo.png'
+                                                  ? NetworkImage(
+                                                      favoriteCommunities[index]
+                                                          .avatar)
+                                                  : AssetImage(
+                                                      'assets/images/community_logo.png',
+                                                    ) as ImageProvider,
+                                              height: 23,
                                             ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                          'r/${favoriteCommunities[index].name}',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 15,
                                           ),
                                         ),
-                                        const Spacer(),
-                                        IconButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              favoriteCommunities.remove(
-                                                  favoriteCommunities[index]);
-                                            });
-                                          },
-                                          icon: Semantics(
-                                            key: Key(
-                                                'favorite_community_button_$index'),
-                                            child: Icon(
-                                              Icons.star_rounded,
-                                              color: Colors.grey,
-                                              size: 23,
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
+                                      ),
+                                      const Spacer(),
+                                      IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            if (favoriteCommunities[index]
+                                                .isFavorite) {
+                                              unfavouriteSubreddit(
+                                                  favoriteCommunities[index]
+                                                      .id);
+                                            } else {
+                                              favouriteSubreddit(
+                                                  favoriteCommunities[index]
+                                                      .id);
+                                            }
+                                          });
+                                        },
+                                        icon: Icon(
+                                          favoriteCommunities[index].isFavorite
+                                              ? Icons.star_rounded
+                                              : Icons.star_border_rounded,
+                                          color: Colors.grey,
+                                          size: 23,
+                                        ),
+                                      )
+                                    ],
                                   ),
-                                );
-                              },
-                            ),
+                                ),
+                              );
+                            },
                           )
                         : Container(), // Provide a default widget when isFavoritesPressed is false
                   ),
@@ -379,8 +402,15 @@ class _DrawerOneState extends State<DrawerOne> {
                               title: Row(
                                 children: [
                                   Image(
-                                    image: AssetImage(
-                                        'assets/images/community_logo.png'),
+                                    image: moderatingCommunities[index - 3]
+                                                .avatar !=
+                                            'assets/images/community_logo.png'
+                                        ? NetworkImage(
+                                            moderatingCommunities[index - 3]
+                                                .avatar)
+                                        : AssetImage(
+                                            'assets/images/community_logo.png',
+                                          ) as ImageProvider,
                                     height: 23,
                                   ),
                                   Padding(
@@ -398,18 +428,21 @@ class _DrawerOneState extends State<DrawerOne> {
                                   GestureDetector(
                                     onTap: () {
                                       setState(() {
-                                        moderatingCommunities[index - 3].isFavorite
-                                          ? unfavouriteSubreddit(
-                                              moderatingCommunities[index - 3].id)
-                                          : favouriteSubreddit(
-                                              moderatingCommunities[index - 3].id);
-                                        getFavouriteCommunities();
+                                        if (moderatingCommunities[index - 3]
+                                            .isFavorite) {
+                                          unfavouriteSubreddit(
+                                              moderatingCommunities[index - 3]
+                                                  .id);
+                                        } else {
+                                          favouriteSubreddit(
+                                              moderatingCommunities[index - 3]
+                                                  .id);
+                                        }
                                       });
                                     },
                                     child: Icon(
-                                      favoriteCommunities.contains(
-                                              moderatingCommunities[index - 3]
-                                                  .name)
+                                      moderatingCommunities[index - 3]
+                                              .isFavorite
                                           ? Icons.star_rounded
                                           : Icons.star_border_rounded,
                                       color: Colors.grey,
@@ -484,8 +517,17 @@ class _DrawerOneState extends State<DrawerOne> {
                                               title: Row(
                                                 children: [
                                                   Image(
-                                                    image: AssetImage(
-                                                        'assets/images/community_logo.png'),
+                                                    image: yourCommunities[
+                                                                    index - 1]
+                                                                .avatar !=
+                                                            'assets/images/community_logo.png'
+                                                        ? NetworkImage(
+                                                            yourCommunities[
+                                                                    index - 1]
+                                                                .avatar)
+                                                        : AssetImage(
+                                                            'assets/images/community_logo.png',
+                                                          ) as ImageProvider,
                                                     height: 23,
                                                   ),
                                                   Padding(
@@ -504,19 +546,24 @@ class _DrawerOneState extends State<DrawerOne> {
                                                   GestureDetector(
                                                     onTap: () {
                                                       setState(() {
-                                                        yourCommunities[index - 1].isFavorite
-                                                          ? unfavouriteSubreddit(
-                                                              yourCommunities[index - 1].id)
-                                                          : favouriteSubreddit(
-                                                              yourCommunities[index - 1].id);
-                                                        getFavouriteCommunities();
+                                                        if (yourCommunities[
+                                                                index - 1]
+                                                            .isFavorite) {
+                                                          unfavouriteSubreddit(
+                                                              yourCommunities[
+                                                                      index - 1]
+                                                                  .id);
+                                                        } else {
+                                                          favouriteSubreddit(
+                                                              yourCommunities[
+                                                                      index - 1]
+                                                                  .id);
+                                                        }
                                                       });
                                                     },
                                                     child: Icon(
-                                                      favoriteCommunities.contains(
-                                                              yourCommunities[
-                                                                      index - 1]
-                                                                  .name)
+                                                      yourCommunities[index - 1]
+                                                              .isFavorite
                                                           ? Icons.star_rounded
                                                           : Icons
                                                               .star_border_rounded,
@@ -547,15 +594,15 @@ class _DrawerOneState extends State<DrawerOne> {
                                                   GestureDetector(
                                                     onTap: () {
                                                       setState(() {
-                                                        favoriteCommunities
-                                                                .contains(
-                                                                    'Custom Feeds')
-                                                            ? favoriteCommunities
-                                                                .remove(
-                                                                    'Custom Feeds')
-                                                            : favoriteCommunities
-                                                                .add(
-                                                                    'Custom Feeds');
+                                                        // favoriteCommunities
+                                                        //         .contains(
+                                                        //             'Custom Feeds')
+                                                        //     ? favoriteCommunities
+                                                        //         .remove(
+                                                        //             'Custom Feeds')
+                                                        //     : favoriteCommunities
+                                                        //         .add(
+                                                        //             'Custom Feeds');
                                                       });
                                                     },
                                                     child: Icon(

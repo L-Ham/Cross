@@ -170,14 +170,14 @@ class ApiService {
   }
 
   Future<dynamic> getFavouriteCommunities() async {
-    var result = await request('/user/favourite',
+    var result = await request('/subreddit/user/favourite',
         headers: headerWithToken, method: 'GET');
     return result;
   }
 
-  Future<dynamic> logout() async {
+  Future<dynamic> logout(String? fcmToken) async {
     var result = await request('/auth/logout',
-        headers: {'Content-Type': 'application/json'}, method: 'POST');
+        headers: headerWithToken, method: 'POST',body: {"fcmToken": fcmToken});
     return result;
   }
 

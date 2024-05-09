@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_leading_icon.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_trailing_icon.dart';
@@ -8,9 +7,7 @@ import 'package:reddit_bel_ham/screens/home_page_screen.dart';
 import 'package:reddit_bel_ham/screens/settings_screen.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
-import 'package:reddit_bel_ham/utilities/time_ago.dart';
-import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
-import 'package:reddit_bel_ham/components/general_components/reddit_loading_indicator.dart';
+
 class EndDrawer extends StatefulWidget {
   final String username;
   final bool onlineStatusToggle;
@@ -18,9 +15,8 @@ class EndDrawer extends StatefulWidget {
   final Color onlineStatusColor;
   final double onlineStatusWidth;
   final Function(bool) toggleOnlineStatus;
-  String avatarImage = 'assets/images/reddit_logo.png';
+  final String avatarImage;
 
-  ApiService apiService = ApiService(TokenDecoder.token);
   EndDrawer({
     Key? key,
     required this.username,
@@ -29,74 +25,14 @@ class EndDrawer extends StatefulWidget {
     required this.onlineStatusColor,
     required this.onlineStatusWidth,
     required this.toggleOnlineStatus,
+    required this.avatarImage,
   }) : super(key: key);
-
-  Future<void> getUserInfo() async {
-    Map<String, dynamic> data =
-        (await apiService.getUserInfo('662d258fa12caa11b0fddbec')) ?? {};
-    avatarImage = data['user']['avatar'] ?? 'assets/images/reddit_logo.png';
-  }
 
   @override
   State<EndDrawer> createState() => _EndDrawerState();
 }
 
 class _EndDrawerState extends State<EndDrawer> {
-  ApiService apiService = ApiService(TokenDecoder.token);
-
-   String avatarImage = '';
-
-   String userName = '';
-
-   String postKarma = '';
-
-   String displayName = '';
-
-   String commentKarma = '';
-
-   String bannerImage = '';
-
-   String created = '';
-
-   bool isLoading=false;
-   List<Map<String,dynamic>> socialLinks = [];
-
-
-   @override
-    void initState() {
-      super.initState();
-      isLoading=false;
-    }
-
-  //   Future<void> getUserPersonalInfo() async {
-  //   Map<String, dynamic> data =
-  //       (await apiService.getUserSelfInfo()) ?? {};
-  //   avatarImage = data['user']['avatar'] ?? '';
-  //   userName = data['user']['username'] ?? '';
-  //   postKarma = data['user']['post_karma'].toString() ?? '0';
-  //   displayName = data['user']['display_name'] ?? widget.username;
-  //   commentKarma = data['user']['comment_karma'].toString() ?? '0';
-  //   bannerImage = data['user']['banner'] ?? '';
-  //   created = timeAgo(data['user']['created'].toString()) ?? '';
-  //   // isLoading=false;
-  //   Navigator.pushNamed(context, 'profile_screen', arguments: {'isMyProfile': true, 'username': userName, 'avatarImage': avatarImage, 'bannerImage': bannerImage, 'postKarma': postKarma, 'commentKarma': commentKarma, 'displayName': displayName, 'created': created});
-
-  // }
-  // Future<void> getSocialLinks() async {
-  //   Map<String, dynamic> data =
-  //       (await apiService.getProfileSettings()) ?? {};
-  //   socialLinks = (data['profileSettings']['socialLinks'] as List<dynamic>)
-  //   ?.map((item) => item as Map<String, dynamic>)
-  //   ?.toList() ?? [];
-  // }
-
-  // Future<void> getProfileInfo() async {
-  //   await getUserPersonalInfo();
-  //   await getSocialLinks();
-  //   Navigator.pushNamed(context, 'profile_screen', arguments: {'isMyProfile': true, 'username': userName, 'avatarImage': avatarImage, 'bannerImage': bannerImage, 'postKarma': postKarma, 'commentKarma': commentKarma, 'displayName': displayName, 'created': created, 'socialLinks': socialLinks});
-  // }
-
-
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -123,9 +59,12 @@ class _EndDrawerState extends State<EndDrawer> {
               child: CircleAvatar(
                 backgroundColor: Colors.white,
                 radius: 50,
-                backgroundImage: avatarImage == 'assets/images/reddit_logo.png'
-                    ? const AssetImage('assets/images/reddit_logo.png')
-                    : NetworkImage(avatarImage) as ImageProvider,
+                backgroundImage:
+                    widget.avatarImage == 'assets/images/reddit_logo.png'
+                        ? const AssetImage('assets/images/reddit_logo.png')
+                        : NetworkImage(
+                            widget.avatarImage,
+                          ) as ImageProvider,
               ),
             ),
             Padding(
@@ -135,7 +74,9 @@ class _EndDrawerState extends State<EndDrawer> {
                   showModalBottomSheet(
                     context: context,
                     builder: (BuildContext context) {
-                      return const DrawerBottomSheet();
+                      return DrawerBottomSheet(
+                        avatarImage: widget.avatarImage,
+                      );
                     },
                   );
                 },
@@ -204,10 +145,7 @@ class _EndDrawerState extends State<EndDrawer> {
                         leadingIcon: Icons.account_circle_outlined),
                     titleText: "Profile",
                     onTap: () {
-                      setState(() {
-                        Navigator.pushNamed(context, 'profile_screen', arguments: {'isMyProfile': true,});
-                      // getProfileInfo();
-                      });
+                      // goToProfile(context,TokenDecoder.username);
                     },
                   ),
                   SettingsTile(
@@ -242,7 +180,9 @@ class _EndDrawerState extends State<EndDrawer> {
               trailingWidget: const SettingsTileTrailingIcon(
                   trailingIcon: Icons.nights_stay_sharp),
               onTap: () {
-                Navigator.pushNamed(context, SettingsScreen.id);
+                Navigator.pushNamed(context, SettingsScreen.id, arguments: {
+                  "avatar": widget.avatarImage,
+                });
               },
             ),
           ],
