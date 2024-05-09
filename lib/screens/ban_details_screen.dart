@@ -7,73 +7,73 @@ import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'package:reddit_bel_ham/components/general_components/continue_button.dart';
 import 'package:reddit_bel_ham/components/mod_tools_components/rule_broken_item.dart';
 
-class BanUserScreen extends StatefulWidget {
-  const BanUserScreen({super.key});
+class BanDetailsScreen extends StatefulWidget {
+  const BanDetailsScreen({super.key});
 
-  static const String id = 'ban_user_screen';
+  static const String id = 'ban_details_screen';
 
   @override
-  State<BanUserScreen> createState() => _BanUserScreenState();
+  State<BanDetailsScreen> createState() => _BanDetailsScreenState();
 }
 
-class _BanUserScreenState extends State<BanUserScreen> {
+class _BanDetailsScreenState extends State<BanDetailsScreen> {
   ApiService apiService = ApiService(TokenDecoder.token);
-  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ruleController = TextEditingController();
   final TextEditingController _msgController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
-  bool isFocused = false;
+  bool isFirstTime = true;
   bool hasText = false;
   bool didChooseReason = false;
-  String communityName = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _ruleController.text = 'Select a rule';
-  }
+  String communityName = '', ruleBroken = '', modNote = '', userName = '';
 
   @override
   void didChangeDependencies() {
     Map<String, dynamic> args =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    ruleBroken = args["ruleBroken"];
+    modNote = args["modNote"];
+    userName = args["userName"];
     communityName = args["communityName"];
+
+    if (isFirstTime) {
+      _ruleController.text = ruleBroken;
+      _noteController.text = modNote;
+      isFirstTime = false;
+    }
     super.didChangeDependencies();
   }
 
   void showSnackBar(String snackBarText) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(snackBarText),
-            backgroundColor: Colors.white,
-            behavior: SnackBarBehavior.floating,
-            margin: EdgeInsets.only(
-              left: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
-              right: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
-              bottom: ScreenSizeHandler.screenHeight * 0.09,
-            ),
-            duration: const Duration(seconds: 3),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30.0),
-            ),
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(snackBarText),
+          backgroundColor: Colors.white,
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(
+            left: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+            right: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+            bottom: ScreenSizeHandler.screenHeight * 0.09,
           ),
-        );
-      }
+          duration: const Duration(seconds: 3),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+        ),
+      );
     });
   }
 
-  Future<void> banUser() async {
+  Future<void> updateBan() async {
     Map<String, dynamic> response = await apiService.banUser(communityName,
-        _nameController.text, _ruleController.text, _noteController.text, true);
-    if (response['message'] == "User banned successfully" ||
-        response['message'] == "Banned user updated successfully") {
+        userName, _ruleController.text, _noteController.text, true);
+    if (response['message'] == "Banned user updated successfully") {
+      Navigator.pop(context);
       Navigator.pop(context);
     } else {
       if (mounted) {
         setState(() {
-          showSnackBar('Error: ${response['message']}');
+          showSnackBar('$communityName: ${response['message']}');
         });
       }
     }
@@ -162,7 +162,7 @@ class _BanUserScreenState extends State<BanUserScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          'Ban user',
+          'Ban $userName',
           style: TextStyle(
             fontSize: ScreenSizeHandler.bigger * 0.025,
             fontWeight: FontWeight.bold,
@@ -187,68 +187,13 @@ class _BanUserScreenState extends State<BanUserScreen> {
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            'Username',
+                            'Rule broken',
                             style: TextStyle(
                               fontSize: ScreenSizeHandler.bigger *
                                   kSettingsTileTextRatio *
                                   1.2,
                               color: kHintTextColor,
                               fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        TextField(
-                          controller: _nameController,
-                          onChanged: (value) => setState(() {
-                            hasText = value.isNotEmpty;
-                          }),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.normal,
-                            fontSize: kDefaultFontSize * 1.1,
-                          ),
-                          decoration: InputDecoration(
-                            prefixText: 'u/',
-                            prefixStyle: const TextStyle(
-                              color: kHintTextColor,
-                              fontWeight: FontWeight.normal,
-                              fontSize: kDefaultFontSize * 1.1,
-                            ),
-                            isDense: true,
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: ScreenSizeHandler.smaller * 0.02,
-                                horizontal: ScreenSizeHandler.smaller *
-                                    0.03), // Decrease this value to reduce height
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: const BorderSide(
-                                color: Colors.transparent,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: const BorderSide(
-                                color: Colors.white,
-                              ),
-                            ),
-                            fillColor: kFillingColor,
-                            filled: true,
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                              top: ScreenSizeHandler.bigger * 0.026),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'Rule broken',
-                              style: TextStyle(
-                                fontSize: ScreenSizeHandler.bigger *
-                                    kSettingsTileTextRatio *
-                                    1.2,
-                                color: kHintTextColor,
-                                fontWeight: FontWeight.bold,
-                              ),
                             ),
                           ),
                         ),
@@ -476,16 +421,14 @@ class _BanUserScreenState extends State<BanUserScreen> {
                 color: Colors.grey[700],
               ),
               ContinueButton(
-                text: 'Ban',
+                text: 'Update',
                 onPress: () {
-                  if (hasText && didChooseReason) {
-                    banUser();
-                  }
+                  // if (hasText && didChooseReason) {
+                  updateBan();
+                  // }
                 },
-                isButtonEnabled: hasText && didChooseReason,
-                color: hasText && didChooseReason
-                    ? const Color.fromARGB(255, 29, 72, 214)
-                    : kDisabledButtonColor,
+                isButtonEnabled: true,
+                color: const Color.fromARGB(255, 29, 72, 214),
               ),
               Padding(
                   padding: EdgeInsets.only(

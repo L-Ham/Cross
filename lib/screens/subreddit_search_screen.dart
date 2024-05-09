@@ -122,7 +122,9 @@ class _SubredditSearchScreenState extends State<SubredditSearchScreen> {
                                               .image,
                                     ),
                                     Text(
-                                      ' r/${widget.subredditName} ',
+                                    widget.isSubreddit
+                                    ? 'r/${widget.subredditName}'
+                                    : 'u/${widget.subredditName}',
                                       style: TextStyle(
                                         fontSize:
                                             ScreenSizeHandler.bigger * 0.019,
@@ -266,7 +268,9 @@ class _SubredditSearchScreenState extends State<SubredditSearchScreen> {
                                     fontSize: ScreenSizeHandler.bigger * 0.019),
                               ),
                               Text(
-                                'r/${widget.subredditName}',
+                                    widget.isSubreddit
+                                    ? 'r/${widget.subredditName}'
+                                    : 'u/${widget.subredditName}',
                                 style: TextStyle(
                                     fontSize: ScreenSizeHandler.bigger * 0.019,
                                     fontWeight: FontWeight.bold),
