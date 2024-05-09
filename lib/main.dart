@@ -2,6 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_bel_ham/components/home_page_components/mark_all_as_read.dart';
+import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/TrendingTopCommunitiesScreen.dart';
 import 'package:reddit_bel_ham/screens/add_comment_screen.dart';
 import 'package:reddit_bel_ham/screens/add_post_screen.dart';
@@ -52,6 +53,7 @@ import 'screens/profile_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:reddit_bel_ham/screens/edit_profile_screen.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -144,7 +146,12 @@ class RedditByLham extends StatelessWidget {
         MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
     return MaterialApp(
       title: 'HTTP',
-      theme: ThemeData.dark(),
+      theme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: kBackgroundColor,
+        appBarTheme: AppBarTheme(
+          backgroundColor: kBackgroundColor,
+        ),
+      ),
       debugShowCheckedModeBanner: false,
       routes: {
         FirstScreen.id: (context) => const FirstScreen(),
@@ -181,6 +188,8 @@ class RedditByLham extends StatelessWidget {
         MessageReplyScreen.id: (context) => const MessageReplyScreen(),
         NewMessageScreen.id: (context) => const NewMessageScreen(),
         SearchingScreen.id: (context) => const SearchingScreen(),
+        EditProfileScreen.id: (context) => const EditProfileScreen(),
+
         ModToolsScreen.id: (context) => const ModToolsScreen(),
         DescribeCommunityScreen.id: (context) => const DescribeCommunityScreen(),
         CommunityTypeScreen.id: (context) => const CommunityTypeScreen(),
@@ -194,7 +203,6 @@ class RedditByLham extends StatelessWidget {
           : (JwtDecoder.isExpired(TokenDecoder.token))
               ? LoginScreen.id
               : HomePageScreen.id,
-      // initialRoute: BanUserScreen.id,
     );
   }
 }
