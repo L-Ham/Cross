@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_text_field.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/components/settings_components/forget_password_text.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
-import 'package:reddit_bel_ham/services/google_sign_in.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:reddit_bel_ham/components/general_components/gradient_button.dart';
 import 'package:reddit_bel_ham/components/settings_components/user_information_card.dart';
@@ -63,7 +61,7 @@ class _DisconnectScreenState extends State<DisconnectScreen> {
       email = args['email']!;
       username = args['username']!;
       isConnectedToGoogle = args['isConnectedToGoogle'];
-      googleToken = args['googleToken']?? "";
+      googleToken = args['googleToken'] ?? "";
     }
   }
 
@@ -156,6 +154,7 @@ class _DisconnectScreenState extends State<DisconnectScreen> {
                 //TODO: Implement the logic for disconnecting the account
                 if (isPassNotEmpty) {
                   if (!isConnectedToGoogle) {
+                    // ignore: unnecessary_null_comparison
                     if (googleToken != null) {
                       ApiService apiService = ApiService(TokenDecoder.token);
                       var response = await apiService.connectWithGoogle(

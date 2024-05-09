@@ -126,7 +126,10 @@ class _HomePageScreenState extends State<HomePageScreen> {
 
   final List<Post> posts = [
     Post(
-      username: "r/DanielAdel",
+      userId: "1",
+      postId: "1",
+      createdFrom: "1h",
+      subredditName: "r/DanielAdel",
       contentTitle: "Foodie Instagrammers, Let's Talk Strategy!",
       content:
           "Hey fellow food lovers! I've been diving deep into the world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. It's incredible how much competition there is out there, right? I mean, everyone's snapping pics of their avocado toast and artisanal burgers. So, what are your go-to tips for making our food shots pop? Do you swear by natural lighting or do you have some secret editing tricks up your sleeve? And let's talk about captions too! I'm always struggling to strike the right balance between informative and witty. Let's share some wisdom and help each other elevate our Instagram game to the next level! 🍕✨",
@@ -138,7 +141,10 @@ class _HomePageScreenState extends State<HomePageScreen> {
       video: "",
     ),
     Post(
-      username: "r/AnnieBakesCakes",
+      userId: "1",
+      postId: "2",
+      createdFrom: "1h",
+      subredditName: "r/AnnieBakesCakes",
       contentTitle: "Curating Culinary Moments on Instagram: Tips & Tricks!",
       content:
           "Hey foodies! I've been pondering tellow fthe world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. It's incredible how much competition there is out there, right? I mean, everyone's snapping pics of their avocado toast and artisanal burgers. So, what are your go-to tips for making our food shots pop? Dood lovers! I've been diving deep into the world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. Ihe art of curating culinary moments on Instagram latelto learn from your experien",
@@ -154,7 +160,10 @@ class _HomePageScreenState extends State<HomePageScreen> {
       video: "",
     ),
     Post(
-      username: "r/JohannaDoesYoga",
+      userId: "1",
+      postId: "3",
+      createdFrom: "7d",
+      subredditName: "r/JohannaDoesYoga",
       contentTitle:
           "Is instagram buggering up for anyone else? I can't post anything",
       content:
@@ -167,7 +176,10 @@ class _HomePageScreenState extends State<HomePageScreen> {
       video: "",
     ),
     Post(
-      username: "r/JohannaDoesYoga",
+      userId: "1",
+      postId: '4',
+      createdFrom: "4d",
+      subredditName: "r/JohannaDoesYoga",
       contentTitle: "instagram",
       content: "Check this page for more details",
       upvotes: 90,
@@ -176,6 +188,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
       image: [""],
       link: "",
       video: "",
+      isPollVoted: false,
+      numOfVotersPerOption: [10, 20, 30],
+      options: ["Ziko", "Dani", "Mahmoud"],
     ),
     // Post(
     //   username: "r/JohannaDoesYoga",
@@ -500,7 +515,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                   onTap: () {
                                     Navigator.pushNamed(
                                         context, CommentsScreen.id,
-                                        arguments: posts[index]);
+                                        arguments: {"post": posts[index]});
                                   },
                                   child: PostCard(
                                     post: posts[index],
@@ -678,8 +693,8 @@ class _DrawerBottomSheetState extends State<DrawerBottomSheet> {
                     ListTile(
                       leading: CircleAvatar(
                         backgroundColor: Colors.white,
-                        child: Text('P'),
                         radius: ScreenSizeHandler.smaller * 0.03,
+                        child: Text('P'),
                       ),
                       title: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

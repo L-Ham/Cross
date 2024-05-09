@@ -7,21 +7,55 @@ import '../settings_components/settings_tile.dart';
 import '../settings_components/settings_tile_leading_icon.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
+import 'package:reddit_bel_ham/services/api_service.dart';
+import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 
 class ModeratorPostBottomSheet extends StatelessWidget {
   final Post post;
   ModeratorPostBottomSheet({required this.post});
 
+  ApiService apiService = ApiService(TokenDecoder.token);
+
+  Future<void> markAsNSFW(String postId) async {
+    await apiService.markAsNSFW(postId);
+  }
+
+  Future<void> unmarkAsNSFW(String postId) async {
+    await apiService.unmarkAsNSFW(postId);
+  }
+
+  Future<void> markAsSpoiler(String postId) async {
+    await apiService.markAsSpoiler(postId);
+  }
+
+  Future<void> unmarkAsSpoiler(String postId) async {
+    await apiService.unmarkAsSpoiler(postId);
+  }
+
+  Future<void> lockPost(String postId) async {
+    await apiService.lockPost(postId);
+  }
+
+  Future<void> unlockPost(String postId) async {
+    await apiService.unlockPost(postId);
+  }
+
+  Future<void> approvePosts(String postId) async {
+    await apiService.approvePost(postId);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: ScreenSizeHandler.screenWidth * 0.96,
+      height: ScreenSizeHandler.screenHeight * 0.4,
       color: kBackgroundColor,
       child: SingleChildScrollView(
         child: Column(
           children: [
             Padding(
               padding: EdgeInsets.symmetric(
-                  vertical: ScreenSizeHandler.screenHeight * 0.004),
+                  vertical: ScreenSizeHandler.screenHeight * 0.0055),
               child: GestureDetector(
                 onTap: () {},
                 child: const SettingsTile(
@@ -35,7 +69,7 @@ class ModeratorPostBottomSheet extends StatelessWidget {
               onTap: () {},
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                    vertical: ScreenSizeHandler.screenHeight * 0.004),
+                    vertical: ScreenSizeHandler.screenHeight * 0.0055),
                 child: const SettingsTile(
                     leadingIcon: SettingsTileLeadingIcon(
                       leadingIcon: FontAwesomeIcons.lock,
@@ -47,7 +81,7 @@ class ModeratorPostBottomSheet extends StatelessWidget {
               onTap: () {},
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                    vertical: ScreenSizeHandler.screenHeight * 0.004),
+                    vertical: ScreenSizeHandler.screenHeight * 0.0055),
                 child: const SettingsTile(
                     leadingIcon: SettingsTileLeadingIcon(
                       leadingIcon: Icons.eighteen_up_rating_outlined,
@@ -59,7 +93,7 @@ class ModeratorPostBottomSheet extends StatelessWidget {
               onTap: () {},
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                    vertical: ScreenSizeHandler.screenHeight * 0.004),
+                    vertical: ScreenSizeHandler.screenHeight * 0.0055),
                 child: const SettingsTile(
                     leadingIcon: SettingsTileLeadingIcon(
                       leadingIcon: FontAwesomeIcons.trash,
@@ -71,7 +105,7 @@ class ModeratorPostBottomSheet extends StatelessWidget {
               onTap: () {},
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                    vertical: ScreenSizeHandler.screenHeight * 0.004),
+                    vertical: ScreenSizeHandler.screenHeight * 0.0055),
                 child: const SettingsTile(
                     leadingIcon: SettingsTileLeadingIcon(
                       leadingIcon: FontAwesomeIcons.calendarXmark,
@@ -83,7 +117,7 @@ class ModeratorPostBottomSheet extends StatelessWidget {
               onTap: () {},
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                    vertical: ScreenSizeHandler.screenHeight * 0.004),
+                    vertical: ScreenSizeHandler.screenHeight * 0.0055),
                 child: const SettingsTile(
                     leadingIcon: SettingsTileLeadingIcon(
                       leadingIcon: Icons.check,
@@ -98,7 +132,7 @@ class ModeratorPostBottomSheet extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.symmetric(
                     horizontal: ScreenSizeHandler.screenWidth * 0.04,
-                    vertical: ScreenSizeHandler.screenHeight * 0.004),
+                    vertical: ScreenSizeHandler.screenHeight * 0.0055),
                 child: Container(
                   height: ScreenSizeHandler.screenHeight * 0.04,
                   width: ScreenSizeHandler.screenWidth,
