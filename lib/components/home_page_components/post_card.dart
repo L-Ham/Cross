@@ -52,41 +52,40 @@ class Post {
 
   var previewData;
 
-  Post({
-    required this.postId,
-    this.subredditName = "Dragon Oath",
-    this.userAvatarImage = "assets/images/avatarDaniel.png",
-    this.userName = "thekey119",
-    required this.contentTitle,
-    required this.content,
-    required this.upvotes,
-    required this.comments,
-    required this.type,
-    required this.link,
-    this.image = const [],
-    required this.video,
-    required this.createdFrom,
-    required this.userId,
-    this.subredditId = "",
-    this.options = const [],
-    this.numOfVotersPerOption = const [],
-    this.isPollVoted = false,
-    this.selectedPollOption,
-    this.startTime,
-    this.endTime,
-    this.spamCount = 0,
-    this.isUpvoted = false,
-    this.isDownvoted = false,
-    this.isNSFW = false,
-    this.isSpoiler = false,
-    this.isLocked = false,
-    this.isApproved = false,
-    this.isDisapproved = false,
-    this.pollVotes = 0,
-    this.avatarImage = 'assets/images/planet3.png',
-    this.isOwner = false,
-    this.isSaved = false
-  });
+  Post(
+      {required this.postId,
+      this.subredditName = "Dragon Oath",
+      this.userAvatarImage = "assets/images/avatarDaniel.png",
+      this.userName = "thekey119",
+      required this.contentTitle,
+      required this.content,
+      required this.upvotes,
+      required this.comments,
+      required this.type,
+      required this.link,
+      this.image = const [],
+      required this.video,
+      required this.createdFrom,
+      required this.userId,
+      this.subredditId = "",
+      this.options = const [],
+      this.numOfVotersPerOption = const [],
+      this.isPollVoted = false,
+      this.selectedPollOption,
+      this.startTime,
+      this.endTime,
+      this.spamCount = 0,
+      this.isUpvoted = false,
+      this.isDownvoted = false,
+      this.isNSFW = false,
+      this.isSpoiler = false,
+      this.isLocked = false,
+      this.isApproved = false,
+      this.isDisapproved = false,
+      this.pollVotes = 0,
+      this.avatarImage = 'assets/images/planet3.png',
+      this.isOwner = false,
+      this.isSaved = false});
 
   factory Post.fromJson(Map<String, dynamic> json) {
     return Post(
@@ -133,7 +132,7 @@ class Post {
       image: json['imageUrls'] != null
           ? (json['imageUrls'] as List).map((image) => image as String).toList()
           : [],
-      createdFrom: json['createdAt'] ?? '',
+      createdFrom: timeAgo(json['createdAt']) ?? '',
       upvotes: json['upvotes'] ?? 0,
       comments: json['commentCount'] ?? 0,
       spamCount: json['spamCount'] ?? 0,
@@ -155,7 +154,10 @@ class PostCard extends StatefulWidget {
   final bool isCommunityFeed;
 
   const PostCard(
-      {required this.post, this.isModertor = false, this.isExpanded = false, this.isCommunityFeed = false});
+      {required this.post,
+      this.isModertor = false,
+      this.isExpanded = false,
+      this.isCommunityFeed = false});
 
   @override
   _PostCardState createState() => _PostCardState();
