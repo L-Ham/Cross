@@ -102,6 +102,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
   void didChangeDependencies() {
     Map<String, dynamic>? args =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
+    print(args);
     if (args == null) {
       return;
     }
@@ -122,6 +123,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
       if (args['subredditId'] != null) {
         subredditId = args['subredditId'];
       }
+      print(args['subredditId']);
       if (args['isProfile'] == null) {
         isProfile = false;
       } else {
