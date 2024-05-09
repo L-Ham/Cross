@@ -11,6 +11,7 @@ class UserTile extends StatelessWidget {
   final FontWeight subtitileFontWeight;
   final Color? fontColor;
   final String? avatarLink;
+  final bool? withIcon;
 
   const UserTile({
     Key? key,
@@ -22,6 +23,7 @@ class UserTile extends StatelessWidget {
     this.subtitileFontWeight = FontWeight.w500,
     this.fontColor,
     this.avatarLink,
+    this.withIcon = true,
   }) : super(key: key);
 
   @override
@@ -80,6 +82,7 @@ class UserTile extends StatelessWidget {
                   ),
                 ),
               ),
+              if (withIcon!) 
               IconButton(
                 icon:const Icon(
                   Icons.more_horiz,
