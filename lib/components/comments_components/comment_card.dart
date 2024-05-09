@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:reddit_bel_ham/components/comments_components/line_painter.dart';
+import 'package:reddit_bel_ham/components/general_components/linkified_text.dart';
+import 'package:reddit_bel_ham/components/subreddit_components/subreddit_ellipsis_bottom_sheet.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/add_comment_screen.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
@@ -10,6 +12,10 @@ import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 class Comment {
   String username;
   final String content;
+  String userId;
+  String commentId;
+  String? repliedId;
+  String postId;
   int upvotes;
   bool isUpvoted = false;
   bool isDownvoted = false;
@@ -20,11 +26,17 @@ class Comment {
   final List<Comment> replies; // List of replies
 
   Comment({
+    required this.userId,
+    required this.commentId,
     required this.username,
     required this.content,
     required this.upvotes,
     required this.submittedTime,
+    required this.postId,
     this.replies = const [], // Initialize replies as an empty list
+    this.isUpvoted = false,
+    this.isDownvoted = false,
+    this.repliedId
   });
 }
 
@@ -86,10 +98,10 @@ class _CommentCardState extends State<CommentCard> {
                   widget.comment.isUsernameBlocked &&
                           !widget.comment.isUsernameTileClicked
                       ? 'Blocked Author'
-                      : "${widget.comment.username} ${widget.comment.submittedTime}",
-                  style: const TextStyle(
+                      : "${widget.comment.username} • ${widget.comment.submittedTime}",
+                  style: TextStyle(
                     color: Colors.white,
-                    fontSize: 12,
+                    fontSize: ScreenSizeHandler.bigger * 0.016,
                   ),
                 ),
               ],
@@ -98,12 +110,16 @@ class _CommentCardState extends State<CommentCard> {
         ),
         if (!widget.comment.collapsed) ...[
           Padding(
-            padding: const EdgeInsets.only(left: 10.0),
-            child: Text(
+            padding: EdgeInsets.only(left: 10.0),
+            child: linkifiedText(
               widget.comment.content,
-              style: const TextStyle(
+              TextStyle(
                 color: Colors.white,
-                fontSize: 12,
+                fontSize: ScreenSizeHandler.bigger * 0.016,
+              ),
+              TextStyle(
+                color: Colors.blue,
+                fontSize: ScreenSizeHandler.bigger * 0.016,
               ),
             ),
           ),
@@ -410,6 +426,8 @@ class _CommentCardState extends State<CommentCard> {
                     "isReply": true,
                     "replyString": widget.comment.content,
                     "postTime": widget.comment.submittedTime,
+                    "postId": widget.comment.postId,
+                    "parentCommentId": widget.comment.commentId,
                   });
                 },
                 icon: const Icon(
@@ -422,10 +440,14 @@ class _CommentCardState extends State<CommentCard> {
                     if (widget.comment.isUpvoted) {
                       widget.comment.upvotes--;
                       widget.comment.isUpvoted = false;
+                      apiService.downvoteComment(widget.comment.commentId);
                     } else {
-                      widget.comment.upvotes++;
+                      widget.comment.isDownvoted
+                          ? widget.comment.upvotes += 2
+                          : widget.comment.upvotes++;
                       widget.comment.isUpvoted = true;
                       widget.comment.isDownvoted = false;
+                      apiService.upvoteComment(widget.comment.commentId);
                     }
                   });
                 },
@@ -449,10 +471,15 @@ class _CommentCardState extends State<CommentCard> {
                     if (widget.comment.isDownvoted) {
                       widget.comment.upvotes++;
                       widget.comment.isDownvoted = false;
+                      apiService
+                          .cancelCommentDownvote(widget.comment.commentId);
                     } else {
-                      widget.comment.upvotes--;
+                      widget.comment.isUpvoted
+                          ? widget.comment.upvotes -= 2
+                          : widget.comment.upvotes--;
                       widget.comment.isDownvoted = true;
                       widget.comment.isUpvoted = false;
+                      apiService.downvoteComment(widget.comment.commentId);
                     }
                   });
                 },

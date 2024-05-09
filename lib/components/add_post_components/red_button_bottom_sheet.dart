@@ -4,8 +4,8 @@ import '../../constants.dart';
 import '../../utilities/screen_size_handler.dart';
 import '../general_components/rounded_button.dart';
 
-class ChangePostTypeBottomSheet extends StatelessWidget {
-  const ChangePostTypeBottomSheet({
+class RedButtonBottomSheet extends StatelessWidget {
+  const RedButtonBottomSheet({
     super.key,
     this.titleText = "Change Post Type",
     this.bodyText = "Some of your post will be deleted if you continue.",

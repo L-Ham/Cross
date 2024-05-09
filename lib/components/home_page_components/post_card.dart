@@ -43,6 +43,8 @@ class Post {
   bool isLocked = false;
   bool isApproved = false;
   bool isDisapproved = false;
+  bool isOwner = false;
+  bool isSaved = false;
   int? pollVotes = 0;
 
   var previewData;
@@ -79,6 +81,8 @@ class Post {
     this.isDisapproved = false,
     this.pollVotes = 0,
     this.avatarImage = 'assets/images/planet3.png',
+    this.isOwner = false,
+    this.isSaved = false
   });
 
   static fromJson(json) {}

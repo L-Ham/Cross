@@ -171,7 +171,7 @@ class _SearchingScreenState extends State<SearchingScreen>
         title: resultsList[i]["title"],
         text: resultsList[i]["text"] ?? "",
         type: resultsList[i]["type"],
-        image: resultsList[i]["image"],
+        image: resultsList[i]["image"]?? "",
         video: resultsList[i]["video"] ?? "",
         subredditName: resultsList[i]["subreddit"] ?? "",
         subredditId: resultsList[i]["subRedditId"] ?? "f",

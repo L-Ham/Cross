@@ -12,6 +12,7 @@ import 'package:reddit_bel_ham/screens/comments_screen.dart';
 import 'package:reddit_bel_ham/screens/communities_screen.dart';
 import 'package:reddit_bel_ham/screens/community_rules_screen.dart';
 import 'package:reddit_bel_ham/screens/connected_accounts_disconnect_screen.dart';
+import 'package:reddit_bel_ham/screens/edit_post_screen.dart';
 import 'package:reddit_bel_ham/screens/message_reply_screen.dart';
 import 'package:reddit_bel_ham/screens/messages_screen.dart';
 import 'package:reddit_bel_ham/screens/new_message_screen.dart';
@@ -170,7 +171,8 @@ class RedditByLham extends StatelessWidget {
         MessageReplyScreen.id: (context) => const MessageReplyScreen(),
         NewMessageScreen.id: (context) => const NewMessageScreen(),
         SearchingScreen.id: (context) => const SearchingScreen(),
-        SearchingInSubreddit.id:(context) => const SearchingInSubreddit()
+        SearchingInSubreddit.id:(context) => const SearchingInSubreddit(),
+        EditPostScreen.id:(context) => const EditPostScreen(),
       },
       initialRoute: (token == null)
           ? FirstScreen.id

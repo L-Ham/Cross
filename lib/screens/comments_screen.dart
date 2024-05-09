@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:reddit_bel_ham/components/general_components/reddit_loading_indicator.dart';
 import 'package:reddit_bel_ham/components/home_page_components/profile_icon_with_indicator.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/add_comment_screen.dart';
@@ -20,7 +22,13 @@ class CommentsScreen extends StatefulWidget {
 }
 
 class _CommentsScreenState extends State<CommentsScreen> {
+  ScrollController _scrollController = ScrollController();
   ApiService apiService = ApiService(TokenDecoder.token);
+  bool isLoading = false;
+  bool isCommentLoading = false;
+  bool refreshComments = false;
+  bool firstTime = true;
+  int pageNum = 1;
   Post pushedPost = Post(
       userId: "",
       postId: "",
@@ -36,6 +44,9 @@ class _CommentsScreenState extends State<CommentsScreen> {
       createdFrom: "");
 
   void getPostFromId(String postId) async {
+    setState(() {
+      isLoading = true;
+    });
     await apiService.getPostFromId(postId).then((value) {
       value = value['post'];
       setState(() {
@@ -66,6 +77,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
         List<dynamic> downvotedUsers = value['downvotedUsers'];
         bool isUpvoted = upvotedUsers.contains(TokenDecoder.id);
         bool isDownvoted = downvotedUsers.contains(TokenDecoder.id);
+        bool isOwner = TokenDecoder.id == userId;
         List<dynamic> poll = [];
         List<String> pollOptions = [];
         List<int> votersCount = [];
@@ -88,6 +100,9 @@ class _CommentsScreenState extends State<CommentsScreen> {
           pollEnd = DateTime.parse(value['poll']['endTime']);
         }
 
+        setState(() {
+          isLoading = false;
+        });
         pushedPost = Post(
             userId: userId,
             postId: postId,
@@ -117,68 +132,122 @@ class _CommentsScreenState extends State<CommentsScreen> {
         pushedPost.endTime = pollEnd;
         pushedPost.subredditId = subredditId;
         pushedPost.numOfVotersPerOption = votersCount;
+        pushedPost.isOwner = isOwner;
       });
+    });
+    setState(() {
+      getAllCommentsFromPostId();
     });
   }
 
   void getAllCommentsFromPostId() async {
-    var response = await apiService.getCommentsFromPostId(
-        {"postId": pushedPost.postId, "page": 1, "limit": 10});
+    setState(() {
+      isCommentLoading = true;
+    });
+    var response = await apiService.getCommentsFromPostId({
+      "postId": pushedPost.postId,
+      "page": pageNum.toString(),
+      "limit": 10.toString()
+    });
+    List<dynamic> commentsData = response["comments"] ?? [];
+    if (mounted) {}
+    setState(() {
+      comments = parseComments(commentsData)
+          .where((comment) => comment.repliedId == null)
+          .toList();
+    });
+    setState(() {
+      isCommentLoading = false;
+    });
   }
 
+  List<Comment> parseComments(List<dynamic> commentsData) {
+    List<Comment> comments = [];
+    for (var comment in commentsData) {
+      String userId = comment['userId'];
+      String commentId = comment['commentId'];
+      String? parentCommentId = comment['repliedId'];
+      String content = comment['text'];
+      String createdFrom = timeAgo(comment['createdAt']);
+      int upvotes = comment['score'];
+      bool isUpvoted = comment['isUpvoted'];
+      bool isDownvoted = comment['isDownvoted'];
+      List<dynamic> repliesData = comment['replies'];
+      List<Comment> repliesList =
+          repliesData.isNotEmpty ? parseComments(repliesData) : [];
+
+      Comment commentData = Comment(
+          username: "peter",
+          userId: userId,
+          commentId: commentId,
+          content: content,
+          submittedTime: createdFrom,
+          upvotes: upvotes,
+          isUpvoted: isUpvoted,
+          isDownvoted: isDownvoted,
+          repliedId: parentCommentId,
+          postId: pushedPost.postId,
+          replies: repliesList);
+
+      comments.add(commentData);
+    }
+    return comments;
+  }
+
+  List<Comment> comments = [];
   FocusNode commentFocusNode = FocusNode();
   FocusNode textFieldFocusNode = FocusNode();
   bool isCommenting = false;
   TextEditingController commentController = TextEditingController();
   int? maxLines;
-  final List<Comment> comments = [
-    Comment(
-      username: "JohnnyBanana",
-      submittedTime: "3d",
-      content:
-          "I swear by natural lighting! It makes the food look so much more appetizing. I also like to play around with the angles to get the best shot. As for editing, I usually just adjust the brightness and contrast a bit to make the colors pop. And for captions, I think it's all about finding your own voice and being authentic. People can tell when you're being genuine, so just have fun with it!",
-      replies: [
-        Comment(
-          username: "dani",
-          submittedTime: "2d",
-          content:
-              "I'm all about the editing tricks! I use Lightroom to enhance the colors People love to connect with the person behind the food!",
-          replies: [
-            Comment(
-              username: "dani",
-              submittedTime: "2d",
-              content:
-                  "I swear by natural lighting! It makes the food look so much more appetizing. I also like to play around with the angles to get the best shot. As for editing, I usually just adjust the brightness and contrast a bit to make the colors pop. And for captions, I think it's all about finding your own voice and being authentic. People can tell when you're being genuine, so just have fun with it!",
-              upvotes: 12,
-            ),
-          ],
-          upvotes: 8,
-        ),
-        Comment(
-          submittedTime: "2d",
-          username: "EmilyEats",
-          content:
-              "I'm a big fan of natural lighting too! It just makes everything look so much better. I also like to use props to add some visual interest to my photos. And for editing, I usually just adjust the exposure and contrast a bit to make the colors pop. As for captions, I think it's all about being authentic and sharing a bit of yourself with your followers. People love to see the person behind the food!",
-          upvotes: 5,
-        ),
-      ],
-      upvotes: 12,
-    ),
-    Comment(
-      username: "SallySweets",
-      submittedTime: "2d",
-      content:
-          "I'm all about the editing tricks! I use Lightroom to enhance the colors People love to connect with the person behind the food!",
-      upvotes: 8,
-    ),
-    Comment(
-      submittedTime: "1d",
-      username: "EmilyEats",
-      content:
-          "I'm a big fan of natural lighting too! It just makes everything look so much better. I also like to use props to add some visual interest to my photos. And for editing, I usually just adjust the exposure and contrast a bit to make the colors pop. As for captions, I think it's all about being authentic and sharing a bit of yourself with your followers. People love to see the person behind the food!",
-      upvotes: 5,
-    ),
-  ];
+  // final List<Comment> comments = [
+  //   Comment(
+  //     username: "JohnnyBanana",
+  //     submittedTime: "3d",
+  //     content:
+  //         "I swear by natural lighting! It makes the food look so much more appetizing. I also like to play around with the angles to get the best shot. As for editing, I usually just adjust the brightness and contrast a bit to make the colors pop. And for captions, I think it's all about finding your own voice and being authentic. People can tell when you're being genuine, so just have fun with it!",
+  //     replies: [
+  //       Comment(
+  //         username: "dani",
+  //         submittedTime: "2d",
+  //         content:
+  //             "I'm all about the editing tricks! I use Lightroom to enhance the colors People love to connect with the person behind the food!",
+  //         replies: [
+  //           Comment(
+  //             username: "dani",
+  //             submittedTime: "2d",
+  //             content:
+  //                 "I swear by natural lighting! It makes the food look so much more appetizing. I also like to play around with the angles to get the best shot. As for editing, I usually just adjust the brightness and contrast a bit to make the colors pop. And for captions, I think it's all about finding your own voice and being authentic. People can tell when you're being genuine, so just have fun with it!",
+  //             upvotes: 12,
+  //           ),
+  //         ],
+  //         upvotes: 8,
+  //       ),
+  //       Comment(
+  //         submittedTime: "2d",
+  //         username: "EmilyEats",
+  //         content:
+  //             "I'm a big fan of natural lighting too! It just makes everything look so much better. I also like to use props to add some visual interest to my photos. And for editing, I usually just adjust the exposure and contrast a bit to make the colors pop. As for captions, I think it's all about being authentic and sharing a bit of yourself with your followers. People love to see the person behind the food!",
+  //         upvotes: 5,
+  //       ),
+  //     ],
+  //     upvotes: 12,
+  //   ),
+  //   Comment(
+  //     username: "SallySweets",
+  //     submittedTime: "2d",
+  //     content:
+  //         "I'm all about the editing tricks! I use Lightroom to enhance the colors People love to connect with the person behind the food!",
+  //     upvotes: 8,
+  //   ),
+  //   Comment(
+  //     submittedTime: "1d",
+  //     username: "EmilyEats",
+  //     content:
+  //         "I'm a big fan of natural lighting too! It just makes everything look so much better. I also like to use props to add some visual interest to my photos. And for editing, I usually just adjust the exposure and contrast a bit to make the colors pop. As for captions, I think it's all about being authentic and sharing a bit of yourself with your followers. People love to see the person behind the food!",
+  //     upvotes: 5,
+  //   ),
+  // ];
   @override
   void didChangeDependencies() {
     Map<String, dynamic> args =
@@ -187,7 +256,11 @@ class _CommentsScreenState extends State<CommentsScreen> {
       pushedPost = args['post'] as Post;
     } else {
       String postId = args['postId'] as String;
-      getPostFromId(postId);
+      if (firstTime) {
+        getPostFromId(postId);
+        firstTime = false;
+      }
+      getAllCommentsFromPostId();
     }
     super.didChangeDependencies();
   }
@@ -203,6 +276,39 @@ class _CommentsScreenState extends State<CommentsScreen> {
         });
       }
     });
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent - 500) {
+        _getMoreComments();
+      }
+    });
+  }
+
+  void _getMoreComments() async {
+    if (!isCommentLoading) {
+      setState(() {
+        isCommentLoading = true;
+      });
+      var response = await apiService.getCommentsFromPostId({
+        "postId": pushedPost.postId,
+        "page": pageNum.toString(),
+        "limit": 10.toString()
+      });
+      if (response['message'] == "The retrieved array is empty") {
+        pageNum--;
+      }
+      pageNum++;
+      print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+      print(pageNum);
+      List<dynamic> commentsData = response["comments"];
+      List<Comment> moreComments = parseComments(commentsData)
+          .where((comment) => comment.repliedId == null)
+          .toList();
+      setState(() {
+        comments.addAll(moreComments);
+        isCommentLoading = false;
+      });
+    }
   }
 
   @override
@@ -255,95 +361,106 @@ class _CommentsScreenState extends State<CommentsScreen> {
           ],
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  PostCard(
-                    post: pushedPost,
-                    isExpanded: true,
-                  ),
-                  Divider(
-                    color: Colors.black,
-                    thickness: ScreenSizeHandler.screenHeight * 0.015,
-                  ),
-                  //TODO: PUT COMMENTS HERE YA PETER
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: comments.length,
-                    itemBuilder: (context, index) {
-                      return CommentCard(comment: comments[index]);
-                    },
-                  ),
-                ],
+      body: ModalProgressHUD(
+        inAsyncCall: isLoading,
+        progressIndicator: const RedditLoadingIndicator(),
+        color: Colors.black,
+        opacity: 0.5,
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    PostCard(
+                      post: pushedPost,
+                      isExpanded: true,
+                    ),
+                    Divider(
+                      color: Colors.black,
+                      thickness: ScreenSizeHandler.screenHeight * 0.015,
+                    ),
+                    //TODO: PUT COMMENTS HERE YA PETER
+                    if (isCommentLoading) const RedditLoadingIndicator(),
+                    ListView.builder(
+                      controller: _scrollController,
+                      shrinkWrap: true,
+                      itemCount: comments.length,
+                      itemBuilder: (context, index) {
+                        return CommentCard(comment: comments[index]);
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          if (!commentFocusNode.hasFocus && pushedPost.isLocked == false)
-            Container(
-              height: ScreenSizeHandler.screenHeight * 0.08,
-              width: ScreenSizeHandler.screenWidth,
-              color: kPostColor,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: ScreenSizeHandler.screenHeight * 0.005),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          AddCommentScreen.id,
-                          arguments: {
-                            'postTitle': pushedPost.contentTitle,
-                            'postContent': pushedPost.content,
-                            'postType': pushedPost.type,
-                            'isReply': false
-                          },
-                        );
-                      },
-                      child: Container(
-                        height: ScreenSizeHandler.screenHeight * 0.04,
-                        color: kFillingColor,
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal:
-                                  ScreenSizeHandler.screenWidth * 0.025),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  commentController.text.isEmpty
-                                      ? "Add a comment"
-                                      : commentController.text,
-                                  style: TextStyle(
-                                      color: commentController.text.isEmpty
-                                          ? Colors.grey[600]
-                                          : Colors.white,
-                                      fontSize:
-                                          ScreenSizeHandler.bigger * 0.018),
+            if (!commentFocusNode.hasFocus && pushedPost.isLocked == false)
+              Container(
+                height: ScreenSizeHandler.screenHeight * 0.08,
+                width: ScreenSizeHandler.screenWidth,
+                color: kPostColor,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: ScreenSizeHandler.screenHeight * 0.005),
+                      child: GestureDetector(
+                        onTap: () async {
+                          await Navigator.pushNamed(
+                            context,
+                            AddCommentScreen.id,
+                            arguments: {
+                              'postTitle': pushedPost.contentTitle,
+                              'postContent': pushedPost.content,
+                              'postType': pushedPost.type,
+                              'isReply': false,
+                              'postId': pushedPost.postId,
+                              'parentCommentId': null,
+                            },
+                          );
+                          refreshComments = true;
+                          print('refreshing');
+                        },
+                        child: Container(
+                          height: ScreenSizeHandler.screenHeight * 0.04,
+                          color: kFillingColor,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal:
+                                    ScreenSizeHandler.screenWidth * 0.025),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    commentController.text.isEmpty
+                                        ? "Add a comment"
+                                        : commentController.text,
+                                    style: TextStyle(
+                                        color: commentController.text.isEmpty
+                                            ? Colors.grey[600]
+                                            : Colors.white,
+                                        fontSize:
+                                            ScreenSizeHandler.bigger * 0.018),
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  const Divider(
-                    height: 12,
-                    color: kFillingColor,
-                    thickness: 1,
-                  )
-                ],
+                    const Divider(
+                      height: 12,
+                      color: kFillingColor,
+                      thickness: 1,
+                    )
+                  ],
+                ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }

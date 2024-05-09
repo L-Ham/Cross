@@ -124,12 +124,14 @@ class PostSearchCardTile extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.only(
                         right: ScreenSizeHandler.screenWidth * 0.025),
-                    child: Image.network(
-                      postSearchCard.type == "image"
-                          ? postSearchCard.image.toString()
-                          : postSearchCard.video.toString(),
-                      width: ScreenSizeHandler.screenWidth * 0.15,
-                    ),
+                    child: postSearchCard.image != ""
+                        ? Image.network(
+                            postSearchCard.type == "image"
+                                ? postSearchCard.image.toString()
+                                : postSearchCard.video.toString(),
+                            width: ScreenSizeHandler.screenWidth * 0.15,
+                          )
+                        : null,
                   )
               ],
             ),

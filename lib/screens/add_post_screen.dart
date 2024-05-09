@@ -19,7 +19,7 @@ import 'package:video_player/video_player.dart';
 import '../components/add_post_components/add_post_tags_row.dart';
 import '../components/add_post_components/add_post_text_field.dart';
 import '../components/add_post_components/add_tags_bottom_sheet.dart';
-import '../components/add_post_components/change_post_type_bottom_sheet.dart';
+import '../components/add_post_components/red_button_bottom_sheet.dart';
 import '../components/add_post_components/icon_button_with_caption.dart';
 import '../components/add_post_components/image_edit_viewer.dart';
 import '../components/add_post_components/invalid_link_error.dart';
@@ -770,7 +770,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                                     final choice = await showModalBottomSheet(
                                       context: context,
                                       builder: (BuildContext context) {
-                                        return const ChangePostTypeBottomSheet();
+                                        return const RedButtonBottomSheet();
                                       },
                                     );
                                     if (choice == "continue") {
@@ -793,7 +793,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                                     final choice = await showModalBottomSheet(
                                       context: context,
                                       builder: (BuildContext context) {
-                                        return const ChangePostTypeBottomSheet();
+                                        return const RedButtonBottomSheet();
                                       },
                                     );
                                     if (choice == "continue") {
@@ -816,7 +816,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                                     final choice = await showModalBottomSheet(
                                       context: context,
                                       builder: (BuildContext context) {
-                                        return const ChangePostTypeBottomSheet();
+                                        return const RedButtonBottomSheet();
                                       },
                                     );
                                     if (choice == "continue") {
@@ -839,7 +839,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                                     final choice = await showModalBottomSheet(
                                       context: context,
                                       builder: (BuildContext context) {
-                                        return const ChangePostTypeBottomSheet();
+                                        return const RedButtonBottomSheet();
                                       },
                                     );
                                     if (choice == "continue") {

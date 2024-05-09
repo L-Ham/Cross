@@ -65,8 +65,10 @@ class _SearchingInSubredditState extends State<SearchingInSubreddit>
       "subredditName": subredditName,
     });
     searchComments(commentsResponse['comments'] as List<dynamic>);
-    // Map<String, dynamic> postsResponse = await apiService.searchPosts({
+    // Map<String, dynamic> postsResponse =
+    //     await apiService.searchPostsInSubreddit({
     //   "search": _searchController.text,
+    //   "subRedditName": subredditName,
     //   "relevance":
     //       sortValue == "Most relevant" ? true.toString() : false.toString(),
     //   "top": sortValue == "Top" ? true.toString() : false.toString(),

@@ -3,7 +3,7 @@ import 'package:video_player/video_player.dart';
 
 import '../../utilities/screen_size_handler.dart';
 import 'add_post_clear_button.dart';
-import 'change_post_type_bottom_sheet.dart';
+import 'red_button_bottom_sheet.dart';
 
 class VideoViewer extends StatelessWidget {
   const VideoViewer(
@@ -43,7 +43,7 @@ class VideoViewer extends StatelessWidget {
                         final choice = await showModalBottomSheet(
                           context: context,
                           builder: (BuildContext context) {
-                            return const ChangePostTypeBottomSheet(
+                            return const RedButtonBottomSheet(
                               bodyText:
                                   "Your video will be removed from your post. You can add another.",
                               titleText: "Discard Video?",
