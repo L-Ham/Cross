@@ -102,11 +102,11 @@ if (isAddSocialLinkPressed && !hasCalledAddSocialLink) {
     }
   }
 
-  void uploadAvatarImageAPI(XFile chosenImage) async {
+  void uploadAvatarImageAPI(File chosenImage) async {
     await apiService.uploadAvatarImage(File(chosenImage.path));
     getAvatarImage();
   }
-    void uploadBannerImageAPI(XFile chosenImage) async {
+    void uploadBannerImageAPI(File chosenImage) async {
     await apiService.uploadBannerImage(File(chosenImage.path));
     getBannerImage();
 
@@ -125,7 +125,7 @@ if (isAddSocialLinkPressed && !hasCalledAddSocialLink) {
     Map<String, dynamic> data = (await apiService.getBannerImage()) ?? {};
     if (mounted) {
       setState(() {
-        avatarImage = data['url'] as String;
+        bannerImage = data['url'] as String;
         isLoading = false;
       });
     }
@@ -824,7 +824,7 @@ if (isAddSocialLinkPressed && !hasCalledAddSocialLink) {
                           if (!isTextEmpty) {
                             focusNode.unfocus();
                             setState(() {
-                              addSocialLinkAPI(username, app, username);
+                              addSocialLinkAPI('https://www.$app.com/$username', app, username);
                               // socialLinks.add(username);
                               socialIcons.add(icon);
                               socialType.add('username');
@@ -970,12 +970,12 @@ if (isAddSocialLinkPressed && !hasCalledAddSocialLink) {
                       setState(() {
                         isText2Empty = value.isEmpty;
                         isEnabled = !isText2Empty && !isText1Empty;
-                        isWebsiteRegex = value.contains(website);
+                        isWebsiteRegex = value.contains(website) && value.contains('https://www.') && value.contains('.com');
                         displayName = value;
                       });
                     },
                     decoration: InputDecoration(
-                      labelText: 'https://website.com',
+                      labelText: 'https://www.website.com',
                       labelStyle: TextStyle(color: kHintTextColor),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
@@ -1108,7 +1108,7 @@ if (isAddSocialLinkPressed && !hasCalledAddSocialLink) {
     if (chosenImage != null) {
       setState(() {
         isLoading = true;
-        chosenImage = compressedImage;
+        chosenImage = XFile(compressedImage!.path);
         uploadAvatarImageAPI(compressedImage!);
       });
     }
@@ -1129,8 +1129,8 @@ if (isAddSocialLinkPressed && !hasCalledAddSocialLink) {
     if (chosenCoverImage != null) {
       setState(() {
         isLoading = true;
-        chosenCoverImage = compressedImage;
-        uploadBannerImageAPI(chosenCoverImage!);
+        chosenCoverImage = XFile(compressedImage!.path);
+        uploadBannerImageAPI(compressedImage!);
       });
     }
   }

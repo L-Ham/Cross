@@ -55,6 +55,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
   String sortType = "Hot";
   int page = 1;
   bool isFeedCalled = false;
+  bool isFeedFinished = false;
 
   int navigationBarIndex = 0;
   int oldIndex = 0;
@@ -153,23 +154,27 @@ class _SubredditScreenState extends State<SubredditScreen> {
     print('mmmmmmmmmmmmmmmmmmmmmmmmm');
   }
 
-  Future<void> getSubredditFeed(String sortType, int page) async {
+  Future<void> getSubredditFeed(String sortType, int page, int limit) async {
     Map<String, dynamic> data = (await apiService.getSubredditFeed(
-            subredditName, sortType, page.toString())) ??
+            subredditName, sortType, page.toString(), limit.toString())) ??
         {};
-    if (data['subredditPosts'] == null) {
-      return;
+    if (data.containsKey('subredditPosts')) {
+      List<dynamic> jsonPosts = data['subredditPosts'];
+      setState(() {
+        newPosts = jsonPosts.map((json) => Post.fromJson(json)).toList();
+        if (page == 1) {
+          feed = newPosts;
+        } else {
+          feed.addAll(newPosts);
+        }
+        isFeedCalled = true;
+      });
+      print("llllllllllllllllllllllllllllllllllllllllllllllllllllllllll");
+    } else {
+      setState(() {
+        isFeedFinished = true;
+      });
     }
-    List<dynamic> jsonPosts = data['subredditPosts'];
-    setState(() {
-      newPosts = jsonPosts.map((json) => Post.fromJson(json)).toList();
-      if (page == 1) {
-        feed = newPosts;
-      } else {
-        feed.addAll(newPosts);
-      }
-      isFeedCalled = true;
-    });
   }
 
   @override
@@ -178,9 +183,12 @@ class _SubredditScreenState extends State<SubredditScreen> {
     Future.delayed(Duration.zero, () {
       subredditName = ModalRoute.of(context)!.settings.arguments as String? ??
           'Dragon Oath';
+      print(TokenDecoder.token);
       getCommunityData();
       getCommunityModerators();
-      getSubredditFeed(sortType, page);
+      page = 1;
+      getSubredditFeed(sortType, page, 5);
+      page++;
     });
     _scrollController.addListener(_updateAppBarText);
     _scrollController.addListener(getNewPostsForFeed);
@@ -200,11 +208,14 @@ class _SubredditScreenState extends State<SubredditScreen> {
   }
 
   void getNewPostsForFeed() {
-    if (_scrollController.offset > ScreenSizeHandler.screenHeight * 0.11) {
+    double diff = _scrollController.position.maxScrollExtent -
+        _scrollController.position.pixels;
+
+    if (diff < 150 && diff > 100) {
       if (isFeedCalled) {
         setState(() {
-          getSubredditFeed(sortType, page);
           isFeedCalled = false;
+          getSubredditFeed(sortType, page, 2);
           page++;
           print(page);
           print("dddddddddddddddddddddddddddddddddddddddddddddddddddddddd");
@@ -954,7 +965,9 @@ class _SubredditScreenState extends State<SubredditScreen> {
                               setState(() {
                                 sortType = value;
                                 page = 1;
-                                getSubredditFeed(sortType, page);
+                                isFeedFinished = false;
+                                getSubredditFeed(sortType, page, 5);
+                                page++;
                               });
                             }
                           }

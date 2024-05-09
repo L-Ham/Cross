@@ -39,6 +39,10 @@ import 'package:reddit_bel_ham/components/home_page_components/trending_posts.da
 
 import '../components/messaging_components/inbox_bottom_sheet.dart';
 
+import 'package:reddit_bel_ham/screens/inside_chat_screen.dart';
+
+import 'package:reddit_bel_ham/screens/inside_chat_screen.dart';
+
 class HomePageScreen extends StatefulWidget {
   const HomePageScreen({super.key});
   static const id = 'home_page_screen';
@@ -225,6 +229,11 @@ class _HomePageScreenState extends State<HomePageScreen> {
     });
     if (index == 2) {
       Navigator.pushNamed(context, AddPostScreen.id);
+      setState(() {
+        navigationBarIndex = oldIndex;
+      });
+    } else if (index == 3) {
+      Navigator.pushNamed(context, InsideChattingScreen.id);
       setState(() {
         navigationBarIndex = oldIndex;
       });
@@ -498,25 +507,25 @@ class _HomePageScreenState extends State<HomePageScreen> {
                           }
                         }),
                         children: [
-                          SingleChildScrollView(
-                            child: ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: posts.length,
-                              itemBuilder: (context, index) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    Navigator.pushNamed(
-                                        context, CommentsScreen.id,
-                                        arguments: {"post": posts[index]});
-                                  },
-                                  child: PostCard(
-                                    post: posts[index],
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
+                          // SingleChildScrollView(
+                          //   child: ListView.builder(
+                          //     physics: const NeverScrollableScrollPhysics(),
+                          //     shrinkWrap: true,
+                          //     itemCount: posts.length,
+                          //     itemBuilder: (context, index) {
+                          //       return GestureDetector(
+                          //         onTap: () {
+                          //           Navigator.pushNamed(
+                          //               context, CommentsScreen.id,
+                          //               arguments: {"post": posts[index]});
+                          //         },
+                          //         child: PostCard(
+                          //           post: posts[index],
+                          //         ),
+                          //       );
+                          //     },
+                          //   ),
+                          // ),
                           SingleChildScrollView(
                             child: Column(
                               children: [
