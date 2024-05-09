@@ -9,6 +9,7 @@ import 'package:reddit_bel_ham/components/mod_tools_components/user_bottom_sheet
 import 'package:reddit_bel_ham/components/general_components/continue_button.dart';
 import 'package:reddit_bel_ham/screens/add_approved_user_screen.dart';
 import 'package:reddit_bel_ham/screens/new_message_screen.dart';
+import 'package:reddit_bel_ham/utilities/go_to_profile.dart';
 
 class ApprovedUsersScreen extends StatefulWidget {
   const ApprovedUsersScreen({super.key});
@@ -38,9 +39,11 @@ class _ApprovedUsersScreenState extends State<ApprovedUsersScreen> {
         await apiService.getApprovedUsers(communityName);
     if (response['message'] ==
         "Retrieved subreddit Approved Users Successfully") {
-      setState(() {
-        approvedUsers = response['approvedMembers'];
-      });
+      if (mounted) {
+        setState(() {
+          approvedUsers = response['approvedMembers'];
+        });
+      }
     } else {
       showDialog(
         context: context,
@@ -59,6 +62,46 @@ class _ApprovedUsersScreenState extends State<ApprovedUsersScreen> {
           );
         },
       );
+    }
+  }
+
+  void showSnackBar(String snackBarText) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(snackBarText),
+          backgroundColor: Colors.white,
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(
+            left: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+            right: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+            bottom: ScreenSizeHandler.screenHeight * 0.09,
+          ),
+          duration: const Duration(seconds: 3),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+        ),
+      );
+    });
+  }
+
+  Future<void> removeApprovedUser(String username) async {
+    Map<String, dynamic> response =
+        await apiService.removeApprovedUser(communityName, username);
+    if (response['message'] == "User removed successfully") {
+      if (mounted) {
+        setState(() {
+          showSnackBar('u/$username was removed as a contributer');
+        });
+      }
+      Navigator.pop(context);
+    } else {
+      if (mounted) {
+        setState(() {
+          showSnackBar('Error: ${response['message']}');
+        });
+      }
     }
   }
 
@@ -103,7 +146,9 @@ class _ApprovedUsersScreenState extends State<ApprovedUsersScreen> {
                             0.8,
                         color: Colors.grey,
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        goToProfile(context, username);
+                      },
                     ),
                     UserBottomSheetTile(
                       text: 'Remove',
@@ -114,7 +159,9 @@ class _ApprovedUsersScreenState extends State<ApprovedUsersScreen> {
                             0.8,
                         color: Colors.grey,
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        removeApprovedUser(username);
+                      },
                     ),
                     ContinueButton(
                       onPress: () {
@@ -162,7 +209,10 @@ class _ApprovedUsersScreenState extends State<ApprovedUsersScreen> {
               ),
               IconButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, AddApprovedUserScreen.id);
+                  Navigator.pushNamed(context, AddApprovedUserScreen.id,
+                      arguments: {
+                        "communityName": communityName,
+                      });
                 },
                 icon: const Icon(
                   Icons.add,
@@ -174,35 +224,68 @@ class _ApprovedUsersScreenState extends State<ApprovedUsersScreen> {
           )
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: approvedUsers.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: kSettingsHorizontalPaddingHeightRatio *
-                          ScreenSizeHandler.screenWidth,
+      body: approvedUsers.isEmpty
+          ? Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: ScreenSizeHandler.smaller * 0.1),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'No approved users',
+                      style: TextStyle(
+                        fontSize: ScreenSizeHandler.smaller * 0.06,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
-                    child: Column(
-                      children: [
-                        UserTile(
-                          titleText: 'u/${approvedUsers[index]['userName']}',
-                          subtitleText: '1 wk ago',
-                          onTap: () {},
-                          avatarLink: approvedUsers[index]['avatarImage'],
-                          onIconTap: () {
-                            userOptions(approvedUsers[index]['userName']);
-                          },
-                        ),
-                      ],
-                    ));
-              },
+                    Text(
+                      'Users approved for posting in the subreddit will appear here',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: ScreenSizeHandler.smaller * 0.04,
+                        fontWeight: FontWeight.normal,
+                        color: kHintTextColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: approvedUsers.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: kSettingsHorizontalPaddingHeightRatio *
+                                ScreenSizeHandler.screenWidth,
+                          ),
+                          child: Column(
+                            children: [
+                              UserTile(
+                                titleText:
+                                    'u/${approvedUsers[index]['userName']}',
+                                subtitleText: '1 wk ago',
+                                onTap: () {
+                                  goToProfile(context,
+                                      approvedUsers[index]['userName']);
+                                },
+                                avatarLink: approvedUsers[index]['avatarImage'],
+                                onIconTap: () {
+                                  userOptions(approvedUsers[index]['userName']);
+                                },
+                              ),
+                            ],
+                          ));
+                    },
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 }

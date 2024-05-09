@@ -58,7 +58,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
         //connectedEmailAddress = data['accountSettings']['email'];
         isConnectedToGoogle = data['accountSettings']['connectedToGoogle'];
         allowPeopleToFollowYou =
-            profileSettings['profileSettings']['allowFollow']?? false;
+            profileSettings['profileSettings']['allowFollow'] ?? true;
         isLoading = false;
         username = TokenDecoder.username;
         location = recievedLocation['location'];

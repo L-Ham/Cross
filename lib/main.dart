@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:reddit_bel_ham/components/home_page_components/mark_all_as_read.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/TrendingTopCommunitiesScreen.dart';
+import 'package:reddit_bel_ham/screens/activity_screen.dart';
 import 'package:reddit_bel_ham/screens/add_comment_screen.dart';
 import 'package:reddit_bel_ham/screens/add_post_screen.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -32,8 +33,9 @@ import 'package:reddit_bel_ham/screens/approved_users_screen.dart';
 import 'package:reddit_bel_ham/screens/add_approved_user_screen.dart';
 import 'package:reddit_bel_ham/screens/banned_users_screen.dart';
 import 'package:reddit_bel_ham/screens/ban_user_screen.dart';
-
-
+import 'package:reddit_bel_ham/screens/moderators_screen.dart';
+import 'package:reddit_bel_ham/screens/invite_moderator_screen.dart';
+import 'package:reddit_bel_ham/screens/ban_details_screen.dart';
 
 import 'package:reddit_bel_ham/utilities/subreddit_store.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
@@ -48,6 +50,9 @@ import 'screens/home_page_screen.dart';
 import 'screens/blocked_accounts.dart';
 import 'screens/subreddit_screen.dart';
 import 'screens/subreddit_search_screen.dart';
+import 'screens/inside_chat_screen.dart';
+import 'screens/chatting_screen.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:reddit_bel_ham/screens/inbox_messages.dart';
 import 'screens/profile_screen.dart';
@@ -209,18 +214,22 @@ class RedditByLham extends StatelessWidget {
         MessageReplyScreen.id: (context) => const MessageReplyScreen(),
         NewMessageScreen.id: (context) => const NewMessageScreen(),
         SearchingScreen.id: (context) => const SearchingScreen(),
-        SearchingInSubreddit.id:(context) => const SearchingInSubreddit(),
-        EditPostScreen.id:(context) => const EditPostScreen(),
-
+        SearchingInSubreddit.id: (context) => const SearchingInSubreddit(),
+        EditPostScreen.id: (context) => const EditPostScreen(),
         EditProfileScreen.id: (context) => const EditProfileScreen(),
-
         ModToolsScreen.id: (context) => const ModToolsScreen(),
-        DescribeCommunityScreen.id: (context) => const DescribeCommunityScreen(),
+        DescribeCommunityScreen.id: (context) =>
+            const DescribeCommunityScreen(),
         CommunityTypeScreen.id: (context) => const CommunityTypeScreen(),
         ApprovedUsersScreen.id: (context) => const ApprovedUsersScreen(),
         AddApprovedUserScreen.id: (context) => const AddApprovedUserScreen(),
         BannedUsersScreen.id: (context) => const BannedUsersScreen(),
         BanUserScreen.id: (context) => const BanUserScreen(),
+        ChattingScreen.id: (context) => ChattingScreen(),
+        ActivityScreen.id: (context) => const ActivityScreen(),
+        ModeratorsScreen.id: (context) => const ModeratorsScreen(),
+        InviteModeratorScreen.id: (context) => const InviteModeratorScreen(),
+        BanDetailsScreen.id: (context) => const BanDetailsScreen(),
       },
       initialRoute: (token == null)
           ? FirstScreen.id

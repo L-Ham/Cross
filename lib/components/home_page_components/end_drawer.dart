@@ -6,6 +6,7 @@ import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/home_page_screen.dart';
 import 'package:reddit_bel_ham/screens/settings_screen.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
+import 'package:reddit_bel_ham/utilities/go_to_profile.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 
 class EndDrawer extends StatefulWidget {
@@ -145,7 +146,11 @@ class _EndDrawerState extends State<EndDrawer> {
                         leadingIcon: Icons.account_circle_outlined),
                     titleText: "Profile",
                     onTap: () {
-                      // goToProfile(context,TokenDecoder.username);
+                      setState(() {
+                        // Navigator.pushNamed(context, 'profile_screen', arguments: {'isMyProfile': true,});
+                        goToProfile(context, TokenDecoder.username);
+                      // getProfileInfo();
+                      });
                     },
                   ),
                   SettingsTile(

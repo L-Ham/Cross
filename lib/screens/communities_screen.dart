@@ -40,7 +40,8 @@ class _CommunitiesScreenState extends State<CommunitiesScreen> {
     ApiService apiService = ApiService(TokenDecoder.token);
     var response = await apiService.getPopularCommunites();
     response = response['popularCommunities'];
-    if (mounted) {}
+    if (mounted) {
+
     setState(() {
       for (var community in response) {
         topCommunities.add(community['name']);
@@ -53,12 +54,16 @@ class _CommunitiesScreenState extends State<CommunitiesScreen> {
         topCommunitiesDesciptions.add(community['description']);
       }
     });
+    }
   }
 
   void getTrendingCommunities() async {
     ApiService apiService = ApiService(TokenDecoder.token);
     var response = await apiService.getTrendingCommunities();
     response = response['TrendingCommunities'];
+    if (mounted)
+    {
+
     setState(() {
       for (var community in response) {
         trendingCommunities.add(community['name']);
@@ -74,6 +79,7 @@ class _CommunitiesScreenState extends State<CommunitiesScreen> {
     setState(() {
       isLoading = false;
     });
+    }
   }
 
   @override

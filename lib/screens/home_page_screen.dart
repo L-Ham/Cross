@@ -16,6 +16,7 @@ import 'package:reddit_bel_ham/components/home_page_components/profile_icon_with
 import 'package:reddit_bel_ham/components/settings_components/settings_tile.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_leading_icon.dart';
 import 'package:reddit_bel_ham/components/subreddit_components/subreddit_ellipsis_bottom_sheet.dart';
+import 'package:reddit_bel_ham/components/subreddit_components/subreddit_ellipsis_bottom_sheet.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/add_post_screen.dart';
 import 'package:reddit_bel_ham/screens/comments_screen.dart';
@@ -40,6 +41,11 @@ import 'package:reddit_bel_ham/components/home_page_components/trending_posts.da
 
 import '../components/messaging_components/inbox_bottom_sheet.dart';
 
+import 'package:reddit_bel_ham/screens/inside_chat_screen.dart';
+
+import 'package:reddit_bel_ham/screens/inside_chat_screen.dart';
+import 'package:reddit_bel_ham/screens/chatting_screen.dart';
+
 class HomePageScreen extends StatefulWidget {
   const HomePageScreen({super.key});
   static const id = 'home_page_screen';
@@ -51,11 +57,18 @@ class HomePageScreen extends StatefulWidget {
 class _HomePageScreenState extends State<HomePageScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   PageController controller = PageController();
+  final ScrollController _scrollController = ScrollController();
   String username = "peter_ashraf";
   String onlineStatusString = "On";
   bool onlineStatusToggle = true;
   Color onlineStatusColor = kOnlineStatusColor;
   double onlineStatusWidth = ScreenSizeHandler.smaller * 0.5;
+  List<Post> feed = [];
+  List<Post> newPosts = [];
+  int page = 1;
+  String sortType = 'Hot';
+  bool isFeedCalled = false;
+  bool isFeedFinished = false;
 
   String avatarImageReturned = 'assets/images/reddit_logo.png';
   ApiService apiService = ApiService(TokenDecoder.token);
@@ -81,12 +94,34 @@ class _HomePageScreenState extends State<HomePageScreen> {
     super.initState();
     username = TokenDecoder.username;
     email = TokenDecoder.email;
+
+    print(TokenDecoder.token);
+
+    page = 1;
+    print('ZZZZZ ABL HOME FEEED');
+    getHomeFeed(sortType, page, 5);
+    page++;
+    print('ZZZZZ BA#D HOME FEEED');
+    _scrollController.addListener(getNewPostsForFeed);
   }
 
-  @override
-  void didChangeDependencies() {
-    getUserSelfInfo();
-    super.didChangeDependencies();
+  void getNewPostsForFeed() {
+    double diff = _scrollController.position.maxScrollExtent -
+        _scrollController.position.pixels;
+
+    if (diff < 250 && diff > 200) {
+      if (isFeedCalled) {
+        setState(() {
+          isFeedCalled = false;
+          if (!isFeedFinished) {
+            getHomeFeed(sortType, page, 2);
+            page++;
+            print(page);
+            print("dddddddddddddddddddddddddddddddddddddddddddddddddddddddd");
+          }
+        });
+      }
+    }
   }
 
   bool isRecentlyVisitedDrawerVisible = false;
@@ -94,6 +129,50 @@ class _HomePageScreenState extends State<HomePageScreen> {
     setState(() {
       isRecentlyVisitedDrawerVisible = value;
     });
+  }
+
+  Future<void> getHomeFeed(String sortType, int page, int limit) async {
+    Map<String, dynamic> data = (await apiService.getHomeFeed(
+            sortType, page.toString(), limit.toString())) ??
+        {};
+    if (data.containsKey('posts')) {
+      List<dynamic> jsonPosts = data['posts'];
+      setState(() {
+        newPosts = jsonPosts.map((json) => Post.fromJson(json)).toList();
+        if (page == 1) {
+          feed = newPosts;
+        } else {
+          feed.addAll(newPosts);
+        }
+        isFeedCalled = true;
+      });
+      print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+      print(feed);
+    } else {
+      setState(() {
+        isFeedFinished = true;
+      });
+    }
+  }
+
+  void getTrendingPosts() async {
+    var response = await apiService.getTrendingPosts();
+    response = response["trendingPosts"];
+    if (mounted) {
+      setState(() {
+        trending.clear();
+      });
+    }
+
+    for (var trendingPost in response) {
+      if (mounted) {
+        setState(() {
+          trending.add(TrendingPost(
+              contentTitle: trendingPost["title"],
+              image: trendingPost["image"]));
+        });
+      }
+    }
   }
 
   bool isMarkingAllAsRead = false;
@@ -224,33 +303,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
     //   video: "assets/videos/video.mp4",
     // )
   ];
-  final List<TrendingPost> trending = [
-    TrendingPost(
-      contentTitle: "Peter nayem 3al ard",
-      // content: "Check this page for more details",
-      image: const AssetImage('assets/images/peter_nayem.png'),
-    ),
-    TrendingPost(
-      contentTitle: "Habouba nayma",
-      // content: "Check this page for more details",
-      image: const AssetImage('assets/images/habouba_nayma.png'),
-    ),
-    TrendingPost(
-      contentTitle: "David nayem",
-      // content: "Check this page for more details",
-      image: const AssetImage('assets/images/david_nayem.png'),
-    ),
-    TrendingPost(
-      contentTitle: "Nardo nayma",
-      // content: "Check this page for more details",
-      image: const AssetImage('assets/images/nardo_nayma.png'),
-    ),
-    TrendingPost(
-      contentTitle: "Daniel haymawetna",
-      // content: "Check this page for more details",
-      image: const AssetImage('assets/images/daniel_haymawetna.png'),
-    )
-  ];
+  final List<TrendingPost> trending = [];
   void _onItemTapped(int index) {
     setState(() {
       oldIndex = navigationBarIndex;
@@ -262,6 +315,14 @@ class _HomePageScreenState extends State<HomePageScreen> {
         navigationBarIndex = oldIndex;
       });
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    getTrendingPosts();
+    getUserSelfInfo();
+
+    super.didChangeDependencies();
   }
 
   @override
@@ -350,10 +411,18 @@ class _HomePageScreenState extends State<HomePageScreen> {
                           selectedMenuItem = newValue!;
                         });
                         if (selectedMenuItem == "Home") {
+                          sortType = 'Hot';
+                          page = 1;
                           controller.jumpToPage(0);
+                          getHomeFeed(sortType, page, 5);
+                          page++;
                         }
                         if (selectedMenuItem == "Popular") {
+                          sortType = 'Rising';
+                          page = 1;
                           controller.jumpToPage(1);
+                          getHomeFeed(sortType, page, 5);
+                          page++;
                         }
                       }
                     },
@@ -499,20 +568,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
         body: navigationBarIndex == 1
             ? const CommunitiesScreen()
             : navigationBarIndex == 3
-                ? Padding(
-                    padding: EdgeInsets.only(
-                      left: ScreenSizeHandler.screenWidth * 0.1,
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Chat',
-                        style: TextStyle(
-                            fontSize: ScreenSizeHandler.smaller *
-                                kButtonSmallerFontRatio *
-                                1.1),
-                      ),
-                    ),
-                  )
+                ? const ChattingScreen()
                 : navigationBarIndex == 4
                     ? isMarkingAllAsRead
                         ? const Center(child: RedditLoadingIndicator())
@@ -528,10 +584,11 @@ class _HomePageScreenState extends State<HomePageScreen> {
                         }),
                         children: [
                           SingleChildScrollView(
+                            controller: _scrollController,
                             child: ListView.builder(
                               physics: const NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
-                              itemCount: posts.length,
+                              itemCount: feed.length,
                               itemBuilder: (context, index) {
                                 return GestureDetector(
                                   onTap: () {
@@ -543,7 +600,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                         });
                                   },
                                   child: PostCard(
-                                    post: posts[index],
+                                    post: feed[index],
                                   ),
                                 );
                               },
@@ -585,19 +642,21 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                 ),
                                 SingleChildScrollView(
                                   scrollDirection: Axis.horizontal,
-                                  child: Row(
-                                    children: trending
-                                        .map((post) =>
-                                            TrendingPostCard(post: post))
-                                        .toList(),
+                                  child: GestureDetector(
+                                    child: Row(
+                                      children: trending
+                                          .map((post) =>
+                                              TrendingPostCard(post: post))
+                                          .toList(),
+                                    ),
                                   ),
                                 ),
                                 ListView.builder(
                                   physics: const NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
-                                  itemCount: posts.length,
+                                  itemCount: feed.length,
                                   itemBuilder: (context, index) {
-                                    return PostCard(post: posts[index]);
+                                    return PostCard(post: feed[index]);
                                   },
                                 ),
                               ],
@@ -702,7 +761,6 @@ class _DrawerBottomSheetState extends State<DrawerBottomSheet> {
             ),
           )),
           isExitPressed
-          
               ? Semantics(
                   identifier: 'second_exit_app_button_identifier',
                   child: SettingsTile(

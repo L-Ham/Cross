@@ -7,32 +7,38 @@ import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'package:reddit_bel_ham/components/mod_tools_components/user_tile.dart';
 import 'package:reddit_bel_ham/components/mod_tools_components/user_bottom_sheet_tile.dart';
 import 'package:reddit_bel_ham/components/general_components/continue_button.dart';
-import 'package:reddit_bel_ham/screens/ban_user_screen.dart';
-import 'package:reddit_bel_ham/screens/ban_details_screen.dart';
-import '../utilities/time_ago.dart';
-import '../utilities/go_to_profile.dart';
+import 'package:reddit_bel_ham/screens/invite_moderator_screen.dart';
+import 'package:reddit_bel_ham/utilities/go_to_profile.dart';
 
-class BannedUsersScreen extends StatefulWidget {
-  const BannedUsersScreen({super.key});
+class ModeratorsScreen extends StatefulWidget {
+  const ModeratorsScreen({super.key});
 
-  static const String id = 'banned_users_screen';
+  static const String id = 'moderators_screen';
 
   @override
-  State<BannedUsersScreen> createState() => _BannedUsersScreenState();
+  State<ModeratorsScreen> createState() => _ModeratorsScreenState();
 }
 
-class _BannedUsersScreenState extends State<BannedUsersScreen> {
+class _ModeratorsScreenState extends State<ModeratorsScreen>
+    with SingleTickerProviderStateMixin {
   ApiService apiService = ApiService(TokenDecoder.token);
-  List<dynamic> bannedUsers = [];
   String communityName = '';
+  var moderators = [];
+  late TabController _tabController;
 
   @override
   void didChangeDependencies() {
     Map<String, dynamic> args =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     communityName = args["communityName"];
+    moderators = args["moderators"];
     super.didChangeDependencies();
-    getBannedUsers();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   void showSnackBar(String snackBarText) {
@@ -56,46 +62,16 @@ class _BannedUsersScreenState extends State<BannedUsersScreen> {
     });
   }
 
-  Future<void> getBannedUsers() async {
+  Future<void> removeModerator(String username) async {
     Map<String, dynamic> response =
-        await apiService.getBannedUsers(communityName);
-    if (response['message'] ==
-        "Retrieved subreddit Banned Users Successfully") {
+        await apiService.removeModerator(communityName, username);
+    if (response['message'] == "Moderator removed successfully") {
       if (mounted) {
         setState(() {
-          bannedUsers = response['bannedUsers'];
+          showSnackBar('u/ $username was removed as a moderator');
         });
       }
-    } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Error'),
-            content: Text('$communityName: ${response['message']}'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-    }
-  }
-
-  Future<void> unbanUser(String userName) async {
-    Map<String, dynamic> response =
-        await apiService.unbanUser(communityName, userName);
-    if (response['message'] == "User unbanned successfully") {
-      if (mounted) {
-        setState(() {
-          showSnackBar('u/$userName was unbanned');
-        });
-      }
+      getModerators();
       Navigator.pop(context);
     } else {
       if (mounted) {
@@ -106,7 +82,19 @@ class _BannedUsersScreenState extends State<BannedUsersScreen> {
     }
   }
 
-  void userOptions(String username, String ruleBroken, String modNote) async {
+  Future<void> getModerators() async {
+    Map<String, dynamic> data =
+        (await apiService.getCommunityModerators(communityName)) ?? {};
+    if (mounted) {
+      if (mounted) {
+        setState(() {
+          moderators = data['moderators'];
+        });
+      }
+    }
+  }
+
+  void userOptions(String username) async {
     await showModalBottomSheet(
         context: context,
         builder: (BuildContext bc) {
@@ -121,8 +109,9 @@ class _BannedUsersScreenState extends State<BannedUsersScreen> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                    if(username != TokenDecoder.username)
                     UserBottomSheetTile(
-                      text: 'See details',
+                      text: 'Edit Permissions',
                       icon: Icon(
                         FontAwesomeIcons.pen,
                         size: ScreenSizeHandler.bigger *
@@ -131,15 +120,8 @@ class _BannedUsersScreenState extends State<BannedUsersScreen> {
                         color: Colors.grey,
                       ),
                       onTap: () {
-                        Navigator.pushNamed(context, BanDetailsScreen.id,
-                            arguments: {
-                              'ruleBroken': ruleBroken,
-                              'modNote': modNote,
-                              'userName': username,
-                              'communityName': communityName,
-                            });
                       },
-                    ),
+                    ), 
                     UserBottomSheetTile(
                       text: 'View profile',
                       icon: Icon(
@@ -154,16 +136,16 @@ class _BannedUsersScreenState extends State<BannedUsersScreen> {
                       },
                     ),
                     UserBottomSheetTile(
-                      text: 'Unban',
+                      text: 'Remove',
                       icon: Icon(
-                        FontAwesomeIcons.hammer,
+                        FontAwesomeIcons.ban,
                         size: ScreenSizeHandler.bigger *
                             kSettingsLeadingIconRatio *
                             0.8,
                         color: Colors.grey,
                       ),
                       onTap: () {
-                        unbanUser(username);
+                        removeModerator(username);
                       },
                     ),
                     ContinueButton(
@@ -191,7 +173,7 @@ class _BannedUsersScreenState extends State<BannedUsersScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          'Banned users',
+          'Moderators',
           style: TextStyle(
             fontSize: ScreenSizeHandler.bigger * 0.025,
             fontWeight: FontWeight.bold,
@@ -212,8 +194,10 @@ class _BannedUsersScreenState extends State<BannedUsersScreen> {
               ),
               IconButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, BanUserScreen.id,
-                      arguments: {'communityName': communityName});
+                  Navigator.pushNamed(context, InviteModeratorScreen.id,
+                      arguments: {
+                        "communityName": communityName,
+                      });
                 },
                 icon: const Icon(
                   Icons.add,
@@ -225,7 +209,7 @@ class _BannedUsersScreenState extends State<BannedUsersScreen> {
           )
         ],
       ),
-      body: bannedUsers.isEmpty
+      body: moderators.isEmpty
           ? Padding(
               padding: EdgeInsets.symmetric(
                   horizontal: ScreenSizeHandler.smaller * 0.1),
@@ -234,7 +218,7 @@ class _BannedUsersScreenState extends State<BannedUsersScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'No banned users',
+                      'No moderators',
                       style: TextStyle(
                         fontSize: ScreenSizeHandler.smaller * 0.06,
                         fontWeight: FontWeight.bold,
@@ -242,7 +226,7 @@ class _BannedUsersScreenState extends State<BannedUsersScreen> {
                       ),
                     ),
                     Text(
-                      'Users banned from the subreddit will appear here',
+                      'Moderators of this subreddit will appear here',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: ScreenSizeHandler.smaller * 0.04,
@@ -256,41 +240,102 @@ class _BannedUsersScreenState extends State<BannedUsersScreen> {
             )
           : Column(
               children: [
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: TabBar(
+                    controller: _tabController,
+                    isScrollable: true,
+                    indicatorColor: Colors.white,
+                    labelColor: Colors.white,
+                    labelPadding: EdgeInsets.only(
+                        right: ScreenSizeHandler.smaller * 0.08),
+                    unselectedLabelColor: kHintTextColor,
+                    dividerHeight: 0.0,
+                    tabs: const [
+                      Tab(text: 'All'),
+                      Tab(text: 'Editable'),
+                    ],
+                  ),
+                ),
                 Expanded(
-                  child: ListView.builder(
-                    itemCount: bannedUsers.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: kSettingsHorizontalPaddingHeightRatio *
-                                ScreenSizeHandler.screenWidth,
-                          ),
-                          child: Column(
-                            children: [
-                              UserTile(
-                                titleText:
-                                    'u/${bannedUsers[index]['userName']}',
-                                subtitleText:
-                                    "${bannedUsers[index]['bannedAt'] != null ? timeAgo(bannedUsers[index]['bannedAt']) : '1 wk ago'} . ${bannedUsers[index]['reasonForBan'] ?? 'No reason provided'}",
-                                onTap: () {
-                                  goToProfile(
-                                      context, bannedUsers[index]['userName']);
-                                },
-                                avatarLink: bannedUsers[index]['avatarImage'],
-                                onIconTap: () {
-                                  userOptions(
-                                      bannedUsers[index]['userName'],
-                                      bannedUsers[index]['reasonForBan'],
-                                      bannedUsers[index]['modNote']);
-                                },
-                              ),
-                            ],
-                          ));
-                    },
+                  child: TabBarView(
+                    controller: _tabController,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: [
+                      ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: moderators.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal:
+                                  kSettingsHorizontalPaddingHeightRatio *
+                                      ScreenSizeHandler.screenWidth,
+                              vertical: 0.01 * ScreenSizeHandler.screenHeight,
+                            ),
+                            child: Column(
+                              children: [
+                                UserTile(
+                                  titleText:
+                                      'u/${moderators[index]['userName']}',
+                                  subtitleText: '1 wk ago . Full Permissions',
+                                  onTap: () {
+                                    goToProfile(
+                                        context, moderators[index]['userName']);
+                                  },
+                                  avatarLink: moderators[index]['avatarImage'],
+                                  withIcon: false,
+                                  onIconTap: () {},
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                      ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: moderators.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal:
+                                  kSettingsHorizontalPaddingHeightRatio *
+                                      ScreenSizeHandler.screenWidth,
+                              // vertical: 0.01 * ScreenSizeHandler.screenHeight,
+                            ),
+                            child: Column(
+                              children: [
+                                UserTile(
+                                  titleText:
+                                      'u/${moderators[index]['userName']}',
+                                  subtitleText: '1 wk ago . Full Permissions',
+                                  onTap: () {
+                                    goToProfile(
+                                        context, moderators[index]['userName']);
+                                  },
+                                  avatarLink: moderators[index]['avatarImage'],
+                                  onIconTap: () {
+                                    userOptions(moderators[index]['userName']);
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
     );
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 }

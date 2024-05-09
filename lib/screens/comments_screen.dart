@@ -53,7 +53,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
       value = value['post'];
       setState(() {
         String userId = value['user'];
-        String subredditId = value['subReddit'];
+        String subredditId = value['subReddit'] ?? "";
         bool approved = value['approved'];
         bool disapproved = value['disapproved'];
         bool isNSFW = value['isNSFW'];
@@ -152,15 +152,16 @@ class _CommentsScreenState extends State<CommentsScreen> {
       "limit": 10.toString()
     });
     List<dynamic> commentsData = response["comments"] ?? [];
-    if (mounted) {}
-    setState(() {
-      comments = parseComments(commentsData)
-          .where((comment) => comment.repliedId == null)
-          .toList();
-    });
-    setState(() {
-      isCommentLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        comments = parseComments(commentsData)
+            .where((comment) => comment.repliedId == null)
+            .toList();
+      });
+      setState(() {
+        isCommentLoading = false;
+      });
+    }
   }
 
   List<Comment> parseComments(List<dynamic> commentsData) {
@@ -175,11 +176,13 @@ class _CommentsScreenState extends State<CommentsScreen> {
       bool isUpvoted = comment['isUpvoted'];
       bool isDownvoted = comment['isDownvoted'];
       List<dynamic> repliesData = comment['replies'];
+      String userName = comment['userName'];
+      String userAvatar = comment['userAvatar']?? "assets/images/avatarDaniel.png";
       List<Comment> repliesList =
           repliesData.isNotEmpty ? parseComments(repliesData) : [];
 
       Comment commentData = Comment(
-          username: "peter",
+          username: userName,
           userId: userId,
           commentId: commentId,
           content: content,
@@ -189,6 +192,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
           isDownvoted: isDownvoted,
           repliedId: parentCommentId,
           postId: pushedPost.postId,
+          avatarImage: userAvatar,
           replies: repliesList);
 
       comments.add(commentData);
@@ -261,6 +265,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
     }
     if (args.containsKey('post')) {
       pushedPost = args['post'] as Post;
+      getAllCommentsFromPostId();
     } else {
       String postId = args['postId'] as String;
       if (firstTime) {

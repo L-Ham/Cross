@@ -17,40 +17,82 @@ class CommunityTypeScreen extends StatefulWidget {
 
 class _CommunityTypeScreenState extends State<CommunityTypeScreen> {
   ApiService apiService = ApiService(TokenDecoder.token);
-  bool isButtonEnabled = false;
   double sliderValue = 0;
   bool isSwitched = false;
+  String communityName = '';
+  String privacy = '';
+  String initialPrivacy = '';
+  bool initialAgeRestriction = false;
 
-  // Future<void> editCommunityDetails() async {
-  //   Map<String, dynamic> response = await apiService.editCommunityDetails(
-  //       subredditID,
-  //       membersNickname,
-  //       currentlyViewingNickname,
-  //       _controller.text);
-  //   if (response['message'] ==
-  //       "Subreddit's Community Details Edited Successfully") {
-  //     _focusNode.unfocus();
-  //     Navigator.pop(context);
-  //   } else {
-  //     showDialog(
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return AlertDialog(
-  //           title: const Text('Error'),
-  //           content: Text(response['message']),
-  //           actions: [
-  //             TextButton(
-  //               onPressed: () {
-  //                 Navigator.pop(context);
-  //               },
-  //               child: const Text('OK'),
-  //             ),
-  //           ],
-  //         );
-  //       },
-  //     );
-  //   }
-  // }
+  @override
+  void didChangeDependencies() {
+    Map<String, dynamic> args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    communityName = args["communityName"];
+    super.didChangeDependencies();
+    getCommunityType();
+  }
+
+  void showSnackBar(String snackBarText) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(snackBarText),
+          backgroundColor: Colors.white,
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(
+            left: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+            right: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+            bottom: ScreenSizeHandler.screenHeight * 0.09,
+          ),
+          duration: const Duration(seconds: 3),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+        ),
+      );
+    });
+  }
+
+  Future<void> getCommunityType() async {
+    Map<String, dynamic> response =
+        await apiService.getCommunityType(communityName);
+    if (response['message'] == "Retrieved subreddit type") {
+      if (mounted) {
+        setState(() {
+          initialPrivacy = response['privacy'];
+          initialAgeRestriction = response['ageRestriction'];
+          privacy = response['privacy'];
+          sliderValue = privacy == 'public'
+              ? 0
+              : privacy == 'restricted'
+                  ? 1
+                  : 2;
+          isSwitched = response['ageRestriction'];
+        });
+      }
+    } else {
+      if (mounted) {
+        setState(() {
+          showSnackBar('Error: ${response['message']}');
+        });
+      }
+    }
+  }
+
+  Future<void> changeCommunityType() async {
+    Map<String, dynamic> response = await apiService.changeCommunityType(
+        communityName, isSwitched, privacy);
+    if (response['message'] == "Subreddit type changed successfully") {
+      Navigator.pop(context);
+    } else {
+      if (mounted) {
+        setState(() {
+          showSnackBar('Error: ${response['message']}');
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,11 +104,11 @@ class _CommunityTypeScreenState extends State<CommunityTypeScreen> {
         actions: [
           SettingsSaveButton(
             onPressed: () {
-              //TODO: Implement the save button functionality
-              Navigator.pop(context);
+              changeCommunityType();
             },
             isUnderlined: false,
-            isEnabled: isButtonEnabled,
+            isEnabled: (initialPrivacy != privacy ||
+                initialAgeRestriction != isSwitched),
           )
         ],
       ),
@@ -117,8 +159,12 @@ class _CommunityTypeScreenState extends State<CommunityTypeScreen> {
                               value: sliderValue,
                               onChanged: (double val) {
                                 setState(() {
-                                  isButtonEnabled = true;
                                   sliderValue = val;
+                                  privacy = sliderValue == 0
+                                      ? 'public'
+                                      : sliderValue == 1
+                                          ? 'restricted'
+                                          : 'private';
                                 });
                               },
                               divisions: 2,
@@ -168,7 +214,7 @@ class _CommunityTypeScreenState extends State<CommunityTypeScreen> {
                             ),
                           ),
                           Padding(
-                            padding:  EdgeInsets.symmetric(
+                            padding: EdgeInsets.symmetric(
                               vertical: ScreenSizeHandler.screenHeight *
                                   kSettingsVerticalPaddingHeightRatio,
                             ),

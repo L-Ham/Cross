@@ -39,6 +39,7 @@ class CommentSearchCard {
   final int commentUpvotes;
   final String subredditImage;
   final String userName;
+  final String postComments;
 
   CommentSearchCard({
     required this.userId,
@@ -57,6 +58,7 @@ class CommentSearchCard {
     required this.actualCommentCreationDate,
     required this.subredditImage,
     required this.userName,
+    required this.postComments,
   });
 }
 
@@ -65,7 +67,7 @@ class PostSearchCard {
   final String title;
   final String text;
   final String type;
-  final String image;
+  final String? image;
   final String video;
   final String subredditName;
   final String subredditId;
@@ -177,10 +179,10 @@ class _SearchingScreenState extends State<SearchingScreen>
         subredditId: resultsList[i]["subRedditId"] ?? "f",
         avatarImageSubreddit: resultsList[i]["avatarImageSubReddit"] ??
             "assets/images/planet3.png",
-        createdAt: DateTime.parse(resultsList[i]["createdAt"]),
-        displayDate: timeAgo(resultsList[i]["createdAt"]),
+        createdAt: DateTime.parse(resultsList[i]["userCreatedAt"]),
+        displayDate: timeAgo(resultsList[i]["userCreatedAt"]),
         score: resultsList[i]["score"],
-        commentCount: resultsList[i]["commentCount"],
+        commentCount: resultsList[i]["postCommentCount"],
       );
       searchedPosts.add(postSearchCard);
       
@@ -247,6 +249,7 @@ class _SearchingScreenState extends State<SearchingScreen>
         subredditImage:
             resultsList[i]["subRedditAvatar"] ?? "assets/images/planet3.png",
         userName: resultsList[i]["userName"],
+        postComments: resultsList[i]["postCommentCount"].toString(),
       );
       print(commentSearchCard.commentCreationDate);
       searchedComments.add(commentSearchCard);

@@ -25,10 +25,10 @@ class _DescribeCommunityScreenState extends State<DescribeCommunityScreen> {
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   bool isButtonEnabled = false;
-  String subredditID = '', membersNickname = '', currentlyViewingNickname = '',
-   communityDescription = '';
-  // ValueNotifier<String> communityDescription = ValueNotifier<String>("");
-
+  String subredditID = '',
+      membersNickname = '',
+      currentlyViewingNickname = '',
+      communityDescription = '';
 
   @override
   void didChangeDependencies() {
@@ -37,12 +37,33 @@ class _DescribeCommunityScreenState extends State<DescribeCommunityScreen> {
     subredditID = args["subredditID"];
     membersNickname = args["membersNickname"];
     currentlyViewingNickname = args["currentlyViewingNickname"];
-    communityDescription = args["communityDescription"];  
-    
+    communityDescription = args["communityDescription"];
+
     _controller.text = communityDescription;
     _focusNode.requestFocus();
-    
+
     super.didChangeDependencies();
+  }
+
+  void showSnackBar(String snackBarText) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(snackBarText),
+          backgroundColor: Colors.white,
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(
+            left: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+            right: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+            bottom: ScreenSizeHandler.screenHeight * 0.09,
+          ),
+          duration: const Duration(seconds: 3),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+        ),
+      );
+    });
   }
 
   Future<void> editCommunityDetails() async {
@@ -53,26 +74,14 @@ class _DescribeCommunityScreenState extends State<DescribeCommunityScreen> {
         _controller.text);
     if (response['message'] ==
         "Subreddit's Community Details Edited Successfully") {
-      _focusNode.unfocus();    
+      _focusNode.unfocus();
       Navigator.pop(context, _controller.text);
     } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Error'),
-            content: Text(response['message']),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
+      if (mounted) {
+        setState(() {
+          showSnackBar('Error: ${response['message']}');
+        });
+      }
     }
   }
 
@@ -126,8 +135,8 @@ class _DescribeCommunityScreenState extends State<DescribeCommunityScreen> {
                     decoration: InputDecoration(
                       counterStyle: TextStyle(
                         color: kHintTextColor,
-                        fontSize: ScreenSizeHandler.smaller *
-                            kButtonSmallerFontRatio,
+                        fontSize:
+                            ScreenSizeHandler.smaller * kButtonSmallerFontRatio,
                         fontWeight: FontWeight.bold,
                       ),
                       hintText: _controller.text.isEmpty
@@ -140,8 +149,7 @@ class _DescribeCommunityScreenState extends State<DescribeCommunityScreen> {
                             0.85,
                       ),
                       focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Colors.white), 
+                        borderSide: BorderSide(color: Colors.white),
                       ),
                     ),
                     style: TextStyle(

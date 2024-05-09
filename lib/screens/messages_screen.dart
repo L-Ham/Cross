@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:reddit_bel_ham/components/empty_dog.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
 import 'package:reddit_bel_ham/utilities/time_ago.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
@@ -69,8 +70,31 @@ class _MessagesScreenState extends State<MessagesScreen> {
       repliesList.clear();
     });
 
-    List inboxResponse = await apiService.getAllInbox();
-    List sentResponse = await apiService.getAllSent();
+    var inboxResponse = await apiService.getAllInbox();
+    if (inboxResponse is Map) {
+      if (mounted) {
+        setState(() {
+          inboxResponse = [];
+        });
+      }
+    }
+    var sentResponse = await apiService.getAllSent();
+    if (sentResponse is Map) {
+      if (mounted) {
+        setState(() {
+          sentResponse = [];
+        });
+      }
+    }
+
+    if (sentResponse.isEmpty && inboxResponse.isEmpty) {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+      return;
+    }
 
     for (var sentMessage in sentResponse) {
       bool exists = false;
@@ -143,6 +167,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
         if (isLoading || markAllAsRead.isMarkingAllAsRead) {
           return const Align(
               alignment: Alignment.topCenter, child: RedditLoadingIndicator());
+        } else if (senders.isEmpty) {
+          return const Align(alignment: Alignment.topCenter, child: EmptyDog());
         } else {
           return RefreshIndicator(
             color: Colors.blue,
