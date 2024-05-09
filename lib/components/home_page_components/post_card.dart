@@ -202,8 +202,16 @@ class _PostCardState extends State<PostCard> {
                             ? NetworkImage(post.userAvatarImage)
                             : AssetImage(post.userAvatarImage)
                                 as ImageProvider<Object>?
-                        : AssetImage("assets/images/avatarDaniel.png")
-                            as ImageProvider<Object>?,
+                        : widget.isExpanded
+                            ? post.userAvatarImage !=
+                                    "assets/images/avatarDaniel.png"
+                                ? NetworkImage(post.userAvatarImage)
+                                : AssetImage(post.userAvatarImage)
+                                    as ImageProvider<Object>?
+                            : post.avatarImage != "assets/images/planet3.png"
+                                ? NetworkImage(post.avatarImage)
+                                : AssetImage(post.avatarImage)
+                                    as ImageProvider<Object>?,
                   ),
                 ),
                 SizedBox(width: ScreenSizeHandler.screenWidth * 0.02),
@@ -214,7 +222,9 @@ class _PostCardState extends State<PostCard> {
                       Text(
                         widget.isExpanded
                             ? "r/${post.subredditName}"
-                            : 'r/${post.subredditName} • ${post.createdFrom}',
+                            : widget.isCommunityFeed
+                                ? '${post.userName} • ${post.createdFrom}'
+                                : 'r/${post.subredditName} • ${post.createdFrom}',
                         style: TextStyle(
                             height: 0.8,
                             color: Colors.white,

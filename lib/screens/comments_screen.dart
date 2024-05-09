@@ -254,6 +254,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     if (args.containsKey('post')) {
       pushedPost = args['post'] as Post;
+      getAllCommentsFromPostId();
     } else {
       String postId = args['postId'] as String;
       if (firstTime) {
