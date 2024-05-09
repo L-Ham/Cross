@@ -14,6 +14,7 @@ import 'package:reddit_bel_ham/screens/communities_screen.dart';
 import 'package:reddit_bel_ham/screens/community_rules_screen.dart';
 import 'package:reddit_bel_ham/screens/connected_accounts_disconnect_screen.dart';
 import 'package:reddit_bel_ham/screens/edit_post_screen.dart';
+import 'package:reddit_bel_ham/screens/history_screen.dart';
 import 'package:reddit_bel_ham/screens/message_reply_screen.dart';
 import 'package:reddit_bel_ham/screens/messages_screen.dart';
 import 'package:reddit_bel_ham/screens/new_message_screen.dart';
@@ -229,13 +230,16 @@ class RedditByLham extends StatelessWidget {
         ActivityScreen.id: (context) => const ActivityScreen(),
         ModeratorsScreen.id: (context) => const ModeratorsScreen(),
         InviteModeratorScreen.id: (context) => const InviteModeratorScreen(),
+        HistoryScreen.id: (context) => const HistoryScreen(),
         BanDetailsScreen.id: (context) => const BanDetailsScreen(),
+
       },
       initialRoute: (token == null)
           ? FirstScreen.id
           : (JwtDecoder.isExpired(TokenDecoder.token))
               ? LoginScreen.id
               : HomePageScreen.id,
+      //  initialRoute: HistoryScreen.id
     );
   }
 }

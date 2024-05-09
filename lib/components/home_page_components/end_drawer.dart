@@ -3,11 +3,13 @@ import 'package:reddit_bel_ham/components/settings_components/settings_tile.dart
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_leading_icon.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_trailing_icon.dart';
 import 'package:reddit_bel_ham/constants.dart';
+import 'package:reddit_bel_ham/screens/history_screen.dart';
 import 'package:reddit_bel_ham/screens/home_page_screen.dart';
 import 'package:reddit_bel_ham/screens/settings_screen.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
 import 'package:reddit_bel_ham/utilities/go_to_profile.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
+
 
 class EndDrawer extends StatefulWidget {
   final String username;
@@ -34,6 +36,59 @@ class EndDrawer extends StatefulWidget {
 }
 
 class _EndDrawerState extends State<EndDrawer> {
+  ApiService apiService = ApiService(TokenDecoder.token);
+
+  String avatarImage = '';
+
+  String userName = '';
+
+  String postKarma = '';
+
+  String displayName = '';
+
+  String commentKarma = '';
+
+  String bannerImage = '';
+
+  String created = '';
+
+  bool isLoading = false;
+  List<Map<String, dynamic>> socialLinks = [];
+
+  @override
+  void initState() {
+    super.initState();
+    isLoading = false;
+  }
+
+  //   Future<void> getUserPersonalInfo() async {
+  //   Map<String, dynamic> data =
+  //       (await apiService.getUserSelfInfo()) ?? {};
+  //   avatarImage = data['user']['avatar'] ?? '';
+  //   userName = data['user']['username'] ?? '';
+  //   postKarma = data['user']['post_karma'].toString() ?? '0';
+  //   displayName = data['user']['display_name'] ?? widget.username;
+  //   commentKarma = data['user']['comment_karma'].toString() ?? '0';
+  //   bannerImage = data['user']['banner'] ?? '';
+  //   created = timeAgo(data['user']['created'].toString()) ?? '';
+  //   // isLoading=false;
+  //   Navigator.pushNamed(context, 'profile_screen', arguments: {'isMyProfile': true, 'username': userName, 'avatarImage': avatarImage, 'bannerImage': bannerImage, 'postKarma': postKarma, 'commentKarma': commentKarma, 'displayName': displayName, 'created': created});
+
+  // }
+  // Future<void> getSocialLinks() async {
+  //   Map<String, dynamic> data =
+  //       (await apiService.getProfileSettings()) ?? {};
+  //   socialLinks = (data['profileSettings']['socialLinks'] as List<dynamic>)
+  //   ?.map((item) => item as Map<String, dynamic>)
+  //   ?.toList() ?? [];
+  // }
+
+  // Future<void> getProfileInfo() async {
+  //   await getUserPersonalInfo();
+  //   await getSocialLinks();
+  //   Navigator.pushNamed(context, 'profile_screen', arguments: {'isMyProfile': true, 'username': userName, 'avatarImage': avatarImage, 'bannerImage': bannerImage, 'postKarma': postKarma, 'commentKarma': commentKarma, 'displayName': displayName, 'created': created, 'socialLinks': socialLinks});
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -149,7 +204,7 @@ class _EndDrawerState extends State<EndDrawer> {
                       setState(() {
                         // Navigator.pushNamed(context, 'profile_screen', arguments: {'isMyProfile': true,});
                         goToProfile(context, TokenDecoder.username);
-                      // getProfileInfo();
+                        // getProfileInfo();
                       });
                     },
                   ),
@@ -173,7 +228,9 @@ class _EndDrawerState extends State<EndDrawer> {
                     leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.access_time_rounded),
                     titleText: "History",
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(context, HistoryScreen.id);
+                    },
                   ),
                 ],
               ),
