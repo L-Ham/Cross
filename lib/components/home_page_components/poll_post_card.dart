@@ -12,12 +12,22 @@ class PollPost extends StatefulWidget {
 }
 
 class _PollPostState extends State<PollPost> {
-  List<String> options = ['Option 1', 'Option 2', 'Option 3'];
+  List<String> options = ["Option 1", "Option 2", "Option 3"];
   List<int> votes = [15, 20, 30];
   bool isSubmitted = false;
   int sum = 0;
-  String selectedOption = '';
+  String? selectedOption;
   
+  
+  @override
+  void initState() {
+    options = widget.post.options;
+    votes = widget.post.numOfVotersPerOption;
+    sum = votes.reduce((value, element) => value + element);
+    isSubmitted = widget.post.isPollVoted;
+    selectedOption = widget.post.selectedPollOption;
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -148,11 +158,11 @@ class _PollPostState extends State<PollPost> {
                 child: ElevatedButton(
                   onPressed: () {
                     setState(() {
-                      if(selectedOption == ''){
+                      if(selectedOption == null){
                         return;
                       }
                       isSubmitted = true;
-                      votes[options.indexOf(selectedOption)]++;
+                      votes[options.indexOf(selectedOption!)]++;
                       sum = votes.reduce((value, element) => value + element);
                     });
                   },

@@ -59,6 +59,7 @@ class ApiService {
         default:
           throw Exception('HTTP method $method not implemented');
       }
+      print(response.body);
       return jsonDecode(response.body);
     } catch (e) {
       debugPrint("Exception occured: $e");
@@ -546,6 +547,45 @@ class ApiService {
     return result;
   }
 
+  Future<dynamic> getTrendingPosts() async {
+    var result = await request('/post/trending',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+
+  Future<dynamic> searchPosts(Map<String, dynamic> body) async {
+    print("NOW");
+    var result = await request('/post/searchPosts',
+        headers: headerWithToken, method: 'GET', body: body);
+    print("FOCUS ON NEXT");
+    print(result);
+    return result;
+  }
+
+  Future<dynamic> searchComments(Map<String, dynamic> body) async {
+    print("NOW");
+    var result = await request('/comment/searchComments',
+        headers: headerWithToken, method: 'GET', body: body);
+    print("FOCUS ON NEXT");
+    print(result);
+    return result;
+  }
+
+  Future<dynamic> getPostFromId(String postId) async {
+    Map<String, dynamic> sentData;
+    sentData = {"postId": postId};
+    var result = await request('/post/get',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> getCommentsFromPostId(Map<String, dynamic> body) async {
+    Map<String, dynamic> sentData;
+    var result = await request('/post/comments',
+        headers: headerWithToken, method: 'GET', body: body);
+    return result;
+  }
+
   Future<dynamic> banUser(String subRedditName, String userName, String reason, String note, bool isPermanent) async {
     Map<String, dynamic> sentData;
     sentData = {
@@ -593,4 +633,95 @@ class ApiService {
   //     throw Exception('Failed to load saved posts: $e');
   //   }
   // }
+
+  Future<dynamic> markAsSpoiler(String postId) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "postId": postId,
+    };
+    var result = await request('/post/markAsSpoiler',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> unmarkAsSpoiler(String postId) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "postId": postId,
+    };
+    var result = await request('/post/unmarkAsSpoiler',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> markAsNSFW(String postId) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "postId": postId,
+    };
+    var result = await request('/post/markAsNSFW',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> unmarkAsNSFW(String postId) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "postId": postId,
+    };
+    var result = await request('/post/unmarkAsNSFW',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> lockPost(String postId) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "postId": postId,
+    };
+    var result = await request('/post/lockPost',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> unlockPost(String postId) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "postId": postId,
+    };
+    var result = await request('/post/unlockPost',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> approvePost(String postId) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "postId": postId,
+    };
+    var result = await request('/post/approvePost',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> getPostDetails(String postId) async {
+    Map<String, dynamic> sentData;
+    sentData = {"postId": postId};
+    var result = await request('/post/get',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> getSubredditFeed(String postId, String sortType) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "subredditName": postId,
+      "sort": sortType,
+      "page": 1,
+      "limit": 3
+    };
+    var result = await request('/subreddit/feed',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    return result;
+  }
 }

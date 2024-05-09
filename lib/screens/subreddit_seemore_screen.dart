@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -224,14 +226,22 @@ class _SubredditSeeMoreScreenState extends State<SubredditSeeMoreScreen> {
             expandedHeight: ScreenSizeHandler.screenHeight * 0.002,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
-                background:
-                    widget.subreddit.bannerImage != 'assets/images/blue2.jpg'
-                        ? Image.network(widget.subreddit.bannerImage,
-                            fit: BoxFit.cover)
-                        : Image.asset(
-                            'assets/images/blue2.jpg',
-                            fit: BoxFit.cover,
-                          )),
+              background: Stack(
+                fit: StackFit.expand,
+                children: [
+                  widget.subreddit.bannerImage != 'assets/images/blue2.jpg'
+                      ? Image.network(widget.subreddit.bannerImage,
+                          fit: BoxFit.cover)
+                      : Image.asset(
+                          'assets/images/blue2.jpg',
+                          fit: BoxFit.cover,
+                        ),
+                  Container(
+                    color: Colors.black.withOpacity(0.5),
+                  ),
+                ],
+              ),
+            ),
             actions: [
               if (!isModerator && widget.subreddit.isJoined)
                 SubredditNavbarIcon(

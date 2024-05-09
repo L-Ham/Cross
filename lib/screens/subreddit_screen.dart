@@ -1,8 +1,8 @@
+import 'dart:ui';
+import 'dart:convert'; // for jsonDecode
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:reddit_bel_ham/components/general_components/reddit_loading_indicator.dart';
-import 'package:reddit_bel_ham/screens/about_you_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
@@ -63,13 +63,16 @@ class _SubredditScreenState extends State<SubredditScreen> {
     }
   }
 
+
   bool isLoading = true;
 
   Future<void> getCommunityData() async {
     Map<String, dynamic> data =
         (await apiService.getCommunityDetails(subredditName)) ?? {};
+        (await apiService.getCommunityDetails(subredditName)) ?? {};
     if (mounted) {
       setState(() {
+        isLoading = false;
         isLoading = false;
       });
     }
@@ -94,6 +97,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
         _isJoined = data['communityDetails']['isMember'];
         isMuted = data['communityDetails']['isMuted'];
         subredditLink = "http://https://reddit-bylham.me/r/${subredditName}";
+        print(TokenDecoder.token);
       });
 
       subreddit = Subreddit(
@@ -167,7 +171,10 @@ class _SubredditScreenState extends State<SubredditScreen> {
 
   final List<Post> posts = [
     Post(
-      username: "r/DanielAdel",
+      userId: "1",
+      postId: "1",
+      createdFrom: "7d",
+      subredditName: "r/DanielAdel",
       contentTitle: "Foodie Instagrammers, Let's Talk Strategy!",
       content:
           "Hey fellow food lovers! I've been diving deep into the world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. It's incredible how much competition there is out there, right? I mean, everyone's snapping pics of their avocado toast and artisanal burgers. So, what are your go-to tips for making our food shots pop? Do you swear by natural lighting or do you have some secret editing tricks up your sleeve? And let's talk about captions too! I'm always struggling to strike the right balance between informative and witty. Let's share some wisdom and help each other elevate our Instagram game to the next level! 🍕✨",
@@ -179,56 +186,33 @@ class _SubredditScreenState extends State<SubredditScreen> {
       video: "",
     ),
     Post(
-      username: "r/AnnieBakesCakes",
-      contentTitle: "Curating Culinary Moments on Instagram: Tips & Tricks!",
-      content:
-          "Hey foodies! I've been pondering tellow fthe world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. It's incredible how much competition there is out there, right? I mean, everyone's snapping pics of their avocado toast and artisanal burgers. So, what are your go-to tips for making our food shots pop? Dood lovers! I've been diving deep into the world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. Ihe art of curating culinary moments on Instagram latelto learn from your experien",
-      upvotes: 20,
-      comments: 35,
-      type: "image",
-      image: [
-        "assets/images/elham_logo.png",
-        "assets/images/redditAvata2.png",
-        "assets/images/peter_nayem.png"
-      ],
-      link: "",
-      video: "",
-    ),
+        userId: "2",
+        postId: "3",
+        createdFrom: "1d",
+        subredditName: "r/AnnieBakesCakes",
+        contentTitle: "Curating Culinary Moments on Instagram: Tips & Tricks!",
+        content:
+            "Hey foodies! I've been pondering tellow fthe world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. It's incredible how much competition there is out there, right? I mean, everyone's snapping pics of their avocado toast and artisanal burgers. So, what are your go-to tips for making our food shots pop? Dood lovers! I've been diving deep into the world of food photography on Instagram lately, and I wanted to pick your brains about strategies for making our food posts stand out. Ihe art of curating culinary moments on Instagram latelto learn from your experien",
+        upvotes: 20,
+        comments: 35,
+        type: "text",
+        image: [],
+        link: "",
+        video: ''),
     Post(
-      username: "r/JohannaDoesYoga",
-      contentTitle:
-          "Is instagram buggering up for anyone else? I can't post anything",
-      content:
-          "Check this page for more detailsjrhgshejaiajirjsijijfiarjgiajeijgiohgijaerigjiorhgiqjarigvja",
-      upvotes: 90,
-      comments: 35,
-      type: "link",
-      image: [""],
-      link: "https://www.instagram.com",
-      video: "",
-    ),
-    Post(
-      username: "r/JohannaDoesYoga",
-      contentTitle: "instagram",
-      content: "Check this page for more details",
-      upvotes: 90,
-      comments: 35,
-      type: "poll",
-      image: [""],
-      link: "",
-      video: "",
-    ),
-    // Post(
-    //   username: "r/JohannaDoesYoga",
-    //   contentTitle: "this is a video",
-    //   content: "enjoy",
-    //   upvotes: 90,
-    //   comments: 35,
-    //   type: "video",
-    //   image: [""],
-    //   link: "",
-    //   video: "assets/videos/video.mp4",
-    // )
+        userId: "3",
+        postId: "4",
+        createdFrom: "2d",
+        subredditName: "r/JohannaDoesYoga",
+        contentTitle:
+            "Is instagram buggering up for anyone else? I can't post anything",
+        content: "Check this page for more details",
+        upvotes: 90,
+        comments: 35,
+        type: "text",
+        image: [],
+        link: "",
+        video: ''),
   ];
 
   @override
@@ -346,13 +330,27 @@ class _SubredditScreenState extends State<SubredditScreen> {
                 expandedHeight: ScreenSizeHandler.screenHeight * 0.002,
                 pinned: true,
                 flexibleSpace: FlexibleSpaceBar(
-                    background: subredditBannerImage !=
-                            'assets/images/blue2.jpg'
-                        ? Image.network(subredditBannerImage, fit: BoxFit.cover)
-                        : Image.asset(
-                            'assets/images/blue2.jpg',
-                            fit: BoxFit.cover,
-                          )),
+                  background: _showTitleInAppBar
+                      ? ImageFiltered(
+                          imageFilter:
+                              ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                          child:
+                              subredditBannerImage != 'assets/images/blue2.jpg'
+                                  ? Image.network(subredditBannerImage,
+                                      fit: BoxFit.cover)
+                                  : Image.asset(
+                                      'assets/images/blue2.jpg',
+                                      fit: BoxFit.cover,
+                                    ),
+                        )
+                      : subredditBannerImage != 'assets/images/blue2.jpg'
+                          ? Image.network(subredditBannerImage,
+                              fit: BoxFit.cover)
+                          : Image.asset(
+                              'assets/images/blue2.jpg',
+                              fit: BoxFit.cover,
+                            ),
+                ),
                 actions: [
                   if (isModerator && _showTitleInAppBar)
                     SizedBox(
@@ -453,7 +451,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
                       padding: EdgeInsets.only(
                           right: ScreenSizeHandler.bigger * 0.025),
                       child: ElevatedButton(
-                        onPressed: () {
+                      onPressed: () {
                           Navigator.pushNamed(
                             context,
                             ModToolsScreen.id,
@@ -540,43 +538,99 @@ class _SubredditScreenState extends State<SubredditScreen> {
                                       ScreenSizeHandler.screenHeight * 0.002,
                                 ),
                               if (!_isJoined && !isModerator)
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      '$subredditMembersCount $subredditMembersNickname',
-                                      style: TextStyle(
-                                        fontSize:
-                                            ScreenSizeHandler.bigger * 0.016,
-                                        color: kDisabledButtonColor,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                        width: ScreenSizeHandler.screenWidth *
-                                            0.03),
-                                    Row(
-                                      children: [
-                                        CircleAvatar(
-                                          radius:
-                                              ScreenSizeHandler.bigger * 0.005,
-                                          backgroundColor: kOnlineStatusColor,
-                                        ),
-                                        SizedBox(
-                                            width:
-                                                ScreenSizeHandler.screenWidth *
-                                                    0.01),
-                                        Text(
-                                          '$subredditOnlineCount $subredditOnlineNickname',
-                                          style: TextStyle(
-                                            fontSize: ScreenSizeHandler.bigger *
-                                                0.016,
-                                            color: kDisabledButtonColor,
+                                LayoutBuilder(
+                                  builder: (context, constraints) {
+                                    if (constraints.maxWidth >
+                                        ScreenSizeHandler.screenWidth * 0.6) {
+                                      return Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '$subredditMembersCount $subredditMembersNickname',
+                                            style: TextStyle(
+                                              fontSize:
+                                                  ScreenSizeHandler.bigger *
+                                                      0.016,
+                                              color: kDisabledButtonColor,
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
+                                          SizedBox(
+                                              width: ScreenSizeHandler
+                                                      .screenWidth *
+                                                  0.03),
+                                          Row(
+                                            children: [
+                                              CircleAvatar(
+                                                radius:
+                                                    ScreenSizeHandler.bigger *
+                                                        0.0043,
+                                                backgroundColor:
+                                                    kOnlineStatusColor,
+                                              ),
+                                              SizedBox(
+                                                  width: ScreenSizeHandler
+                                                          .screenWidth *
+                                                      0.007),
+                                              Text(
+                                                  '$subredditOnlineCount $subredditOnlineNickname',
+                                                  style: TextStyle(
+                                                    fontSize: ScreenSizeHandler
+                                                            .bigger *
+                                                        0.016,
+                                                    color: kDisabledButtonColor,
+                                                  ))
+                                            ],
+                                          ),
+                                        ],
+                                      );
+                                    } else {
+                                      return Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            '$subredditMembersCount $subredditMembersNickname',
+                                            style: TextStyle(
+                                              fontSize:
+                                                  ScreenSizeHandler.bigger *
+                                                      0.016,
+                                              color: kDisabledButtonColor,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                              width: ScreenSizeHandler
+                                                      .screenWidth *
+                                                  0.03),
+                                          Row(
+                                            children: [
+                                              CircleAvatar(
+                                                radius:
+                                                    ScreenSizeHandler.bigger *
+                                                        0.005,
+                                                backgroundColor:
+                                                    kOnlineStatusColor,
+                                              ),
+                                              SizedBox(
+                                                  width: ScreenSizeHandler
+                                                          .screenWidth *
+                                                      0.01),
+                                              Text(
+                                                '$subredditOnlineCount $subredditOnlineNickname',
+                                                style: TextStyle(
+                                                  fontSize:
+                                                      ScreenSizeHandler.bigger *
+                                                          0.016,
+                                                  color: kDisabledButtonColor,
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      );
+                                    }
+                                  },
                                 )
                               else
                                 Column(
@@ -621,21 +675,20 @@ class _SubredditScreenState extends State<SubredditScreen> {
                           if (_isJoined) Spacer() else Spacer(),
                           if (isModerator)
                             ElevatedButton(
-                              onPressed: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  ModToolsScreen.id,
-                                  arguments: {
-                                    "communityName": subredditName,
-                                    "subredditID": subredditID,
-                                    "membersNickname": subredditMembersNickname,
-                                    "currentlyViewingNickname":
-                                        subredditOnlineNickname,
-                                    "communityDescription":
-                                        subredditDescription,
-                                  },
-                                );
-                              },
+                               onPressed: () {
+                          Navigator.pushNamed(
+                            context,
+                            ModToolsScreen.id,
+                            arguments: {
+                              "communityName": subredditName,
+                              "subredditID": subredditID,
+                              "membersNickname": subredditMembersNickname,
+                              "currentlyViewingNickname":
+                                  subredditOnlineNickname,
+                              "communityDescription": subredditDescription,
+                            },
+                          );
+                        },
                               style: ButtonStyle(
                                 padding:
                                     MaterialStateProperty.all(EdgeInsets.zero),
@@ -796,14 +849,18 @@ class _SubredditScreenState extends State<SubredditScreen> {
                         height: ScreenSizeHandler.bigger * 0.015,
                       ),
                       Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            subredditDescription,
-                            textAlign: TextAlign.left,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: ScreenSizeHandler.bigger * 0.016,
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              subredditDescription,
+                              textAlign: TextAlign.left,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: ScreenSizeHandler.bigger * 0.016,
+                              ),
                             ),
                           ),
                           SizedBox(
@@ -871,6 +928,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
                 SliverToBoxAdapter(
                   child: PostCard(
                     post: post,
+                    isModertor: isModerator,
                   ),
                 ),
             ],
