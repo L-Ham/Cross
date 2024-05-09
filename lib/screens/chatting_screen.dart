@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:reddit_bel_ham/components/chat_screen_components/conversation_tile.dart';
 import 'package:reddit_bel_ham/components/chat_screen_components/discover_channel_card.dart';
+import 'package:reddit_bel_ham/components/empty_dog.dart';
 import 'package:reddit_bel_ham/screens/inside_chat_screen.dart';
 import 'package:reddit_bel_ham/screens/new_conversation_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
@@ -194,10 +195,10 @@ class _ChattingScreenState extends State<ChattingScreen> {
                             ),
                           ),
                         ),
-                      )
+                      ),
                     ],
                   )),
-                  Container(child: Text('Requests Content')),
+                  EmptyDog(),
                 ],
               ),
             ),

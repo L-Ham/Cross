@@ -1130,9 +1130,12 @@ class ApiService {
         body: {"usernameToFollow": username});
     return result;
   }
-    Future<dynamic> unfollowUser(String username) async {
+
+  Future<dynamic> unfollowUser(String username) async {
     var result = await request('/user/unfollowUser',
-        headers: headerWithToken, method: 'PATCH', body: {"usernameToUnfollow": username});
+        headers: headerWithToken,
+        method: 'PATCH',
+        body: {"usernameToUnfollow": username});
     return result;
   }
   Future<dynamic> getProfileFeed(
@@ -1160,4 +1163,52 @@ class ApiService {
     return result;
   }
 
+  Future<dynamic> addApprovedUser(String communityName, String userName) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "subredditName": communityName,
+      "userName": userName,
+    };
+    var result = await request('/subreddit/user/forcedApproved',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+  Future<dynamic> removeApprovedUser(String communityName, String userName) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "subredditName": communityName,
+      "userName": userName,
+    };
+    var result = await request('/subreddit/user/forcedRemove',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> changeCommunityType(String communityName, bool ageRestriction, String privacyType) async {
+    var result = await request(
+        '/subreddit/type?subredditName=$communityName&ageRestriction=$ageRestriction&privacyType=$privacyType',
+        headers: headerWithToken,
+        method: 'PATCH', body: {});
+    return result;
+  }
+
+  Future<dynamic> inviteModerator(String communityName, String username) async {
+        Map<String, dynamic> sentData;
+    sentData = {
+      "subredditName": communityName,
+      "invitedModeratorUsername": username,
+    };
+    var result = await request('/subreddit/mod/invite',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> getHomeFeed(
+      String sortType, String page, String limit) async {
+    Map<String, dynamic> sentData;
+    sentData = {"sort": sortType, "page": page, "limit": limit};
+    var response = await request('/post/homepage/feed',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    return response;
+  }
 }

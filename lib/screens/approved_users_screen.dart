@@ -62,6 +62,37 @@ class _ApprovedUsersScreenState extends State<ApprovedUsersScreen> {
     }
   }
 
+  void showSnackBar(String snackBarText) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(snackBarText),
+          backgroundColor: Colors.white,
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(
+            left: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+            right: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+            bottom: ScreenSizeHandler.screenHeight * 0.09,
+          ),
+          duration: const Duration(seconds: 3),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+        ),
+      );
+    });
+  }
+
+  Future<void> removeApprovedUser(String username) async {
+    Map<String, dynamic> response = await apiService.removeApprovedUser(communityName, username);
+    if (response['message'] == "User removed successfully") {
+      showSnackBar('u/$username was removed as a contributer');
+      Navigator.pop(context);
+    } else {
+      showSnackBar('Error: ${response['message']}');
+    }
+  }
+
   void userOptions(String username) async {
     await showModalBottomSheet(
         context: context,
@@ -114,7 +145,9 @@ class _ApprovedUsersScreenState extends State<ApprovedUsersScreen> {
                             0.8,
                         color: Colors.grey,
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        removeApprovedUser(username);
+                      },
                     ),
                     ContinueButton(
                       onPress: () {
@@ -162,7 +195,10 @@ class _ApprovedUsersScreenState extends State<ApprovedUsersScreen> {
               ),
               IconButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, AddApprovedUserScreen.id);
+                  Navigator.pushNamed(context, AddApprovedUserScreen.id,
+                      arguments: {
+                        "communityName": communityName,
+                      });
                 },
                 icon: const Icon(
                   Icons.add,

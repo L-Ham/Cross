@@ -37,7 +37,7 @@ class _BannedUsersScreenState extends State<BannedUsersScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Center(child: Text(snackBarText)),
+          content: Text(snackBarText),
           backgroundColor: Colors.white,
           behavior: SnackBarBehavior.floating,
           margin: EdgeInsets.only(
@@ -90,23 +90,24 @@ class _BannedUsersScreenState extends State<BannedUsersScreen> {
       showSnackBar('u/$userName was unbanned');
       Navigator.pop(context);
     } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Error'),
-            content: Text('${response['message']}'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
+      showSnackBar('Error: ${response['message']}');
+      // showDialog(
+      //   context: context,
+      //   builder: (BuildContext context) {
+      //     return AlertDialog(
+      //       title: const Text('Error'),
+      //       content: Text('${response['message']}'),
+      //       actions: [
+      //         TextButton(
+      //           onPressed: () {
+      //             Navigator.pop(context);
+      //           },
+      //           child: const Text('OK'),
+      //         ),
+      //       ],
+      //     );
+      //   },
+      // );
     }
   }
 
