@@ -480,6 +480,40 @@ class ApiService {
     return result;
   }
 
+  Future<dynamic> editCommunityDetails(
+      String subredditID,
+      String membersNickname,
+      String currentlyViewingNickname,
+      String communityDescription) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "subredditId": subredditID,
+      "membersNickname": membersNickname,
+      "currentlyViewingNickname": currentlyViewingNickname,
+      "communityDescription": communityDescription
+    };
+    var result = await request('/subreddit/communityDetails',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    // print(result);
+    return result;
+  }
+
+  Future<dynamic> getApprovedUsers(String communityName) async {
+    Map<String, dynamic> sentData;
+    sentData = {"subredditName": communityName};
+    var result = await request('/subreddit/users/approved',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> getBannedUsers(String communityName) async {
+    Map<String, dynamic> sentData;
+    sentData = {"subredditName": communityName};
+    var result = await request('/subreddit/users/banned',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    return result;
+  }
+
   Future<dynamic> getPopularCommunites() async {
     var result = await request('/subreddit/popularCommunity',
         headers: headerWithToken, method: 'GET');
@@ -548,6 +582,31 @@ class ApiService {
     Map<String, dynamic> sentData;
     var result = await request('/post/comments',
         headers: headerWithToken, method: 'GET', body: body);
+    return result;
+  }
+
+  Future<dynamic> banUser(String subRedditName, String userName, String reason, String note, bool isPermanent) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "subredditName": subRedditName,
+      "userName": userName,
+      "reasonForBan": reason,
+      "modNote": note,
+      "permanent": isPermanent,
+    };
+    var result = await request('/subreddit/user/ban',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> unbanUser(String subRedditName, String userName) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "subredditName": subRedditName,
+      "userName": userName,
+    };
+    var result = await request('/subreddit/user/unban',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
     return result;
   }
 
