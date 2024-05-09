@@ -587,23 +587,26 @@ class ApiService {
     var response;
     try {
       response = await request.send();
+      print(response); 
       // Handle the response...
     } on SocketException catch (e) {
+      print('hena');
       debugPrint('SocketException: $e');
       // Handle the exception...
     }
     if (response.statusCode == 200) {
       debugPrint('Media uploaded successfully');
     } else {
-      debugPrint(response.statusCode.toString());
-      String responseBody = await response.stream.bytesToString();
+      print(response.statusCode.toString());
+      // debugPrint(response.statusCode.toString());
+      // String responseBody = await response.stream.bytesToString();
 
       // Parse the string as JSON
-      Map<String, dynamic> responseJson = jsonDecode(responseBody);
+      // Map<String, dynamic> responseJson = jsonDecode(responseBody);
 
-      debugPrint(response.statusCode.toString());
-      debugPrint('Response body: $responseBody');
-      debugPrint('Media upload failed');
+      // debugPrint(response.statusCode.toString());
+      // debugPrint('Response body: $responseBody');
+      // debugPrint('Media upload failed');
     }
   }
     Future<void> uploadBannerImage(
@@ -623,6 +626,7 @@ class ApiService {
     var response;
     try {
       response = await request.send();
+      print(response);
       // Handle the response...
     } on SocketException catch (e) {
       debugPrint('SocketException: $e');
@@ -631,15 +635,15 @@ class ApiService {
     if (response.statusCode == 200) {
       debugPrint('Media uploaded successfully');
     } else {
-      debugPrint(response.statusCode.toString());
-      String responseBody = await response.stream.bytesToString();
+      // debugPrint(response.statusCode.toString());
+      // String responseBody = await response.stream.bytesToString();
 
       // Parse the string as JSON
-      Map<String, dynamic> responseJson = jsonDecode(responseBody);
+      // Map<String, dynamic> responseJson = jsonDecode(responseBody);
 
-      debugPrint(response.statusCode.toString());
-      debugPrint('Response body: $responseBody');
-      debugPrint('Media upload failed');
+      // debugPrint(response.statusCode.toString());
+      // debugPrint('Response body: $responseBody');
+      // debugPrint('Media upload failed');
     }
   }
     Future<dynamic> editProfileInfo(displayName,about,contentVisibility, communitiesVisibility) async {
@@ -832,6 +836,16 @@ class ApiService {
     };
     var result = await request('/subreddit/feed',
         headers: headerWithToken, method: 'GET', body: sentData);
+    return result;
+  }
+    Future<dynamic> getAvatarImage() async {
+    var result = await request('/user/avatarImage',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+  Future<dynamic> getBannerImage() async {
+    var result = await request('/user/banner',
+        headers: headerWithToken, method: 'GET');
     return result;
   }
 }
