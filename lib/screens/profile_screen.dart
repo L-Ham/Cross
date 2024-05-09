@@ -407,7 +407,8 @@ class _ProfileScreenState extends State<ProfileScreen>
       Navigator.pushNamed(context, AddPostScreen.id, arguments: {
         'subredditName': username,
         'subredditImage': avatarImage,
-        'subredditId': null
+        'subredditId': null,
+        "isProfile": true
       });
       setState(() {
         navigationBarIndex = oldIndex;
@@ -946,6 +947,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                       arguments: {
                                                         "post": post
                                                       });
+
                                                 },
                                                 child: PostCard(
                                                   post: post,

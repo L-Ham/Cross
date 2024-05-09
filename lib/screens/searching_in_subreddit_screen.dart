@@ -125,10 +125,10 @@ class _SearchingInSubredditState extends State<SearchingInSubreddit>
         subredditId: resultsList[i]["subRedditId"] ?? "f",
         avatarImageSubreddit: resultsList[i]["avatarImageSubReddit"] ??
             "assets/images/planet3.png",
-        createdAt: DateTime.parse(resultsList[i]["createdAt"]),
-        displayDate: timeAgo(resultsList[i]["createdAt"]),
+        createdAt: DateTime.parse(resultsList[i]["userCreatedAt"]),
+        displayDate: timeAgo(resultsList[i]["userCreatedAt"]),
         score: resultsList[i]["score"],
-        commentCount: resultsList[i]["commentCount"],
+        commentCount: resultsList[i]["postCommentCount"],
       );
       searchedPosts.add(postSearchCard);
     }
@@ -194,6 +194,7 @@ class _SearchingInSubredditState extends State<SearchingInSubreddit>
         subredditImage:
             resultsList[i]["subRedditAvatar"] ?? "assets/images/planet3.png",
         userName: resultsList[i]["userName"],
+        postComments: resultsList[i]["postCommentCount"].toString(),
       );
       print(commentSearchCard.commentCreationDate);
       searchedComments.add(commentSearchCard);
