@@ -98,9 +98,10 @@ class _ActivityScreenState extends State<ActivityScreen> {
     }).toList();
     if (mounted){
 
-    setState(() {
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 

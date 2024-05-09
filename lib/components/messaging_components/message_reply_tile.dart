@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 
 import '../../constants.dart';
 import '../general_components/linkified_text.dart';
 
 class MessageReplyTile extends StatefulWidget {
-  const MessageReplyTile({
-    super.key,
-    required this.userName,
-    required this.publishedFrom,
-    required this.message,
-  });
+  const MessageReplyTile(
+      {super.key,
+      required this.userName,
+      required this.publishedFrom,
+      required this.message,
+      required this.subject});
 
   final String userName;
   final String publishedFrom;
   final String message;
+  final String subject;
 
   @override
   State<MessageReplyTile> createState() => _MessageReplyTileState();
@@ -67,15 +69,32 @@ class _MessageReplyTileState extends State<MessageReplyTile> {
               Padding(
                 padding: EdgeInsets.only(
                     top: ScreenSizeHandler.screenHeight * 0.012),
-                child: linkifiedText(
-                  widget.message,
-                  TextStyle(
-                      color: Colors.white,
-                      fontSize: ScreenSizeHandler.bigger * 0.017),
-                  TextStyle(
-                      color: Colors.blue,
-                      fontSize: ScreenSizeHandler.bigger * 0.017),
-                ),
+                child: widget.subject ==
+                        "You have been invited to moderate a subreddit"
+                    ? GestureDetector(
+                        onTap: () {
+                          print('bala7');
+                        },
+                        child: Html(
+                          data: widget.message,
+                          style: {
+                            "body": Style(
+                              color: Colors.white,
+                              fontSize:
+                                  FontSize(ScreenSizeHandler.bigger * 0.017),
+                            ),
+                          },
+                        ),
+                      )
+                    : linkifiedText(
+                        widget.message,
+                        TextStyle(
+                            color: Colors.white,
+                            fontSize: ScreenSizeHandler.bigger * 0.017),
+                        TextStyle(
+                            color: Colors.blue,
+                            fontSize: ScreenSizeHandler.bigger * 0.017),
+                      ),
               )
           ],
         ),
