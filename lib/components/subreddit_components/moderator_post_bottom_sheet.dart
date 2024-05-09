@@ -12,6 +12,7 @@ import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 
 class ModeratorPostBottomSheet extends StatelessWidget {
   final Post post;
+  bool isChanged = false;
   ModeratorPostBottomSheet({required this.post});
 
   ApiService apiService = ApiService(TokenDecoder.token);
@@ -44,6 +45,10 @@ class ModeratorPostBottomSheet extends StatelessWidget {
     await apiService.approvePost(postId);
   }
 
+  Future<void> removePost(String postId) async {
+    await apiService.removePost(postId);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -57,36 +62,62 @@ class ModeratorPostBottomSheet extends StatelessWidget {
               padding: EdgeInsets.symmetric(
                   vertical: ScreenSizeHandler.screenHeight * 0.0055),
               child: GestureDetector(
-                onTap: () {},
-                child: const SettingsTile(
+                onTap: () {
+                  if (post.isSpoiler) {
+                    unmarkAsSpoiler(post.postId);
+                  } else {
+                    markAsSpoiler(post.postId);
+                  }
+                  isChanged = true;
+                  Navigator.pop(context, isChanged);
+                },
+                child: SettingsTile(
                     leadingIcon: SettingsTileLeadingIcon(
                       leadingIcon: FontAwesomeIcons.circleExclamation,
                     ),
-                    titleText: "Mark spoiler"),
+                    titleText:
+                        post.isSpoiler ? "Unmark spoiler" : "Mark spoiler"),
               ),
             ),
             GestureDetector(
-              onTap: () {},
+              onTap: () async {
+                if (post.isLocked) {
+                  await unlockPost(post.postId);
+                } else {
+                  await lockPost(post.postId);
+                }
+                isChanged = true;
+                Navigator.pop(context, isChanged);
+              },
               child: Padding(
                 padding: EdgeInsets.symmetric(
                     vertical: ScreenSizeHandler.screenHeight * 0.0055),
-                child: const SettingsTile(
+                child: SettingsTile(
                     leadingIcon: SettingsTileLeadingIcon(
                       leadingIcon: FontAwesomeIcons.lock,
                     ),
-                    titleText: "Lock comments"),
+                    titleText:
+                        post.isLocked ? "Unlock comments" : "Lock comments"),
               ),
             ),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                if (post.isNSFW) {
+                  unmarkAsNSFW(post.postId);
+                } else {
+                  markAsNSFW(post.postId);
+                }
+                isChanged = true;
+                Navigator.pop(context, isChanged);
+              },
               child: Padding(
                 padding: EdgeInsets.symmetric(
                     vertical: ScreenSizeHandler.screenHeight * 0.0055),
-                child: const SettingsTile(
+                child: SettingsTile(
                     leadingIcon: SettingsTileLeadingIcon(
                       leadingIcon: Icons.eighteen_up_rating_outlined,
                     ),
-                    titleText: "Mark NSFW"),
+                    titleText: post.isNSFW ? "Unmark NSFW" : "Mark NSFW"),
               ),
             ),
             GestureDetector(
@@ -94,7 +125,7 @@ class ModeratorPostBottomSheet extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.symmetric(
                     vertical: ScreenSizeHandler.screenHeight * 0.0055),
-                child: const SettingsTile(
+                child: SettingsTile(
                     leadingIcon: SettingsTileLeadingIcon(
                       leadingIcon: FontAwesomeIcons.trash,
                     ),
@@ -102,11 +133,15 @@ class ModeratorPostBottomSheet extends StatelessWidget {
               ),
             ),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                removePost(post.postId);
+                isChanged = false;
+                Navigator.pop(context, isChanged);
+              },
               child: Padding(
                 padding: EdgeInsets.symmetric(
                     vertical: ScreenSizeHandler.screenHeight * 0.0055),
-                child: const SettingsTile(
+                child: SettingsTile(
                     leadingIcon: SettingsTileLeadingIcon(
                       leadingIcon: FontAwesomeIcons.calendarXmark,
                     ),
@@ -114,15 +149,41 @@ class ModeratorPostBottomSheet extends StatelessWidget {
               ),
             ),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                if (!post.isApproved) {
+                  approvePosts(post.postId);
+                }
+                isChanged = true;
+                Navigator.pop(context, isChanged);
+              },
               child: Padding(
-                padding: EdgeInsets.symmetric(
-                    vertical: ScreenSizeHandler.screenHeight * 0.0055),
-                child: const SettingsTile(
-                    leadingIcon: SettingsTileLeadingIcon(
-                      leadingIcon: Icons.check,
+                padding: EdgeInsets.only(
+                    left: ScreenSizeHandler.screenWidth * 0.045,
+                    bottom: ScreenSizeHandler.screenHeight * 0.015,
+                    top: ScreenSizeHandler.screenHeight * 0.008),
+                child: Row(
+                  children: [
+                    Icon(FontAwesomeIcons.check,
+                        color: post.isApproved
+                            ? const Color.fromARGB(255, 56, 55, 55)
+                            : Colors.grey,
+                        size: ScreenSizeHandler.bigger * 0.025),
+                    SizedBox(
+                      width: ScreenSizeHandler.screenWidth * 0.045,
                     ),
-                    titleText: "Approve post"),
+                    Text(
+                      post.isApproved ? "Approved" : "Approve",
+                      style: TextStyle(
+                        color: post.isApproved
+                            ? const Color.fromARGB(255, 56, 55, 55)
+                            : Colors.white,
+                        fontSize:
+                            ScreenSizeHandler.bigger * kSettingsTileTextRatio,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             GestureDetector(

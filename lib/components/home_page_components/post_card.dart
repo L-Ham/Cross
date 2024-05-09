@@ -12,7 +12,7 @@ import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:reddit_bel_ham/components/subreddit_components/moderator_post_bottom_sheet.dart';
 import 'package:reddit_bel_ham/utilities/time_ago.dart';
-
+import 'package:reddit_bel_ham/services/api_service.dart';
 import 'package:reddit_bel_ham/utilities/post_voting.dart';
 
 class Post {
@@ -165,17 +165,14 @@ class PostCard extends StatefulWidget {
 }
 
 class _PostCardState extends State<PostCard> {
-  @override
-  Widget build(BuildContext context) {
-    final isTypeImage = widget.post.type == 'image';
-    final isTypeText = widget.post.type == 'text';
-    final isTypeLink = widget.post.type == 'link';
-    final isTypePoll = widget.post.type == 'poll';
-    final isOwner = widget.post.subredditName == 'r/DanielAdel';
-    final isTypeVideo = widget.post.type == 'video';
-    return buildPostCard(widget.post, isTypeImage, isTypeText, isTypeLink,
-        isOwner, isTypePoll, context);
-  }
+  late Post post;
+  bool isTypeImage = false;
+  bool isTypeText = false;
+  bool isTypeLink = false;
+  bool isTypePoll = false;
+  bool isTypeVideo = false;
+  bool isSpamed = false;
+  ApiService apiService = ApiService(TokenDecoder.token);
 
   Future<void> _launchURL(String url) async {
     if (!await launchUrl(Uri.parse(url))) {
@@ -183,8 +180,30 @@ class _PostCardState extends State<PostCard> {
     }
   }
 
-  Widget buildPostCard(Post post, bool isTypeImage, bool isTypeText,
-      bool isTypePoll, bool isTypeLink, bool isOwner, BuildContext context) {
+  Future<void> getPostById(String postId) async {
+    Map<String, dynamic> data = (await apiService.getPostFromId(postId)) ?? {};
+    if (data.containsKey('post')) {
+      dynamic json = data['post'];
+      setState(() {
+        post = Post.fromJson(json);
+        print(post.isLocked);
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    post = widget.post;
+    isTypeImage = widget.post.type == 'image';
+    isTypeText = widget.post.type == 'text';
+    isTypeLink = widget.post.type == 'link';
+    isTypePoll = widget.post.type == 'poll';
+    isTypeVideo = widget.post.type == 'video';
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       color: kPostColor,
       child: SingleChildScrollView(
@@ -263,6 +282,16 @@ class _PostCardState extends State<PostCard> {
                     child: Icon(
                       FontAwesomeIcons.lock,
                       color: Colors.amber[400],
+                      size: ScreenSizeHandler.screenWidth * 0.03,
+                    ),
+                  ),
+                if (isSpamed && widget.isModertor)
+                  Padding(
+                    padding: EdgeInsets.only(
+                        right: ScreenSizeHandler.screenWidth * 0.02),
+                    child: Icon(
+                      FontAwesomeIcons.calendarXmark,
+                      color: Colors.red,
                       size: ScreenSizeHandler.screenWidth * 0.03,
                     ),
                   ),
@@ -667,7 +696,19 @@ class _PostCardState extends State<PostCard> {
                           context: context,
                           builder: (BuildContext context) =>
                               ModeratorPostBottomSheet(post: post),
-                        );
+                        ).then((value) {
+                          if (value != null) {
+                            if (value) {
+                              setState(() {
+                                getPostById(post.postId);
+                              });
+                            } else {
+                              setState(() {
+                                isSpamed = true;
+                              });
+                            }
+                          }
+                        });
                       },
                       child: Padding(
                         padding: EdgeInsets.only(

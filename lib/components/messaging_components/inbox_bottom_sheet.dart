@@ -12,7 +12,6 @@ class InboxBottomSheet extends StatelessWidget {
     super.key,
   });
 
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -29,7 +28,7 @@ class InboxBottomSheet extends StatelessWidget {
                   Navigator.pushNamed(context, NewMessageScreen.id,
                       arguments: {"isReply": false});
                 },
-                child: const SettingsTile(
+                child: SettingsTile(
                     leadingIcon: SettingsTileLeadingIcon(
                       leadingIcon: Icons.edit_outlined,
                     ),
@@ -43,7 +42,7 @@ class InboxBottomSheet extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.symmetric(
                     vertical: ScreenSizeHandler.screenHeight * 0.004),
-                child: const SettingsTile(
+                child: SettingsTile(
                     leadingIcon: SettingsTileLeadingIcon(
                       leadingIcon: Icons.mark_email_read_outlined,
                     ),
@@ -58,7 +57,7 @@ class InboxBottomSheet extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.symmetric(
                     vertical: ScreenSizeHandler.screenHeight * 0.004),
-                child: const SettingsTile(
+                child: SettingsTile(
                     leadingIcon: SettingsTileLeadingIcon(
                       leadingIcon: Icons.settings_outlined,
                     ),

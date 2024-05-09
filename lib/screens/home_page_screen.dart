@@ -507,25 +507,25 @@ class _HomePageScreenState extends State<HomePageScreen> {
                           }
                         }),
                         children: [
-                          // SingleChildScrollView(
-                          //   child: ListView.builder(
-                          //     physics: const NeverScrollableScrollPhysics(),
-                          //     shrinkWrap: true,
-                          //     itemCount: posts.length,
-                          //     itemBuilder: (context, index) {
-                          //       return GestureDetector(
-                          //         onTap: () {
-                          //           Navigator.pushNamed(
-                          //               context, CommentsScreen.id,
-                          //               arguments: {"post": posts[index]});
-                          //         },
-                          //         child: PostCard(
-                          //           post: posts[index],
-                          //         ),
-                          //       );
-                          //     },
-                          //   ),
-                          // ),
+                          SingleChildScrollView(
+                            child: ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: posts.length,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                        context, CommentsScreen.id,
+                                        arguments: {"post": posts[index]});
+                                  },
+                                  child: PostCard(
+                                    post: posts[index],
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
                           SingleChildScrollView(
                             child: Column(
                               children: [

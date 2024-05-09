@@ -19,7 +19,8 @@ import 'package:reddit_bel_ham/components/subreddit_components/subreddit_ellipsi
 import 'package:reddit_bel_ham/screens/subreddit_seemore_screen.dart';
 import 'package:reddit_bel_ham/screens/add_post_screen.dart';
 import 'package:reddit_bel_ham/components/subreddit_components/subreddit_sortype_bottom_sheet.dart';
-
+import 'package:reddit_bel_ham/screens/inside_chat_screen.dart';
+import 'package:reddit_bel_ham/screens/communities_screen.dart';
 import 'package:reddit_bel_ham/screens/mod_tools_screen.dart';
 
 class SubredditScreen extends StatefulWidget {
@@ -66,11 +67,12 @@ class _SubredditScreenState extends State<SubredditScreen> {
       navigationBarIndex = index;
     });
     if (index == 2) {
-      Navigator.pushNamed(context, AddPostScreen.id, arguments: {
-        "subredditName": subreddit.name,
-        "subredditImage": subreddit.avatarImage,
-        "subredditId": subreddit.id
+      Navigator.pushNamed(context, AddPostScreen.id);
+      setState(() {
+        navigationBarIndex = oldIndex;
       });
+    } else if (index == 3) {
+      Navigator.pushNamed(context, InsideChattingScreen.id);
       setState(() {
         navigationBarIndex = oldIndex;
       });
@@ -82,10 +84,11 @@ class _SubredditScreenState extends State<SubredditScreen> {
   Future<void> getCommunityData() async {
     Map<String, dynamic> data =
         (await apiService.getCommunityDetails(subredditName)) ?? {};
-    (await apiService.getCommunityDetails(subredditName)) ?? {};
     if (mounted) {
+      if (!data.containsKey("communityDetails")) {
+        Navigator.pop(context);
+      }
       setState(() {
-        isLoading = false;
         isLoading = false;
       });
     }
@@ -110,7 +113,6 @@ class _SubredditScreenState extends State<SubredditScreen> {
         _isJoined = data['communityDetails']['isMember'];
         isMuted = data['communityDetails']['isMuted'];
         subredditLink = "http://https://reddit-bylham.me/r/${subredditName}";
-        print(TokenDecoder.token);
       });
 
       subreddit = Subreddit(
@@ -142,6 +144,9 @@ class _SubredditScreenState extends State<SubredditScreen> {
     Map<String, dynamic> data =
         (await apiService.getCommunityModerators(subredditName)) ?? {};
     if (mounted) {
+      if (!data.containsKey("moderators")) {
+        Navigator.pop(context);
+      }
       setState(() {
         moderators = data['moderators'];
         for (var moderator in moderators) {

@@ -8,7 +8,6 @@ import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 
 const String baseURL = "https://reddit-bylham.me/api";
 
-
 //const String baseURL = "https://e895ac26-6dc5-4b44-8937-20b3ad854396.mock.pstmn.io/api";
 class ApiService {
   String token = '';
@@ -45,11 +44,12 @@ class ApiService {
           response =
               await http.post(url, headers: headers, body: jsonEncode(body));
           break;
-          case 'DELETE':
+        case 'DELETE':
           response =
               await http.delete(url, headers: headers, body: jsonEncode(body));
           break;
         case 'PATCH':
+          print(url);
           response =
               await http.patch(url, headers: headers, body: jsonEncode(body));
           break;
@@ -219,7 +219,7 @@ class ApiService {
     sentData = {"search": userName};
     var result = await request('/user/searchUsernames',
         headers: headerWithToken, method: 'GET', body: sentData);
-    print( 'result: $result');
+    print('result: $result');
     return result;
   }
 
@@ -639,24 +639,26 @@ class ApiService {
         headers: headerWithToken, method: 'PATCH', body: sentData);
     return result;
   }
+
   Future<dynamic> getUserSelfInfo() async {
     var result = await request('/user/selfInfo',
         headers: headerWithToken, method: 'GET');
     return result;
   }
-    Future<dynamic> getUserInfo(String id) async {
-      // print('IDDD: $id');
+
+  Future<dynamic> getUserInfo(String id) async {
+    // print('IDDD: $id');
     var result = await request('/user/info?userId=$id',
         headers: headerWithToken, method: 'GET');
     return result;
   }
+
   Future<dynamic> addSocialLink(Map<String, dynamic> body) async {
     var result = await request('/user/socialLink',
-        headers: headerWithToken, method: 'POST',
-        body: body
-    );
+        headers: headerWithToken, method: 'POST', body: body);
     return result;
   }
+
   Future<dynamic> deleteSocialLink(String linkId) async {
     Map<String, dynamic> sentData;
     sentData = {
@@ -666,8 +668,8 @@ class ApiService {
         headers: headerWithToken, method: 'DELETE', body: sentData);
     return result;
   }
-  Future<void> uploadAvatarImage(
-      File imageFile) async {
+
+  Future<void> uploadAvatarImage(File imageFile) async {
     var request =
         http.MultipartRequest('POST', Uri.parse('$baseURL/user/avatarImage'));
 
@@ -676,14 +678,13 @@ class ApiService {
       'Authorization': "Bearer $token",
     });
 
-
-      debugPrint('Image file path: ${imageFile.path}');
-      request.files
-          .add(await http.MultipartFile.fromPath('file', imageFile.path));
+    debugPrint('Image file path: ${imageFile.path}');
+    request.files
+        .add(await http.MultipartFile.fromPath('file', imageFile.path));
     var response;
     try {
       response = await request.send();
-      print(response); 
+      print(response);
       // Handle the response...
     } on SocketException catch (e) {
       print('hena');
@@ -705,8 +706,8 @@ class ApiService {
       // debugPrint('Media upload failed');
     }
   }
-    Future<void> uploadBannerImage(
-      File imageFile) async {
+
+  Future<void> uploadBannerImage(File imageFile) async {
     var request =
         http.MultipartRequest('POST', Uri.parse('$baseURL/user/banner'));
 
@@ -715,10 +716,9 @@ class ApiService {
       'Authorization': "Bearer $token",
     });
 
-
-      debugPrint('Image file path: ${imageFile.path}');
-      request.files
-          .add(await http.MultipartFile.fromPath('file', imageFile.path));
+    debugPrint('Image file path: ${imageFile.path}');
+    request.files
+        .add(await http.MultipartFile.fromPath('file', imageFile.path));
     var response;
     try {
       response = await request.send();
@@ -742,7 +742,9 @@ class ApiService {
       // debugPrint('Media upload failed');
     }
   }
-    Future<dynamic> editProfileInfo(displayName,about,contentVisibility, communitiesVisibility) async {
+
+  Future<dynamic> editProfileInfo(
+      displayName, about, contentVisibility, communitiesVisibility) async {
     Map<String, dynamic> sentData;
     sentData = {
       "displayName": displayName,
@@ -754,7 +756,6 @@ class ApiService {
         headers: headerWithToken, method: 'PATCH', body: sentData);
     return result;
   }
-
 
   Future<dynamic> getTrendingPosts() async {
     var result = await request('/post/trending',
@@ -803,7 +804,8 @@ class ApiService {
     return result;
   }
 
-  Future<dynamic> banUser(String subRedditName, String userName, String reason, String note, bool isPermanent) async {
+  Future<dynamic> banUser(String subRedditName, String userName, String reason,
+      String note, bool isPermanent) async {
     Map<String, dynamic> sentData;
     sentData = {
       "subredditName": subRedditName,
@@ -858,6 +860,8 @@ class ApiService {
     };
     var result = await request('/post/markAsSpoiler',
         headers: headerWithToken, method: 'PATCH', body: sentData);
+    print(result);
+
     return result;
   }
 
@@ -868,6 +872,7 @@ class ApiService {
     };
     var result = await request('/post/unmarkAsSpoiler',
         headers: headerWithToken, method: 'PATCH', body: sentData);
+    print(result);
     return result;
   }
 
@@ -878,6 +883,7 @@ class ApiService {
     };
     var result = await request('/post/markAsNSFW',
         headers: headerWithToken, method: 'PATCH', body: sentData);
+    print(result);
     return result;
   }
 
@@ -888,6 +894,7 @@ class ApiService {
     };
     var result = await request('/post/unmarkAsNSFW',
         headers: headerWithToken, method: 'PATCH', body: sentData);
+    print(result);
     return result;
   }
 
@@ -918,6 +925,7 @@ class ApiService {
     };
     var result = await request('/post/approvePost',
         headers: headerWithToken, method: 'PATCH', body: sentData);
+    print(result);
     return result;
   }
 
@@ -1065,32 +1073,52 @@ class ApiService {
         headers: headerWithToken, method: 'PATCH', body: sentData);
     return result;
   }
-    Future<dynamic> getAvatarImage() async {
+
+  Future<dynamic> getAvatarImage() async {
     var result = await request('/user/avatarImage',
         headers: headerWithToken, method: 'GET');
     return result;
   }
+
   Future<dynamic> getBannerImage() async {
-    var result = await request('/user/banner',
-        headers: headerWithToken, method: 'GET');
+    var result =
+        await request('/user/banner', headers: headerWithToken, method: 'GET');
 
     return result;
   }
+
   Future<dynamic> followUser(String username) async {
     var result = await request('/user/followUser',
-        headers: headerWithToken, method: 'PATCH', body: {"usernameToFollow": username});
-    return result;
-  }
-    Future<dynamic> unfollowUser(String username) async {
-    var result = await request('/user/unfollowUser',
-        headers: headerWithToken, method: 'PATCH', body: {"usernameToUnfollow": username});
-    return result;
-  }
-    Future<dynamic> getProfileFeed(
-      String username, String page, String limit) async {
-    var result = await request('/user/posts?username=${username.replaceFirst('u/','')}&page=$page&limit=$limit',
-        headers: headerWithToken, method: 'GET');
+        headers: headerWithToken,
+        method: 'PATCH',
+        body: {"usernameToFollow": username});
     return result;
   }
 
+  Future<dynamic> unfollowUser(String username) async {
+    var result = await request('/user/unfollowUser',
+        headers: headerWithToken,
+        method: 'PATCH',
+        body: {"usernameToUnfollow": username});
+    return result;
+  }
+
+  Future<dynamic> getProfileFeed(
+      String username, String page, String limit) async {
+    var result = await request(
+        '/user/posts?username=${username.replaceFirst('u/', '')}&page=$page&limit=$limit',
+        headers: headerWithToken,
+        method: 'GET');
+    return result;
+  }
+
+  Future<dynamic> removePost(String postId) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "postId": postId,
+    };
+    var result = await request('/post/removePost',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
 }
