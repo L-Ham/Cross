@@ -5,11 +5,14 @@ import '../../utilities/screen_size_handler.dart';
 class SettingsSaveButton extends StatelessWidget {
   const SettingsSaveButton({
     super.key,
-    required this.onPressed
+    required this.onPressed,
+    this.isEnabled = true,
+    this.isUnderlined = true, 
   });
 
   final Function() onPressed;
-
+  final bool isEnabled;
+  final bool isUnderlined;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -18,11 +21,11 @@ class SettingsSaveButton extends StatelessWidget {
         icon: Text(
           'SAVE',
           style: TextStyle(
-            color: Colors.blue,
+            color: isEnabled ? Colors.blue : Colors.grey,
             fontWeight: FontWeight.w700,
-            decoration: TextDecoration.underline,
+            decoration: isUnderlined ? TextDecoration.underline : TextDecoration.none,
             fontSize: ScreenSizeHandler.bigger * 0.016,
-            decorationColor: Colors.blue,
+            decorationColor: isEnabled ? Colors.blue : Colors.grey,
           ),
         ),
         onPressed: onPressed,
