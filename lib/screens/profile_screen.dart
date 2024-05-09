@@ -9,8 +9,6 @@ import 'package:reddit_bel_ham/screens/comments_screen.dart';
 import 'package:reddit_bel_ham/screens/edit_profile_screen.dart';
 import 'package:reddit_bel_ham/screens/new_message_screen.dart';
 import 'package:reddit_bel_ham/screens/searching_screen.dart';
-import 'package:reddit_bel_ham/screens/subreddit_screen.dart';
-import 'package:reddit_bel_ham/screens/subreddit_search_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:reddit_bel_ham/components/general_components/rounded_button.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
@@ -20,9 +18,12 @@ import 'package:url_launcher/url_launcher.dart';
 import '../utilities/go_to_profile.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 import 'package:reddit_bel_ham/screens/add_post_screen.dart';
-import '../screens/inside_chat_screen.dart';
 import 'communities_screen.dart';
 import 'inbox_messages.dart';
+import '../screens/comments_screen.dart';
+import 'subreddit_search_screen.dart';
+import 'subreddit_screen.dart';
+import 'package:reddit_bel_ham/components/general_components/profile_share_bottom_sheet.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -56,9 +57,9 @@ class _ProfileScreenState extends State<ProfileScreen>
   bool isBlocked = false;
   bool isLoading = false;
   List<Post> feed = [];
-  List<CommentCard> comments = [];
+  List<dynamic> comments = [];
   List<Post> newPosts = [];
-  List<CommentCard> newComments = [];
+  List<dynamic> newComments = [];
   String id = '0';
   int page = 1;
   int page2 = 1;
@@ -67,6 +68,7 @@ class _ProfileScreenState extends State<ProfileScreen>
   bool isFeedFinished = false;
   bool isCommentsFinished = false;
   bool isMarkingAllAsRead = false;
+  bool isExisting=true;
   Future<void> _launchURL(String url) async {
     if (!await launchUrl(Uri.parse(url))) {
       throw 'Could not launch $url';
@@ -79,10 +81,12 @@ class _ProfileScreenState extends State<ProfileScreen>
     if (mounted) {
       if (!isMyProfile) {
         setState(() {
-          if (data['matchingUsernames'] == null) {
+          if (data['matchingUsernames'].isEmpty) {
+            isExisting=false;
             return;
           }
           // print(data);
+
           id = data['matchingUsernames'][0]['_id'].toString();
           print('IDDDDD: $id');
         });
@@ -96,6 +100,7 @@ class _ProfileScreenState extends State<ProfileScreen>
     if (mounted) {
       setState(() {
         if (data['user'] == null) {
+          isExisting=false;
           return;
         }
         avatarImage = data['user']['avatar'] ?? '';
@@ -171,6 +176,9 @@ class _ProfileScreenState extends State<ProfileScreen>
     print(data);
     if (data.containsKey('userPosts')) {
       List<dynamic> jsonPosts = data['userPosts'];
+      if (mounted)
+      {
+
       setState(() {
         newPosts = jsonPosts.map((json) => Post.fromJson(json)).toList();
         print(avatarImage);
@@ -186,6 +194,7 @@ class _ProfileScreenState extends State<ProfileScreen>
         }
         isFeedCalled = true;
       });
+      }
       print("llllllllllllllllllllllllllllllllllllllllllllllllllllllllll");
     } else {
       setState(() {
@@ -193,7 +202,6 @@ class _ProfileScreenState extends State<ProfileScreen>
       });
     }
   }
-
   Future<void> getUserComments(String username, int page, int limit) async {
     print('USERNAMEEE: $username');
     Map<String, dynamic> data = (await apiService.getUserComments(
@@ -201,25 +209,21 @@ class _ProfileScreenState extends State<ProfileScreen>
         {};
     print(data);
     if (data.containsKey('hiddenPosts')) {
-      List<dynamic> comments = data['hiddenPosts'];
+      List<dynamic> newComments = data['hiddenPosts'];
+      print(newComments);
       setState(() {
         print(avatarImage);
-        for (var post in newPosts) {
-          post.avatarImage = avatarImage;
-
-          post.userName = username;
-        }
         if (page == 1) {
-          feed = newPosts;
+          comments = newComments;
         } else {
-          feed.addAll(newPosts);
+          comments.addAll(newComments);
         }
-        isFeedCalled = true;
+        isCommentsCalled = true;
       });
       print("llllllllllllllllllllllllllllllllllllllllllllllllllllllllll");
     } else {
       setState(() {
-        isFeedFinished = true;
+        isCommentsFinished = true;
       });
     }
   }
@@ -291,8 +295,11 @@ class _ProfileScreenState extends State<ProfileScreen>
     print(TokenDecoder.token);
     print(username);
     page = 1;
+    page2 = 1;
     getProfileFeed(username, page, 5);
+    getUserComments(username, page2, 8);
     page++;
+    page2++;
     //     Map<String, dynamic> args =
     //     ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>? ?? {};
     // isMyProfile = args['isMyProfile']==true?true:false;
@@ -341,6 +348,23 @@ class _ProfileScreenState extends State<ProfileScreen>
       }
     }
   }
+    void getNewCommentsForFeed() {
+    double diff = _scrollController2.position.maxScrollExtent -
+        _scrollController2.position.pixels;
+
+    if (diff < 150 && diff > 100) {
+      if (isCommentsCalled) {
+        setState(() {
+          isCommentsCalled = false;
+          if (!isCommentsFinished) {
+            getUserComments(username, page2, 4);
+            page2++;
+          }
+          print(page2);
+        });
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -359,6 +383,7 @@ class _ProfileScreenState extends State<ProfileScreen>
     });
     _tabController = TabController(length: 3, vsync: this);
     _scrollController.addListener(getNewPostsForFeed);
+    _scrollController2.addListener(getNewCommentsForFeed);
     // if (isMyProfile) {
     if (mounted) {
       // setState(() {
@@ -399,7 +424,8 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   @override
   Widget build(BuildContext context) {
-    return ModalProgressHUD(
+    return !isExisting? EmptyDog(): 
+    ModalProgressHUD(
       inAsyncCall: isLoading,
       progressIndicator: const RedditLoadingIndicator(),
       blur: 0,
@@ -541,7 +567,19 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                 color: Colors.white),
                                           ),
                                           IconButton(
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              showModalBottomSheet(
+                                                context: context,
+                                                builder: (context) {
+                                                  return buildProfileModalBottomSheet(
+                                                    context,
+                                                    username,
+                                                    avatarImage,
+                                                    postKarma,
+                                                  );
+                                                },
+                                              );
+                                            },
                                             icon: Icon(FontAwesomeIcons.share,
                                                 color: Colors.white, size: 20),
                                           ),
@@ -758,11 +796,24 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                                             [
                                                                             'appName'] ==
                                                                         'reddit') {
-                                                                      goToProfile(
-                                                                          context,
-                                                                          socialLinks[index]['linkOrUsername'].replaceFirst(
-                                                                              'u/',
-                                                                              ''));
+                                                                      if (socialLinks[index]
+                                                                              [
+                                                                              'linkOrUsername']
+                                                                          .toString()
+                                                                          .startsWith(
+                                                                              'u/')) {
+                                                                        goToProfile(
+                                                                            context,
+                                                                            socialLinks[index]['linkOrUsername'].replaceFirst('u/',
+                                                                                ''));
+                                                                      } else {
+                                                                        Navigator.pushNamed(
+                                                                            context,
+                                                                            SubredditScreen.id,
+                                                                            arguments:
+                                                                              socialLinks[index]['linkOrUsername'].replaceFirst('r/', '')
+                                                                            );
+                                                                      }
                                                                     } else {
                                                                       _launchURL(
                                                                           socialLinks[index]
@@ -909,8 +960,12 @@ class _ProfileScreenState extends State<ProfileScreen>
                                             SliverToBoxAdapter(
                                               child: GestureDetector(
                                                 onTap: () {
-                                                  // Navigator.pushNamed(context, CommentsScreen.id,
-                                                  // arguments: {"post": post});
+                                                  Navigator.pushNamed(context,
+                                                      CommentsScreen.id,
+                                                      arguments: {
+                                                        "post": post
+                                                      });
+
                                                 },
                                                 child: GestureDetector(
                                                   onTap: () {
@@ -931,7 +986,46 @@ class _ProfileScreenState extends State<ProfileScreen>
                                             )
                                         ],
                                       ),
-                                EmptyDog(),
+                                comments.isEmpty
+                                    ? EmptyDog()
+                                    : CustomScrollView(
+                                        controller: _scrollController2,
+                                        slivers: [
+                                          for (var comment in comments)
+                                            SliverToBoxAdapter(
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  Navigator.pushNamed(context,
+                                                      CommentsScreen.id,
+                                                      arguments: {
+                                                        "postId": comment['postId']
+                                                      });
+                                                },
+                                                child: Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(comment['postTitle'], style: TextStyle(color: Colors.white, fontSize: 16,),),
+                                                      Row(
+                                                        children: [
+                                                          Text('r/${comment['subredditName']} • ${comment['score']}', style: TextStyle(color: Colors.grey, fontSize: 13,)),
+                                                          Icon(Icons.arrow_upward, color: Colors.grey, size: 15,),
+                                                      
+                                                        ],
+                                                      ),
+                                                      Text(comment['content'], style: TextStyle(color: Colors.grey, fontSize: 15),),
+                                                      Divider(
+                                                        color: kFillingColor,
+                                                      ),
+                                                    ]
+                                                  ),
+                                                )
+                                              ),
+                                            )
+                                        ],
+                                      ),
+                                
                                 SingleChildScrollView(
                                   child: Column(
                                     children: [
@@ -1051,7 +1145,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                       ),
                                     ],
                                   ),
-                                )
+                                ),
                               ],
                             ),
                           ),
