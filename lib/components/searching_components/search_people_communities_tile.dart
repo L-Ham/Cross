@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/screens/subreddit_screen.dart';
+import 'package:reddit_bel_ham/utilities/go_to_profile.dart';
 
 import '../../constants.dart';
 import '../../utilities/screen_size_handler.dart';
@@ -27,6 +28,7 @@ class SearchCommunitiesPeopleTile extends StatelessWidget {
           Navigator.pushNamed(context, SubredditScreen.id, arguments: title);
         } else {
           // go to user profile screen
+          goToProfile(context, title.replaceFirst('u/', ''));
         }
       },
       child: Column(

@@ -7,6 +7,7 @@ import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/searching_screen.dart';
 import 'package:reddit_bel_ham/screens/subreddit_screen.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
+import 'package:reddit_bel_ham/utilities/go_to_profile.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:reddit_bel_ham/utilities/searches_store.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
@@ -122,13 +123,15 @@ class _SearchScreenState extends State<SearchScreen> {
       });
     }
     if (response != null) {
-      for (var trendingPost in response) {
-        setState(() {
-          trendingPostTitles.add(trendingPost["title"]);
-          trendingPostDescriptions.add(trendingPost["text"] ?? "");
-          trendingPostImages.add(trendingPost["image"]);
-        });
-      }
+    for (var trendingPost in response) {
+       if (mounted) {
+      setState(() {
+        trendingPostTitles.add(trendingPost["title"]);
+        trendingPostDescriptions.add(trendingPost["text"]?? "");
+        trendingPostImages.add(trendingPost["image"]);
+      });
+       }
+    }
     }
   }
 
@@ -402,6 +405,9 @@ class SearchSubredditPeoplePreview extends StatelessWidget {
       onTap: () {
         if (isSubreddit) {
           Navigator.pushNamed(context, SubredditScreen.id, arguments: title);
+        }
+        else {
+          goToProfile(context, title.replaceFirst('u/', ''));
         }
       },
       child: Padding(

@@ -205,7 +205,6 @@ Widget buildMoreModalBottomSheet(BuildContext context, Post post) {
                         ApiService apiService = ApiService(TokenDecoder.token);
                         apiService.deletePost(post.postId);
                         Navigator.pop(context);
-                        Navigator.pop(context);
                       }
                     },
                     child: Row(
@@ -223,8 +222,9 @@ Widget buildMoreModalBottomSheet(BuildContext context, Post post) {
                       ],
                     ),
                   ),
-                if (post.subredditName != "r/DanielAdel") ...[
+                if (post.isOwner)
                   SizedBox(height: ScreenSizeHandler.screenHeight * 0.02),
+                if (post.subredditName != "r/DanielAdel") ...[
                   Row(
                     children: [
                       Padding(

@@ -33,6 +33,8 @@ class ApiService {
           if (body != null) {
             url = Uri.parse(
                 "$baseURL$endpoint?${Uri(queryParameters: body).query}");
+            print("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
+            print(url);
             response = await http.get(url, headers: headers);
           } else {
             response = await http.get(url, headers: headers);
@@ -42,7 +44,7 @@ class ApiService {
           response =
               await http.post(url, headers: headers, body: jsonEncode(body));
           break;
-          case 'DELETE':
+        case 'DELETE':
           response =
               await http.delete(url, headers: headers, body: jsonEncode(body));
           break;
@@ -143,6 +145,12 @@ class ApiService {
     return result;
   }
 
+  Future<dynamic> changeNotificationSettings(Map<String, dynamic> body) async {
+    var result = await request('/user/notificationsSettings',
+        headers: headerWithToken, method: 'PATCH', body: body);
+    return result;
+  }
+
   Future<dynamic> getNotificationSettings() async {
     var result = await request('/user/notificationsSettings',
         headers: headerWithToken, method: 'GET');
@@ -216,6 +224,7 @@ class ApiService {
     sentData = {"search": userName};
     var result = await request('/user/searchUsernames',
         headers: headerWithToken, method: 'GET', body: sentData);
+    print('result: $result');
     return result;
   }
 
@@ -420,6 +429,80 @@ class ApiService {
     return result;
   }
 
+  Future<dynamic> getUserChats() async {
+    var response = await request('/conversation/getUserChats',
+        headers: headerWithToken, method: 'GET');
+    print(response);
+    return response;
+  }
+
+  Future<dynamic> sendTextMessage(String conversationId, String message) async {
+    var response = await request('/chat/sendMessage',
+        headers: headerWithToken,
+        method: 'POST',
+        body: {"chatId": conversationId, "type": "text", "message": message});
+
+    return response;
+  }
+
+  Future<Map<String, dynamic>?> sendImageMessage(
+      File imageFile, String conversationId) async {
+    print('inside api call');
+    var request =
+        http.MultipartRequest('POST', Uri.parse('$baseURL/chat/sendMessage'));
+
+    request.headers.addAll({
+      'Content-Type': 'multipart/form-data',
+      'Authorization': "Bearer $token",
+    });
+
+    request.fields['chatId'] = conversationId;
+    request.fields['type'] = "image";
+    request.files
+        .add(await http.MultipartFile.fromPath('file', imageFile.path));
+
+    var response;
+    print('bypassed api call');
+    try {
+      response = await request.send();
+    } on SocketException catch (e) {
+      debugPrint('SocketException: $e');
+    }
+
+    if (response.statusCode == 200) {
+      debugPrint('Media uploaded successfully');
+      String responseBody = await response.stream.bytesToString();
+      return jsonDecode(responseBody); // Return the parsed JSON
+    } else {
+      debugPrint('${response.statusCode.toString()}zzzzzzzzzzzzzzzzzz');
+      String responseBody = await response.stream.bytesToString();
+      debugPrint(response.statusCode.toString());
+      debugPrint('Response body: $responseBody');
+      debugPrint('Media upload failed');
+      return null; // Return null or throw an exception
+    }
+  }
+
+  Future<dynamic> startNewConversation(
+      String chatName, List<String> participants) async {
+    var response = await http.post(
+      Uri.parse('https://reddit-bylham.me/api/conversation/create'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({"chatName": chatName, "participants": participants}),
+    );
+    print(response);
+    print(response.statusCode);
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to create community');
+    }
+  }
+
   Future<dynamic> joinCommunity(String subredditID) async {
     var result = await request('/user/joinCommunity',
         headers: headerWithToken,
@@ -561,18 +644,25 @@ class ApiService {
         headers: headerWithToken, method: 'PATCH', body: sentData);
     return result;
   }
+
   Future<dynamic> getUserSelfInfo() async {
     var result = await request('/user/selfInfo',
         headers: headerWithToken, method: 'GET');
     return result;
   }
-  Future<dynamic> addSocialLink(Map<String, dynamic> body) async {
-    var result = await request('/user/socialLink',
-        headers: headerWithToken, method: 'POST',
-        body: body
-    );
+
+  Future<dynamic> getUserInfo(String id) async {
+    var result = await request('/user/info?userId=$id',
+        headers: headerWithToken, method: 'GET');
     return result;
   }
+
+  Future<dynamic> addSocialLink(Map<String, dynamic> body) async {
+    var result = await request('/user/socialLink',
+        headers: headerWithToken, method: 'POST', body: body);
+    return result;
+  }
+
   Future<dynamic> deleteSocialLink(String linkId) async {
     Map<String, dynamic> sentData;
     sentData = {
@@ -582,8 +672,28 @@ class ApiService {
         headers: headerWithToken, method: 'DELETE', body: sentData);
     return result;
   }
-  Future<void> uploadAvatarImage(
-      File imageFile) async {
+
+  Future<dynamic> hideNotification(String notificationId) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "notificationId": notificationId,
+    };
+    var result = await request('/notification/hide',
+        headers: headerWithToken, method: 'DELETE', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> markNotificationAsRead(String notificationId) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "notificationId": notificationId,
+    };
+    var result = await request('/notification/markRead',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  Future<void> uploadAvatarImage(File imageFile) async {
     var request =
         http.MultipartRequest('POST', Uri.parse('$baseURL/user/avatarImage'));
 
@@ -592,14 +702,13 @@ class ApiService {
       'Authorization': "Bearer $token",
     });
 
-
-      debugPrint('Image file path: ${imageFile.path}');
-      request.files
-          .add(await http.MultipartFile.fromPath('file', imageFile.path));
+    debugPrint('Image file path: ${imageFile.path}');
+    request.files
+        .add(await http.MultipartFile.fromPath('file', imageFile.path));
     var response;
     try {
       response = await request.send();
-      print(response); 
+      print(response);
       // Handle the response...
     } on SocketException catch (e) {
       print('hena');
@@ -621,8 +730,8 @@ class ApiService {
       // debugPrint('Media upload failed');
     }
   }
-    Future<void> uploadBannerImage(
-      File imageFile) async {
+
+  Future<void> uploadBannerImage(File imageFile) async {
     var request =
         http.MultipartRequest('POST', Uri.parse('$baseURL/user/banner'));
 
@@ -631,10 +740,9 @@ class ApiService {
       'Authorization': "Bearer $token",
     });
 
-
-      debugPrint('Image file path: ${imageFile.path}');
-      request.files
-          .add(await http.MultipartFile.fromPath('file', imageFile.path));
+    debugPrint('Image file path: ${imageFile.path}');
+    request.files
+        .add(await http.MultipartFile.fromPath('file', imageFile.path));
     var response;
     try {
       response = await request.send();
@@ -658,7 +766,9 @@ class ApiService {
       // debugPrint('Media upload failed');
     }
   }
-    Future<dynamic> editProfileInfo(displayName,about,contentVisibility, communitiesVisibility) async {
+
+  Future<dynamic> editProfileInfo(
+      displayName, about, contentVisibility, communitiesVisibility) async {
     Map<String, dynamic> sentData;
     sentData = {
       "displayName": displayName,
@@ -670,7 +780,6 @@ class ApiService {
         headers: headerWithToken, method: 'PATCH', body: sentData);
     return result;
   }
-
 
   Future<dynamic> getTrendingPosts() async {
     var result = await request('/post/trending',
@@ -703,6 +812,18 @@ class ApiService {
     return result;
   }
 
+  Future<dynamic> searchCommentsInProfile(Map<String, dynamic> body) async {
+    var result = await request('/user/searchComments',
+        headers: headerWithToken, method: 'GET', body: body);
+    return result;
+  }
+
+  Future<dynamic> searchPostsInProfile(Map<String, dynamic> body) async {
+    var result = await request('/user/searchPosts',
+        headers: headerWithToken, method: 'GET', body: body);
+    return result;
+  }
+
   Future<dynamic> getPostFromId(String postId) async {
     Map<String, dynamic> sentData;
     sentData = {"postId": postId};
@@ -719,7 +840,8 @@ class ApiService {
     return result;
   }
 
-  Future<dynamic> banUser(String subRedditName, String userName, String reason, String note, bool isPermanent) async {
+  Future<dynamic> banUser(String subRedditName, String userName, String reason,
+      String note, bool isPermanent) async {
     Map<String, dynamic> sentData;
     sentData = {
       "subredditName": subRedditName,
@@ -846,13 +968,13 @@ class ApiService {
   }
 
   Future<dynamic> getSubredditFeed(
-      String subredditName, String sortType, String page) async {
+      String subredditName, String sortType, String page, String limit) async {
     Map<String, dynamic> sentData;
     sentData = {
       "subredditName": subredditName,
       "sort": sortType,
       "page": page,
-      "limit": "3"
+      "limit": limit
     };
     var result = await request('/subreddit/feed',
         headers: headerWithToken, method: 'GET', body: sentData);
@@ -981,17 +1103,62 @@ class ApiService {
         headers: headerWithToken, method: 'PATCH', body: sentData);
     return result;
   }
-    Future<dynamic> getAvatarImage() async {
+
+  Future<dynamic> getAvatarImage() async {
     var result = await request('/user/avatarImage',
         headers: headerWithToken, method: 'GET');
     return result;
   }
-  Future<dynamic> getBannerImage() async {
-    var result = await request('/user/banner',
-        headers: headerWithToken, method: 'GET');
 
+  Future<dynamic> getBannerImage() async {
+    var result =
+        await request('/user/banner', headers: headerWithToken, method: 'GET');
     return result;
   }
+
+  Future<dynamic> getAllActivity() async {
+    var result = await request('/notification/user',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+
+  Future<dynamic> followUser(String username) async {
+    var result = await request('/user/followUser',
+        headers: headerWithToken,
+        method: 'PATCH',
+        body: {"usernameToFollow": username});
+    return result;
+  }
+    Future<dynamic> unfollowUser(String username) async {
+    var result = await request('/user/unfollowUser',
+        headers: headerWithToken, method: 'PATCH', body: {"usernameToUnfollow": username});
+    return result;
+  }
+  Future<dynamic> getProfileFeed(
+      String username, String page, String limit) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "username": username,
+      "page": page,
+      "limit": limit
+    };
+    var result = await request('/user/posts',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    return result;
+  }
+    Future<dynamic> getUserComments(
+      String username, String page, String limit) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "username": username,
+      "page": page,
+      "limit": limit
+    };
+    var result = await request('/user/comments',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    return result;
+  }
+
   Future<dynamic> addApprovedUser(String communityName, String userName) async {
     Map<String, dynamic> sentData;
     sentData = {

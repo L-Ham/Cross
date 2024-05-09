@@ -170,6 +170,7 @@ class _PollPostState extends State<PollPost> {
                     }
                     setState(() {
                       isSubmitted = true;
+                      widget.post.isPollVoted = true;
                       votes[options.indexOf(selectedOption!)]++;
                       sum = votes.reduce((value, element) => value + element);
                     });

@@ -143,6 +143,7 @@ class Post {
       isLocked: json['isLocked'] ?? false,
       isApproved: json['approved'] ?? false,
       isDisapproved: json['disapproved'] ?? false,
+      isOwner: TokenDecoder.id == (json['user'] ?? ''),
     );
   }
 }
@@ -202,8 +203,16 @@ class _PostCardState extends State<PostCard> {
                             ? NetworkImage(post.userAvatarImage)
                             : AssetImage(post.userAvatarImage)
                                 as ImageProvider<Object>?
-                        : AssetImage("assets/images/avatarDaniel.png")
-                            as ImageProvider<Object>?,
+                        : widget.isExpanded
+                            ? post.userAvatarImage !=
+                                    "assets/images/avatarDaniel.png"
+                                ? NetworkImage(post.userAvatarImage)
+                                : AssetImage(post.userAvatarImage)
+                                    as ImageProvider<Object>?
+                            : post.avatarImage != "assets/images/planet3.png"
+                                ? NetworkImage(post.avatarImage)
+                                : AssetImage(post.avatarImage)
+                                    as ImageProvider<Object>?,
                   ),
                 ),
                 SizedBox(width: ScreenSizeHandler.screenWidth * 0.02),
@@ -213,8 +222,12 @@ class _PostCardState extends State<PostCard> {
                     children: [
                       Text(
                         widget.isExpanded
-                            ? "r/${post.subredditName}"
-                            : 'r/${post.subredditName} • ${post.createdFrom}',
+                            ? widget.post.subredditName == ""
+                                ? "u/${post.userName}"
+                                : "r/${post.subredditName}"
+                            : widget.isCommunityFeed
+                                ? '${post.userName} • ${post.createdFrom}'
+                                : 'r/${post.subredditName} • ${post.createdFrom}',
                         style: TextStyle(
                             height: 0.8,
                             color: Colors.white,
@@ -346,8 +359,8 @@ class _PostCardState extends State<PostCard> {
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: widget.isExpanded
-                                  ? ScreenSizeHandler.bigger * 0.024
-                                  : ScreenSizeHandler.bigger * 0.022,
+                                  ? ScreenSizeHandler.bigger * 0.023
+                                  : ScreenSizeHandler.bigger * 0.020,
                             ),
                             softWrap: true,
                           ),
@@ -423,8 +436,8 @@ class _PostCardState extends State<PostCard> {
                                 : const Color.fromARGB(255, 133, 132, 132),
                             fontWeight: FontWeight.normal,
                             fontSize: widget.isExpanded
-                                ? ScreenSizeHandler.bigger * 0.02
-                                : ScreenSizeHandler.bigger * 0.017),
+                                ? ScreenSizeHandler.bigger * 0.018
+                                : ScreenSizeHandler.bigger * 0.016),
                       ),
                     ),
                 ],
