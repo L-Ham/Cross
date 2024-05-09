@@ -27,8 +27,6 @@ class _DescribeCommunityScreenState extends State<DescribeCommunityScreen> {
   bool isButtonEnabled = false;
   String subredditID = '', membersNickname = '', currentlyViewingNickname = '',
    communityDescription = '';
-  // ValueNotifier<String> communityDescription = ValueNotifier<String>("");
-
 
   @override
   void didChangeDependencies() {
@@ -45,6 +43,27 @@ class _DescribeCommunityScreenState extends State<DescribeCommunityScreen> {
     super.didChangeDependencies();
   }
 
+   void showSnackBar(String snackBarText) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(snackBarText),
+          backgroundColor: Colors.white,
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(
+            left: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+            right: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+            bottom: ScreenSizeHandler.screenHeight * 0.09,
+          ),
+          duration: const Duration(seconds: 3),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+        ),
+      );
+    });
+  }
+
   Future<void> editCommunityDetails() async {
     Map<String, dynamic> response = await apiService.editCommunityDetails(
         subredditID,
@@ -56,23 +75,7 @@ class _DescribeCommunityScreenState extends State<DescribeCommunityScreen> {
       _focusNode.unfocus();    
       Navigator.pop(context, _controller.text);
     } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Error'),
-            content: Text(response['message']),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
+      showSnackBar('Error: ${response['message']}');
     }
   }
 

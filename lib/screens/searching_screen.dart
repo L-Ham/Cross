@@ -65,7 +65,7 @@ class PostSearchCard {
   final String title;
   final String text;
   final String type;
-  final String image;
+  final String? image;
   final String video;
   final String subredditName;
   final String subredditId;
