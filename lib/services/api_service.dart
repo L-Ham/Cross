@@ -1084,5 +1084,11 @@ class ApiService {
         headers: headerWithToken, method: 'PATCH', body: {"usernameToUnfollow": username});
     return result;
   }
+    Future<dynamic> getProfileFeed(
+      String username, String page, String limit) async {
+    var result = await request('/user/posts?username=${username.replaceFirst('u/','')}&page=$page&limit=$limit',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
 
 }

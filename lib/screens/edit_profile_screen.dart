@@ -102,11 +102,11 @@ if (isAddSocialLinkPressed && !hasCalledAddSocialLink) {
     }
   }
 
-  void uploadAvatarImageAPI(XFile chosenImage) async {
+  void uploadAvatarImageAPI(File chosenImage) async {
     await apiService.uploadAvatarImage(File(chosenImage.path));
     getAvatarImage();
   }
-    void uploadBannerImageAPI(XFile chosenImage) async {
+    void uploadBannerImageAPI(File chosenImage) async {
     await apiService.uploadBannerImage(File(chosenImage.path));
     getBannerImage();
 
@@ -1108,7 +1108,7 @@ if (isAddSocialLinkPressed && !hasCalledAddSocialLink) {
     if (chosenImage != null) {
       setState(() {
         isLoading = true;
-        chosenImage = compressedImage;
+        chosenImage = XFile(compressedImage!.path);
         uploadAvatarImageAPI(compressedImage!);
       });
     }
@@ -1129,8 +1129,8 @@ if (isAddSocialLinkPressed && !hasCalledAddSocialLink) {
     if (chosenCoverImage != null) {
       setState(() {
         isLoading = true;
-        chosenCoverImage = compressedImage;
-        uploadBannerImageAPI(chosenCoverImage!);
+        chosenCoverImage = XFile(compressedImage!.path);
+        uploadBannerImageAPI(compressedImage!);
       });
     }
   }
