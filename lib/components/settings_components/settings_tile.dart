@@ -13,7 +13,7 @@ class SettingsTile extends StatelessWidget {
   final Color? fontColor;
   final double titleTextSizeRatio;
 
-  const SettingsTile({
+  SettingsTile({
     Key? key,
     required this.leadingIcon,
     required this.titleText,

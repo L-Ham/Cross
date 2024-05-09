@@ -375,7 +375,7 @@ class MoreActivityBottomSheet extends StatelessWidget {
                 onTap: () {
                   Navigator.pop(context, 1);
                 },
-                child: const SettingsTile(
+                child: SettingsTile(
                     leadingIcon: SettingsTileLeadingIcon(
                       leadingIcon: Icons.remove_red_eye_outlined,
                     ),
@@ -387,7 +387,7 @@ class MoreActivityBottomSheet extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.symmetric(
                     vertical: ScreenSizeHandler.screenHeight * 0.004),
-                child: const SettingsTile(
+                child: SettingsTile(
                     leadingIcon: SettingsTileLeadingIcon(
                       leadingIcon: Icons.cancel_outlined,
                     ),
@@ -401,7 +401,7 @@ class MoreActivityBottomSheet extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.symmetric(
                     vertical: ScreenSizeHandler.screenHeight * 0.004),
-                child: const SettingsTile(
+                child: SettingsTile(
                     leadingIcon: SettingsTileLeadingIcon(
                       leadingIcon: Icons.notifications_off_outlined,
                     ),

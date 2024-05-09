@@ -42,8 +42,6 @@ import 'package:reddit_bel_ham/components/home_page_components/trending_posts.da
 import '../components/messaging_components/inbox_bottom_sheet.dart';
 
 import 'package:reddit_bel_ham/screens/inside_chat_screen.dart';
-
-import 'package:reddit_bel_ham/screens/inside_chat_screen.dart';
 import 'package:reddit_bel_ham/screens/chatting_screen.dart';
 
 class HomePageScreen extends StatefulWidget {
@@ -98,7 +96,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
     print(TokenDecoder.token);
 
     page = 1;
-    getHomeFeed(sortType, page, 5);
+    print('ZZZZZ ABL HOME FEEED');
+    getHomeFeed(sortType, page, 6);
     page++;
     _scrollController.addListener(getNewPostsForFeed);
   }
@@ -107,12 +106,12 @@ class _HomePageScreenState extends State<HomePageScreen> {
     double diff = _scrollController.position.maxScrollExtent -
         _scrollController.position.pixels;
 
-    if (diff < 250 && diff > 200) {
+    if (diff < 150 && diff > 100) {
       if (isFeedCalled) {
         setState(() {
           isFeedCalled = false;
           if (!isFeedFinished) {
-            getHomeFeed(sortType, page, 2);
+            getHomeFeed(sortType, page, 3);
             page++;
             print(page);
             print("dddddddddddddddddddddddddddddddddddddddddddddddddddddddd");
