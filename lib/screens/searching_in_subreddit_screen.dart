@@ -6,6 +6,7 @@ import 'package:reddit_bel_ham/screens/comments_search_screen.dart';
 import 'package:reddit_bel_ham/screens/communities_search_screen.dart';
 import 'package:reddit_bel_ham/screens/people_search_screen.dart';
 import 'package:reddit_bel_ham/screens/post_search_screen.dart';
+import 'package:reddit_bel_ham/screens/searching_screen.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import '../components/general_components/reddit_loading_indicator.dart';
@@ -13,91 +14,18 @@ import '../constants.dart';
 import '../utilities/screen_size_handler.dart';
 import '../utilities/time_ago.dart';
 
-class SearchingScreen extends StatefulWidget {
-  const SearchingScreen({super.key});
+class SearchingInSubreddit extends StatefulWidget {
+  const SearchingInSubreddit({super.key});
 
-  static const id = 'searching_screen';
+  static const id = 'searching_in_subreddit_screen';
 
   @override
-  State<SearchingScreen> createState() => _SearchingScreenState();
-}
-
-class CommentSearchCard {
-  final String commentId;
-  final String postId;
-  final String userId;
-  final String subredditName;
-  final String postCreationDate;
-  final DateTime actualPostCreationDate;
-  final String postTitle;
-  final int postUpvotes;
-  final int numberOfComments;
-  final String userAvatarImage;
-  final String commentCreationDate;
-  final DateTime actualCommentCreationDate;
-  final String commentText;
-  final int commentUpvotes;
-  final String subredditImage;
-  final String userName;
-
-  CommentSearchCard({
-    required this.userId,
-    required this.commentId,
-    required this.postId,
-    required this.subredditName,
-    required this.postCreationDate,
-    required this.postTitle,
-    required this.postUpvotes,
-    required this.numberOfComments,
-    required this.userAvatarImage,
-    required this.commentCreationDate,
-    required this.commentText,
-    required this.commentUpvotes,
-    required this.actualPostCreationDate,
-    required this.actualCommentCreationDate,
-    required this.subredditImage,
-    required this.userName,
-  });
-}
-
-class PostSearchCard {
-  final String postId;
-  final String title;
-  final String text;
-  final String type;
-  final String image;
-  final String video;
-  final String subredditName;
-  final String subredditId;
-  final String avatarImageSubreddit;
-  final String userName;
-  final String userAvatarImage;
-  final DateTime createdAt;
-  final int score;
-  final int commentCount;
-  final String displayDate;
-
-  PostSearchCard(
-      {required this.postId,
-      required this.title,
-      required this.text,
-      required this.type,
-      required this.image,
-      required this.video,
-      required this.subredditName,
-      required this.subredditId,
-      required this.avatarImageSubreddit,
-      required this.createdAt,
-      required this.score,
-      required this.commentCount,
-      required this.displayDate,
-      required this.userAvatarImage,
-      required this.userName});
+  State<SearchingInSubreddit> createState() => _SearchingInSubredditState();
 }
 
 TextEditingController _searchController = TextEditingController();
 
-class _SearchingScreenState extends State<SearchingScreen>
+class _SearchingInSubredditState extends State<SearchingInSubreddit>
     with SingleTickerProviderStateMixin {
   String sortValue = "Most relevant";
   bool isSorted = false;
@@ -117,8 +45,9 @@ class _SearchingScreenState extends State<SearchingScreen>
   List<PostSearchCard> originalList = [];
 
   bool firstTime = true;
-
   bool isLoading = false;
+  String subredditImage = 'assets/images/planet3.png';
+  late String subredditName;
 
   ApiService apiService = ApiService(TokenDecoder.token);
 
@@ -126,33 +55,29 @@ class _SearchingScreenState extends State<SearchingScreen>
     setState(() {
       isLoading = true;
     });
-    Map<String, dynamic> results =
-        await apiService.searchSubredditByName(_searchController.text);
-    List<dynamic> resultsList = results['matchingNames'];
-    searchSubreddit(resultsList);
-    Map<String, dynamic> commentsResponse = await apiService.searchComments({
+    Map<String, dynamic> commentsResponse =
+        await apiService.searchCommentsInSubreddit({
       "search": _searchController.text,
       "relevance":
           sortValue == "Most relevant" ? true.toString() : false.toString(),
       "top": sortValue == "Top" ? true.toString() : false.toString(),
       "new": sortValue == "New" ? true.toString() : false.toString(),
+      "subredditName": subredditName,
     });
     searchComments(commentsResponse['comments'] as List<dynamic>);
-    Map<String, dynamic> response =
-        await apiService.getSearchedForBlockedUsers(_searchController.text);
-    Map<String, dynamic> postsResponse = await apiService.searchPosts({
-      "search": _searchController.text,
-      "relevance":
-          sortValue == "Most relevant" ? true.toString() : false.toString(),
-      "top": sortValue == "Top" ? true.toString() : false.toString(),
-      "new": sortValue == "New" ? true.toString() : false.toString(),
-      "mediaOnly": false.toString(),
-      "isNSFW": true.toString(),
-    });
-    print("pppppppppppppppppppppp");
-    print(sortValue == "New");
-    searchPosts(postsResponse['posts'] as List<dynamic>);
-    searchPeople(response['matchingUsernames'] as List<dynamic>);
+    // Map<String, dynamic> postsResponse =
+    //     await apiService.searchPostsInSubreddit({
+    //   "search": _searchController.text,
+    //   "subRedditName": subredditName,
+    //   "relevance":
+    //       sortValue == "Most relevant" ? true.toString() : false.toString(),
+    //   "top": sortValue == "Top" ? true.toString() : false.toString(),
+    //   "new": sortValue == "New" ? true.toString() : false.toString(),
+    //   "mediaOnly": false.toString(),
+    //   "isNSFW": true.toString(),
+    // });
+    // print(postsResponse);
+    // searchPosts(postsResponse['posts'] as List<dynamic>);
     if (mounted) {
       setState(() {
         isLoading = false;
@@ -171,7 +96,7 @@ class _SearchingScreenState extends State<SearchingScreen>
         title: resultsList[i]["title"],
         text: resultsList[i]["text"] ?? "",
         type: resultsList[i]["type"],
-        image: resultsList[i]["image"]?? "",
+        image: resultsList[i]["image"],
         video: resultsList[i]["video"] ?? "",
         subredditName: resultsList[i]["subreddit"] ?? "",
         subredditId: resultsList[i]["subRedditId"] ?? "f",
@@ -183,7 +108,6 @@ class _SearchingScreenState extends State<SearchingScreen>
         commentCount: resultsList[i]["commentCount"],
       );
       searchedPosts.add(postSearchCard);
-      
     }
     originalList = searchedPosts;
   }
@@ -253,48 +177,9 @@ class _SearchingScreenState extends State<SearchingScreen>
     }
   }
 
-  void searchPeople(List<dynamic> resultsList) {
-    userNames.clear();
-    userAvatarImages.clear();
-    for (int i = 0; i < resultsList.length; i++) {
-      mounted
-          ? setState(() {
-              if (resultsList[i]["avatarImage"] != null) {
-                userAvatarImages.add(resultsList[i]["avatarImageUrl"]);
-              } else {
-                userAvatarImages.add('assets/images/redditAvata2.png');
-              }
-              // userAvatarImages.add('assets/images/redditAvata2.png');
-              userNames.add(resultsList[i]["userName"]);
-            })
-          : null;
-    }
-  }
-
-  void searchSubreddit(List<dynamic> resultsList) {
-    subredditNames.clear();
-    subredditMembers.clear();
-    subredditAvatarImages.clear();
-
-    for (int i = 0; i < resultsList.length; i++) {
-      mounted
-          ? setState(() {
-              if (resultsList[i]["appearance"]["avatarImage"] != null) {
-                subredditAvatarImages
-                    .add(resultsList[i]["appearance"]["avatarImage"]["url"]);
-              } else {
-                subredditAvatarImages.add('assets/images/planet3.png');
-              }
-              subredditNames.add(resultsList[i]["name"]);
-              subredditMembers.add(resultsList[i]["membersCount"]);
-            })
-          : null;
-    }
-  }
-
   @override
   void initState() {
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(_handleTabSelection);
     super.initState();
   }
@@ -308,8 +193,21 @@ class _SearchingScreenState extends State<SearchingScreen>
   @override
   void didChangeDependencies() {
     setState(() {
-      _searchController.text =
-          ModalRoute.of(context)!.settings.arguments as String;
+      Map<String, dynamic> args =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      _searchController.text = args['search'] as String;
+      if (args['subredditName'] != null) {
+        subredditName = args['subredditName'] as String;
+      } else {
+        subredditName = '';
+      }
+      if (args['subredditImage'] != null) {
+        subredditImage = args['subredditImage'] as String;
+      }
+      if (args['searchType'] != null) {
+        sortValue = args['searchType'] as String;
+        isSorted = true;
+      }
     });
     if (firstTime) {
       getSearchesFromBack();
@@ -342,6 +240,20 @@ class _SearchingScreenState extends State<SearchingScreen>
                         child: Icon(
                           Icons.search,
                           size: ScreenSizeHandler.bigger * 0.029,
+                        ),
+                      ),
+                      CircleAvatar(
+                        radius: ScreenSizeHandler.bigger * 0.01,
+                        foregroundImage: subredditImage !=
+                                'assets/images/planet3.png'
+                            ? NetworkImage(subredditImage)
+                            : Image.asset('assets/images/planet3.png').image,
+                      ),
+                      Text(
+                        ' r/$subredditName ',
+                        style: TextStyle(
+                          fontSize: ScreenSizeHandler.bigger * 0.019,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       Text(
@@ -380,12 +292,10 @@ class _SearchingScreenState extends State<SearchingScreen>
             indicatorSize: TabBarIndicatorSize.label,
             tabs: const [
               Tab(text: 'Posts'),
-              Tab(text: 'Communities'),
               Tab(text: 'Comments'),
-              Tab(text: 'People'),
             ],
           ),
-          if (_tabController.index == 0 || _tabController.index == 2)
+          if (_tabController.index == 0 || _tabController.index == 1)
             Padding(
               padding: EdgeInsets.only(
                   top: ScreenSizeHandler.screenHeight * 0.01,
@@ -492,17 +402,9 @@ class _SearchingScreenState extends State<SearchingScreen>
                       PostSearchScreen(
                         postSearchCards: searchedPosts,
                       ),
-                      CommunitiesSearchScreen(
-                        subredditAvatarImages: subredditAvatarImages,
-                        subredditMembers: subredditMembers,
-                        subredditNames: subredditNames,
-                      ),
                       CommentsSearchScreen(
                         commentSearchCards: searchedComments,
                       ),
-                      PeopleSearchScreen(
-                          userNames: userNames,
-                          userAvatarImages: userAvatarImages),
                     ],
                   ),
                 ),

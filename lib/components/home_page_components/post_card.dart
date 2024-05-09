@@ -1,8 +1,7 @@
-import 'package:any_link_preview/any_link_preview.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_link_previewer/flutter_link_previewer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:reddit_bel_ham/components/general_components/avatar.dart';
 import 'package:reddit_bel_ham/components/home_page_components/more_bottom_sheet.dart';
 import 'package:reddit_bel_ham/components/home_page_components/poll_post_card.dart';
 import 'package:reddit_bel_ham/components/home_page_components/share_bottom_sheet.dart';
@@ -11,7 +10,6 @@ import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:video_player/video_player.dart';
 import 'package:reddit_bel_ham/components/subreddit_components/moderator_post_bottom_sheet.dart';
 import 'package:reddit_bel_ham/utilities/time_ago.dart';
 
@@ -29,11 +27,13 @@ class Post {
   DateTime? startTime;
   DateTime? endTime;
   String subredditName = "";
+  String avatarImage = 'assets/images/redditAvata2.png';
   String content;
   String contentTitle;
   String type;
   String link;
   String video;
+  String subredditId;
   List<String> image = [];
   String createdFrom;
   int upvotes;
@@ -46,41 +46,46 @@ class Post {
   bool isLocked = false;
   bool isApproved = false;
   bool isDisapproved = false;
+  bool isOwner = false;
+  bool isSaved = false;
   int? pollVotes = 0;
 
   var previewData;
 
-  Post({
-    required this.postId,
-    this.subredditName = "Dragon Oath",
-    this.userAvatarImage = "assets/images/avatarDaniel.png",
-    this.userName = "thekey119",
-    required this.contentTitle,
-    required this.content,
-    required this.upvotes,
-    required this.comments,
-    required this.type,
-    required this.link,
-    this.image = const [],
-    required this.video,
-    required this.createdFrom,
-    required this.userId,
-    this.options = const [],
-    this.numOfVotersPerOption = const [],
-    this.isPollVoted = false,
-    this.selectedPollOption,
-    this.startTime,
-    this.endTime,
-    this.spamCount = 0,
-    this.isUpvoted = false,
-    this.isDownvoted = false,
-    this.isNSFW = false,
-    this.isSpoiler = false,
-    this.isLocked = false,
-    this.isApproved = false,
-    this.isDisapproved = false,
-    this.pollVotes = 0,
-  });
+  Post(
+      {required this.postId,
+      this.subredditName = "Dragon Oath",
+      this.userAvatarImage = "assets/images/avatarDaniel.png",
+      this.userName = "thekey119",
+      required this.contentTitle,
+      required this.content,
+      required this.upvotes,
+      required this.comments,
+      required this.type,
+      required this.link,
+      this.image = const [],
+      required this.video,
+      required this.createdFrom,
+      required this.userId,
+      this.subredditId = "",
+      this.options = const [],
+      this.numOfVotersPerOption = const [],
+      this.isPollVoted = false,
+      this.selectedPollOption,
+      this.startTime,
+      this.endTime,
+      this.spamCount = 0,
+      this.isUpvoted = false,
+      this.isDownvoted = false,
+      this.isNSFW = false,
+      this.isSpoiler = false,
+      this.isLocked = false,
+      this.isApproved = false,
+      this.isDisapproved = false,
+      this.pollVotes = 0,
+      this.avatarImage = 'assets/images/planet3.png',
+      this.isOwner = false,
+      this.isSaved = false});
 
   factory Post.fromJson(Map<String, dynamic> json) {
     return Post(
@@ -127,7 +132,7 @@ class Post {
       image: json['imageUrls'] != null
           ? (json['imageUrls'] as List).map((image) => image as String).toList()
           : [],
-      createdFrom: json['createdAt'] ?? '',
+      createdFrom: timeAgo(json['createdAt']) ?? '',
       upvotes: json['upvotes'] ?? 0,
       comments: json['commentCount'] ?? 0,
       spamCount: json['spamCount'] ?? 0,
@@ -138,19 +143,23 @@ class Post {
       isLocked: json['isLocked'] ?? false,
       isApproved: json['approved'] ?? false,
       isDisapproved: json['disapproved'] ?? false,
+      isOwner: TokenDecoder.id == (json['user'] ?? ''),
     );
   }
 }
 
 class PostCard extends StatefulWidget {
   final Post post;
-  late bool isModertor = false;
-  late bool isCommunityFeed = false;
+  final bool isModertor;
+  final bool isExpanded;
+  final bool isCommunityFeed;
 
-  PostCard(
+  const PostCard(
       {required this.post,
       this.isModertor = false,
+      this.isExpanded = false,
       this.isCommunityFeed = false});
+
   @override
   _PostCardState createState() => _PostCardState();
 }
@@ -174,8 +183,6 @@ class _PostCardState extends State<PostCard> {
     }
   }
 
-  bool isExpanded = false;
-
   Widget buildPostCard(Post post, bool isTypeImage, bool isTypeText,
       bool isTypePoll, bool isTypeLink, bool isOwner, BuildContext context) {
     return Container(
@@ -196,27 +203,58 @@ class _PostCardState extends State<PostCard> {
                             ? NetworkImage(post.userAvatarImage)
                             : AssetImage(post.userAvatarImage)
                                 as ImageProvider<Object>?
-                        : AssetImage("assets/images/avatarDaniel.png")
-                            as ImageProvider<Object>?,
+                        : widget.isExpanded
+                            ? post.userAvatarImage !=
+                                    "assets/images/avatarDaniel.png"
+                                ? NetworkImage(post.userAvatarImage)
+                                : AssetImage(post.userAvatarImage)
+                                    as ImageProvider<Object>?
+                            : post.avatarImage != "assets/images/planet3.png"
+                                ? NetworkImage(post.avatarImage)
+                                : AssetImage(post.avatarImage)
+                                    as ImageProvider<Object>?,
                   ),
                 ),
                 SizedBox(width: ScreenSizeHandler.screenWidth * 0.02),
                 Expanded(
-                  child: widget.isCommunityFeed
-                      ? Text(
-                          '${post.userName}  ${timeAgo(post.createdFrom)}',
-                          style: TextStyle(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.isExpanded
+                            ? widget.post.subredditName == ""
+                                ? "u/${post.userName}"
+                                : "r/${post.subredditName}"
+                            : widget.isCommunityFeed
+                                ? '${post.userName} • ${post.createdFrom}'
+                                : 'r/${post.subredditName} • ${post.createdFrom}',
+                        style: TextStyle(
+                            height: 0.8,
                             color: Colors.white,
-                            fontSize: ScreenSizeHandler.screenWidth * 0.025,
-                          ),
-                        )
-                      : Text(
-                          '${post.subredditName}  ${timeAgo(post.createdFrom)}',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: ScreenSizeHandler.screenWidth * 0.025,
-                          ),
+                            fontSize: ScreenSizeHandler.bigger * 0.017,
+                            fontWeight: FontWeight.w500),
+                      ),
+                      if (widget.isExpanded)
+                        Row(
+                          children: [
+                            Text(
+                              'u/${post.userName} ',
+                              style: TextStyle(
+                                  color: Colors.blue,
+                                  fontSize: ScreenSizeHandler.bigger * 0.017,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                            Text(
+                              '• ${post.createdFrom}',
+                              style: TextStyle(
+                                  color: Colors.grey[400],
+                                  fontSize: ScreenSizeHandler.bigger * 0.017,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                          ],
                         ),
+                    ],
+                  ),
                 ),
                 if (post.isLocked)
                   Padding(
@@ -312,14 +350,20 @@ class _PostCardState extends State<PostCard> {
                   Row(
                     children: [
                       Expanded(
-                        child: Text(
-                          post.contentTitle,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: ScreenSizeHandler.screenWidth * 0.038,
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                              right: ScreenSizeHandler.screenWidth * 0.02),
+                          child: Text(
+                            post.contentTitle,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: widget.isExpanded
+                                  ? ScreenSizeHandler.bigger * 0.023
+                                  : ScreenSizeHandler.bigger * 0.020,
+                            ),
+                            softWrap: true,
                           ),
-                          softWrap: true,
                         ),
                       ),
                       if (widget.post.type == 'link')
@@ -349,23 +393,6 @@ class _PostCardState extends State<PostCard> {
                         ),
                     ],
                   ),
-                  if (widget.post.type == 'text')
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          isExpanded = !isExpanded;
-                        });
-                      },
-                      child: Text(
-                        post.content,
-                        maxLines: isExpanded ? 100 : 3,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            color: const Color.fromARGB(255, 133, 132, 132),
-                            fontWeight: FontWeight.normal,
-                            fontSize: ScreenSizeHandler.screenWidth * 0.026),
-                      ),
-                    ),
                   if (widget.post.type == 'image') ...[
                     SizedBox(
                       height: ScreenSizeHandler.screenHeight *
@@ -373,8 +400,6 @@ class _PostCardState extends State<PostCard> {
                       child: PageView.builder(
                         itemCount: post.image.length,
                         itemBuilder: (context, index) {
-                          print("BOSSS HENAAAA");
-                          print(post.image[index]);
                           return widget.post.image[index].startsWith("http")
                               ? Image.network(
                                   post.image[index],
@@ -392,6 +417,29 @@ class _PostCardState extends State<PostCard> {
                   if (widget.post.type == 'video') ...[
                     VideoPlayerWidget(videoPath: post.video),
                   ],
+                  if (widget.post.type == 'text' || widget.isExpanded)
+                    Padding(
+                      padding: EdgeInsets.only(
+                          top: widget.isExpanded
+                              ? ScreenSizeHandler.screenHeight * 0.02
+                              : ScreenSizeHandler.screenHeight * 0.005,
+                          right: ScreenSizeHandler.screenWidth * 0.02,
+                          bottom: ScreenSizeHandler.screenHeight * 0.015),
+                      child: Text(
+                        post.content,
+                        maxLines: widget.isExpanded ? 100 : 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            height: 1.1,
+                            color: widget.isExpanded
+                                ? Colors.white
+                                : const Color.fromARGB(255, 133, 132, 132),
+                            fontWeight: FontWeight.normal,
+                            fontSize: widget.isExpanded
+                                ? ScreenSizeHandler.bigger * 0.018
+                                : ScreenSizeHandler.bigger * 0.016),
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -440,16 +488,19 @@ class _PostCardState extends State<PostCard> {
                                         color: post.isUpvoted
                                             ? Colors.red
                                             : Colors.white,
-                                        size: ScreenSizeHandler.screenWidth *
-                                            0.04,
+                                        size: ScreenSizeHandler.bigger * 0.023,
                                       ),
                                       Text(
                                         post.upvotes.toString(),
                                         style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize:
-                                                ScreenSizeHandler.screenWidth *
-                                                    0.025),
+                                            color: post.isUpvoted
+                                                ? Colors.red
+                                                : post.isDownvoted
+                                                    ? const Color.fromARGB(
+                                                        255, 110, 85, 114)
+                                                    : Colors.white,
+                                            fontSize: ScreenSizeHandler.bigger *
+                                                0.020),
                                       ),
                                       Padding(
                                         padding: EdgeInsets.only(
@@ -491,8 +542,7 @@ class _PostCardState extends State<PostCard> {
                                             ? const Color.fromARGB(
                                                 255, 110, 85, 114)
                                             : Colors.white,
-                                        size: ScreenSizeHandler.screenWidth *
-                                            0.04,
+                                        size: ScreenSizeHandler.bigger * 0.023,
                                       ),
                                     ],
                                   ),
@@ -539,9 +589,8 @@ class _PostCardState extends State<PostCard> {
                                           ),
                                           child: Icon(
                                             Icons.mode_comment_outlined,
-                                            size:
-                                                ScreenSizeHandler.screenWidth *
-                                                    0.036,
+                                            size: ScreenSizeHandler.bigger *
+                                                0.023,
                                             color: Colors.white,
                                           ),
                                         ),
@@ -557,9 +606,9 @@ class _PostCardState extends State<PostCard> {
                                             post.comments.toString(),
                                             style: TextStyle(
                                                 color: Colors.white,
-                                                fontSize: ScreenSizeHandler
-                                                        .screenWidth *
-                                                    0.025),
+                                                fontSize:
+                                                    ScreenSizeHandler.bigger *
+                                                        0.020),
                                           ),
                                         )
                                       ])),
@@ -603,26 +652,9 @@ class _PostCardState extends State<PostCard> {
                                   ),
                                   child: Icon(
                                     Icons.share,
-                                    size: ScreenSizeHandler.screenWidth * 0.037,
+                                    size: ScreenSizeHandler.bigger * 0.023,
                                     color: Colors.white,
                                   ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      left:
-                                          ScreenSizeHandler.screenWidth * 0.01,
-                                      right:
-                                          ScreenSizeHandler.screenWidth * 0.02,
-                                      top: ScreenSizeHandler.screenWidth * 0.01,
-                                      bottom:
-                                          ScreenSizeHandler.screenWidth * 0.01),
-                                  child: Text("147",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize:
-                                            ScreenSizeHandler.screenWidth *
-                                                0.025,
-                                      )),
                                 ),
                               ],
                             )),

@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reddit_bel_ham/constants.dart';
 
 import 'package:clipboard/clipboard.dart';
+import 'package:reddit_bel_ham/screens/new_message_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:reddit_bel_ham/components/subreddit_components/subreddit.dart';
 import 'package:reddit_bel_ham/components/subreddit_components/ellipsis_tile.dart';
@@ -63,6 +64,10 @@ Widget buildSubredditEllipsisModalBottomSheet(
           Column(
             children: [
               GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, NewMessageScreen.id,
+                      arguments: {"isSubreddit": true, "subredditName": subreddit.name});
+                },
                 child: EllipsisTile(
                     tileText: "Message moderators",
                     tileIcon: FontAwesomeIcons.envelope),
