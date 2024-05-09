@@ -174,11 +174,13 @@ class _CommentsScreenState extends State<CommentsScreen> {
       bool isUpvoted = comment['isUpvoted'];
       bool isDownvoted = comment['isDownvoted'];
       List<dynamic> repliesData = comment['replies'];
+      String userName = comment['userName'];
+      String userAvatar = comment['userAvatar']?? "assets/images/avatarDaniel.png";
       List<Comment> repliesList =
           repliesData.isNotEmpty ? parseComments(repliesData) : [];
 
       Comment commentData = Comment(
-          username: "peter",
+          username: userName,
           userId: userId,
           commentId: commentId,
           content: content,
@@ -188,6 +190,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
           isDownvoted: isDownvoted,
           repliedId: parentCommentId,
           postId: pushedPost.postId,
+          avatarImage: userAvatar,
           replies: repliesList);
 
       comments.add(commentData);

@@ -42,6 +42,7 @@ import '../components/messaging_components/inbox_bottom_sheet.dart';
 import 'package:reddit_bel_ham/screens/inside_chat_screen.dart';
 
 import 'package:reddit_bel_ham/screens/inside_chat_screen.dart';
+import 'package:reddit_bel_ham/screens/chatting_screen.dart';
 
 class HomePageScreen extends StatefulWidget {
   const HomePageScreen({super.key});
@@ -289,11 +290,6 @@ class _HomePageScreenState extends State<HomePageScreen> {
     });
     if (index == 2) {
       Navigator.pushNamed(context, AddPostScreen.id);
-      setState(() {
-        navigationBarIndex = oldIndex;
-      });
-    } else if (index == 3) {
-      Navigator.pushNamed(context, InsideChattingScreen.id);
       setState(() {
         navigationBarIndex = oldIndex;
       });
@@ -547,20 +543,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
         body: navigationBarIndex == 1
             ? const CommunitiesScreen()
             : navigationBarIndex == 3
-                ? Padding(
-                    padding: EdgeInsets.only(
-                      left: ScreenSizeHandler.screenWidth * 0.1,
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Chat',
-                        style: TextStyle(
-                            fontSize: ScreenSizeHandler.smaller *
-                                kButtonSmallerFontRatio *
-                                1.1),
-                      ),
-                    ),
-                  )
+                ? const ChattingScreen()
                 : navigationBarIndex == 4
                     ? isMarkingAllAsRead
                         ? const Center(child: RedditLoadingIndicator())
@@ -586,10 +569,10 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                   onTap: () {
                                     Navigator.pushNamed(
                                         context, CommentsScreen.id,
-                                        arguments: {"post": feed[index]});
+                                        arguments: {"post": posts[index]});
                                   },
                                   child: PostCard(
-                                    post: feed[index],
+                                    post: posts[index],
                                   ),
                                 );
                               },
