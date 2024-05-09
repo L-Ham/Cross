@@ -54,7 +54,7 @@ class _InboxMessagesScreenState extends State<InboxMessagesScreen>
       ),
       body: TabBarView(
         controller: _tabController,
-        children: [
+        children: const [
           ActivityScreen(),
           MessagesScreen(),
         ],

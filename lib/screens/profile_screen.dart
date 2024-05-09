@@ -8,6 +8,8 @@ import 'package:reddit_bel_ham/screens/chatting_screen.dart';
 import 'package:reddit_bel_ham/screens/edit_profile_screen.dart';
 import 'package:reddit_bel_ham/screens/new_message_screen.dart';
 import 'package:reddit_bel_ham/screens/searching_screen.dart';
+import 'package:reddit_bel_ham/screens/subreddit_screen.dart';
+import 'package:reddit_bel_ham/screens/subreddit_search_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:reddit_bel_ham/components/general_components/rounded_button.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
@@ -69,37 +71,29 @@ class _ProfileScreenState extends State<ProfileScreen>
     }
   }
 
-  Future<void> getUser(String username) async 
-  {
-    Map<String, dynamic> data = (await apiService.getSearchedForBlockedUsers(username)) ?? {};
-    if (mounted)
-    {
-      if (!isMyProfile)
-      {
-
-      setState(() {
-        if (data['matchingUsernames'] == null)
-        {
-          return;
-        }
-        // print(data);
-        id = data['matchingUsernames'][0]['_id'].toString();
-        print('IDDDDD: $id');
-    });
+  Future<void> getUser(String username) async {
+    Map<String, dynamic> data =
+        (await apiService.getSearchedForBlockedUsers(username)) ?? {};
+    if (mounted) {
+      if (!isMyProfile) {
+        setState(() {
+          if (data['matchingUsernames'] == null) {
+            return;
+          }
+          // print(data);
+          id = data['matchingUsernames'][0]['_id'].toString();
+          print('IDDDDD: $id');
+        });
       }
     }
   }
 
-  Future<void>  getUserInfo(String username) async
-  {
+  Future<void> getUserInfo(String username) async {
     await getUser(username);
     Map<String, dynamic> data = (await apiService.getUserInfo(id)) ?? {};
-    if (mounted)
-    {
-
+    if (mounted) {
       setState(() {
-        if (data['user'] == null)
-        {
+        if (data['user'] == null) {
           return;
         }
         avatarImage = data['user']['avatar'] ?? '';
@@ -111,45 +105,41 @@ class _ProfileScreenState extends State<ProfileScreen>
         commentKarma = data['user']['commentKarma'].toString() ?? '0';
         bannerImage = data['user']['banner'] ?? '';
         created = data['user']['created'] != null
-        ? DateTime.fromMillisecondsSinceEpoch(data['user']['created'] * 1000).toString()
-        : '';
+            ? DateTime.fromMillisecondsSinceEpoch(
+                    data['user']['created'] * 1000)
+                .toString()
+            : '';
         about = data['user']['About'] ?? '';
         isFriend = data['user']['isFriend'] ?? false;
         isBlocked = data['user']['isBlocked'] ?? false;
         // socialLinks = (data['user']['socialLinks'] as List<dynamic>)
-            //     ?.map((item) => item as Map<String, dynamic>)
-            //     ?.toList() ??
-            // [];
+        //     ?.map((item) => item as Map<String, dynamic>)
+        //     ?.toList() ??
+        // [];
         isLoading = false;
         print(data);
-        
       });
     }
-      print(displayName);
-
+    print(displayName);
   }
 
   Future<void> followUser(String username) async {
     await apiService.followUser(username) ?? {};
     setState(() {
-      
-    isFriend=true;
+      isFriend = true;
     });
   }
 
   Future<void> unfollowUser(String username) async {
     await apiService.unfollowUser(username) ?? {};
     setState(() {
-      
-    isFriend=false;
+      isFriend = false;
     });
   }
 
   Future<void> getUserPersonalInfo() async {
     Map<String, dynamic> data = (await apiService.getUserSelfInfo()) ?? {};
-    if (mounted)
-    {
-
+    if (mounted) {
       setState(() {
         avatarImage = data['user']['avatar'] ?? '';
         username = data['user']['username'] ?? '';
@@ -160,13 +150,15 @@ class _ProfileScreenState extends State<ProfileScreen>
         commentKarma = data['user']['commentKarma'].toString() ?? '0';
         bannerImage = data['user']['banner'] ?? '';
         created = data['user']['created'] != null
-        ? DateTime.fromMillisecondsSinceEpoch(data['user']['created'] * 1000).toString()
-        : '';
+            ? DateTime.fromMillisecondsSinceEpoch(
+                    data['user']['created'] * 1000)
+                .toString()
+            : '';
         about = data['user']['About'] ?? '';
         isLoading = false;
       });
     }
-      print(displayName);
+    print(displayName);
   }
   Future<void> getProfileFeed(String username, int page, int limit) async {
     print('USERNAMEEE: $username');
@@ -279,10 +271,9 @@ class _ProfileScreenState extends State<ProfileScreen>
   Future<void> getSelfProfileInfo() async {
     if (mounted) {
       setState(() {
-          getUserPersonalInfo();
+        getUserPersonalInfo();
         getSocialLinks();
       });
-
     }
   }
 
@@ -315,26 +306,19 @@ class _ProfileScreenState extends State<ProfileScreen>
     // created = args['created'] as String;
 // socialLinks = args['socialLinks'] != null ? args['socialLinks'] as List<Map<String,dynamic>> : [];
     // if (isMyProfile) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-
-          setState(() {
-            if(isMyProfile)
-            {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        setState(() {
+          if (isMyProfile) {
             getSelfProfileInfo();
-
-            }
-            else
-            {
+          } else {
             getUserInfo(username);
-            }
-            isLoading = true;
-              
-
-          });
-        }
-        isAppBarExpanded = true;
-      });
+          }
+          isLoading = true;
+        });
+      }
+      isAppBarExpanded = true;
+    });
     // }
   }
     void getNewPostsForFeed() {
@@ -374,19 +358,19 @@ class _ProfileScreenState extends State<ProfileScreen>
     _tabController = TabController(length: 3, vsync: this);
     _scrollController.addListener(getNewPostsForFeed);
     // if (isMyProfile) {
-      if (mounted) {
-          // setState(() {
-          //   if(isMyProfile)
-          //   {
-          //   getSelfProfileInfo();
+    if (mounted) {
+      // setState(() {
+      //   if(isMyProfile)
+      //   {
+      //   getSelfProfileInfo();
 
-          //   }
-          //   else
-          //   {
-          //   getUserInfo(username);
-          //   }
-          // });
-      }
+      //   }
+      //   else
+      //   {
+      //   getUserInfo(username);
+      //   }
+      // });
+    }
     // }
   }
   
@@ -535,7 +519,16 @@ class _ProfileScreenState extends State<ProfileScreen>
                           children: [
                             IconButton(
                               onPressed: () {
-                                Navigator.pushNamed(context, SearchingScreen.id, arguments: {'isSearching': true});
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SubredditSearchScreen(
+                                      subredditName: username,
+                                      subredditAvatarImage: avatarImage,
+                                      isSubreddit: false,
+                                    ),
+                                  ),
+                                );
                               },
                               icon: Icon(Icons.search, color: Colors.white),
                             ),
@@ -560,10 +553,11 @@ class _ProfileScreenState extends State<ProfileScreen>
                                     ? Icon(
                                         Icons.account_circle,
                                         color: Colors.white,
-                                        size: isAppBarExpanded?70:20,
+                                        size: isAppBarExpanded ? 70 : 20,
                                       )
                                     : ClipRRect(
-                                        borderRadius: BorderRadius.circular(100.0),
+                                        borderRadius:
+                                            BorderRadius.circular(100.0),
                                         child: Image.network(avatarImage,
                                             width: isAppBarExpanded ? 70 : 25,
                                             height: isAppBarExpanded ? 70 : 25),
@@ -600,20 +594,24 @@ class _ProfileScreenState extends State<ProfileScreen>
                                     onPressed: () {
                                       isMyProfile
                                           ? Navigator.pushNamed(
-                                                  context, EditProfileScreen.id,
-                                                  arguments: {
+                                              context, EditProfileScreen.id,
+                                              arguments: {
                                                   'isAddSocialLinkPressed':
                                                       false,
                                                   'avatarImage': avatarImage,
                                                   'bannerImage': bannerImage,
-                                                })
-                                              .then((value) => getSelfProfileInfo())
+                                                }).then(
+                                              (value) => getSelfProfileInfo())
                                           : isFriend
                                               ? unfollowUser(username)
                                               : followUser(username);
                                     },
                                     child: Text(
-                                      isMyProfile ? 'Edit' : isFriend?'Following':'Follow',
+                                      isMyProfile
+                                          ? 'Edit'
+                                          : isFriend
+                                              ? 'Following'
+                                              : 'Follow',
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold),
@@ -631,7 +629,12 @@ class _ProfileScreenState extends State<ProfileScreen>
                                   if (!isMyProfile) ...[
                                     ElevatedButton(
                                       onPressed: () {
-                                        Navigator.pushNamed(context, NewMessageScreen.id, arguments: {'userName': username,'isReply':false});
+                                        Navigator.pushNamed(
+                                            context, NewMessageScreen.id,
+                                            arguments: {
+                                              'userName': username,
+                                              'isReply': false
+                                            });
                                       },
                                       child: Icon(Icons.message_outlined,
                                           color: Colors.white, size: 20),
@@ -661,7 +664,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                             ),
                             Padding(
                               padding: const EdgeInsets.only(left: 16.0),
-                              child: Text('u/$username • $postKarma karma • $created',
+                              child: Text(
+                                  'u/$username • $postKarma karma • $created',
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 13)),
                             ),
@@ -694,19 +698,20 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                 child: RoundedButton(
                                                   onTap: () {
                                                     setState(() {
-                                                      
-                                                    if (socialLinks[index]
-                                                            ['appName'] ==
-                                                        'reddit')
-                                                        {
-                                                          goToProfile(context, socialLinks[index]['linkOrUsername'].replaceFirst('u/', ''));
-                                                        }
-                                                        else
-                                                        {
-                                                          _launchURL(
-                                                              socialLinks[index]
-                                                                  ['linkOrUsername']);
-                                                        }
+                                                      if (socialLinks[index]
+                                                              ['appName'] ==
+                                                          'reddit') {
+                                                        goToProfile(
+                                                            context,
+                                                            socialLinks[index][
+                                                                    'linkOrUsername']
+                                                                .replaceFirst(
+                                                                    'u/', ''));
+                                                      } else {
+                                                        _launchURL(socialLinks[
+                                                                index]
+                                                            ['linkOrUsername']);
+                                                      }
                                                     });
                                                   },
                                                   buttonHeightRatio: 0.06,
@@ -860,69 +865,110 @@ class _ProfileScreenState extends State<ProfileScreen>
                     child: Column(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(top:32.0, right:32, left:16),
+                          padding: const EdgeInsets.only(
+                              top: 32.0, right: 32, left: 16),
                           child: Row(
                             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(postKarma, style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
-                                            
+                              Text(postKarma,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold)),
                               Padding(
-                                padding: EdgeInsets.only(left:ScreenSizeHandler.screenWidth*0.59),
-                                child: Text(commentKarma, style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                                padding: EdgeInsets.only(
+                                    left: ScreenSizeHandler.screenWidth * 0.59),
+                                child: Text(commentKarma,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold)),
                               ),
                             ],
-                                              ),
+                          ),
                         ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom:10.0, right:32, left:16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('Post Karma', style: TextStyle(color: Colors.grey, fontSize: 13,)),
-                              Text('Comment Karma', style: TextStyle(color: Colors.grey, fontSize: 13,)),
-                            ],
-                        ),
-                      ),
-                      Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.only(left:16),
-                        child: Text(about, style: TextStyle(color: Colors.grey, fontSize: 15, fontWeight: FontWeight.bold), 
-                        ),
-                      ),
-                      if (!isMyProfile) ...[
-                    
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(context, NewMessageScreen.id, arguments: {'userName': username, 'isReply': false});
-                        },
-                        child: Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.only(top: 20,left:16),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              bottom: 10.0, right: 32, left: 16),
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Icon(FontAwesomeIcons.envelope, color: Colors.grey, size: 20,),
-                              Padding(
-                                padding: const EdgeInsets.only(left:8.0),
-                                child: Text('Send a message', style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold), 
-                                ),
-                              ),
+                              Text('Post Karma',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 13,
+                                  )),
+                              Text('Comment Karma',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 13,
+                                  )),
                             ],
                           ),
                         ),
-                      ),    
-                      ],
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical:8.0),
-                        child: Container(
+                        Container(
                           width: double.infinity,
-                          color: Colors.black,
-                          padding: EdgeInsets.only(top: 10,left:16, bottom:10),
-                          child: Text("TROPHIES", style: TextStyle(color: Colors.grey, fontSize: 13, fontWeight: FontWeight.bold), 
+                          padding: EdgeInsets.only(left: 16),
+                          child: Text(
+                            about,
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
-                      ),
+                        if (!isMyProfile) ...[
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(context, NewMessageScreen.id,
+                                  arguments: {
+                                    'userName': username,
+                                    'isReply': false
+                                  });
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.only(top: 20, left: 16),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    FontAwesomeIcons.envelope,
+                                    color: Colors.grey,
+                                    size: 20,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: Text(
+                                      'Send a message',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: Container(
+                            width: double.infinity,
+                            color: Colors.black,
+                            padding:
+                                EdgeInsets.only(top: 10, left: 16, bottom: 10),
+                            child: Text(
+                              "TROPHIES",
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
                       ],
-                      ),
+                    ),
                   )
                 ],
               ),
