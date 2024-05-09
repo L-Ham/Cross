@@ -29,17 +29,18 @@ class PostToSubredditTile extends StatelessWidget {
             CircleAvatar(
               radius: ScreenSizeHandler.bigger * 0.032,
               backgroundColor: Colors.grey,
-              child: subredditImage != 'assets/images/planet3.png'
+              child: subredditImage != 'assets/images/planet3.png' &&
+                      subredditImage != 'assets/images/avatarDaniel.png'
                   ? ClipRRect(
                       borderRadius: BorderRadius.circular(35),
-                      child: Image.network(
-                          subredditImage,
-                          fit: BoxFit.cover),
+                      child: Image.network(subredditImage, fit: BoxFit.cover),
                     )
                   : ClipRRect(
                       borderRadius: BorderRadius.circular(35),
                       child: Image.asset(
-                        'assets/images/planet3.png',
+                        subredditImage == 'assets/images/avatarDaniel.png'
+                            ? 'assets/images/avatarDaniel.png'
+                            : 'assets/images/planet3.png',
                         fit: BoxFit.cover,
                       ),
                     ),

@@ -329,6 +329,7 @@ class ApiService {
 
   Future<dynamic> addTextPost(Map<String, dynamic> body) async {
     debugPrint('success');
+    print(body);
     var result = await request('/post/createPost',
         headers: headerWithToken, method: 'POST', body: body);
     return result;
@@ -1129,9 +1130,12 @@ class ApiService {
         body: {"usernameToFollow": username});
     return result;
   }
-    Future<dynamic> unfollowUser(String username) async {
+
+  Future<dynamic> unfollowUser(String username) async {
     var result = await request('/user/unfollowUser',
-        headers: headerWithToken, method: 'PATCH', body: {"usernameToUnfollow": username});
+        headers: headerWithToken,
+        method: 'PATCH',
+        body: {"usernameToUnfollow": username});
     return result;
   }
   Future<dynamic> getProfileFeed(
@@ -1199,6 +1203,14 @@ class ApiService {
     return result;
   }
 
+  Future<dynamic> getHomeFeed(
+      String sortType, String page, String limit) async {
+    Map<String, dynamic> sentData;
+    sentData = {"sort": sortType, "page": page, "limit": limit};
+    var response = await request('/post/homepage/feed',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    return response;
+  }
   Future<dynamic> getCommunityType(String communityName) async {
         Map<String, dynamic> sentData;
     sentData = {
