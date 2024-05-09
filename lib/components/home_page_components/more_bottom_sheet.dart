@@ -223,8 +223,9 @@ Widget buildMoreModalBottomSheet(BuildContext context, Post post) {
                       ],
                     ),
                   ),
-                if (post.subredditName != "r/DanielAdel") ...[
+                if (post.isOwner)
                   SizedBox(height: ScreenSizeHandler.screenHeight * 0.02),
+                if (post.subredditName != "r/DanielAdel") ...[
                   Row(
                     children: [
                       Padding(

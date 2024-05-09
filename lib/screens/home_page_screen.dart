@@ -14,6 +14,7 @@ import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 import 'package:reddit_bel_ham/components/home_page_components/profile_icon_with_indicator.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_leading_icon.dart';
+import 'package:reddit_bel_ham/components/subreddit_components/subreddit_ellipsis_bottom_sheet.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/add_post_screen.dart';
 import 'package:reddit_bel_ham/screens/comments_screen.dart';
@@ -68,6 +69,26 @@ class _HomePageScreenState extends State<HomePageScreen> {
     setState(() {
       isRecentlyVisitedDrawerVisible = value;
     });
+  }
+
+  void getTrendingPosts() async {
+    var response = await apiService.getTrendingPosts();
+    response = response["trendingPosts"];
+    if (mounted) {
+      setState(() {
+        trending.clear();
+      });
+    }
+
+    for (var trendingPost in response) {
+      if (mounted) {
+        setState(() {
+          trending.add(TrendingPost(
+              contentTitle: trendingPost["title"],
+              image: trendingPost["image"]));
+        });
+      }
+    }
   }
 
   bool isMarkingAllAsRead = false;
@@ -198,33 +219,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
     //   video: "assets/videos/video.mp4",
     // )
   ];
-  final List<TrendingPost> trending = [
-    TrendingPost(
-      contentTitle: "Peter nayem 3al ard",
-      // content: "Check this page for more details",
-      image: const AssetImage('assets/images/peter_nayem.png'),
-    ),
-    TrendingPost(
-      contentTitle: "Habouba nayma",
-      // content: "Check this page for more details",
-      image: const AssetImage('assets/images/habouba_nayma.png'),
-    ),
-    TrendingPost(
-      contentTitle: "David nayem",
-      // content: "Check this page for more details",
-      image: const AssetImage('assets/images/david_nayem.png'),
-    ),
-    TrendingPost(
-      contentTitle: "Nardo nayma",
-      // content: "Check this page for more details",
-      image: const AssetImage('assets/images/nardo_nayma.png'),
-    ),
-    TrendingPost(
-      contentTitle: "Daniel haymawetna",
-      // content: "Check this page for more details",
-      image: const AssetImage('assets/images/daniel_haymawetna.png'),
-    )
-  ];
+  final List<TrendingPost> trending = [];
   void _onItemTapped(int index) {
     setState(() {
       oldIndex = navigationBarIndex;
@@ -243,6 +238,12 @@ class _HomePageScreenState extends State<HomePageScreen> {
         navigationBarIndex = oldIndex;
       });
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    getTrendingPosts();
+    super.didChangeDependencies();
   }
 
   @override
@@ -561,11 +562,13 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                 ),
                                 SingleChildScrollView(
                                   scrollDirection: Axis.horizontal,
-                                  child: Row(
-                                    children: trending
-                                        .map((post) =>
-                                            TrendingPostCard(post: post))
-                                        .toList(),
+                                  child: GestureDetector(
+                                    child: Row(
+                                      children: trending
+                                          .map((post) =>
+                                              TrendingPostCard(post: post))
+                                          .toList(),
+                                    ),
                                   ),
                                 ),
                                 ListView.builder(
