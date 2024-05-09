@@ -92,7 +92,7 @@ class Post {
       postId: json['_id'] ?? '',
       userId: json['user'] ?? '',
       userAvatarImage:
-          json['creatorAvatarImage'] ?? "assets/images/avatarDaniel.png",
+          json['creatorAvatarImage'] ?? json['creatorAvatar'] ?? "assets/images/avatarDaniel.png",
       userName: json['creatorUsername'] ?? 'thekey119',
       subredditName: json['subredditName'] ?? '',
       options: json['poll'] != null && json['poll']['options'] != null
@@ -144,6 +144,7 @@ class Post {
       isApproved: json['approved'] ?? false,
       isDisapproved: json['disapproved'] ?? false,
       isOwner: TokenDecoder.id == (json['user'] ?? ''),
+      avatarImage: json['subredditAvatar'] ?? 'assets/images/planet3.png',
     );
   }
 }

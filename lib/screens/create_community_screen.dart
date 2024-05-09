@@ -65,9 +65,11 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
     } catch (e) {
       print('Error: $e');
     } finally {
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 
@@ -108,7 +110,8 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
         arguments: _controller.text);
     Navigator.pushNamed(context, AddPostScreen.id, arguments: {
       "subredditName": _controller.text,
-      "subredditId": communityData["_id"]
+      "subredditId": communityData['savedCommunity']["_id"],
+      "subredditImage": "assets/images/planet3.png"
     });
     setState(() {
       isLoading = false;
@@ -174,20 +177,22 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                             TextPosition(offset: _controller.text.length));
                       });
                     }
-                    setState(
-                      () {
-                        errorText = validateInput(value);
-                        if (errorText == 'Empty') {
-                          errorText = '';
-                          activated = false;
-                        } else if (value.length >= kCommunityNameMinLength &&
-                            errorText == '') {
-                          activated = true;
-                        } else {
-                          activated = false;
-                        }
-                      },
-                    );
+                    if (mounted) {
+                      setState(
+                        () {
+                          errorText = validateInput(value);
+                          if (errorText == 'Empty') {
+                            errorText = '';
+                            activated = false;
+                          } else if (value.length >= kCommunityNameMinLength &&
+                              errorText == '') {
+                            activated = true;
+                          } else {
+                            activated = false;
+                          }
+                        },
+                      );
+                    }
                   },
                   onClear: () {
                     setState(() {

@@ -16,7 +16,7 @@ class SearchStore {
     }
 
     if (searches.length >= limit) {
-      searches.removeAt(0);
+      searches.removeLast();
     }
     searches.insert(0, search);
 
