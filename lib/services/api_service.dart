@@ -1211,4 +1211,25 @@ class ApiService {
         headers: headerWithToken, method: 'GET', body: sentData);
     return response;
   }
+  Future<dynamic> getCommunityType(String communityName) async {
+        Map<String, dynamic> sentData;
+    sentData = {
+      "subredditName": communityName,
+    };
+    var result = await request('/subreddit/type',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> removeModerator(String communityName, String userName) async {
+      Map<String, dynamic> sentData;
+    sentData = {
+      "subredditName": communityName,
+      "moderatorName":  userName,
+    };
+    var result = await request('/subreddit/mod/remove',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
 }
