@@ -10,11 +10,8 @@ import 'package:reddit_bel_ham/components/general_components/continue_button.dar
 import 'package:reddit_bel_ham/screens/add_approved_user_screen.dart';
 import 'package:reddit_bel_ham/screens/new_message_screen.dart';
 
-
-
 class ApprovedUsersScreen extends StatefulWidget {
-  final String communityName;
-  const ApprovedUsersScreen({super.key, required this.communityName});
+  const ApprovedUsersScreen({super.key});
 
   static const String id = 'approved_users_screen';
 
@@ -25,21 +22,32 @@ class ApprovedUsersScreen extends StatefulWidget {
 class _ApprovedUsersScreenState extends State<ApprovedUsersScreen> {
   ApiService apiService = ApiService(TokenDecoder.token);
   List<dynamic> approvedUsers = [];
+  String communityName = '';
 
-  Future<void> getApprovedUsers () async {
-    Map<String, dynamic> response = await apiService.getApprovedUsers(widget.communityName);
-    if (response['message'] == "Retrieved subreddit Approved Users Successfully") {
+  @override
+  void didChangeDependencies() {
+    Map<String, dynamic> args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    communityName = args["communityName"];
+    super.didChangeDependencies();
+    getApprovedUsers();
+  }
+
+  Future<void> getApprovedUsers() async {
+    Map<String, dynamic> response =
+        await apiService.getApprovedUsers(communityName);
+    if (response['message'] ==
+        "Retrieved subreddit Approved Users Successfully") {
       setState(() {
         approvedUsers = response['approvedMembers'];
       });
-    }
-    else {
+    } else {
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Error'),
-            content: Text('${widget.communityName}: ${response['message']}'),
+            content: Text('$communityName: ${response['message']}'),
             actions: [
               TextButton(
                 onPressed: () {
@@ -49,19 +57,13 @@ class _ApprovedUsersScreenState extends State<ApprovedUsersScreen> {
               ),
             ],
           );
-        }, 
+        },
       );
     }
-   }
-
-  @override
-  void initState() {
-    super.initState();
-    getApprovedUsers();
   }
 
   void userOptions(String username) async {
-    String? newGender = await showModalBottomSheet(
+    await showModalBottomSheet(
         context: context,
         builder: (BuildContext bc) {
           return ClipRRect(
@@ -69,6 +71,8 @@ class _ApprovedUsersScreenState extends State<ApprovedUsersScreen> {
               top: Radius.circular(20.0),
             ),
             child: Container(
+              padding: EdgeInsets.only(
+                  bottom: ScreenSizeHandler.screenHeight * 0.025),
               color: Colors.grey[900],
               child: SingleChildScrollView(
                 child: Column(
@@ -84,7 +88,10 @@ class _ApprovedUsersScreenState extends State<ApprovedUsersScreen> {
                       ),
                       onTap: () {
                         Navigator.pushNamed(context, NewMessageScreen.id,
-                        arguments: {"isReply": false, "userName": username});
+                            arguments: {
+                              "isReply": false,
+                              "userName": username
+                            });
                       },
                     ),
                     UserBottomSheetTile(
@@ -123,11 +130,7 @@ class _ApprovedUsersScreenState extends State<ApprovedUsersScreen> {
           );
         });
     setState(
-      () {
-        // if (newGender != null) {
-        //   gender = newGender;
-        // }
-      },
+      () {},
     );
   }
 
@@ -185,7 +188,7 @@ class _ApprovedUsersScreenState extends State<ApprovedUsersScreen> {
                     child: Column(
                       children: [
                         UserTile(
-                          titleText: approvedUsers[index]['userName'], 
+                          titleText: 'u/${approvedUsers[index]['userName']}',
                           subtitleText: '1 wk ago',
                           onTap: () {},
                           avatarLink: approvedUsers[index]['avatarImage'],

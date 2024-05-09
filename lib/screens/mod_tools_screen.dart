@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reddit_bel_ham/constants.dart';
@@ -10,10 +12,10 @@ import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'package:reddit_bel_ham/screens/describe_your_community_screen.dart';
 import 'package:reddit_bel_ham/screens/community_type_screen.dart';
 import 'package:reddit_bel_ham/screens/approved_users_screen.dart';
+import 'package:reddit_bel_ham/screens/banned_users_screen.dart';
 
 class ModToolsScreen extends StatefulWidget {
-  final String communityName, subredditID, membersNickname, currentlyViewingNickname, communityDescription;
-  const ModToolsScreen({super.key, required this.communityName, required this.subredditID, required this.membersNickname, required this.currentlyViewingNickname, required this.communityDescription});
+  const ModToolsScreen({super.key});
 
   static const String id = 'mod_tools_screen';
 
@@ -26,6 +28,30 @@ class _ModToolsScreenState extends State<ModToolsScreen> {
   bool isBananaEnabled = false;
   bool isMuted = false;
   bool recentCommunities = false;
+  bool firstTime = true;
+  String communityName = '',
+      subredditID = '',
+      membersNickname = '',
+      currentlyViewingNickname = '';
+  // communityDescription = '';
+  ValueNotifier<String> communityDescription = ValueNotifier<String>("");
+
+  @override
+  void didChangeDependencies() {
+    Map<String, dynamic> args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    communityName = args["communityName"];
+    subredditID = args["subredditID"];
+    membersNickname = args["membersNickname"];
+    currentlyViewingNickname = args["currentlyViewingNickname"];
+    print("hhhhhhhhhhhhhhhhhh");
+    if (firstTime) {
+      communityDescription.value = args["communityDescription"];
+      firstTime = false;
+    }
+
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,23 +119,31 @@ class _ModToolsScreenState extends State<ModToolsScreen> {
                         trailingIcon: Icons.arrow_forward,
                       ),
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => DescribeCommunityScreen(
-                                subredditID: widget.subredditID,
-                                membersNickname:
-                                    widget.membersNickname,
-                                currentlyViewingNickname:
-                                    widget.currentlyViewingNickname,
-                                communityDescription:
-                                    widget.communityDescription,
-                              )
-                            )
-                          );
+                        print(
+                            'awel wahda-> name: $communityName, community description: ${communityDescription.value}');
+                        Navigator.pushNamed(
+                          context,
+                          DescribeCommunityScreen.id,
+                          arguments: {
+                            "subredditID": subredditID,
+                            "membersNickname": membersNickname,
+                            "currentlyViewingNickname":
+                                currentlyViewingNickname,
+                            "communityDescription": communityDescription.value
+                          },
+                        ).then(
+                          (newDescription) => setState(() {
+                            if (newDescription != null) {
+                              communityDescription.value =
+                                  newDescription.toString();
+                              print(
+                                  'rege3na-> old: ${communityDescription.value} new: ${newDescription.toString()}');
+                            }
+                          }),
+                        );
                       },
                     ),
-                   SettingsTile(
+                    SettingsTile(
                       key: const Key("mod_tools_screen_community_type_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: FontAwesomeIcons.lock,
@@ -133,10 +167,11 @@ class _ModToolsScreenState extends State<ModToolsScreen> {
                       ),
                       onTap: () {},
                     ),
-                     Padding(
+                    Padding(
                       padding: EdgeInsets.only(
                           top: ScreenSizeHandler.screenHeight * 0.03),
-                      child: const SettingsSegmentTitle(titleText: "CONTENT & REGULATION"),
+                      child: const SettingsSegmentTitle(
+                          titleText: "CONTENT & REGULATION"),
                     ),
                     SettingsTile(
                       key: const Key("mod_tools_screen_queues_tile"),
@@ -174,7 +209,8 @@ class _ModToolsScreenState extends State<ModToolsScreen> {
                     Padding(
                       padding: EdgeInsets.only(
                           top: ScreenSizeHandler.screenHeight * 0.03),
-                      child: const SettingsSegmentTitle(titleText: "USER MANAGEMENT"),
+                      child: const SettingsSegmentTitle(
+                          titleText: "USER MANAGEMENT"),
                     ),
                     SettingsTile(
                       key: const Key("mod_tools_screen_moderators_tile"),
@@ -187,7 +223,7 @@ class _ModToolsScreenState extends State<ModToolsScreen> {
                       ),
                       onTap: () {},
                     ),
-                    SettingsTile(                     
+                    SettingsTile(
                       key: const Key("mod_tools_screen_approved_users_tile"),
                       leadingIcon: ImageIcon(
                           const AssetImage('assets/images/approved_icon.png'),
@@ -198,14 +234,11 @@ class _ModToolsScreenState extends State<ModToolsScreen> {
                         trailingIcon: Icons.arrow_forward,
                       ),
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ApprovedUsersScreen(
-                                communityName: widget.communityName,
-                              )
-                            )
-                          );
+                        print('leh: $communityName');
+                        Navigator.pushNamed(context, ApprovedUsersScreen.id,
+                            arguments: {
+                              "communityName": communityName,
+                            });
                       },
                     ),
                     SettingsTile(
@@ -217,12 +250,18 @@ class _ModToolsScreenState extends State<ModToolsScreen> {
                       trailingWidget: const SettingsTileTrailingIcon(
                         trailingIcon: Icons.arrow_forward,
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(context, BannedUsersScreen.id,
+                            arguments: {
+                              "communityName": communityName,
+                            });
+                      },
                     ),
                     Padding(
                       padding: EdgeInsets.only(
                           top: ScreenSizeHandler.screenHeight * 0.03),
-                      child: const SettingsSegmentTitle(titleText: "RESOURCE LINKS"),
+                      child: const SettingsSegmentTitle(
+                          titleText: "RESOURCE LINKS"),
                     ),
                     SettingsTile(
                       key: const Key("mod_tools_screen_mod_help_center_tile"),
@@ -235,8 +274,9 @@ class _ModToolsScreenState extends State<ModToolsScreen> {
                       ),
                       onTap: () {},
                     ),
-                     SettingsTile(
-                      key: const Key("mod_tools_screen_mod_code_of_conduct_tile"),
+                    SettingsTile(
+                      key: const Key(
+                          "mod_tools_screen_mod_code_of_conduct_tile"),
                       leadingIcon: const SettingsTileLeadingIcon(
                         leadingIcon: Icons.format_list_numbered_rounded,
                       ),

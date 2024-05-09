@@ -28,6 +28,9 @@ import 'package:reddit_bel_ham/screens/describe_your_community_screen.dart';
 import 'package:reddit_bel_ham/screens/community_type_screen.dart';
 import 'package:reddit_bel_ham/screens/approved_users_screen.dart';
 import 'package:reddit_bel_ham/screens/add_approved_user_screen.dart';
+import 'package:reddit_bel_ham/screens/banned_users_screen.dart';
+import 'package:reddit_bel_ham/screens/ban_user_screen.dart';
+
 
 
 import 'package:reddit_bel_ham/utilities/subreddit_store.dart';
@@ -178,18 +181,20 @@ class RedditByLham extends StatelessWidget {
         MessageReplyScreen.id: (context) => const MessageReplyScreen(),
         NewMessageScreen.id: (context) => const NewMessageScreen(),
         SearchingScreen.id: (context) => const SearchingScreen(),
-        ModToolsScreen.id: (context) => const ModToolsScreen(communityName: '', subredditID: '', membersNickname: '', currentlyViewingNickname: '', communityDescription: ''),
-        DescribeCommunityScreen.id: (context) => const DescribeCommunityScreen( subredditID: '', membersNickname: '', currentlyViewingNickname: '', communityDescription: ''),
+        ModToolsScreen.id: (context) => const ModToolsScreen(),
+        DescribeCommunityScreen.id: (context) => const DescribeCommunityScreen(),
         CommunityTypeScreen.id: (context) => const CommunityTypeScreen(),
-        ApprovedUsersScreen.id: (context) => const ApprovedUsersScreen(communityName: '',),
+        ApprovedUsersScreen.id: (context) => const ApprovedUsersScreen(),
         AddApprovedUserScreen.id: (context) => const AddApprovedUserScreen(),
+        BannedUsersScreen.id: (context) => const BannedUsersScreen(),
+        BanUserScreen.id: (context) => const BanUserScreen(),
       },
       initialRoute: (token == null)
           ? FirstScreen.id
           : (JwtDecoder.isExpired(TokenDecoder.token))
               ? LoginScreen.id
               : HomePageScreen.id,
-      // initialRoute: ModToolsScreen.id,
+      // initialRoute: BanUserScreen.id,
     );
   }
 }

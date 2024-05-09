@@ -6,11 +6,12 @@ import 'package:reddit_bel_ham/services/api_service.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 
 class DescribeCommunityScreen extends StatefulWidget {
-  final String subredditID,
-      membersNickname,
-      currentlyViewingNickname,
-      communityDescription;
-  const DescribeCommunityScreen({super.key, required this.subredditID, required this.membersNickname, required this.currentlyViewingNickname, required this.communityDescription});
+  // final String subredditID,
+  //     membersNickname,
+  //     currentlyViewingNickname,
+  //     communityDescription;
+  // const DescribeCommunityScreen({super.key, required this.subredditID, required this.membersNickname, required this.currentlyViewingNickname, required this.communityDescription});
+  const DescribeCommunityScreen({super.key});
 
   static const String id = 'describe_community_screen';
 
@@ -24,17 +25,36 @@ class _DescribeCommunityScreenState extends State<DescribeCommunityScreen> {
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   bool isButtonEnabled = false;
+  String subredditID = '', membersNickname = '', currentlyViewingNickname = '',
+   communityDescription = '';
+  // ValueNotifier<String> communityDescription = ValueNotifier<String>("");
+
+
+  @override
+  void didChangeDependencies() {
+    Map<String, dynamic> args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    subredditID = args["subredditID"];
+    membersNickname = args["membersNickname"];
+    currentlyViewingNickname = args["currentlyViewingNickname"];
+    communityDescription = args["communityDescription"];  
+    
+    _controller.text = communityDescription;
+    _focusNode.requestFocus();
+    
+    super.didChangeDependencies();
+  }
 
   Future<void> editCommunityDetails() async {
     Map<String, dynamic> response = await apiService.editCommunityDetails(
-        widget.subredditID,
-        widget.membersNickname,
-        widget.currentlyViewingNickname,
+        subredditID,
+        membersNickname,
+        currentlyViewingNickname,
         _controller.text);
     if (response['message'] ==
         "Subreddit's Community Details Edited Successfully") {
       _focusNode.unfocus();    
-      Navigator.pop(context);
+      Navigator.pop(context, _controller.text);
     } else {
       showDialog(
         context: context,
@@ -59,7 +79,7 @@ class _DescribeCommunityScreenState extends State<DescribeCommunityScreen> {
   @override
   void initState() {
     super.initState();
-    _controller.text = widget.communityDescription;
+    _controller.text = communityDescription;
     _focusNode.requestFocus();
   }
 
@@ -73,6 +93,7 @@ class _DescribeCommunityScreenState extends State<DescribeCommunityScreen> {
         actions: [
           SettingsSaveButton(
             onPressed: () {
+              print('tany wahda: description: $communityDescription');
               editCommunityDetails();
             },
             isUnderlined: false,
@@ -131,7 +152,7 @@ class _DescribeCommunityScreenState extends State<DescribeCommunityScreen> {
                     ),
                     onChanged: (value) {
                       setState(() {
-                        isButtonEnabled = (value != widget.communityDescription);
+                        isButtonEnabled = (value != communityDescription);
                       });
                     },
                   ),

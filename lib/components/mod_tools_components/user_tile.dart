@@ -46,11 +46,10 @@ class UserTile extends StatelessWidget {
                   backgroundImage: NetworkImage(avatarLink!),
                   radius: ScreenSizeHandler.screenWidth * 0.035,
                 ) :
-                Image(
-                  image: const AssetImage('assets/images/avatarDaniel.png'),
-                  height: ScreenSizeHandler.screenHeight * 0.07,
-                  width: ScreenSizeHandler.screenWidth * 0.07,
-                ),
+                CircleAvatar(
+                  backgroundImage: AssetImage('assets/images/avatarDaniel.png'),
+                  radius: ScreenSizeHandler.screenWidth * 0.035,
+                )
               ),
               Expanded(
                 child: Padding(

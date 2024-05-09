@@ -123,14 +123,16 @@ class _SubredditScreenState extends State<SubredditScreen> {
   Future<void> getCommunityModerators() async {
     Map<String, dynamic> data =
         (await apiService.getCommunityModerators(subredditName)) ?? {};
-    setState(() {
-      moderators = data['moderators'];
-      for (var moderator in moderators) {
-        if (moderator['userName'] == TokenDecoder.username) {
-          isModerator = true;
+    if (mounted) {
+      setState(() {
+        moderators = data['moderators'];
+        for (var moderator in moderators) {
+          if (moderator['userName'] == TokenDecoder.username) {
+            isModerator = true;
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   @override
@@ -452,21 +454,17 @@ class _SubredditScreenState extends State<SubredditScreen> {
                           right: ScreenSizeHandler.bigger * 0.025),
                       child: ElevatedButton(
                         onPressed: () {
-                          // Navigator.pushNamed(context, ModToolsScreen.id);
-                          Navigator.push(
+                          Navigator.pushNamed(
                             context,
-                            MaterialPageRoute(
-                              builder: (context) => ModToolsScreen(
-                                communityName: subredditName,
-                                subredditID: subredditID,
-                                membersNickname:
-                                    subredditMembersNickname,
-                                currentlyViewingNickname:
-                                    subredditOnlineNickname,
-                                communityDescription:
-                                    subredditDescription,
-                              )
-                            )
+                            ModToolsScreen.id,
+                            arguments: {
+                              "communityName": subredditName,
+                              "subredditID": subredditID,
+                              "membersNickname": subredditMembersNickname,
+                              "currentlyViewingNickname":
+                                  subredditOnlineNickname,
+                              "communityDescription": subredditDescription,
+                            },
                           );
                         },
                         style: ButtonStyle(
@@ -624,21 +622,19 @@ class _SubredditScreenState extends State<SubredditScreen> {
                           if (isModerator)
                             ElevatedButton(
                               onPressed: () {
-                                Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ModToolsScreen(
-                                communityName: subredditName,
-                                subredditID: subredditID,
-                                membersNickname:
-                                    subredditMembersNickname,
-                                currentlyViewingNickname:
-                                    subredditOnlineNickname,
-                                communityDescription:
-                                    subredditDescription,
-                              )
-                            )
-                          );
+                                Navigator.pushNamed(
+                                  context,
+                                  ModToolsScreen.id,
+                                  arguments: {
+                                    "communityName": subredditName,
+                                    "subredditID": subredditID,
+                                    "membersNickname": subredditMembersNickname,
+                                    "currentlyViewingNickname":
+                                        subredditOnlineNickname,
+                                    "communityDescription":
+                                        subredditDescription,
+                                  },
+                                );
                               },
                               style: ButtonStyle(
                                 padding:
