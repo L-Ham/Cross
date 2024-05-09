@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -16,6 +14,7 @@ import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 import 'package:reddit_bel_ham/components/home_page_components/profile_icon_with_indicator.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile.dart';
 import 'package:reddit_bel_ham/components/settings_components/settings_tile_leading_icon.dart';
+import 'package:reddit_bel_ham/components/subreddit_components/subreddit_ellipsis_bottom_sheet.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/add_post_screen.dart';
 import 'package:reddit_bel_ham/screens/comments_screen.dart';
@@ -56,6 +55,13 @@ class _HomePageScreenState extends State<HomePageScreen> {
   bool onlineStatusToggle = true;
   Color onlineStatusColor = kOnlineStatusColor;
   double onlineStatusWidth = ScreenSizeHandler.smaller * 0.5;
+
+  ApiService apiService = ApiService(TokenDecoder.token);
+
+  Future<void> logout() async {
+    await apiService.logout();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -649,7 +655,9 @@ class _DrawerBottomSheetState extends State<DrawerBottomSheet> {
                   identifier: 'second_exit_app_button_identifier',
                   child: SettingsTile(
                     fontColor: Colors.red,
-                    onTap: () {
+                    onTap: () async {
+                      var result = await apiService.logout();
+                      print(result['']);
                       Navigator.popUntil(context, ModalRoute.withName('/'));
                       Navigator.pushNamed(context, LoginScreen.id);
                       SharedPreferences.getInstance().then((prefs) {

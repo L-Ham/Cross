@@ -27,7 +27,6 @@ class ApiService {
       dynamic body}) async {
     var url = Uri.parse(baseURL + endpoint);
     http.Response response;
-
     try {
       switch (method) {
         case 'GET':
@@ -46,6 +45,15 @@ class ApiService {
         case 'PATCH':
           response =
               await http.patch(url, headers: headers, body: jsonEncode(body));
+          break;
+        case 'DELETE':
+          var request = http.Request('DELETE', url);
+          request.headers.addAll(headers);
+          if (body != null) {
+            request.body = jsonEncode(body);
+          }
+          var streamedResponse = await request.send();
+          response = await http.Response.fromStream(streamedResponse);
           break;
         default:
           throw Exception('HTTP method $method not implemented');
@@ -142,9 +150,45 @@ class ApiService {
     return result;
   }
 
+  Future<dynamic> getUserInfo(String id) async {
+    Map<String, dynamic> sentData;
+    sentData = {"userId": id};
+    var result = await request('/user/info',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> getYourCommunities() async {
+    var result = await request('/user/community',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+
+  Future<dynamic> logout() async {
+    var result = await request('/auth/logout',
+        headers: {'Content-Type': 'application/json'}, method: 'POST');
+    return result;
+  }
+
   Future<dynamic> patchGender(String newGender) async {
     var result = await request('/user/gender',
         headers: headerWithToken, method: 'PATCH', body: {"gender": newGender});
+    return result;
+  }
+
+  Future<dynamic> favouriteSubreddit(String subredditID) async {
+    var result = await request('/user/favouriteSubreddit',
+        headers: headerWithToken,
+        method: 'PATCH',
+        body: {"subRedditId": subredditID});
+    return result;
+  }
+
+  Future<dynamic> unfavouriteSubreddit(String subredditID) async {
+    var result = await request('/user/unfavouriteSubreddit',
+        headers: headerWithToken,
+        method: 'PATCH',
+        body: {"subRedditId": subredditID});
     return result;
   }
 
@@ -401,6 +445,49 @@ class ApiService {
         body: {"password": password});
     return result;
   }
+
+  Future<dynamic> joinCommunity(String subredditID) async {
+    var result = await request('/user/joinCommunity',
+        headers: headerWithToken,
+        method: 'PATCH',
+        body: {"subRedditId": subredditID});
+    return result;
+  }
+
+  Future<dynamic> leaveCommunity(String subredditID) async {
+    var result = await request('/user/unjoinCommunity',
+        headers: headerWithToken,
+        method: 'DELETE',
+        body: {"subRedditId": subredditID});
+
+    return result;
+  }
+
+  Future<dynamic> muteCommunity(String subredditName) async {
+    var result = await request('/user/muteCommunity',
+        headers: headerWithToken,
+        method: 'PATCH',
+        body: {"subRedditName": subredditName});
+    return result;
+  }
+
+  Future<dynamic> unmuteCommunity(String subredditName) async {
+    var result = await request('/user/unmuteCommunity',
+        headers: headerWithToken,
+        method: 'DELETE',
+        body: {"subRedditName": subredditName});
+
+    return result;
+  }
+
+  Future<dynamic> getCommunityModerators(String communityName) async {
+    Map<String, dynamic> sentData;
+    sentData = {"subredditName": communityName};
+    var result = await request('/subreddit/moderators',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    return result;
+  }
+
   Future<dynamic> getAllInbox() async {
     var result = await request('/message/getAllInbox',
         headers: headerWithToken, method: 'GET');

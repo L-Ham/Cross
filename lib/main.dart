@@ -72,6 +72,7 @@ void main() async {
   FirebaseMessaging.instance.getToken().then((String? token) {
     if (token != null) {
       print('FCM Token: $token');
+      prefs.setString('fcmToken', token);
     }
   });
 
@@ -128,6 +129,8 @@ void main() async {
   if (token != null) {
     TokenDecoder.updateToken(token);
   }
+  print("EL TOKEN:${TokenDecoder.token}");
+
   runApp(
     ChangeNotifierProvider(
       create: (context) => MarkAllAsRead(),
@@ -169,7 +172,6 @@ class RedditByLham extends StatelessWidget {
         BlockedAccount.id: (context) => const BlockedAccount(),
         SavedScreen.id: (context) => const SavedScreen(),
         SubredditScreen.id: (context) => const SubredditScreen(),
-        SubredditSearchScreen.id: (context) => const SubredditSearchScreen(),
         AddPostScreen.id: (context) => const AddPostScreen(),
         CreateUsernameScreen.id: (context) => const CreateUsernameScreen(),
         AboutYouScreen.id: (context) => const AboutYouScreen(),
