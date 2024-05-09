@@ -43,6 +43,10 @@ class ApiService {
           response =
               await http.post(url, headers: headers, body: jsonEncode(body));
           break;
+          case 'DELETE':
+          response =
+              await http.delete(url, headers: headers, body: jsonEncode(body));
+          break;
         case 'PATCH':
           response =
               await http.patch(url, headers: headers, body: jsonEncode(body));
@@ -459,6 +463,112 @@ class ApiService {
         headers: headerWithToken, method: 'PATCH', body: sentData);
     return result;
   }
+  Future<dynamic> getUserSelfInfo() async {
+    var result = await request('/user/selfInfo',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+  Future<dynamic> addSocialLink(Map<String, dynamic> body) async {
+    var result = await request('/user/socialLink',
+        headers: headerWithToken, method: 'POST',
+        body: body
+    );
+    return result;
+  }
+  Future<dynamic> deleteSocialLink(String linkId) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "socialLinkId": linkId,
+    };
+    var result = await request('/user/socialLink',
+        headers: headerWithToken, method: 'DELETE', body: sentData);
+    return result;
+  }
+  Future<void> uploadAvatarImage(
+      File imageFile) async {
+    var request =
+        http.MultipartRequest('POST', Uri.parse('$baseURL/user/avatarImage'));
+
+    request.headers.addAll({
+      'Content-Type': 'multipart/form-data',
+      'Authorization': "Bearer $token",
+    });
+
+
+      debugPrint('Image file path: ${imageFile.path}');
+      request.files
+          .add(await http.MultipartFile.fromPath('file', imageFile.path));
+    var response;
+    try {
+      response = await request.send();
+      // Handle the response...
+    } on SocketException catch (e) {
+      debugPrint('SocketException: $e');
+      // Handle the exception...
+    }
+    if (response.statusCode == 200) {
+      debugPrint('Media uploaded successfully');
+    } else {
+      debugPrint(response.statusCode.toString());
+      String responseBody = await response.stream.bytesToString();
+
+      // Parse the string as JSON
+      Map<String, dynamic> responseJson = jsonDecode(responseBody);
+
+      debugPrint(response.statusCode.toString());
+      debugPrint('Response body: $responseBody');
+      debugPrint('Media upload failed');
+    }
+  }
+    Future<void> uploadBannerImage(
+      File imageFile) async {
+    var request =
+        http.MultipartRequest('POST', Uri.parse('$baseURL/user/banner'));
+
+    request.headers.addAll({
+      'Content-Type': 'multipart/form-data',
+      'Authorization': "Bearer $token",
+    });
+
+
+      debugPrint('Image file path: ${imageFile.path}');
+      request.files
+          .add(await http.MultipartFile.fromPath('file', imageFile.path));
+    var response;
+    try {
+      response = await request.send();
+      // Handle the response...
+    } on SocketException catch (e) {
+      debugPrint('SocketException: $e');
+      // Handle the exception...
+    }
+    if (response.statusCode == 200) {
+      debugPrint('Media uploaded successfully');
+    } else {
+      debugPrint(response.statusCode.toString());
+      String responseBody = await response.stream.bytesToString();
+
+      // Parse the string as JSON
+      Map<String, dynamic> responseJson = jsonDecode(responseBody);
+
+      debugPrint(response.statusCode.toString());
+      debugPrint('Response body: $responseBody');
+      debugPrint('Media upload failed');
+    }
+  }
+    Future<dynamic> editProfileInfo(displayName,about,contentVisibility, communitiesVisibility) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "displayName": displayName,
+      "about": about,
+      "contentVisibility": contentVisibility,
+      "communitiesVisibility": communitiesVisibility
+    };
+    var result = await request('/user/profileSettings',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
 
   // Future<List> getSavedPosts(String username, int page, int limit) async {
   //   try {
