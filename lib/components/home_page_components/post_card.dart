@@ -143,6 +143,7 @@ class Post {
       isLocked: json['isLocked'] ?? false,
       isApproved: json['approved'] ?? false,
       isDisapproved: json['disapproved'] ?? false,
+      isOwner: TokenDecoder.id == (json['user'] ?? ''),
     );
   }
 }
@@ -221,7 +222,9 @@ class _PostCardState extends State<PostCard> {
                     children: [
                       Text(
                         widget.isExpanded
-                            ? "r/${post.subredditName}"
+                            ? widget.post.subredditName == ""
+                                ? "u/${post.userName}"
+                                : "r/${post.subredditName}"
                             : widget.isCommunityFeed
                                 ? '${post.userName} • ${post.createdFrom}'
                                 : 'r/${post.subredditName} • ${post.createdFrom}',
@@ -356,8 +359,8 @@ class _PostCardState extends State<PostCard> {
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: widget.isExpanded
-                                  ? ScreenSizeHandler.bigger * 0.024
-                                  : ScreenSizeHandler.bigger * 0.022,
+                                  ? ScreenSizeHandler.bigger * 0.023
+                                  : ScreenSizeHandler.bigger * 0.020,
                             ),
                             softWrap: true,
                           ),
@@ -433,8 +436,8 @@ class _PostCardState extends State<PostCard> {
                                 : const Color.fromARGB(255, 133, 132, 132),
                             fontWeight: FontWeight.normal,
                             fontSize: widget.isExpanded
-                                ? ScreenSizeHandler.bigger * 0.02
-                                : ScreenSizeHandler.bigger * 0.017),
+                                ? ScreenSizeHandler.bigger * 0.018
+                                : ScreenSizeHandler.bigger * 0.016),
                       ),
                     ),
                 ],

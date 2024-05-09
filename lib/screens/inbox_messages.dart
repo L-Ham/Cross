@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_bel_ham/screens/activity_screen.dart';
 import 'package:reddit_bel_ham/screens/messages_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 
@@ -54,7 +55,7 @@ class _InboxMessagesScreenState extends State<InboxMessagesScreen>
       body: TabBarView(
         controller: _tabController,
         children: [
-          Center(child: Text('Activity Screen')),
+          ActivityScreen(),
           MessagesScreen(),
         ],
       ),
