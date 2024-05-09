@@ -64,7 +64,7 @@ class _channelCardState extends State<channelCard> {
                           child: Text(
                             "Foodies Channel",
                             style: TextStyle(
-                              fontSize: ScreenSizeHandler.screenWidth * 0.04,
+                              fontSize: ScreenSizeHandler.screenWidth * 0.03,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -74,11 +74,11 @@ class _channelCardState extends State<channelCard> {
                   ),
                   Container(
                     margin: EdgeInsets.only(
-                        left: ScreenSizeHandler.screenWidth * 0.02),
+                        left: ScreenSizeHandler.screenWidth * 0.019),
                     child: Text(
                       "Food & Recipes . 166 recent messages",
                       style: TextStyle(
-                        fontSize: ScreenSizeHandler.screenWidth * 0.03,
+                        fontSize: ScreenSizeHandler.screenWidth * 0.025,
                       ),
                     ),
                   ),

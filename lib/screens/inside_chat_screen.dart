@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
@@ -11,6 +13,7 @@ import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 class InsideChattingScreen extends StatefulWidget {
   final dynamic conversation;
@@ -33,6 +36,7 @@ class _InsideChattingScreenState extends State<InsideChattingScreen> {
 
   List<Message> messages = [];
   late IO.Socket socket;
+  File? pickedImage;
 
   @override
   void initState() {
@@ -47,30 +51,6 @@ class _InsideChattingScreenState extends State<InsideChattingScreen> {
     print('ssssssssssssssssssssssssss');
   }
 
-  // void setupWebSocket() async {
-  //   try {
-  //     final wsUrl = Uri.parse('wss://reddit-bylham.me/api');
-  //      WebSocketChannel channel= IOWebSocketChannel.connect(wsUrl);
-  //     await channel.ready;
-  //     print('gowa');
-  //     print('beofore listening');
-  //     channel.stream.listen((message) {
-  //       var decodedMessage = jsonDecode(message);
-  //       print('after listening');
-  //       print(decodedMessage);
-  //       setState(() {
-  //         messages.add(Message(
-  //           userName: decodedMessage['senderName'],
-  //           avatarUrl: 'assets/images/avatarDaniel.png',
-  //           message: decodedMessage['message'],
-  //           time: DateFormat('hh:mm').format(DateTime.now()),
-  //         ));
-  //       });
-  //     });
-  //   } catch (e) {
-  //     print('Failed to set up WebSocket: $e');
-  //   }
-  // }
   void initializeSocket() {
     try {
       socket = IO.io('http://api.reddit-bylham.me/', <String, dynamic>{
@@ -90,9 +70,11 @@ class _InsideChattingScreenState extends State<InsideChattingScreen> {
             print('in set state');
             messages.add(Message(
               userName: data['senderName'],
-              avatarUrl: 'assets/images/avatarDaniel.png',
-              message: data['message'],
+              avatarUrl: data['senderAvatar'],
+              message: data['type'] == 'image' ? '' : data['message'],
               time: DateFormat('hh:mm').format(DateTime.now()),
+              isImage: data['type'] == 'text' ? false : true,
+              imageURL: data['type'] == 'image' ? data['imageUrl'] : '',
             ));
           });
         } catch (e) {
@@ -109,21 +91,78 @@ class _InsideChattingScreenState extends State<InsideChattingScreen> {
     }
   }
 
+  Future<void> pickImage() async {
+    final ImagePicker _picker = ImagePicker();
+    final XFile? pickedFile =
+        await _picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        pickedImage = File(pickedFile.path);
+      });
+    } else {
+      print('No image selected.');
+    }
+  }
+
+  Future<File> compressImage(File file) async {
+    final filePath = file.absolute.path;
+    final lastIndex = filePath.lastIndexOf(new RegExp(r'.jpg'));
+    final newPath = filePath.substring(0, lastIndex) + '_compressed.jpg';
+    final result = await FlutterImageCompress.compressAndGetFile(
+      filePath,
+      newPath,
+      quality: 50,
+    );
+
+    return result!;
+  }
+
+  void sendImageMessage() async {
+    if (pickedImage != null) {
+      var compressedImage = await compressImage(pickedImage!);
+      var response = await apiService.sendImageMessage(
+          compressedImage, widget.conversation['_id']);
+      if (response != null) {
+        // Check if response is not null
+        print('Image uploaded successfully');
+        setState(() {
+          messages.add(
+            Message(
+                userName: 'You',
+                avatarUrl: response['chatMessage']['senderAvatar'],
+                message: '', // Display the local file path
+                time: TimeOfDay.now().format(context),
+                isImage: true,
+                imageURL: response['chatMessage']
+                    ['imageUrl'] // Use the server returned file path
+                ),
+          );
+        });
+        pickedImage = null;
+        widget.refreshConversations();
+      } else {
+        print('Image upload failed');
+      }
+    }
+  }
+
   void sendMessage() async {
     String text = _controller.text;
     if (text.isNotEmpty) {
-      var response = await apiService.sendMessage(
-          widget.conversation['_id'], text, "text");
+      var response =
+          await apiService.sendTextMessage(widget.conversation['_id'], text);
       print(widget.conversation['_id']);
       if (response['message'] == "Message Sent Successfully") {
         setState(() {
           messages.add(
             Message(
-              userName: 'You',
-              avatarUrl: 'assets/images/avatarYou.png',
-              message: text,
-              time: TimeOfDay.now().format(context),
-            ),
+                userName: 'You',
+                avatarUrl: response['chatMessage']['senderAvatar'],
+                message: text,
+                time: TimeOfDay.now().format(context),
+                isImage: false,
+                imageURL: ''),
           );
         });
         _controller.clear();
@@ -142,13 +181,14 @@ class _InsideChattingScreenState extends State<InsideChattingScreen> {
         String formattedTime = DateFormat('hh:mm').format(createdAt);
 
         newMessages.add(Message(
-          userName: msg['senderName'] == TokenDecoder.username
-              ? 'You'
-              : msg['senderName'],
-          avatarUrl: 'assets/images/avatarDaniel.png',
-          message: msg['message'],
-          time: formattedTime,
-        ));
+            userName: msg['senderName'] == TokenDecoder.username
+                ? 'You'
+                : msg['senderName'],
+            avatarUrl: msg['senderAvatar'],
+            message: msg['type'] == 'image' ? '' : msg['message'],
+            time: formattedTime,
+            isImage: msg['type'] == 'text' ? false : true,
+            imageURL: msg['type'] == 'image' ? msg['imageUrl'] : ''));
       } catch (e) {
         print('Failed to fetch message: $e');
       }
@@ -158,14 +198,6 @@ class _InsideChattingScreenState extends State<InsideChattingScreen> {
       messages = newMessages;
     });
   }
-
-  // @override
-  // void dispose() {
-  //   // Close the WebSocket connection
-  //   channel.sink.close();
-
-  //   super.dispose();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -221,13 +253,18 @@ class _InsideChattingScreenState extends State<InsideChattingScreen> {
               },
             ),
           ),
+          if (pickedImage != null) // If an image is picked, display it
+            Container(
+              height: 200,
+              child: Image.file(pickedImage!),
+            ),
           Container(
             padding: EdgeInsets.all(ScreenSizeHandler.screenWidth * 0.02),
             child: Row(
               children: [
                 IconButton(
                   icon: Icon(Icons.camera_alt_outlined),
-                  onPressed: sendMessage,
+                  onPressed: pickImage,
                 ),
                 Expanded(
                   child: TextField(
@@ -239,7 +276,8 @@ class _InsideChattingScreenState extends State<InsideChattingScreen> {
                 ),
                 IconButton(
                   icon: Icon(Icons.send_rounded),
-                  onPressed: sendMessage,
+                  onPressed:
+                      pickedImage != null ? sendImageMessage : sendMessage,
                 ),
               ],
             ),

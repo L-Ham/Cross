@@ -345,16 +345,55 @@ class ApiService {
   Future<dynamic> getUserChats() async {
     var response = await request('/conversation/getUserChats',
         headers: headerWithToken, method: 'GET');
-    return response;
+        print(response);
+        return response;
   }
 
-  Future<dynamic> sendMessage(
-      String conversationId, String message, String type) async {
+  Future<dynamic> sendTextMessage(String conversationId, String message) async {
     var response = await request('/chat/sendMessage',
         headers: headerWithToken,
         method: 'POST',
-        body: {"chatId": conversationId, "type": type, "message": message});
-        print('${response["message"]}zzzzzzzzzzzzzzzzzzzzz');
-    return response;
+        body: {"chatId": conversationId, "type": "text", "message": message});
+
+    String responseBody = await response.stream.bytesToString();
+    return jsonDecode(responseBody);
+  }
+
+  Future<Map<String, dynamic>?> sendImageMessage(
+      File imageFile, String conversationId) async {
+    print('inside api call');
+    var request =
+        http.MultipartRequest('POST', Uri.parse('$baseURL/chat/sendMessage'));
+
+    request.headers.addAll({
+      'Content-Type': 'multipart/form-data',
+      'Authorization': "Bearer $token",
+    });
+
+    request.fields['chatId'] = conversationId;
+    request.fields['type'] = "image";
+    request.files
+        .add(await http.MultipartFile.fromPath('file', imageFile.path));
+
+    var response;
+    print('bypassed api call');
+    try {
+      response = await request.send();
+    } on SocketException catch (e) {
+      debugPrint('SocketException: $e');
+    }
+
+    if (response.statusCode == 200) {
+      debugPrint('Media uploaded successfully');
+      String responseBody = await response.stream.bytesToString();
+      return jsonDecode(responseBody); // Return the parsed JSON
+    } else {
+      debugPrint('${response.statusCode.toString()}zzzzzzzzzzzzzzzzzz');
+      String responseBody = await response.stream.bytesToString();
+      debugPrint(response.statusCode.toString());
+      debugPrint('Response body: $responseBody');
+      debugPrint('Media upload failed');
+      return null; // Return null or throw an exception
+    }
   }
 }

@@ -1,8 +1,12 @@
+import 'dart:async';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:reddit_bel_ham/components/chat_screen_components/conversation_tile.dart';
 import 'package:reddit_bel_ham/components/chat_screen_components/discover_channel_card.dart';
 import 'package:reddit_bel_ham/screens/inside_chat_screen.dart';
+import 'package:reddit_bel_ham/screens/new_conversation_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
@@ -138,12 +142,79 @@ class _ChattingScreenState extends State<ChattingScreen> {
                     },
                   ),
                   // Replace these with your actual widgets for Threads and Requests
-                  Container(child: Text('Threads Content')),
+                  Container(
+                      child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                            top: ScreenSizeHandler.screenHeight * 0.2),
+                        child: Text(
+                          "You don't have any threads yet",
+                          style: TextStyle(
+                              fontSize: ScreenSizeHandler.screenWidth * 0.05,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            top: ScreenSizeHandler.screenHeight * 0.02),
+                        child: Text("When you do, they'll show up here.",
+                            style: TextStyle(
+                                fontSize:
+                                    ScreenSizeHandler.screenWidth * 0.03)),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            top: ScreenSizeHandler.screenHeight * 0.02),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // DefaultTabController.of(context)
+                            //     ?.animateTo(0); // Switch to the Messages tab
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color.fromARGB(255, 14, 79, 132),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 20.0,
+                              vertical: 10.0,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  ScreenSizeHandler.smaller * 0.1),
+                            ),
+                          ),
+                          child: Text(
+                            'Go to Messages',
+                            style: TextStyle(
+                              fontSize: ScreenSizeHandler.screenWidth * 0.028,
+                              color: Color.fromARGB(255, 255, 255, 255),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  )),
                   Container(child: Text('Requests Content')),
                 ],
               ),
             ),
           ],
+        ),
+        floatingActionButton: ClipOval(
+          child: FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NewConversationScreen(),
+                  ),
+                );
+              },
+              child: Icon(
+                Icons.chat_bubble_rounded,
+                size: ScreenSizeHandler.screenWidth * 0.06,
+                color: Color.fromARGB(255, 96, 62, 150),
+              ),
+              backgroundColor: Color.fromARGB(255, 58, 58, 58)),
         ),
       ),
     );
