@@ -111,7 +111,9 @@ class _SearchScreenState extends State<SearchScreen> {
 
   void getTrendingPosts() async {
     var response = await apiService.getTrendingPosts();
-    response = response["trendingPosts"];
+    if (response != null) {
+      response = response["trendingPosts"] ?? [];
+    }
     if (mounted) {
       setState(() {
         trendingPostTitles.clear();
@@ -119,13 +121,14 @@ class _SearchScreenState extends State<SearchScreen> {
         trendingPostImages.clear();
       });
     }
-
-    for (var trendingPost in response) {
-      setState(() {
-        trendingPostTitles.add(trendingPost["title"]);
-        trendingPostDescriptions.add(trendingPost["text"]?? "");
-        trendingPostImages.add(trendingPost["image"]);
-      });
+    if (response != null) {
+      for (var trendingPost in response) {
+        setState(() {
+          trendingPostTitles.add(trendingPost["title"]);
+          trendingPostDescriptions.add(trendingPost["text"] ?? "");
+          trendingPostImages.add(trendingPost["image"]);
+        });
+      }
     }
   }
 

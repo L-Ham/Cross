@@ -33,6 +33,8 @@ import 'package:reddit_bel_ham/screens/approved_users_screen.dart';
 import 'package:reddit_bel_ham/screens/add_approved_user_screen.dart';
 import 'package:reddit_bel_ham/screens/banned_users_screen.dart';
 import 'package:reddit_bel_ham/screens/ban_user_screen.dart';
+import 'package:reddit_bel_ham/screens/moderators_screen.dart';
+import 'package:reddit_bel_ham/screens/invite_moderator_screen.dart';
 
 
 
@@ -202,6 +204,8 @@ class RedditByLham extends StatelessWidget {
         AddApprovedUserScreen.id: (context) => const AddApprovedUserScreen(),
         BannedUsersScreen.id: (context) => const BannedUsersScreen(),
         BanUserScreen.id: (context) => const BanUserScreen(),
+        ModeratorsScreen.id: (context) => const ModeratorsScreen(),
+        InviteModeratorScreen.id: (context) => const InviteModeratorScreen(),
       },
       initialRoute: (token == null)
           ? FirstScreen.id

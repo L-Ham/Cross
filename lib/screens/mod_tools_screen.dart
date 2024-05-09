@@ -13,6 +13,7 @@ import 'package:reddit_bel_ham/screens/describe_your_community_screen.dart';
 import 'package:reddit_bel_ham/screens/community_type_screen.dart';
 import 'package:reddit_bel_ham/screens/approved_users_screen.dart';
 import 'package:reddit_bel_ham/screens/banned_users_screen.dart';
+import 'package:reddit_bel_ham/screens/moderators_screen.dart';
 
 class ModToolsScreen extends StatefulWidget {
   const ModToolsScreen({super.key});
@@ -33,8 +34,8 @@ class _ModToolsScreenState extends State<ModToolsScreen> {
       subredditID = '',
       membersNickname = '',
       currentlyViewingNickname = '';
-  // communityDescription = '';
   ValueNotifier<String> communityDescription = ValueNotifier<String>("");
+  var moderators = [];
 
   @override
   void didChangeDependencies() {
@@ -44,7 +45,7 @@ class _ModToolsScreenState extends State<ModToolsScreen> {
     subredditID = args["subredditID"];
     membersNickname = args["membersNickname"];
     currentlyViewingNickname = args["currentlyViewingNickname"];
-    print("hhhhhhhhhhhhhhhhhh");
+    moderators = args["moderators"];
     if (firstTime) {
       communityDescription.value = args["communityDescription"];
       firstTime = false;
@@ -153,7 +154,9 @@ class _ModToolsScreenState extends State<ModToolsScreen> {
                         trailingIcon: Icons.arrow_forward,
                       ),
                       onTap: () {
-                        Navigator.pushNamed(context, CommunityTypeScreen.id);
+                        Navigator.pushNamed(context, CommunityTypeScreen.id, arguments: {
+                          "communityName": communityName,
+                        });
                       },
                     ),
                     SettingsTile(
@@ -221,7 +224,12 @@ class _ModToolsScreenState extends State<ModToolsScreen> {
                       trailingWidget: const SettingsTileTrailingIcon(
                         trailingIcon: Icons.arrow_forward,
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(context, ModeratorsScreen.id,arguments: {
+                          "communityName": communityName,
+                          "moderators": moderators,
+                        });
+                      },
                     ),
                     SettingsTile(
                       key: const Key("mod_tools_screen_approved_users_tile"),
