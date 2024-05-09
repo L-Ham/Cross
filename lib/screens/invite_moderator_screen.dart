@@ -5,16 +5,16 @@ import 'package:reddit_bel_ham/services/api_service.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'package:reddit_bel_ham/components/general_components/continue_button.dart';
 
-class AddApprovedUserScreen extends StatefulWidget {
-  const AddApprovedUserScreen({super.key});
+class InviteModeratorScreen extends StatefulWidget {
+  const InviteModeratorScreen({super.key});
 
-  static const String id = 'add_approved_user_screen';
+  static const String id = 'invite_moderator_screen';
 
   @override
-  State<AddApprovedUserScreen> createState() => _AddApprovedUserScreenState();
+  State<InviteModeratorScreen> createState() => _InviteModeratorScreenState();
 }
 
-class _AddApprovedUserScreenState extends State<AddApprovedUserScreen> {
+class _InviteModeratorScreenState extends State<InviteModeratorScreen> {
   ApiService apiService = ApiService(TokenDecoder.token);
   final FocusNode _focusNode = FocusNode();
   final TextEditingController _controller = TextEditingController();
@@ -53,10 +53,10 @@ class _AddApprovedUserScreenState extends State<AddApprovedUserScreen> {
   }
 
 
-   Future<void> addApprovedUser() async {
-    Map<String, dynamic> response = await apiService.addApprovedUser(communityName, _controller.text);
-    if (response['message'] == "User approved successfully") {
-      showSnackBar('u/ ${_controller.text} was added');
+   Future<void> inviteModerator() async {
+    Map<String, dynamic> response = await apiService.inviteModerator(communityName, _controller.text);
+    if (response['message'] == "Moderator invited successfully") {
+      showSnackBar('u/ ${_controller.text} was added as a moderator');
       Navigator.pop(context);
     } else {
       showSnackBar('Error: ${response['message']}');
@@ -71,7 +71,7 @@ class _AddApprovedUserScreenState extends State<AddApprovedUserScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          'Add an approved user',
+          'Add a moderator',
           style: TextStyle(
             fontSize: ScreenSizeHandler.bigger * 0.025,
             fontWeight: FontWeight.bold,
@@ -145,23 +145,9 @@ class _AddApprovedUserScreenState extends State<AddApprovedUserScreen> {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                              top: ScreenSizeHandler.bigger * 0.02),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'This user will be able to submit content to \nyour community',
-                              style: kSettingsIconTextStyle.copyWith(
-                                fontSize: ScreenSizeHandler.bigger *
-                                    kSettingsTileSubtextRatio * 1.1,
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ),
-                        ),
                       ],
-                    ));
+                    )
+                  );
               },
             ),
           ),
@@ -176,7 +162,7 @@ class _AddApprovedUserScreenState extends State<AddApprovedUserScreen> {
                     text: 'Add',
                     onPress: () {
                       if (hasText) {
-                        addApprovedUser();
+                        inviteModerator();
                       }
                     },
                     isButtonEnabled: hasText,

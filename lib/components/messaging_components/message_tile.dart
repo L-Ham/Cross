@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/message_reply_screen.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
@@ -89,15 +90,26 @@ class MessageTile extends StatelessWidget {
                         color: isRead ? Colors.grey[600] : Colors.white,
                         fontSize: ScreenSizeHandler.bigger * 0.017),
                   ),
-                  linkifiedText(
-                    message,
-                    TextStyle(
-                        color: isRead ? Colors.grey[600] : Colors.white,
-                        fontSize: ScreenSizeHandler.bigger * 0.017),
-                    TextStyle(
-                        color: isRead ? Colors.grey[600] : Colors.white,
-                        fontSize: ScreenSizeHandler.bigger * 0.017),
-                  ),
+                  subject == "You have been invited to moderate a subreddit"
+                      ? Html(
+                          data: message,
+                          style: {
+                            "body": Style(
+                              color: isRead ? Colors.grey[600] : Colors.white,
+                              fontSize:
+                                  FontSize(ScreenSizeHandler.bigger * 0.017),
+                            ),
+                          },
+                        )
+                      : linkifiedText(
+                          message,
+                          TextStyle(
+                              color: isRead ? Colors.grey[600] : Colors.white,
+                              fontSize: ScreenSizeHandler.bigger * 0.017),
+                          TextStyle(
+                              color: isRead ? Colors.grey[600] : Colors.white,
+                              fontSize: ScreenSizeHandler.bigger * 0.017),
+                        ),
                 ],
               ),
             ),

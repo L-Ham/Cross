@@ -10,11 +10,13 @@ import '../constants.dart';
 class SubredditSearchScreen extends StatefulWidget {
   final String subredditName;
   final String subredditAvatarImage;
+  final bool isSubreddit;
 
   const SubredditSearchScreen(
       {Key? key,
       required this.subredditName,
-      required this.subredditAvatarImage})
+      required this.subredditAvatarImage,
+      this.isSubreddit = true})
       : super(key: key);
 
   static const String id = 'subreddit_search_screen';
@@ -120,7 +122,9 @@ class _SubredditSearchScreenState extends State<SubredditSearchScreen> {
                                               .image,
                                     ),
                                     Text(
-                                      ' r/${widget.subredditName} ',
+                                    widget.isSubreddit
+                                    ? 'r/${widget.subredditName}'
+                                    : 'u/${widget.subredditName}',
                                       style: TextStyle(
                                         fontSize:
                                             ScreenSizeHandler.bigger * 0.019,
@@ -146,6 +150,7 @@ class _SubredditSearchScreenState extends State<SubredditSearchScreen> {
                                 onPressed: () {
                                   setState(() {
                                     if (_isTextFieldEmpty) {
+                                      Navigator.pop(context);
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
@@ -186,24 +191,26 @@ class _SubredditSearchScreenState extends State<SubredditSearchScreen> {
                 ),
               ),
               SliverToBoxAdapter(
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, SearchingInSubreddit.id,
-                        arguments: {
-                          "search": '',
-                          "subredditName": widget.subredditName,
-                          "subredditImage": widget.subredditAvatarImage,
-                          "searchType": "Top"
-                        });
-                  },
-                  child: Container(
-                    color: Color.fromARGB(255, 30, 30, 30),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: ScreenSizeHandler.screenHeight * 0.015,
-                              horizontal: ScreenSizeHandler.screenWidth * 0.06),
+                child: Container(
+                  color: Color.fromARGB(255, 30, 30, 30),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: ScreenSizeHandler.screenHeight * 0.015,
+                            horizontal: ScreenSizeHandler.screenWidth * 0.06),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(
+                                context, SearchingInSubreddit.id,
+                                arguments: {
+                                  "search": '',
+                                  "subredditName": widget.subredditName,
+                                  "subredditImage": widget.subredditAvatarImage,
+                                  "searchType": "Top",
+                                  "isSubreddit": widget.isSubreddit
+                                });
+                          },
                           child: Row(
                             children: [
                               Icon(
@@ -219,7 +226,9 @@ class _SubredditSearchScreenState extends State<SubredditSearchScreen> {
                                     fontSize: ScreenSizeHandler.bigger * 0.019),
                               ),
                               Text(
-                                'r/${widget.subredditName}',
+                                widget.isSubreddit
+                                    ? 'r/${widget.subredditName}'
+                                    : 'u/${widget.subredditName}',
                                 style: TextStyle(
                                     fontSize: ScreenSizeHandler.bigger * 0.019,
                                     fontWeight: FontWeight.bold),
@@ -227,10 +236,23 @@ class _SubredditSearchScreenState extends State<SubredditSearchScreen> {
                             ],
                           ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: ScreenSizeHandler.screenHeight * 0.015,
-                              horizontal: ScreenSizeHandler.screenWidth * 0.06),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: ScreenSizeHandler.screenHeight * 0.015,
+                            horizontal: ScreenSizeHandler.screenWidth * 0.06),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(
+                                context, SearchingInSubreddit.id,
+                                arguments: {
+                                  "search": '',
+                                  "subredditName": widget.subredditName,
+                                  "subredditImage": widget.subredditAvatarImage,
+                                  "searchType": "New",
+                                  "isSubreddit": widget.isSubreddit
+                                });
+                          },
                           child: Row(
                             children: [
                               Icon(
@@ -246,7 +268,9 @@ class _SubredditSearchScreenState extends State<SubredditSearchScreen> {
                                     fontSize: ScreenSizeHandler.bigger * 0.019),
                               ),
                               Text(
-                                'r/${widget.subredditName}',
+                                    widget.isSubreddit
+                                    ? 'r/${widget.subredditName}'
+                                    : 'u/${widget.subredditName}',
                                 style: TextStyle(
                                     fontSize: ScreenSizeHandler.bigger * 0.019,
                                     fontWeight: FontWeight.bold),
@@ -254,36 +278,37 @@ class _SubredditSearchScreenState extends State<SubredditSearchScreen> {
                             ],
                           ),
                         ),
-                        if (_controller.text.isNotEmpty)
-                          Container(
-                            color: kBackgroundColor,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal:
-                                      ScreenSizeHandler.screenWidth * 0.07,
-                                  vertical:
-                                      ScreenSizeHandler.screenHeight * 0.015),
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: InteractiveText(
-                                  text: 'Search for "${_controller.text}"',
-                                  fontSizeRatio: 0.02,
-                                  onTap: () {
-                                    Navigator.pushNamed(
-                                        context, SearchingInSubreddit.id,
-                                        arguments: {
-                                          "search": _controller.text,
-                                          "subredditName": widget.subredditName,
-                                          "subredditImage":
-                                              widget.subredditAvatarImage
-                                        });
-                                  },
-                                ),
+                      ),
+                      if (_controller.text.isNotEmpty)
+                        Container(
+                          color: kBackgroundColor,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal:
+                                    ScreenSizeHandler.screenWidth * 0.07,
+                                vertical:
+                                    ScreenSizeHandler.screenHeight * 0.015),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: InteractiveText(
+                                text: 'Search for "${_controller.text}"',
+                                fontSizeRatio: 0.02,
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                      context, SearchingInSubreddit.id,
+                                      arguments: {
+                                        "search": _controller.text,
+                                        "subredditName": widget.subredditName,
+                                        "subredditImage":
+                                            widget.subredditAvatarImage,
+                                        "isSubreddit": widget.isSubreddit
+                                      });
+                                },
                               ),
                             ),
-                          )
-                      ],
-                    ),
+                          ),
+                        )
+                    ],
                   ),
                 ),
               )

@@ -7,6 +7,7 @@ import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/home_page_screen.dart';
 import 'package:reddit_bel_ham/screens/settings_screen.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
+import 'package:reddit_bel_ham/utilities/go_to_profile.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'package:reddit_bel_ham/utilities/time_ago.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
@@ -196,7 +197,8 @@ class _EndDrawerState extends State<EndDrawer> {
                     titleText: "Profile",
                     onTap: () {
                       setState(() {
-                        Navigator.pushNamed(context, 'profile_screen', arguments: {'isMyProfile': true,});
+                        // Navigator.pushNamed(context, 'profile_screen', arguments: {'isMyProfile': true,});
+                        goToProfile(context, TokenDecoder.username);
                       // getProfileInfo();
                       });
                     },

@@ -487,6 +487,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
                               "currentlyViewingNickname":
                                   subredditOnlineNickname,
                               "communityDescription": subredditDescription,
+                              "moderators": moderators,
                             },
                           );
                         },
@@ -712,6 +713,8 @@ class _SubredditScreenState extends State<SubredditScreen> {
                                         subredditOnlineNickname,
                                     "communityDescription":
                                         subredditDescription,
+                                    "moderators": moderators,
+
                                   },
                                 );
                               },

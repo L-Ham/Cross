@@ -66,10 +66,7 @@ buildShareToPostCard(BuildContext context, Post post) {
                 Container(
                   width: ScreenSizeHandler.smaller * 0.18,
                   height: ScreenSizeHandler.screenHeight * 0.07,
-                  child: Image.asset(
-                    post.image[0],
-                    fit: BoxFit.fitHeight,
-                  ),
+                  child: Image.network(post.image[0])
                 ),
             ],
           ),

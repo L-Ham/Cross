@@ -42,6 +42,7 @@ import '../components/messaging_components/inbox_bottom_sheet.dart';
 import 'package:reddit_bel_ham/screens/inside_chat_screen.dart';
 
 import 'package:reddit_bel_ham/screens/inside_chat_screen.dart';
+import 'package:reddit_bel_ham/screens/chatting_screen.dart';
 
 class HomePageScreen extends StatefulWidget {
   const HomePageScreen({super.key});
@@ -54,16 +55,52 @@ class HomePageScreen extends StatefulWidget {
 class _HomePageScreenState extends State<HomePageScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   PageController controller = PageController();
+  final ScrollController _scrollController = ScrollController();
   String username = "peter_ashraf";
   String onlineStatusString = "On";
   bool onlineStatusToggle = true;
   Color onlineStatusColor = kOnlineStatusColor;
   double onlineStatusWidth = ScreenSizeHandler.smaller * 0.5;
+  List<Post> feed = [];
+  List<Post> newPosts = [];
+  int page = 1;
+  String sortType = 'Hot';
+  bool isFeedCalled = false;
+  bool isFeedFinished = false;
+
   @override
   void initState() {
     super.initState();
     username = TokenDecoder.username;
     email = TokenDecoder.email;
+
+    print(TokenDecoder.token);
+
+    page = 1;
+    print('ZZZZZ ABL HOME FEEED');
+    getHomeFeed(sortType, page, 5);
+    page++;
+    print('ZZZZZ BA#D HOME FEEED');
+    _scrollController.addListener(getNewPostsForFeed);
+  }
+
+  void getNewPostsForFeed() {
+    double diff = _scrollController.position.maxScrollExtent -
+        _scrollController.position.pixels;
+
+    if (diff < 250 && diff > 200) {
+      if (isFeedCalled) {
+        setState(() {
+          isFeedCalled = false;
+          if (!isFeedFinished) {
+            getHomeFeed(sortType, page, 2);
+            page++;
+            print(page);
+            print("dddddddddddddddddddddddddddddddddddddddddddddddddddddddd");
+          }
+        });
+      }
+    }
   }
 
   bool isRecentlyVisitedDrawerVisible = false;
@@ -71,6 +108,30 @@ class _HomePageScreenState extends State<HomePageScreen> {
     setState(() {
       isRecentlyVisitedDrawerVisible = value;
     });
+  }
+
+  Future<void> getHomeFeed(String sortType, int page, int limit) async {
+    Map<String, dynamic> data = (await apiService.getHomeFeed(
+            sortType, page.toString(), limit.toString())) ??
+        {};
+    if (data.containsKey('posts')) {
+      List<dynamic> jsonPosts = data['posts'];
+      setState(() {
+        newPosts = jsonPosts.map((json) => Post.fromJson(json)).toList();
+        if (page == 1) {
+          feed = newPosts;
+        } else {
+          feed.addAll(newPosts);
+        }
+        isFeedCalled = true;
+      });
+      print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+      print(feed);
+    } else {
+      setState(() {
+        isFeedFinished = true;
+      });
+    }
   }
 
   void getTrendingPosts() async {
@@ -232,11 +293,6 @@ class _HomePageScreenState extends State<HomePageScreen> {
       setState(() {
         navigationBarIndex = oldIndex;
       });
-    } else if (index == 3) {
-      Navigator.pushNamed(context, InsideChattingScreen.id);
-      setState(() {
-        navigationBarIndex = oldIndex;
-      });
     }
   }
 
@@ -332,10 +388,18 @@ class _HomePageScreenState extends State<HomePageScreen> {
                           selectedMenuItem = newValue!;
                         });
                         if (selectedMenuItem == "Home") {
+                          sortType = 'Hot';
+                          page = 1;
                           controller.jumpToPage(0);
+                          getHomeFeed(sortType, page, 5);
+                          page++;
                         }
                         if (selectedMenuItem == "Popular") {
+                          sortType = 'Rising';
+                          page = 1;
                           controller.jumpToPage(1);
+                          getHomeFeed(sortType, page, 5);
+                          page++;
                         }
                       }
                     },
@@ -479,20 +543,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
         body: navigationBarIndex == 1
             ? const CommunitiesScreen()
             : navigationBarIndex == 3
-                ? Padding(
-                    padding: EdgeInsets.only(
-                      left: ScreenSizeHandler.screenWidth * 0.1,
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Chat',
-                        style: TextStyle(
-                            fontSize: ScreenSizeHandler.smaller *
-                                kButtonSmallerFontRatio *
-                                1.1),
-                      ),
-                    ),
-                  )
+                ? const ChattingScreen()
                 : navigationBarIndex == 4
                     ? isMarkingAllAsRead
                         ? const Center(child: RedditLoadingIndicator())
@@ -508,19 +559,20 @@ class _HomePageScreenState extends State<HomePageScreen> {
                         }),
                         children: [
                           SingleChildScrollView(
+                            controller: _scrollController,
                             child: ListView.builder(
                               physics: const NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
-                              itemCount: posts.length,
+                              itemCount: feed.length,
                               itemBuilder: (context, index) {
                                 return GestureDetector(
                                   onTap: () {
                                     Navigator.pushNamed(
                                         context, CommentsScreen.id,
-                                        arguments: {"post": posts[index]});
+                                        arguments: {"post": feed[index]});
                                   },
                                   child: PostCard(
-                                    post: posts[index],
+                                    post: feed[index],
                                   ),
                                 );
                               },
@@ -574,9 +626,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                 ListView.builder(
                                   physics: const NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
-                                  itemCount: posts.length,
+                                  itemCount: feed.length,
                                   itemBuilder: (context, index) {
-                                    return PostCard(post: posts[index]);
+                                    return PostCard(post: feed[index]);
                                   },
                                 ),
                               ],

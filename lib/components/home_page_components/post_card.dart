@@ -94,7 +94,7 @@ class Post {
       userAvatarImage:
           json['creatorAvatarImage'] ?? "assets/images/avatarDaniel.png",
       userName: json['creatorUsername'] ?? 'thekey119',
-      subredditName: json['subredditName'] ?? 'Dragon Oath',
+      subredditName: json['subredditName'] ?? '',
       options: json['poll'] != null && json['poll']['options'] != null
           ? (json['poll']['options'] as List)
               .map((option) => option['option'] as String)
@@ -250,7 +250,7 @@ class _PostCardState extends State<PostCard> {
                         style: TextStyle(
                             height: 0.8,
                             color: Colors.white,
-                            fontSize: ScreenSizeHandler.bigger * 0.017,
+                            fontSize: ScreenSizeHandler.bigger * 0.014,
                             fontWeight: FontWeight.w500),
                       ),
                       if (widget.isExpanded)
@@ -260,15 +260,15 @@ class _PostCardState extends State<PostCard> {
                               'u/${post.userName} ',
                               style: TextStyle(
                                   color: Colors.blue,
-                                  fontSize: ScreenSizeHandler.bigger * 0.017,
+                                  fontSize: ScreenSizeHandler.bigger * 0.014,
                                   fontWeight: FontWeight.w400),
                             ),
                             Text(
                               '• ${post.createdFrom}',
                               style: TextStyle(
-                                  color: Colors.grey[400],
-                                  fontSize: ScreenSizeHandler.bigger * 0.017,
-                                  fontWeight: FontWeight.w400),
+                                  color: const Color.fromARGB(255, 100, 100, 100),
+                                  fontSize: ScreenSizeHandler.bigger * 0.012,
+                                  ),
                             ),
                           ],
                         ),
@@ -337,14 +337,14 @@ class _PostCardState extends State<PostCard> {
                     Icon(
                       Icons.eighteen_up_rating,
                       color: Colors.pink,
-                      size: ScreenSizeHandler.screenWidth * 0.055,
+                      size: ScreenSizeHandler.screenWidth * 0.042,
                     ),
                   if (post.isNSFW)
                     Text(
                       'NSFW',
                       style: TextStyle(
                         color: Colors.pink,
-                        fontSize: ScreenSizeHandler.screenWidth * 0.035,
+                        fontSize: ScreenSizeHandler.screenWidth * 0.032,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -353,14 +353,14 @@ class _PostCardState extends State<PostCard> {
                     Icon(
                       FontAwesomeIcons.circleExclamation,
                       color: Colors.white,
-                      size: ScreenSizeHandler.screenWidth * 0.04,
+                      size: ScreenSizeHandler.screenWidth * 0.035,
                     ),
                   if (post.isSpoiler)
                     Text(
                       ' SPOILER',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: ScreenSizeHandler.screenWidth * 0.035,
+                        fontSize: ScreenSizeHandler.screenWidth * 0.032,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -388,8 +388,8 @@ class _PostCardState extends State<PostCard> {
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: widget.isExpanded
-                                  ? ScreenSizeHandler.bigger * 0.023
-                                  : ScreenSizeHandler.bigger * 0.020,
+                                  ? ScreenSizeHandler.bigger * 0.022
+                                  : ScreenSizeHandler.bigger * 0.019,
                             ),
                             softWrap: true,
                           ),
@@ -465,8 +465,8 @@ class _PostCardState extends State<PostCard> {
                                 : const Color.fromARGB(255, 133, 132, 132),
                             fontWeight: FontWeight.normal,
                             fontSize: widget.isExpanded
-                                ? ScreenSizeHandler.bigger * 0.018
-                                : ScreenSizeHandler.bigger * 0.016),
+                                ? ScreenSizeHandler.bigger * 0.017
+                                : ScreenSizeHandler.bigger * 0.015),
                       ),
                     ),
                 ],
@@ -517,7 +517,7 @@ class _PostCardState extends State<PostCard> {
                                         color: post.isUpvoted
                                             ? Colors.red
                                             : Colors.white,
-                                        size: ScreenSizeHandler.bigger * 0.023,
+                                        size: ScreenSizeHandler.bigger * 0.018,
                                       ),
                                       Text(
                                         post.upvotes.toString(),
@@ -529,11 +529,11 @@ class _PostCardState extends State<PostCard> {
                                                         255, 110, 85, 114)
                                                     : Colors.white,
                                             fontSize: ScreenSizeHandler.bigger *
-                                                0.020),
+                                                0.015),
                                       ),
                                       Padding(
                                         padding: EdgeInsets.only(
-                                            left: ScreenSizeHandler.bigger *
+                                            left: ScreenSizeHandler.screenWidth *
                                                 0.01),
                                         child: Container(
                                           width:
@@ -571,7 +571,7 @@ class _PostCardState extends State<PostCard> {
                                             ? const Color.fromARGB(
                                                 255, 110, 85, 114)
                                             : Colors.white,
-                                        size: ScreenSizeHandler.bigger * 0.023,
+                                        size: ScreenSizeHandler.bigger * 0.018,
                                       ),
                                     ],
                                   ),
@@ -618,8 +618,8 @@ class _PostCardState extends State<PostCard> {
                                           ),
                                           child: Icon(
                                             Icons.mode_comment_outlined,
-                                            size: ScreenSizeHandler.bigger *
-                                                0.023,
+                                            size: ScreenSizeHandler.screenWidth *
+                                                0.03,
                                             color: Colors.white,
                                           ),
                                         ),
@@ -636,8 +636,8 @@ class _PostCardState extends State<PostCard> {
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize:
-                                                    ScreenSizeHandler.bigger *
-                                                        0.020),
+                                                    ScreenSizeHandler.screenWidth *
+                                                        0.03),
                                           ),
                                         )
                                       ])),
@@ -675,13 +675,14 @@ class _PostCardState extends State<PostCard> {
                                     top: ScreenSizeHandler.screenWidth * 0.015,
                                     bottom:
                                         ScreenSizeHandler.screenWidth * 0.015,
-                                    left: ScreenSizeHandler.screenWidth * 0.012,
+                                    left: ScreenSizeHandler.screenWidth * 0.03,
                                     right:
-                                        ScreenSizeHandler.screenWidth * 0.012,
+                                        ScreenSizeHandler.screenWidth * 0.03,
                                   ),
                                   child: Icon(
                                     Icons.share,
-                                    size: ScreenSizeHandler.bigger * 0.023,
+                                    size: ScreenSizeHandler.screenWidth *
+                                                0.03,
                                     color: Colors.white,
                                   ),
                                 ),

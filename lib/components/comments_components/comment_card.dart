@@ -6,6 +6,7 @@ import 'package:reddit_bel_ham/components/subreddit_components/subreddit_ellipsi
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/add_comment_screen.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
+import 'package:reddit_bel_ham/utilities/go_to_profile.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 
@@ -23,21 +24,22 @@ class Comment {
   bool isUsernameBlocked = false;
   bool isUsernameTileClicked = false;
   String submittedTime = '2h';
-  final List<Comment> replies; // List of replies
+  final List<Comment> replies;
+  String? avatarImage = "assets/images/avatarDaniel.png";
 
-  Comment({
-    required this.userId,
-    required this.commentId,
-    required this.username,
-    required this.content,
-    required this.upvotes,
-    required this.submittedTime,
-    required this.postId,
-    this.replies = const [], // Initialize replies as an empty list
-    this.isUpvoted = false,
-    this.isDownvoted = false,
-    this.repliedId
-  });
+  Comment(
+      {required this.userId,
+      required this.commentId,
+      required this.username,
+      required this.content,
+      required this.upvotes,
+      required this.submittedTime,
+      required this.postId,
+      required this.avatarImage,
+      this.replies = const [],
+      this.isUpvoted = false,
+      this.isDownvoted = false,
+      this.repliedId});
 }
 
 class CommentCard extends StatefulWidget {
@@ -77,20 +79,36 @@ class _CommentCardState extends State<CommentCard> {
           leading: GestureDetector(
             onTap: () {
               // TODO: Navigate to user profile
+              goToProfile(context, widget.comment.username);
             },
             child: CircleAvatar(
-              backgroundImage: AssetImage(
-                widget.comment.isUsernameBlocked &&
-                        !widget.comment.isUsernameTileClicked
-                    ? 'assets/images/blocked_account_avatar.png'
-                    : 'assets/images/redditAvata2.png',
-              ),
               radius: 15,
+              child:
+                  widget.comment.avatarImage != "assets/images/avatarDaniel.png"
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(24),
+                          child: Image.network(
+                            widget.comment.isUsernameBlocked &&
+                                    !widget.comment.isUsernameTileClicked
+                                ? 'assets/images/blocked_account_avatar.png'
+                                : widget.comment.avatarImage!,
+                          ),
+                        )
+                      : ClipRRect(
+                          borderRadius: BorderRadius.circular(24),
+                          child: Image.asset(
+                            widget.comment.isUsernameBlocked &&
+                                    !widget.comment.isUsernameTileClicked
+                                ? 'assets/images/blocked_account_avatar.png'
+                                : 'assets/images/avatarDaniel.png',
+                          ),
+                        ),
             ),
           ),
           title: GestureDetector(
             onTap: () {
               //TODO: Navigate to user profile
+              goToProfile(context, widget.comment.username);
             },
             child: Row(
               children: [
