@@ -145,6 +145,12 @@ class ApiService {
     return result;
   }
 
+  Future<dynamic> changeNotificationSettings(Map<String, dynamic> body) async {
+    var result = await request('/user/notificationsSettings',
+        headers: headerWithToken, method: 'PATCH', body: body);
+    return result;
+  }
+
   Future<dynamic> getNotificationSettings() async {
     var result = await request('/user/notificationsSettings',
         headers: headerWithToken, method: 'GET');
@@ -646,7 +652,6 @@ class ApiService {
   }
 
   Future<dynamic> getUserInfo(String id) async {
-    // print('IDDD: $id');
     var result = await request('/user/info?userId=$id',
         headers: headerWithToken, method: 'GET');
     return result;
@@ -665,6 +670,26 @@ class ApiService {
     };
     var result = await request('/user/socialLink',
         headers: headerWithToken, method: 'DELETE', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> hideNotification(String notificationId) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "notificationId": notificationId,
+    };
+    var result = await request('/notification/hide',
+        headers: headerWithToken, method: 'DELETE', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> markNotificationAsRead(String notificationId) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "notificationId": notificationId,
+    };
+    var result = await request('/notification/markRead',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
     return result;
   }
 
@@ -783,6 +808,18 @@ class ApiService {
 
   Future<dynamic> searchPostsInSubreddit(Map<String, dynamic> body) async {
     var result = await request('/post/subreddit/searchPosts',
+        headers: headerWithToken, method: 'GET', body: body);
+    return result;
+  }
+
+  Future<dynamic> searchCommentsInProfile(Map<String, dynamic> body) async {
+    var result = await request('/user/searchComments',
+        headers: headerWithToken, method: 'GET', body: body);
+    return result;
+  }
+
+  Future<dynamic> searchPostsInProfile(Map<String, dynamic> body) async {
+    var result = await request('/user/searchPosts',
         headers: headerWithToken, method: 'GET', body: body);
     return result;
   }

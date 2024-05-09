@@ -69,7 +69,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
   String subredditImage = "assets/images/planet3.png";
   ApiService apiService = ApiService(TokenDecoder.token);
   File? videoFile;
-  String subredditId = "";
+  String? subredditId;
   bool isLoading = false;
   bool isScheduled = false;
   DateTime? selectedDate;
