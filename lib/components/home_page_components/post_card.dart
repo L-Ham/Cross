@@ -91,8 +91,9 @@ class Post {
     return Post(
       postId: json['_id'] ?? '',
       userId: json['user'] ?? '',
-      userAvatarImage:
-          json['creatorAvatarImage'] ?? json['creatorAvatar'] ?? "assets/images/avatarDaniel.png",
+      userAvatarImage: json['creatorAvatarImage'] ??
+          json['creatorAvatar'] ??
+          "assets/images/avatarDaniel.png",
       userName: json['creatorUsername'] ?? 'thekey119',
       subredditName: json['subredditName'] ?? '',
       options: json['poll'] != null && json['poll']['options'] != null
@@ -234,10 +235,17 @@ class _PostCardState extends State<PostCard> {
                                 ? NetworkImage(post.userAvatarImage)
                                 : AssetImage(post.userAvatarImage)
                                     as ImageProvider<Object>?
-                            : post.avatarImage != "assets/images/planet3.png"
-                                ? NetworkImage(post.avatarImage)
-                                : AssetImage(post.avatarImage)
-                                    as ImageProvider<Object>?,
+                            : post.subredditName == ""
+                                ? post.userAvatarImage !=
+                                        "assets/images/avatarDaniel.png"
+                                    ? NetworkImage(post.userAvatarImage)
+                                    : AssetImage(post.userAvatarImage)
+                                        as ImageProvider<Object>?
+                                : post.avatarImage !=
+                                        "assets/images/planet3.png"
+                                    ? NetworkImage(post.avatarImage)
+                                    : AssetImage(post.avatarImage)
+                                        as ImageProvider<Object>?,
                   ),
                 ),
                 SizedBox(width: ScreenSizeHandler.screenWidth * 0.02),
@@ -252,7 +260,9 @@ class _PostCardState extends State<PostCard> {
                                 : "r/${post.subredditName}"
                             : widget.isCommunityFeed
                                 ? '${post.userName} • ${post.createdFrom}'
-                                : 'r/${post.subredditName} • ${post.createdFrom}',
+                                : post.subredditName == ""
+                                    ? 'u/${post.userName} • ${post.createdFrom}'
+                                    : 'r/${post.subredditName} • ${post.createdFrom}',
                         style: TextStyle(
                             height: 0.8,
                             color: Colors.white,

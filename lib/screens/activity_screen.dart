@@ -131,7 +131,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                     ScreenSizeHandler.screenWidth * 0.05,
                                 vertical:
                                     ScreenSizeHandler.screenHeight * 0.01),
-                            child: Text("Last Hour",
+                            child: Text("Recent",
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w500,
