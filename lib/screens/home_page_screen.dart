@@ -78,7 +78,6 @@ class _HomePageScreenState extends State<HomePageScreen> {
     print('ZZZZZ ABL HOME FEEED');
     getHomeFeed(sortType, page, 6);
     page++;
-    print('ZZZZZ BA#D HOME FEEED');
     _scrollController.addListener(getNewPostsForFeed);
   }
 
@@ -381,24 +380,29 @@ class _HomePageScreenState extends State<HomePageScreen> {
                   child: DropdownButton2(
                     items: dropdownItems,
                     onChanged: (String? newValue) {
-                      if (newValue != "Latest") {
-                        setState(() {
-                          selectedMenuItem = newValue!;
-                        });
-                        if (selectedMenuItem == "Home") {
-                          sortType = 'Hot';
-                          page = 1;
-                          controller.jumpToPage(0);
-                          getHomeFeed(sortType, page, 5);
-                          page++;
-                        }
-                        if (selectedMenuItem == "Popular") {
-                          sortType = 'Rising';
-                          page = 1;
-                          controller.jumpToPage(1);
-                          getHomeFeed(sortType, page, 5);
-                          page++;
-                        }
+                      setState(() {
+                        selectedMenuItem = newValue!;
+                      });
+                      if (selectedMenuItem == "Home") {
+                        sortType = 'Hot';
+                        page = 1;
+                        controller.jumpToPage(0);
+                        getHomeFeed(sortType, page, 5);
+                        page++;
+                      }
+                      if (selectedMenuItem == "Popular") {
+                        sortType = 'Rising';
+                        page = 1;
+                        controller.jumpToPage(1);
+                        getHomeFeed(sortType, page, 5);
+                        page++;
+                      }
+                      if (selectedMenuItem == "Latest") {
+                        sortType = 'New';
+                        page = 1;
+                        controller.jumpToPage(1);
+                        getHomeFeed(sortType, page, 5);
+                        page++;
                       }
                     },
                     value: selectedMenuItem,
@@ -551,8 +555,10 @@ class _HomePageScreenState extends State<HomePageScreen> {
                         onPageChanged: (value) => setState(() {
                           if (value == 0) {
                             selectedMenuItem = "Home";
-                          } else {
+                          } else if (value == 1) {
                             selectedMenuItem = "Popular";
+                          } else if (value == 2) {
+                            selectedMenuItem = "Latest";
                           }
                         }),
                         children: [
@@ -576,62 +582,66 @@ class _HomePageScreenState extends State<HomePageScreen> {
                               },
                             ),
                           ),
-                          SingleChildScrollView(
-                            child: Column(
-                              children: [
-                                Container(
-                                  height: ScreenSizeHandler.screenHeight * 0.05,
-                                  color: Colors.black,
-                                  child: Row(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                            left:
-                                                ScreenSizeHandler.screenWidth *
-                                                    0.02,
-                                            right:
-                                                ScreenSizeHandler.screenWidth *
-                                                    0.02),
-                                        child: Icon(
-                                          Icons.trending_up_rounded,
-                                          color: Colors.white,
-                                          size:
-                                              ScreenSizeHandler.smaller * 0.055,
-                                        ),
-                                      ),
-                                      const Text(
-                                        'Trending Today',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: kDefaultFontSize,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: GestureDetector(
+                          if (selectedMenuItem == 'Popular') ...[
+                            SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  Container(
+                                    height:
+                                        ScreenSizeHandler.screenHeight * 0.05,
+                                    color: Colors.black,
                                     child: Row(
-                                      children: trending
-                                          .map((post) =>
-                                              TrendingPostCard(post: post))
-                                          .toList(),
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              left: ScreenSizeHandler
+                                                      .screenWidth *
+                                                  0.02,
+                                              right: ScreenSizeHandler
+                                                      .screenWidth *
+                                                  0.02),
+                                          child: Icon(
+                                            Icons.trending_up_rounded,
+                                            color: Colors.white,
+                                            size: ScreenSizeHandler.smaller *
+                                                0.055,
+                                          ),
+                                        ),
+                                        const Text(
+                                          'Trending Today',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: kDefaultFontSize,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                ),
-                                ListView.builder(
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemCount: feed.length,
-                                  itemBuilder: (context, index) {
-                                    return PostCard(post: feed[index]);
-                                  },
-                                ),
-                              ],
+                                  SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: GestureDetector(
+                                      child: Row(
+                                        children: trending
+                                            .map((post) =>
+                                                TrendingPostCard(post: post))
+                                            .toList(),
+                                      ),
+                                    ),
+                                  ),
+                                  ListView.builder(
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: feed.length,
+                                    itemBuilder: (context, index) {
+                                      return PostCard(post: feed[index]);
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
+                          ],
                         ],
                       ),
         drawer: Drawer(

@@ -65,9 +65,11 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
     } catch (e) {
       print('Error: $e');
     } finally {
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 

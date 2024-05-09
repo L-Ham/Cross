@@ -25,8 +25,10 @@ class _DescribeCommunityScreenState extends State<DescribeCommunityScreen> {
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   bool isButtonEnabled = false;
-  String subredditID = '', membersNickname = '', currentlyViewingNickname = '',
-   communityDescription = '';
+  String subredditID = '',
+      membersNickname = '',
+      currentlyViewingNickname = '',
+      communityDescription = '';
 
   @override
   void didChangeDependencies() {
@@ -35,15 +37,15 @@ class _DescribeCommunityScreenState extends State<DescribeCommunityScreen> {
     subredditID = args["subredditID"];
     membersNickname = args["membersNickname"];
     currentlyViewingNickname = args["currentlyViewingNickname"];
-    communityDescription = args["communityDescription"];  
-    
+    communityDescription = args["communityDescription"];
+
     _controller.text = communityDescription;
     _focusNode.requestFocus();
-    
+
     super.didChangeDependencies();
   }
 
-   void showSnackBar(String snackBarText) {
+  void showSnackBar(String snackBarText) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -72,10 +74,14 @@ class _DescribeCommunityScreenState extends State<DescribeCommunityScreen> {
         _controller.text);
     if (response['message'] ==
         "Subreddit's Community Details Edited Successfully") {
-      _focusNode.unfocus();    
+      _focusNode.unfocus();
       Navigator.pop(context, _controller.text);
     } else {
-      showSnackBar('Error: ${response['message']}');
+      if (mounted) {
+        setState(() {
+          showSnackBar('Error: ${response['message']}');
+        });
+      }
     }
   }
 
@@ -129,8 +135,8 @@ class _DescribeCommunityScreenState extends State<DescribeCommunityScreen> {
                     decoration: InputDecoration(
                       counterStyle: TextStyle(
                         color: kHintTextColor,
-                        fontSize: ScreenSizeHandler.smaller *
-                            kButtonSmallerFontRatio,
+                        fontSize:
+                            ScreenSizeHandler.smaller * kButtonSmallerFontRatio,
                         fontWeight: FontWeight.bold,
                       ),
                       hintText: _controller.text.isEmpty
@@ -143,8 +149,7 @@ class _DescribeCommunityScreenState extends State<DescribeCommunityScreen> {
                             0.85,
                       ),
                       focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Colors.white), 
+                        borderSide: BorderSide(color: Colors.white),
                       ),
                     ),
                     style: TextStyle(

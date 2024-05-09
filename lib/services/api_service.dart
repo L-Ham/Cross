@@ -572,7 +572,8 @@ class ApiService {
     return result;
   }
 
-  Future<dynamic> getSavedPosts(String username, int page, int limit) async {
+  Future<dynamic> getSavedPosts(
+      String username, String page, String limit) async {
     Map<String, dynamic> sentData;
     sentData = {"username": username, "page": page, "limit": limit};
     var result = await request('/user/savedPosts',
@@ -1226,4 +1227,32 @@ class ApiService {
         headers: headerWithToken, method: 'GET', body: sentData);
     return response;
   }
+
+  Future<dynamic> getUserHistory() async {
+    var result = await request('/user/history/get',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+
+  Future<dynamic> getCommunityType(String communityName) async {
+        Map<String, dynamic> sentData;
+    sentData = {
+      "subredditName": communityName,
+    };
+    var result = await request('/subreddit/type',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> removeModerator(String communityName, String userName) async {
+      Map<String, dynamic> sentData;
+    sentData = {
+      "subredditName": communityName,
+      "moderatorName":  userName,
+    };
+    var result = await request('/subreddit/mod/remove',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
 }
