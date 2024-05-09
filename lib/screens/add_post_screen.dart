@@ -58,6 +58,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
   bool isVideoChosen = false;
   bool isPollChosen = false;
   bool showLinkError = false;
+  bool isProfile = false;
   VideoPlayerController _controller =
       VideoPlayerController.asset("assets/images/avatarDaniel.png");
   String pollDays = "3 days";
@@ -72,6 +73,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
   String? subredditId;
   bool isLoading = false;
   bool isScheduled = false;
+  bool isFirstTime = true;
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
 
@@ -103,17 +105,29 @@ class _AddPostScreenState extends State<AddPostScreen> {
     if (args == null) {
       return;
     }
-    if (args['subredditName'] != null) {
-      subredditName = args['subredditName'];
-      setState(() {
-        isSubredditSelected = true;
-      });
-    }
-    if (args['subredditImage'] != null) {
-      subredditImage = args['subredditImage'];
-    }
-    if (args['subredditId'] != null) {
-      subredditId = args['subredditId'];
+    if (isFirstTime) {
+      if (args['subredditName'] != null) {
+        subredditName = args['subredditName'];
+        setState(() {
+          isSubredditSelected = true;
+        });
+      }
+      if (args['subredditImage'] != null && args['subredditImage'].isNotEmpty) {
+        subredditImage = args['subredditImage'];
+      } else {
+        subredditImage = "assets/images/avatarDaniel.png";
+      }
+      print(subredditImage);
+      print('ppppppppppppppppppppppppppp');
+      if (args['subredditId'] != null) {
+        subredditId = args['subredditId'];
+      }
+      if (args['isProfile'] == null) {
+        isProfile = false;
+      } else {
+        isProfile = true;
+      }
+      isFirstTime = false;
     }
     super.didChangeDependencies();
   }
@@ -328,8 +342,11 @@ class _AddPostScreenState extends State<AddPostScreen> {
                       "title": titleController.text,
                       "isSpoiler": isSpoiler,
                       "text": bodyController.text,
+                      "isSendPostNotifications": true,
+                      "isLocked": false,
+                      "isNSFW": false,
                     };
-                    if (subredditId != "") {
+                    if (subredditId != null) {
                       post["subRedditId"] = subredditId;
                     }
                     if (isImageChosen) {
@@ -513,7 +530,9 @@ class _AddPostScreenState extends State<AddPostScreen> {
                                     radius:
                                         ScreenSizeHandler.screenHeight * 0.013,
                                     child: subredditImage !=
-                                            'assets/images/planet3.png'
+                                                'assets/images/planet3.png' &&
+                                            subredditImage !=
+                                                'assets/images/avatarDaniel.png'
                                         ? ClipRRect(
                                             borderRadius:
                                                 BorderRadius.circular(35),
@@ -524,7 +543,10 @@ class _AddPostScreenState extends State<AddPostScreen> {
                                             borderRadius:
                                                 BorderRadius.circular(35),
                                             child: Image.asset(
-                                              'assets/images/planet3.png',
+                                              subredditImage ==
+                                                      'assets/images/avatarDaniel.png'
+                                                  ? 'assets/images/avatarDaniel.png'
+                                                  : 'assets/images/planet3.png',
                                               fit: BoxFit.cover,
                                             ),
                                           ),
@@ -539,7 +561,10 @@ class _AddPostScreenState extends State<AddPostScreen> {
                                             await Navigator.pushNamed(
                                                 context, PostToScreen.id,
                                                 arguments: {
-                                              "subredditName": subredditName
+                                              "subredditName": subredditName,
+                                              "avatarImage": subredditImage ??
+                                                  'assets/images/avatarDaniel.png',
+                                              "isProfile": isProfile,
                                             }) as Map<String, String>?;
                                         if (result != null) {
                                           setState(() {
@@ -549,13 +574,16 @@ class _AddPostScreenState extends State<AddPostScreen> {
                                                 result['subredditImage']!;
                                             subredditId =
                                                 result['subredditId']!;
+                                            isProfile = false;
                                           });
                                         }
                                       },
                                       child: Row(
                                         children: [
                                           Text(
-                                            "r/$subredditName",
+                                            isProfile
+                                                ? "u/$subredditName"
+                                                : "r/$subredditName",
                                             style: TextStyle(
                                                 fontSize:
                                                     ScreenSizeHandler.bigger *

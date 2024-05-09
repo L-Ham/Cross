@@ -329,6 +329,7 @@ class ApiService {
 
   Future<dynamic> addTextPost(Map<String, dynamic> body) async {
     debugPrint('success');
+    print(body);
     var result = await request('/post/createPost',
         headers: headerWithToken, method: 'POST', body: body);
     return result;

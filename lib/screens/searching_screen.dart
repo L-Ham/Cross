@@ -39,6 +39,7 @@ class CommentSearchCard {
   final int commentUpvotes;
   final String subredditImage;
   final String userName;
+  final String postComments;
 
   CommentSearchCard({
     required this.userId,
@@ -57,6 +58,7 @@ class CommentSearchCard {
     required this.actualCommentCreationDate,
     required this.subredditImage,
     required this.userName,
+    required this.postComments,
   });
 }
 
@@ -247,6 +249,7 @@ class _SearchingScreenState extends State<SearchingScreen>
         subredditImage:
             resultsList[i]["subRedditAvatar"] ?? "assets/images/planet3.png",
         userName: resultsList[i]["userName"],
+        postComments: resultsList[i]["postCommentCount"],
       );
       print(commentSearchCard.commentCreationDate);
       searchedComments.add(commentSearchCard);
