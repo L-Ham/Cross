@@ -216,6 +216,7 @@ class ApiService {
     sentData = {"search": userName};
     var result = await request('/user/searchUsernames',
         headers: headerWithToken, method: 'GET', body: sentData);
+    print( 'result: $result');
     return result;
   }
 
@@ -554,6 +555,12 @@ class ApiService {
         headers: headerWithToken, method: 'GET');
     return result;
   }
+    Future<dynamic> getUserInfo(String id) async {
+      // print('IDDD: $id');
+    var result = await request('/user/info?userId=$id',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
   Future<dynamic> addSocialLink(Map<String, dynamic> body) async {
     var result = await request('/user/socialLink',
         headers: headerWithToken, method: 'POST',
@@ -848,4 +855,15 @@ class ApiService {
         headers: headerWithToken, method: 'GET');
     return result;
   }
+  Future<dynamic> followUser(String username) async {
+    var result = await request('/user/followUser',
+        headers: headerWithToken, method: 'PATCH', body: {"usernameToFollow": username});
+    return result;
+  }
+    Future<dynamic> unfollowUser(String username) async {
+    var result = await request('/user/unfollowUser',
+        headers: headerWithToken, method: 'PATCH', body: {"usernameToUnfollow": username});
+    return result;
+  }
+
 }
