@@ -158,9 +158,37 @@ class ApiService {
     return result;
   }
 
+  Future<dynamic> getYourCommunities() async {
+    var result = await request('/user/community',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+
+  Future<dynamic> logout() async {
+    var result = await request('/auth/logout',
+        headers: {'Content-Type': 'application/json'}, method: 'POST');
+    return result;
+  }
+
   Future<dynamic> patchGender(String newGender) async {
     var result = await request('/user/gender',
         headers: headerWithToken, method: 'PATCH', body: {"gender": newGender});
+    return result;
+  }
+
+  Future<dynamic> favouriteSubreddit(String subredditID) async {
+    var result = await request('/user/favouriteSubreddit',
+        headers: headerWithToken,
+        method: 'PATCH',
+        body: {"subRedditId": subredditID});
+    return result;
+  }
+
+  Future<dynamic> unfavouriteSubreddit(String subredditID) async {
+    var result = await request('/user/unfavouriteSubreddit',
+        headers: headerWithToken,
+        method: 'PATCH',
+        body: {"subRedditId": subredditID});
     return result;
   }
 
@@ -459,6 +487,7 @@ class ApiService {
         headers: headerWithToken, method: 'GET', body: sentData);
     return result;
   }
+
   Future<dynamic> getAllInbox() async {
     var result = await request('/message/getAllInbox',
         headers: headerWithToken, method: 'GET');

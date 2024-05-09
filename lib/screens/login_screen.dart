@@ -59,6 +59,7 @@ class LoginScreenState extends State<LoginScreen> {
       'email': userName,
       'userName': userName,
       'password': password,
+      'fcmToken': prefs.getString('fcmToken')
     };
     late final response;
     String message = 'Login failed.';

@@ -72,6 +72,7 @@ void main() async {
   FirebaseMessaging.instance.getToken().then((String? token) {
     if (token != null) {
       print('FCM Token: $token');
+      prefs.setString('fcmToken', token);
     }
   });
 
@@ -128,6 +129,8 @@ void main() async {
   if (token != null) {
     TokenDecoder.updateToken(token);
   }
+  print("EL TOKEN:${TokenDecoder.token}");
+
   runApp(
     ChangeNotifierProvider(
       create: (context) => MarkAllAsRead(),

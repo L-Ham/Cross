@@ -5,6 +5,8 @@ import 'package:reddit_bel_ham/components/settings_components/settings_tile_trai
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/home_page_screen.dart';
 import 'package:reddit_bel_ham/screens/settings_screen.dart';
+import 'package:reddit_bel_ham/services/api_service.dart';
+import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 
 class EndDrawer extends StatelessWidget {
   final String username;
@@ -13,8 +15,10 @@ class EndDrawer extends StatelessWidget {
   final Color onlineStatusColor;
   final double onlineStatusWidth;
   final Function(bool) toggleOnlineStatus;
+  String avatarImage = 'assets/images/reddit_logo.png';
 
-  const EndDrawer({
+  ApiService apiService = ApiService(TokenDecoder.token);
+  EndDrawer({
     Key? key,
     required this.username,
     required this.onlineStatusToggle,
@@ -23,6 +27,12 @@ class EndDrawer extends StatelessWidget {
     required this.onlineStatusWidth,
     required this.toggleOnlineStatus,
   }) : super(key: key);
+
+  Future<void> getUserInfo() async {
+    Map<String, dynamic> data =
+        (await apiService.getUserInfo('662d258fa12caa11b0fddbec')) ?? {};
+    avatarImage = data['user']['avatar'] ?? 'assets/images/reddit_logo.png';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,13 +55,14 @@ class EndDrawer extends StatelessWidget {
                 ),
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(bottom: 20),
               child: CircleAvatar(
                 backgroundColor: Colors.white,
                 radius: 50,
-                backgroundImage: AssetImage('assets/images/reddit_logo.png'),
-                child: Text('P'),
+                backgroundImage: avatarImage == 'assets/images/reddit_logo.png'
+                    ? const AssetImage('assets/images/reddit_logo.png')
+                    : NetworkImage(avatarImage) as ImageProvider,
               ),
             ),
             Padding(
@@ -157,11 +168,11 @@ class EndDrawer extends StatelessWidget {
               ),
             ),
             SettingsTile(
-              leadingIcon:
-                  const SettingsTileLeadingIcon(leadingIcon: Icons.settings_outlined),
+              leadingIcon: const SettingsTileLeadingIcon(
+                  leadingIcon: Icons.settings_outlined),
               titleText: "Settings",
-              trailingWidget:
-                  const SettingsTileTrailingIcon(trailingIcon: Icons.nights_stay_sharp),
+              trailingWidget: const SettingsTileTrailingIcon(
+                  trailingIcon: Icons.nights_stay_sharp),
               onTap: () {
                 Navigator.pushNamed(context, SettingsScreen.id);
               },

@@ -65,10 +65,10 @@ class _SubredditScreenState extends State<SubredditScreen> {
 
   Future<void> getCommunityData() async {
     Map<String, dynamic> data =
-        (await apiService.getCommunityDetails('Dragon Oath')) ?? {};
+        (await apiService.getCommunityDetails(subredditName)) ?? {};
     if (mounted) {
       setState(() {
-        isLoading = true;
+        isLoading = false;
       });
     }
     if (mounted) {
