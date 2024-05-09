@@ -181,9 +181,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
       link: "",
       video: "",
       isPollVoted: false,
-      numOfVotersPerOption: [10,20,30],
-      options: ["Ziko","Dani","Mahmoud"],
-      
+      numOfVotersPerOption: [10, 20, 30],
+      options: ["Ziko", "Dani", "Mahmoud"],
     ),
     // Post(
     //   username: "r/JohannaDoesYoga",
