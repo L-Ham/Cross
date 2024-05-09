@@ -174,6 +174,9 @@ class _ProfileScreenState extends State<ProfileScreen>
     print(data);
     if (data.containsKey('userPosts')) {
       List<dynamic> jsonPosts = data['userPosts'];
+      if (mounted)
+      {
+
       setState(() {
         newPosts = jsonPosts.map((json) => Post.fromJson(json)).toList();
         print(avatarImage);
@@ -189,6 +192,7 @@ class _ProfileScreenState extends State<ProfileScreen>
         }
         isFeedCalled = true;
       });
+      }
       print("llllllllllllllllllllllllllllllllllllllllllllllllllllllllll");
     } else {
       setState(() {
