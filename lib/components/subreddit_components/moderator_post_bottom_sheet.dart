@@ -62,11 +62,11 @@ class ModeratorPostBottomSheet extends StatelessWidget {
               padding: EdgeInsets.symmetric(
                   vertical: ScreenSizeHandler.screenHeight * 0.0055),
               child: GestureDetector(
-                onTap: () {
+                onTap: () async {
                   if (post.isSpoiler) {
-                    unmarkAsSpoiler(post.postId);
+                    await unmarkAsSpoiler(post.postId);
                   } else {
-                    markAsSpoiler(post.postId);
+                    await markAsSpoiler(post.postId);
                   }
                   isChanged = true;
                   Navigator.pop(context, isChanged);
@@ -101,11 +101,11 @@ class ModeratorPostBottomSheet extends StatelessWidget {
               ),
             ),
             GestureDetector(
-              onTap: () {
+              onTap: () async {
                 if (post.isNSFW) {
-                  unmarkAsNSFW(post.postId);
+                  await unmarkAsNSFW(post.postId);
                 } else {
-                  markAsNSFW(post.postId);
+                  await markAsNSFW(post.postId);
                 }
                 isChanged = true;
                 Navigator.pop(context, isChanged);
