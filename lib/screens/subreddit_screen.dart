@@ -54,6 +54,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
   int page = 1;
   bool isFeedCalled = false;
   bool isFeedFinished = false;
+  bool isFetchingFeed = false;
 
   int navigationBarIndex = 0;
   int oldIndex = 0;
@@ -157,6 +158,9 @@ class _SubredditScreenState extends State<SubredditScreen> {
   }
 
   Future<void> getSubredditFeed(String sortType, int page, int limit) async {
+    setState(() {
+      isFetchingFeed = true;
+    });
     Map<String, dynamic> data = (await apiService.getSubredditFeed(
             subredditName, sortType, page.toString(), limit.toString())) ??
         {};
@@ -177,6 +181,9 @@ class _SubredditScreenState extends State<SubredditScreen> {
         isFeedFinished = true;
       });
     }
+    setState(() {
+      isFetchingFeed = false;
+    });
   }
 
   @override
@@ -1042,6 +1049,12 @@ class _SubredditScreenState extends State<SubredditScreen> {
                     ),
                   ),
                 ),
+              if (isFetchingFeed)
+                const SliverToBoxAdapter(
+                  child: Center(
+                    child: RedditLoadingIndicator(),
+                  ),
+                )
             ],
           ),
         ));
