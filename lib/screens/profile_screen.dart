@@ -1,303 +1,591 @@
-import 'dart:ui';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:reddit_bel_ham/constants.dart';
+import 'package:reddit_bel_ham/screens/edit_profile_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
-import 'package:reddit_bel_ham/components/general_components/text_link.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:reddit_bel_ham/components/general_components/rounded_button.dart';
+import 'package:reddit_bel_ham/services/api_service.dart';
+import 'package:reddit_bel_ham/utilities/time_ago.dart';
+import 'package:reddit_bel_ham/utilities/token_decoder.dart';
+import '../components/general_components/reddit_loading_indicator.dart';
 
 class ProfileScreen extends StatefulWidget {
-  static const String id = 'profile_screen';
-
   @override
-  ProfileScreenState createState() => ProfileScreenState();
+  _ProfileScreenState createState() => _ProfileScreenState();
+  static const String id = 'profile_screen';
 }
 
-class ProfileScreenState extends State<ProfileScreen> {
-  bool isAppBarExpanded = true;
-  int index = 0;
-  var appBarColor = Color.fromARGB(136, 46, 80, 192);
+class _ProfileScreenState extends State<ProfileScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  bool isAppBarExpanded = false;
+  bool isMyProfile = true;
+  List<Map<String, dynamic>> socialLinks = [];
+  List<Icon> socialIcons = [
+    Icon(FontAwesomeIcons.facebook),
+    Icon(FontAwesomeIcons.facebook),
+    Icon(FontAwesomeIcons.facebook)
+  ];
+  ApiService apiService = ApiService(TokenDecoder.token);
+  String avatarImage = '';
+  String username = '';
+  String postKarma = '';
+  String displayName = '';
+  String commentKarma = '';
+  String bannerImage = '';
+  String created = '';
+  String about = '';
+  bool isLoading = false;
+
+  Future<void> getUserPersonalInfo() async {
+    Map<String, dynamic> data = (await apiService.getUserSelfInfo()) ?? {};
+    if (mounted)
+      setState(() {
+        avatarImage = data['user']['avatar'] ?? '';
+        username = data['user']['username'] ?? '';
+        postKarma = data['user']['postKarma'].toString() == 'null'
+            ? '0'
+            : data['user']['postKarma'].toString();
+        displayName = data['user']['displayName'] ?? data['user']['username'];
+        commentKarma = data['user']['commentKarma'].toString() ?? '0';
+        bannerImage = data['user']['banner'] ?? '';
+        created = data['user']['created'] != null
+        ? DateTime.fromMillisecondsSinceEpoch(data['user']['created'] * 1000).toString()
+        : '';
+        about = data['user']['About'] ?? '';
+        isLoading = false;
+      });
+      print(displayName);
+  }
+
+  Future<void> getSocialLinks() async {
+    Map<String, dynamic> data = (await apiService.getProfileSettings()) ?? {};
+    if (mounted) {
+      setState(() {
+        socialLinks = (data['profileSettings']['socialLinks'] as List<dynamic>)
+                ?.map((item) => item as Map<String, dynamic>)
+                ?.toList() ??
+            [];
+      });
+    }
+  }
+
+  final iconMapping = {
+    'reddit': Icon(
+      FontAwesomeIcons.reddit,
+      color: Colors.deepOrange,
+    ),
+    'facebook': Icon(
+      FontAwesomeIcons.facebook,
+      color: Colors.blue,
+    ),
+    'twitter': Icon(FontAwesomeIcons.twitter, color: Colors.blue),
+    'youtube': Icon(FontAwesomeIcons.youtube, color: Colors.red),
+    'paypal': Icon(FontAwesomeIcons.paypal, color: Colors.blue),
+    'discord': Icon(
+      FontAwesomeIcons.discord,
+      color: Colors.blue,
+    ),
+    'instagram': Icon(FontAwesomeIcons.instagram, color: Colors.purple),
+    'tiktok': Icon(FontAwesomeIcons.tiktok, color: Colors.white),
+    'soundcloud': Icon(FontAwesomeIcons.soundcloud, color: Colors.deepOrange),
+    'twitch': Icon(
+      FontAwesomeIcons.twitch,
+      color: Colors.purple,
+    ),
+    'spotify': Icon(
+      FontAwesomeIcons.spotify,
+      color: Colors.green,
+    ),
+    'link': Icon(FontAwesomeIcons.link, color: Colors.black),
+    // Add more mappings as needed...
+  };
+
+// Then, you can use this mapping to get the icon for a given name:
+
+  Future<void> getProfileInfo() async {
+    if (mounted) {
+      setState(() {
+        getUserPersonalInfo();
+        getSocialLinks();
+      });
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Map<String, dynamic> args =
+    //     ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    // isMyProfile = args['isMyProfile'] as bool;
+    // avatarImage = args['avatarImage'] as String;
+    // username = args['username'] as String;
+    // postKarma = args['postKarma'] as String;
+    // displayName = args['displayName'] as String;
+    // commentKarma = args['commentKarma'] as String;
+    // bannerImage = args['bannerImage'] as String;
+    // created = args['created'] as String;
+// socialLinks = args['socialLinks'] != null ? args['socialLinks'] as List<Map<String,dynamic>> : [];
+    if (isMyProfile) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          setState(() {
+            getProfileInfo();
+          });
+        }
+        isAppBarExpanded = true;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _tabController = TabController(length: 3, vsync: this);
+    if (isMyProfile) {
+      if (mounted) {
+        setState(() {
+          getProfileInfo();
+          isLoading = true;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: appBarColor,
-        title: Visibility(
-          visible: !isAppBarExpanded,
-          child: Text(
-            'u/dave',
-            textAlign: TextAlign.start,
-            style: TextStyle(
-              fontSize: ScreenSizeHandler.smaller * 0.042,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              // Navigator.pushNamed(context, EditProfileScreen.id);
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.share),
-            onPressed: () {
-              // Navigator.pushNamed(context, EditProfileScreen.id);
-            },
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color.fromARGB(136, 46, 80, 192), Colors.black],
-                begin: Alignment.topCenter,
-                end: Alignment.center,
-              ),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Image.asset(
-                  'assets/images/avatarDaniel.png',
-                  height: ScreenSizeHandler.bigger * 0.1,
-                  width: ScreenSizeHandler.bigger * 0.16,
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: ScreenSizeHandler.screenHeight * 0.02,
-                    horizontal: ScreenSizeHandler.screenWidth * 0.06,
-                  ),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.transparent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        side: BorderSide(color: Colors.white),
-                      ),
-                      padding: EdgeInsets.symmetric(
-                        vertical: ScreenSizeHandler.screenHeight * 0.015,
-                        horizontal: ScreenSizeHandler.screenWidth * 0.015,
-                      ),
-                    ),
-                    onPressed: () {},
-                    child: Text('Edit'),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: ScreenSizeHandler.screenWidth * 0.06,
-                  ),
-                  child: Text(
-                    'Dave',
-                    style: TextStyle(
-                      fontSize: ScreenSizeHandler.smaller * 0.06,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: ScreenSizeHandler.screenWidth * 0.06,
-                  ),
-                  child: Text(
-                    'u/dave . 1 karma . Apr 11,2024\n0 Gold',
-                    style: TextStyle(
-                      fontSize: ScreenSizeHandler.smaller * 0.032,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(
-                    top: ScreenSizeHandler.screenHeight * 0.02,
-                    left: ScreenSizeHandler.screenWidth * 0.05,
-                    right: ScreenSizeHandler.screenWidth * 0.57,
-                    bottom: ScreenSizeHandler.screenHeight * 0.02,
-                  ),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white70,
-                      backgroundColor: kBackgroundColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      padding: EdgeInsets.symmetric(
-                        vertical: ScreenSizeHandler.screenHeight * 0.005,
-                        horizontal: ScreenSizeHandler.screenWidth * 0.03,
-                      ),
-                    ),
-                    onPressed: () {},
-                    child: Row(
-                      children: [
-                        Icon(Icons.add),
-                        Text(
-                          'Add social link',
-                          style: TextStyle(
-                            fontSize: ScreenSizeHandler.smaller *
-                                kAcknowledgeTextSmallerFontRatio,
+    return ModalProgressHUD(
+      inAsyncCall: isLoading,
+      progressIndicator: const RedditLoadingIndicator(),
+      blur: 0,
+      opacity: 0,
+      offset: Offset(ScreenSizeHandler.screenWidth * 0.38,
+          ScreenSizeHandler.screenHeight * 0.6),
+      child: Scaffold(
+        body: CustomScrollView(
+          slivers: <Widget>[
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: _SliverAppBarDelegate(
+                minHeight: 120.0,
+                maxHeight: socialLinks.length < 2
+                    ? 420.0
+                    : socialLinks.length < 4
+                        ? 560.0
+                        : 600.0,
+                onExpandStatusChange: (expanded) {
+                  WidgetsBinding.instance!.addPostFrameCallback((_) {
+                    if (isAppBarExpanded != expanded) {
+                      setState(() {
+                        isAppBarExpanded = expanded;
+                      });
+                    }
+                  });
+                },
+                child: Container(
+                  decoration: bannerImage.isEmpty
+                      ? BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Colors.blue, Colors.black],
+                            begin: Alignment.topCenter,
+                            end: Alignment.center,
+                          ),
+                        )
+                      : BoxDecoration(
+                          image: DecorationImage(
+                            image: NetworkImage(bannerImage),
+                            fit: BoxFit.cover,
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            decoration: BoxDecoration(border: Border(bottom: BorderSide())),
-            child: Stack(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ProfileTab(
-                      onTap: () {
-                        setState(() {
-                          index = 0;
-                        });
-                      },
-                      text: 'Posts',
-                    ),
-                    ProfileTab(
-                      onTap: () {
-                        setState(() {
-                          index = 1;
-                        });
-                      },
-                      text: 'Comments',
-                    ),
-                    ProfileTab(
-                      onTap: () {
-                        setState(() {
-                          index = 2;
-                        });
-                      },
-                      text: 'About',
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: EdgeInsets.only(
-                      top: ScreenSizeHandler.screenHeight * 0.04),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                  child: Stack(
+                    alignment: Alignment.centerLeft,
                     children: [
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal:
-                                  ScreenSizeHandler.screenWidth * 0.06),
-                          child: Divider(
-                            color:
-                                index == 0 ? Colors.blue : Colors.transparent,
-                            thickness: 3,
-                          ),
+                      Positioned(
+                        left: 0.0,
+                        top: 15.0,
+                        child: IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: Icon(Icons.arrow_back, color: Colors.white),
                         ),
                       ),
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal:
-                                  ScreenSizeHandler.screenWidth * 0.05),
-                          child: Divider(
-                            color:
-                                index == 1 ? Colors.blue : Colors.transparent,
-                            thickness: 3,
-                          ),
+                      Positioned(
+                        left: ScreenSizeHandler.screenWidth * 0.75,
+                        top: 15.0,
+                        child: Row(
+                          children: [
+                            IconButton(
+                              onPressed: () {},
+                              icon: Icon(Icons.search, color: Colors.white),
+                            ),
+                            IconButton(
+                              onPressed: () {},
+                              icon: Icon(FontAwesomeIcons.share,
+                                  color: Colors.white, size: 20),
+                            ),
+                          ],
                         ),
                       ),
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal:
-                                  ScreenSizeHandler.screenWidth * 0.06),
-                          child: Divider(
-                            color:
-                                index == 2 ? Colors.blue : Colors.transparent,
-                            thickness: 3,
+                      AnimatedBuilder(
+                        animation: _tabController.animation!,
+                        builder: (context, child) {
+                          return Padding(
+                            padding: EdgeInsets.only(
+                                left: isAppBarExpanded ? 20.0 : 40.0,
+                                bottom: 40.0),
+                            child: Row(
+                              children: [
+                                avatarImage.isEmpty
+                                    ? Icon(
+                                        Icons.account_circle,
+                                        color: Colors.white,
+                                        size: isAppBarExpanded?70:20,
+                                      )
+                                    : ClipRRect(
+                                        borderRadius: BorderRadius.circular(100.0),
+                                        child: Image.network(avatarImage,
+                                            width: isAppBarExpanded ? 70 : 25,
+                                            height: isAppBarExpanded ? 70 : 25),
+                                      ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8.0),
+                                  child: Text(
+                                    displayName,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: isAppBarExpanded ? 30.0 : 17.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (isAppBarExpanded) ...[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  top: socialLinks.length < 2 ? 220.0 : 320.0,
+                                  left: 16),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      isMyProfile
+                                          ? Navigator.pushNamed(
+                                                  context, EditProfileScreen.id,
+                                                  arguments: {
+                                                  'isAddSocialLinkPressed':
+                                                      false,
+                                                  'avatarImage': avatarImage,
+                                                  'bannerImage': bannerImage,
+                                                })
+                                              .then((value) => getProfileInfo())
+                                          : null;
+                                    },
+                                    child: Text(
+                                      isMyProfile ? 'Edit' : 'Follow',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.transparent,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(100.0),
+                                        side: BorderSide(
+                                            color: Colors.white, width: 1.0),
+                                      ),
+                                    ),
+                                  ),
+                                  if (!isMyProfile) ...[
+                                    ElevatedButton(
+                                      onPressed: () {},
+                                      child: Icon(Icons.message_outlined,
+                                          color: Colors.white, size: 20),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.transparent,
+                                        shape: CircleBorder(
+                                          side: BorderSide(
+                                              color: Colors.white, width: 1.0),
+                                        ),
+                                      ),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {},
+                                      child: Icon(Icons.person_add_alt_outlined,
+                                          color: Colors.white, size: 25),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.transparent,
+                                        shape: CircleBorder(
+                                          side: BorderSide(
+                                              color: Colors.white, width: 1.0),
+                                        ),
+                                      ),
+                                    ),
+                                  ]
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 16.0),
+                              child: Text('u/$username • $postKarma karma • $created',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 13)),
+                            ),
+                            // isMyProfile?
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  height: socialLinks.length < 2
+                                      ? 50
+                                      : socialLinks.length < 4
+                                          ? 60
+                                          : 130,
+                                  child: GridView.builder(
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount: 2,
+                                              mainAxisExtent: 50),
+                                      itemCount: socialLinks.length + 1,
+                                      itemBuilder: (context, index) {
+                                        var iconName =
+                                            index < socialLinks.length
+                                                ? socialLinks[index]['appName']
+                                                : '';
+                                        var icon = iconMapping[iconName];
+                                        return index != socialLinks.length
+                                            ? Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: RoundedButton(
+                                                  onTap: () {},
+                                                  buttonHeightRatio: 0.06,
+                                                  buttonWidthRatio: 0.1,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      icon!,
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                                left: 8.0),
+                                                        child: Text(
+                                                          socialLinks[index]
+                                                              ["displayText"],
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: 13),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              )
+                                            : socialLinks.length < 5 &&
+                                                    isMyProfile
+                                                ? Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: ElevatedButton(
+                                                      onPressed: () {
+                                                        Navigator.pushNamed(
+                                                            context,
+                                                            EditProfileScreen
+                                                                .id,
+                                                            arguments: {
+                                                              'isAddSocialLinkPressed':
+                                                                  true,
+                                                              'avatarImage':
+                                                                  avatarImage,
+                                                              'bannerImage':
+                                                                  bannerImage,
+                                                            }).then((value) =>
+                                                            getProfileInfo());
+                                                      },
+                                                      child: Row(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          Icon(Icons.add,
+                                                              color:
+                                                                  Colors.white),
+                                                          Text(
+                                                              'Add social link',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize:
+                                                                      13)),
+                                                        ],
+                                                      ),
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                        backgroundColor:
+                                                            kBackgroundColor,
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      100.0),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )
+                                                : null;
+                                      }),
+                                ),
+                              ),
+                            )
+                            // :SizedBox(height: 30,),
+                          ],
+                          Container(
+                            color: Colors.black,
+                            child: TabBar(
+                              controller: _tabController,
+                              indicatorColor: Colors.blue,
+                              labelColor: Colors.white,
+                              unselectedLabelColor:
+                                  Colors.white.withOpacity(0.5),
+                              indicatorSize: TabBarIndicatorSize.tab,
+                              labelStyle: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              tabs: <Widget>[
+                                Tab(
+                                  text: 'Posts',
+                                ),
+                                Tab(text: 'Comments'),
+                                Tab(text: 'About'),
+                              ],
+                            ),
                           ),
-                        ),
+                        ],
                       ),
                     ],
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-          Expanded(
-            child: TabBarView(
-              //physics: NeverScrollableScrollPhysics(),
-              children: [
-                ListView.builder(
-                  itemCount: 20,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text('Post $index'),
-                    );
-                  },
-                ),
-                ListView.builder(
-                  itemCount: 20,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text('Comment $index'),
-                    );
-                  },
-                ),
-                SingleChildScrollView(
-                  child: Column(
-                    children: [],
-                  ),
-                ),
-              ],
+            SliverFillRemaining(
+              child: TabBarView(
+                controller: _tabController,
+                children: <Widget>[
+                  Center(child: Text('Tab 1 Content')),
+                  Center(child: Text('Tab 2 Content')),
+                  Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top:32.0, right:32, left:16),
+                        child: Row(
+                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(postKarma, style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                                          
+                            Padding(
+                              padding: EdgeInsets.only(left:ScreenSizeHandler.screenWidth*0.59),
+                              child: Text(commentKarma, style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                            ),
+                          ],
+                                            ),
+                      ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom:32.0, right:32, left:16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Post Karma', style: TextStyle(color: Colors.grey, fontSize: 13,)),
+                            Text('Comment Karma', style: TextStyle(color: Colors.grey, fontSize: 13,)),
+                          ],
+                      ),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.only(top: 20,left:16),
+                      child: Text(about, style: TextStyle(color: Colors.grey, fontSize: 15, fontWeight: FontWeight.bold), 
+                      ),
+                    ),        
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical:8.0),
+                      child: Container(
+                        width: double.infinity,
+                        color: Colors.black,
+                        padding: EdgeInsets.only(top: 10,left:16, bottom:10),
+                        child: Text("TROPHIES", style: TextStyle(color: Colors.grey, fontSize: 13, fontWeight: FontWeight.bold), 
+                        ),
+                      ),
+                    ),
+                    ],
+                    )
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ProfileTab extends StatelessWidget {
-  final VoidCallback onTap;
-  final String text;
-
-  const ProfileTab({
-    super.key,
-    required this.onTap,
-    required this.text,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: SizedBox(
-        width: ScreenSizeHandler.screenWidth * 0.3,
-        child: Padding(
-          padding: EdgeInsets.only(
-            top: ScreenSizeHandler.screenHeight * 0.015,
-            bottom: ScreenSizeHandler.screenHeight * 0.005,
-          ),
-          child: Text(
-            text,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: ScreenSizeHandler.smaller * 0.04,
-            ),
-          ),
+          ],
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+}
+
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  _SliverAppBarDelegate({
+    required this.minHeight,
+    required this.maxHeight,
+    required this.onExpandStatusChange,
+    required this.child,
+  });
+
+  final double minHeight;
+  final double maxHeight;
+  final ValueChanged<bool> onExpandStatusChange;
+  final Widget child;
+
+  @override
+  double get minExtent => minHeight;
+
+  @override
+  double get maxExtent => maxHeight;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    final bool isAppBarExpanded = shrinkOffset < 200;
+    onExpandStatusChange(isAppBarExpanded);
+    return SizedBox.expand(child: child);
+  }
+
+  @override
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+    return maxHeight != oldDelegate.maxHeight ||
+        minHeight != oldDelegate.minHeight ||
+        child != oldDelegate.child;
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/screens/create_username_screen.dart';
-import 'package:reddit_bel_ham/screens/home_page_screen.dart';
 import 'package:reddit_bel_ham/screens/login_screen.dart';
 import '../components/general_components/acknowledgement_text.dart';
 import '../utilities/screen_size_handler.dart';

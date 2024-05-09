@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:reddit_bel_ham/components/general_components/interactive_text.dart';
+import 'package:reddit_bel_ham/screens/searching_in_subreddit_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../screens/home_page_seach_screen.dart';
@@ -7,7 +8,14 @@ import '../screens/home_page_seach_screen.dart';
 import '../constants.dart';
 
 class SubredditSearchScreen extends StatefulWidget {
-  const SubredditSearchScreen({Key? key}) : super(key: key);
+  final String subredditName;
+  final String subredditAvatarImage;
+
+  const SubredditSearchScreen(
+      {Key? key,
+      required this.subredditName,
+      required this.subredditAvatarImage})
+      : super(key: key);
 
   static const String id = 'subreddit_search_screen';
   @override
@@ -69,7 +77,7 @@ class _SubredditSearchScreenState extends State<SubredditSearchScreen> {
                       flex: _isKeyboardVisible ? 6 : 7,
                       child: Padding(
                         padding:
-                            EdgeInsets.all(ScreenSizeHandler.bigger * 0.009),
+                            EdgeInsets.all(ScreenSizeHandler.bigger * 0.004),
                         child: Container(
                           height: ScreenSizeHandler.screenHeight * 0.04,
                           child: TextFormField(
@@ -98,19 +106,25 @@ class _SubredditSearchScreenState extends State<SubredditSearchScreen> {
                                     ),
                                     SizedBox(
                                       width:
-                                          ScreenSizeHandler.screenWidth * 0.03,
+                                          ScreenSizeHandler.screenWidth * 0.015,
                                     ),
-                                    FaIcon(
-                                      FontAwesomeIcons.file,
-                                      size: ScreenSizeHandler.bigger * 0.03,
-                                      color: Colors.white,
+                                    CircleAvatar(
+                                      radius: ScreenSizeHandler.bigger * 0.01,
+                                      foregroundImage: widget
+                                                  .subredditAvatarImage !=
+                                              'assets/images/planet3.png'
+                                          ? NetworkImage(
+                                              widget.subredditAvatarImage)
+                                          : Image.asset(
+                                                  'assets/images/planet3.png')
+                                              .image,
                                     ),
                                     Text(
-                                      ' r/AskEngineers ',
+                                      ' r/${widget.subredditName} ',
                                       style: TextStyle(
                                         fontSize:
                                             ScreenSizeHandler.bigger * 0.019,
-                                        fontWeight: FontWeight.bold,
+                                        fontWeight: FontWeight.w600,
                                       ),
                                     )
                                   ],
@@ -121,12 +135,13 @@ class _SubredditSearchScreenState extends State<SubredditSearchScreen> {
                                   fontSize: ScreenSizeHandler.bigger * 0.02,
                                   fontWeight: FontWeight.normal),
                               suffixIcon: IconButton(
+                                padding: EdgeInsets.zero,
                                 key: const Key(
                                     'blocked_accounts_screen_text_field_clear_button'),
                                 icon: FaIcon(
                                   FontAwesomeIcons.circleXmark,
                                   color: Colors.grey[500],
-                                  size: ScreenSizeHandler.bigger * 0.02,
+                                  size: ScreenSizeHandler.bigger * 0.0193,
                                 ),
                                 onPressed: () {
                                   setState(() {
@@ -159,8 +174,9 @@ class _SubredditSearchScreenState extends State<SubredditSearchScreen> {
                             child: Text(
                               "Cancel",
                               style: TextStyle(
-                                color: Color.fromARGB(101, 255, 255, 255),
+                                color: Color.fromARGB(141, 255, 255, 255),
                                 fontSize: ScreenSizeHandler.bigger * 0.017,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
@@ -170,59 +186,104 @@ class _SubredditSearchScreenState extends State<SubredditSearchScreen> {
                 ),
               ),
               SliverToBoxAdapter(
-                child: Container(
-                  color: Color.fromARGB(130, 40, 40, 40),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: ScreenSizeHandler.screenHeight * 0.015,
-                            horizontal: ScreenSizeHandler.screenWidth * 0.03),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.rocket_outlined,
-                              size: ScreenSizeHandler.bigger * 0.04,
-                            ),
-                            Text(
-                              ' Best of ',
-                              style: TextStyle(
-                                  fontSize: ScreenSizeHandler.bigger * 0.02),
-                            ),
-                            Text(
-                              'r/AskEngineers',
-                              style: TextStyle(
-                                  fontSize: ScreenSizeHandler.bigger * 0.02,
-                                  fontWeight: FontWeight.bold),
-                            )
-                          ],
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, SearchingInSubreddit.id,
+                        arguments: {
+                          "search": '',
+                          "subredditName": widget.subredditName,
+                          "subredditImage": widget.subredditAvatarImage,
+                          "searchType": "Top"
+                        });
+                  },
+                  child: Container(
+                    color: Color.fromARGB(255, 30, 30, 30),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: ScreenSizeHandler.screenHeight * 0.015,
+                              horizontal: ScreenSizeHandler.screenWidth * 0.06),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.rocket_outlined,
+                                size: ScreenSizeHandler.bigger * 0.03,
+                              ),
+                              SizedBox(
+                                width: ScreenSizeHandler.screenWidth * 0.006,
+                              ),
+                              Text(
+                                ' Best of ',
+                                style: TextStyle(
+                                    fontSize: ScreenSizeHandler.bigger * 0.019),
+                              ),
+                              Text(
+                                'r/${widget.subredditName}',
+                                style: TextStyle(
+                                    fontSize: ScreenSizeHandler.bigger * 0.019,
+                                    fontWeight: FontWeight.bold),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: ScreenSizeHandler.screenHeight * 0.015,
-                            horizontal: ScreenSizeHandler.screenWidth * 0.03),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.settings_outlined,
-                              size: ScreenSizeHandler.bigger * 0.04,
-                            ),
-                            Text(
-                              ' New in ',
-                              style: TextStyle(
-                                  fontSize: ScreenSizeHandler.bigger * 0.02),
-                            ),
-                            Text(
-                              'r/AskEngineers',
-                              style: TextStyle(
-                                  fontSize: ScreenSizeHandler.bigger * 0.02,
-                                  fontWeight: FontWeight.bold),
-                            )
-                          ],
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: ScreenSizeHandler.screenHeight * 0.015,
+                              horizontal: ScreenSizeHandler.screenWidth * 0.06),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.settings_outlined,
+                                size: ScreenSizeHandler.bigger * 0.03,
+                              ),
+                              SizedBox(
+                                width: ScreenSizeHandler.screenWidth * 0.006,
+                              ),
+                              Text(
+                                ' New in ',
+                                style: TextStyle(
+                                    fontSize: ScreenSizeHandler.bigger * 0.019),
+                              ),
+                              Text(
+                                'r/${widget.subredditName}',
+                                style: TextStyle(
+                                    fontSize: ScreenSizeHandler.bigger * 0.019,
+                                    fontWeight: FontWeight.bold),
+                              )
+                            ],
+                          ),
                         ),
-                      )
-                    ],
+                        if (_controller.text.isNotEmpty)
+                          Container(
+                            color: kBackgroundColor,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                      ScreenSizeHandler.screenWidth * 0.07,
+                                  vertical:
+                                      ScreenSizeHandler.screenHeight * 0.015),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: InteractiveText(
+                                  text: 'Search for "${_controller.text}"',
+                                  fontSizeRatio: 0.02,
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                        context, SearchingInSubreddit.id,
+                                        arguments: {
+                                          "search": _controller.text,
+                                          "subredditName": widget.subredditName,
+                                          "subredditImage":
+                                              widget.subredditAvatarImage
+                                        });
+                                  },
+                                ),
+                              ),
+                            ),
+                          )
+                      ],
+                    ),
                   ),
                 ),
               )

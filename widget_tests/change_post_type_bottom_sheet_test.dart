@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:reddit_bel_ham/components/add_post_components/change_post_type_bottom_sheet.dart';
+import 'package:reddit_bel_ham/components/add_post_components/red_button_bottom_sheet.dart';
 
 void main() {
   testWidgets('ChangePostTypeBottomSheet UI test', (WidgetTester tester) async {
@@ -15,7 +15,7 @@ void main() {
                   showModalBottomSheet(
                     context: context,
                     builder: (BuildContext context) {
-                      return ChangePostTypeBottomSheet();
+                      return RedButtonBottomSheet();
                     },
                   );
                 },

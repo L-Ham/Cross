@@ -39,7 +39,7 @@ buildShareToPostCard(BuildContext context, Post post) {
                 : ScreenSizeHandler.screenWidth * 0.04,
           ),
           child: Text(
-            post.username,
+            post.subredditName,
             style: TextStyle(
               color: const Color.fromARGB(255, 151, 150, 150),
               fontSize: ScreenSizeHandler.screenWidth * 0.028,

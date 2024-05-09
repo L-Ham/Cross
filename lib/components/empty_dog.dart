@@ -8,24 +8,22 @@ class EmptyDog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(
-            'assets/images/empty_dog.png',
-            width: ScreenSizeHandler.screenWidth * 0.35,
-            height: ScreenSizeHandler.screenHeight * 0.15,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset(
+          'assets/images/empty_dog.png',
+          width: ScreenSizeHandler.screenWidth * 0.35,
+          height: ScreenSizeHandler.screenHeight * 0.15,
+        ),
+        Text(
+          'Wow, such empty',
+          style: TextStyle(
+            color: Colors.grey,
+            fontSize: ScreenSizeHandler.bigger * 0.02,
           ),
-          Text(
-            'Wow, such empty',
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: ScreenSizeHandler.bigger * 0.02,
-            ),
-          )
-        ],
-      ),
+        )
+      ],
     );
   }
 }
