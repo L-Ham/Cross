@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:reddit_bel_ham/components/location_customaization_components/location_customaization_radio_button.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import '../../constants.dart';
@@ -16,8 +17,9 @@ class SortBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final groupValueNotifier = ValueNotifier<String?>(groupValueNotifierVal);
-    List<String> vals = isPosts? ["Most relevant", "Hot", "Top", "New", "Comment count"]
-    : ["Most relevant", "Top", "New"];
+    List<String> vals = isPosts
+        ? ["Most relevant", "Hot", "Top", "New", "Comment count"]
+        : ["Most relevant", "Top", "New"];
 
     return Container(
       color: kBackgroundColor,
@@ -40,12 +42,17 @@ class SortBottomSheet extends StatelessWidget {
                         fontSize: ScreenSizeHandler.bigger * 0.022,
                         fontWeight: FontWeight.bold),
                   ),
-                  CircleAvatar(
-                    backgroundColor: Colors.grey[800],
-                    radius: ScreenSizeHandler.bigger * 0.024,
-                    child: Icon(
-                      Icons.close,
-                      size: ScreenSizeHandler.bigger * 0.04,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: CircleAvatar(
+                      backgroundColor: Colors.grey[800],
+                      radius: ScreenSizeHandler.bigger * 0.024,
+                      child: Icon(
+                        Icons.close,
+                        size: ScreenSizeHandler.bigger * 0.04,
+                      ),
                     ),
                   )
                 ],
@@ -61,7 +68,8 @@ class SortBottomSheet extends StatelessWidget {
               LocationCustomizationRadioButtonTile(
                   value: val, groupValueNotifier: groupValueNotifier),
             SizedBox(
-              height: ScreenSizeHandler.screenHeight * 0.03,)
+              height: ScreenSizeHandler.screenHeight * 0.03,
+            )
           ],
         ),
       ),

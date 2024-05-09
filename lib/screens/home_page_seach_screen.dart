@@ -44,7 +44,7 @@ class _SearchScreenState extends State<SearchScreen> {
     searchSubreddit(resultsList);
     Map<String, dynamic> response =
         await apiService.getSearchedForBlockedUsers(_searchController.text);
-    searchPeople(response['matchingUsernames'] as List<dynamic>);
+    searchPeople(response['matchingUsernames'] ?? [] as List<dynamic>);
   }
 
   void searchPeople(List<dynamic> resultsList) {
@@ -123,7 +123,7 @@ class _SearchScreenState extends State<SearchScreen> {
     for (var trendingPost in response) {
       setState(() {
         trendingPostTitles.add(trendingPost["title"]);
-        trendingPostDescriptions.add(trendingPost["text"]);
+        trendingPostDescriptions.add(trendingPost["text"]?? "");
         trendingPostImages.add(trendingPost["image"]);
       });
     }

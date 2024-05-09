@@ -39,29 +39,62 @@ class _CommentsScreenState extends State<CommentsScreen> {
     await apiService.getPostFromId(postId).then((value) {
       value = value['post'];
       setState(() {
+        String userId = value['user'];
+        String subredditId = value['subReddit'];
+        bool approved = value['approved'];
+        bool disapproved = value['disapproved'];
+        bool isNSFW = value['isNSFW'];
+        bool isSpoiler = value['isSpoiler'];
+        bool isLocked = value['isLocked'];
+        String avatarImage =
+            value['creatorAvatar'] ?? "assets/images/planet3.png";
+        String userName = value['creatorName'];
         String createdFrom = timeAgo(value['createdAt']);
         String contentTitle = value['title'];
-        String content = value['text'];
+        String content = value['text'] ?? "";
         List<dynamic> images = value['images'];
-        //print("images $images");
+        List<String> imageUrls =
+            images.map((image) => image['url'] as String).toList();
         List<dynamic> videos = value['videos'] as List<dynamic>;
         String video = videos.isEmpty ? "" : videos[0];
         String link = value['url'];
         String type = value['type'];
         int upvotes = value['upvotes'] - value['downvotes'];
         int comments = value['commentCount'];
-        String username = value['subRedditName'];
+        String username = value['subRedditName'] ?? "";
         List<dynamic> upvotedUsers = value['upvotedUsers'];
         List<dynamic> downvotedUsers = value['downvotedUsers'];
         bool isUpvoted = upvotedUsers.contains(TokenDecoder.id);
         bool isDownvoted = downvotedUsers.contains(TokenDecoder.id);
+        List<dynamic> poll = [];
+        List<String> pollOptions = [];
+        List<int> votersCount = [];
+        bool isVoted = false;
+        String? votedOption = "";
+        DateTime pollEnd = DateTime.now();
+        if (value['poll']['options'].isNotEmpty) {
+          poll = value['poll']['options'];
+          pollOptions =
+              poll.map((option) => option['option'] as String).toList();
+          votersCount = poll
+              .map((option) => (option['voters'] as List<dynamic>).length)
+              .toList();
+          isVoted = poll.any((option) =>
+              (option['voters'] as List<dynamic>).contains(TokenDecoder.id));
+          votedOption = poll.firstWhere(
+              (option) =>
+                  (option['voters'] as List<dynamic>).contains(TokenDecoder.id),
+              orElse: () => {"option": null})['option'];
+          pollEnd = DateTime.parse(value['poll']['endTime']);
+        }
+
         pushedPost = Post(
-            userId: "1",
+            userId: userId,
             postId: postId,
             createdFrom: createdFrom,
             contentTitle: contentTitle,
             content: content,
-            image: List<String>.from(images),
+            image: imageUrls,
             video: video,
             link: link,
             type: type,
@@ -70,6 +103,20 @@ class _CommentsScreenState extends State<CommentsScreen> {
             subredditName: username);
         pushedPost.isUpvoted = isUpvoted;
         pushedPost.isDownvoted = isDownvoted;
+        pushedPost.isNSFW = isNSFW;
+        pushedPost.isSpoiler = isSpoiler;
+        pushedPost.isLocked = isLocked;
+        pushedPost.isApproved = approved;
+        pushedPost.isDisapproved = disapproved;
+        pushedPost.avatarImage = avatarImage;
+        pushedPost.userName = userName;
+        pushedPost.options = pollOptions;
+        pushedPost.numOfVotersPerOption = votersCount;
+        pushedPost.isPollVoted = isVoted;
+        pushedPost.selectedPollOption = votedOption;
+        pushedPost.endTime = pollEnd;
+        pushedPost.subredditId = subredditId;
+        pushedPost.numOfVotersPerOption = votersCount;
       });
     });
   }
@@ -77,7 +124,6 @@ class _CommentsScreenState extends State<CommentsScreen> {
   void getAllCommentsFromPostId() async {
     var response = await apiService.getCommentsFromPostId(
         {"postId": pushedPost.postId, "page": 1, "limit": 10});
-    
   }
 
   FocusNode commentFocusNode = FocusNode();
@@ -217,6 +263,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                 children: [
                   PostCard(
                     post: pushedPost,
+                    isExpanded: true,
                   ),
                   Divider(
                     color: Colors.black,
@@ -235,7 +282,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
               ),
             ),
           ),
-          if (!commentFocusNode.hasFocus)
+          if (!commentFocusNode.hasFocus && pushedPost.isLocked == false)
             Container(
               height: ScreenSizeHandler.screenHeight * 0.08,
               width: ScreenSizeHandler.screenWidth,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
+import 'package:reddit_bel_ham/services/api_service.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
+import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 
 class PollPost extends StatefulWidget {
   final Post post;
@@ -17,17 +19,19 @@ class _PollPostState extends State<PollPost> {
   bool isSubmitted = false;
   int sum = 0;
   String? selectedOption;
-  
-  
+
   @override
   void initState() {
     options = widget.post.options;
     votes = widget.post.numOfVotersPerOption;
     sum = votes.reduce((value, element) => value + element);
+    print(widget.post.numOfVotersPerOption);
+    print(sum);
     isSubmitted = widget.post.isPollVoted;
     selectedOption = widget.post.selectedPollOption;
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -43,7 +47,7 @@ class _PollPostState extends State<PollPost> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              widget.post.pollVotes.toString() + ' votes',
+              sum.toString() + ' votes',
               style: TextStyle(
                 fontSize: ScreenSizeHandler.screenWidth * 0.028,
               ),
@@ -76,13 +80,15 @@ class _PollPostState extends State<PollPost> {
                             children: [
                               Container(
                                 width: MediaQuery.of(context).size.width *
+                                    0.82 *
                                     (votes[options.indexOf(option)] /
                                         sum.toDouble()),
                                 child: LinearProgressIndicator(
                                   value: 1,
                                   backgroundColor: Colors.transparent,
                                   valueColor: AlwaysStoppedAnimation<Color>(
-                                      Color.fromARGB(255, 6, 52, 90)),
+                                    Color.fromARGB(255, 6, 52, 90),
+                                  ),
                                   minHeight: 30.0,
                                 ),
                               ),
@@ -93,7 +99,9 @@ class _PollPostState extends State<PollPost> {
                         Row(
                           children: [
                             if (isSubmitted) ...[
-                              SizedBox(width:ScreenSizeHandler.screenWidth * 0.07,),
+                              SizedBox(
+                                width: ScreenSizeHandler.screenWidth * 0.07,
+                              ),
                               Text(
                                 votes[options.indexOf(option)].toString(),
                                 style: TextStyle(
@@ -117,12 +125,12 @@ class _PollPostState extends State<PollPost> {
                               SizedBox(
                                 width: ScreenSizeHandler.screenWidth * 0.02,
                               ),
-                              if(selectedOption == option)
-                              Icon(
-                                Icons.check_circle,
-                                color: Colors.white,
-                                size: ScreenSizeHandler.screenWidth * 0.038,
-                              )
+                              if (selectedOption == option)
+                                Icon(
+                                  Icons.check_circle,
+                                  color: Colors.white,
+                                  size: ScreenSizeHandler.screenWidth * 0.038,
+                                )
                             ],
                             if (!isSubmitted) ...[
                               Radio(
@@ -157,14 +165,17 @@ class _PollPostState extends State<PollPost> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
+                    if (selectedOption == null) {
+                      return;
+                    }
                     setState(() {
-                      if(selectedOption == null){
-                        return;
-                      }
                       isSubmitted = true;
                       votes[options.indexOf(selectedOption!)]++;
                       sum = votes.reduce((value, element) => value + element);
                     });
+                    ApiService apiService = ApiService(TokenDecoder.token);
+                    apiService.addVoteToPoll(
+                        widget.post.postId, selectedOption!);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,

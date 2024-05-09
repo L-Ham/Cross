@@ -46,7 +46,7 @@ class _SearchingInSubredditState extends State<SearchingInSubreddit>
 
   bool firstTime = true;
   bool isLoading = false;
-
+  String subredditImage = 'assets/images/planet3.png';
   late String subredditName;
 
   ApiService apiService = ApiService(TokenDecoder.token);
@@ -55,24 +55,27 @@ class _SearchingInSubredditState extends State<SearchingInSubreddit>
     setState(() {
       isLoading = true;
     });
-    Map<String, dynamic> commentsResponse = await apiService.searchComments({
+    Map<String, dynamic> commentsResponse =
+        await apiService.searchCommentsInSubreddit({
       "search": _searchController.text,
       "relevance":
           sortValue == "Most relevant" ? true.toString() : false.toString(),
       "top": sortValue == "Top" ? true.toString() : false.toString(),
       "new": sortValue == "New" ? true.toString() : false.toString(),
+      "subredditName": subredditName,
     });
     searchComments(commentsResponse['comments'] as List<dynamic>);
-    Map<String, dynamic> postsResponse = await apiService.searchPosts({
-      "search": _searchController.text,
-      "relevance":
-          sortValue == "Most relevant" ? true.toString() : false.toString(),
-      "top": sortValue == "Top" ? true.toString() : false.toString(),
-      "new": sortValue == "New" ? true.toString() : false.toString(),
-      "mediaOnly": false.toString(),
-      "isNSFW": true.toString(),
-    });
-    searchPosts(postsResponse['posts'] as List<dynamic>);
+    // Map<String, dynamic> postsResponse = await apiService.searchPosts({
+    //   "search": _searchController.text,
+    //   "relevance":
+    //       sortValue == "Most relevant" ? true.toString() : false.toString(),
+    //   "top": sortValue == "Top" ? true.toString() : false.toString(),
+    //   "new": sortValue == "New" ? true.toString() : false.toString(),
+    //   "mediaOnly": false.toString(),
+    //   "isNSFW": true.toString(),
+    // });
+    // print(postsResponse);
+    // searchPosts(postsResponse['posts'] as List<dynamic>);
     if (mounted) {
       setState(() {
         isLoading = false;
@@ -196,6 +199,13 @@ class _SearchingInSubredditState extends State<SearchingInSubreddit>
       } else {
         subredditName = '';
       }
+      if (args['subredditImage'] != null) {
+        subredditImage = args['subredditImage'] as String;
+      }
+      if (args['searchType'] != null) {
+        sortValue = args['searchType'] as String;
+        isSorted = true;
+      }
     });
     if (firstTime) {
       getSearchesFromBack();
@@ -228,6 +238,20 @@ class _SearchingInSubredditState extends State<SearchingInSubreddit>
                         child: Icon(
                           Icons.search,
                           size: ScreenSizeHandler.bigger * 0.029,
+                        ),
+                      ),
+                      CircleAvatar(
+                        radius: ScreenSizeHandler.bigger * 0.01,
+                        foregroundImage: subredditImage !=
+                                'assets/images/planet3.png'
+                            ? NetworkImage(subredditImage)
+                            : Image.asset('assets/images/planet3.png').image,
+                      ),
+                      Text(
+                        ' r/$subredditName ',
+                        style: TextStyle(
+                          fontSize: ScreenSizeHandler.bigger * 0.019,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       Text(
