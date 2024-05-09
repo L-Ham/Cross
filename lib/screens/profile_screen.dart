@@ -47,12 +47,14 @@ class _ProfileScreenState extends State<ProfileScreen>
         avatarImage = data['user']['avatar'] ?? '';
         username = data['user']['username'] ?? '';
         postKarma = data['user']['postKarma'].toString() == 'null'
-            ? '0 karma'
-            : data['user']['post_karma'].toString() + ' karma';
+            ? '0'
+            : data['user']['postKarma'].toString();
         displayName = data['user']['displayName'] ?? data['user']['username'];
         commentKarma = data['user']['commentKarma'].toString() ?? '0';
         bannerImage = data['user']['banner'] ?? '';
-        created = timeAgo(data['user']['created'].toString()) ?? '';
+        created = data['user']['created'] != null
+        ? DateTime.fromMillisecondsSinceEpoch(data['user']['created'] * 1000).toString()
+        : '';
         about = data['user']['About'] ?? '';
         isLoading = false;
       });
@@ -242,12 +244,13 @@ class _ProfileScreenState extends State<ProfileScreen>
                                     ? Icon(
                                         Icons.account_circle,
                                         color: Colors.white,
-                                        size: 70,
+                                        size: isAppBarExpanded?70:20,
                                       )
-                                    : ClipOval(
+                                    : ClipRRect(
+                                        borderRadius: BorderRadius.circular(100.0),
                                         child: Image.network(avatarImage,
-                                            width: isAppBarExpanded ? 90 : 25,
-                                            height: isAppBarExpanded ? 90 : 25),
+                                            width: isAppBarExpanded ? 70 : 25,
+                                            height: isAppBarExpanded ? 70 : 25),
                                       ),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 8.0),
@@ -338,7 +341,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                             ),
                             Padding(
                               padding: const EdgeInsets.only(left: 16.0),
-                              child: Text('$username • $postKarma • $created',
+                              child: Text('u/$username • $postKarma karma • $created',
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 13)),
                             ),
@@ -492,7 +495,50 @@ class _ProfileScreenState extends State<ProfileScreen>
                 children: <Widget>[
                   Center(child: Text('Tab 1 Content')),
                   Center(child: Text('Tab 2 Content')),
-                  Center(child: Text('Tab 3 Content')),
+                  Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top:32.0, right:32, left:16),
+                        child: Row(
+                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(postKarma, style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                                          
+                            Padding(
+                              padding: EdgeInsets.only(left:ScreenSizeHandler.screenWidth*0.59),
+                              child: Text(commentKarma, style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                            ),
+                          ],
+                                            ),
+                      ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom:32.0, right:32, left:16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Post Karma', style: TextStyle(color: Colors.grey, fontSize: 13,)),
+                            Text('Comment Karma', style: TextStyle(color: Colors.grey, fontSize: 13,)),
+                          ],
+                      ),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.only(top: 20,left:16),
+                      child: Text(about, style: TextStyle(color: Colors.grey, fontSize: 15, fontWeight: FontWeight.bold), 
+                      ),
+                    ),        
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical:8.0),
+                      child: Container(
+                        width: double.infinity,
+                        color: Colors.black,
+                        padding: EdgeInsets.only(top: 10,left:16, bottom:10),
+                        child: Text("TROPHIES", style: TextStyle(color: Colors.grey, fontSize: 13, fontWeight: FontWeight.bold), 
+                        ),
+                      ),
+                    ),
+                    ],
+                    )
                 ],
               ),
             ),
