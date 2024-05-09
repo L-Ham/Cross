@@ -40,6 +40,7 @@ class _CommunitiesScreenState extends State<CommunitiesScreen> {
     ApiService apiService = ApiService(TokenDecoder.token);
     var response = await apiService.getPopularCommunites();
     response = response['popularCommunities'];
+    if (mounted) {}
     setState(() {
       for (var community in response) {
         topCommunities.add(community['name']);

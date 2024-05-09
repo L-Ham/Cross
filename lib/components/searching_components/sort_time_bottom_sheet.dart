@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:reddit_bel_ham/components/location_customaization_components/location_customaization_radio_button.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import '../../constants.dart';
@@ -43,12 +44,17 @@ class SortTimeBottomSheet extends StatelessWidget {
                         fontSize: ScreenSizeHandler.bigger * 0.022,
                         fontWeight: FontWeight.bold),
                   ),
-                  CircleAvatar(
-                    backgroundColor: Colors.grey[800],
-                    radius: ScreenSizeHandler.bigger * 0.024,
-                    child: Icon(
-                      Icons.close,
-                      size: ScreenSizeHandler.bigger * 0.04,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: CircleAvatar(
+                      backgroundColor: Colors.grey[800],
+                      radius: ScreenSizeHandler.bigger * 0.024,
+                      child: Icon(
+                        Icons.close,
+                        size: ScreenSizeHandler.bigger * 0.04,
+                      ),
                     ),
                   )
                 ],
