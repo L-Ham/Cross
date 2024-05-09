@@ -702,6 +702,7 @@ class _DrawerBottomSheetState extends State<DrawerBottomSheet> {
             ),
           )),
           isExitPressed
+          
               ? Semantics(
                   identifier: 'second_exit_app_button_identifier',
                   child: SettingsTile(
