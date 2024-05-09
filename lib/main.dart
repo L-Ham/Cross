@@ -23,6 +23,18 @@ import 'package:reddit_bel_ham/screens/settings_screen.dart';
 import 'package:reddit_bel_ham/screens/create_username_screen.dart';
 import 'package:reddit_bel_ham/screens/update_email_address_screen.dart';
 import 'package:reddit_bel_ham/screens/create_community_screen.dart';
+
+import 'package:reddit_bel_ham/screens/mod_tools_screen.dart';
+import 'package:reddit_bel_ham/screens/describe_your_community_screen.dart';
+import 'package:reddit_bel_ham/screens/community_type_screen.dart';
+import 'package:reddit_bel_ham/screens/approved_users_screen.dart';
+import 'package:reddit_bel_ham/screens/add_approved_user_screen.dart';
+import 'package:reddit_bel_ham/screens/banned_users_screen.dart';
+import 'package:reddit_bel_ham/screens/ban_user_screen.dart';
+
+
+
+import 'package:reddit_bel_ham/utilities/subreddit_store.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'screens/account_settings_screen.dart';
 import 'utilities/screen_size_handler.dart';
@@ -177,14 +189,20 @@ class RedditByLham extends StatelessWidget {
         NewMessageScreen.id: (context) => const NewMessageScreen(),
         SearchingScreen.id: (context) => const SearchingScreen(),
         EditProfileScreen.id: (context) => const EditProfileScreen(),
+
+        ModToolsScreen.id: (context) => const ModToolsScreen(),
+        DescribeCommunityScreen.id: (context) => const DescribeCommunityScreen(),
+        CommunityTypeScreen.id: (context) => const CommunityTypeScreen(),
+        ApprovedUsersScreen.id: (context) => const ApprovedUsersScreen(),
+        AddApprovedUserScreen.id: (context) => const AddApprovedUserScreen(),
+        BannedUsersScreen.id: (context) => const BannedUsersScreen(),
+        BanUserScreen.id: (context) => const BanUserScreen(),
       },
-      initialRoute:
-      //  (token == null)
-      //     ? FirstScreen.id
-      //     : (JwtDecoder.isExpired(TokenDecoder.token))
-      //         ? LoginScreen.id
-      //         : HomePageScreen.id,
-      ProfileScreen.id,
+      initialRoute: (token == null)
+          ? FirstScreen.id
+          : (JwtDecoder.isExpired(TokenDecoder.token))
+              ? LoginScreen.id
+              : HomePageScreen.id,
     );
   }
 }

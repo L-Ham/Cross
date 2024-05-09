@@ -33,7 +33,6 @@ class ApiService {
           if (body != null) {
             url = Uri.parse(
                 "$baseURL$endpoint?${Uri(queryParameters: body).query}");
-            print(url);
             response = await http.get(url, headers: headers);
           } else {
             response = await http.get(url, headers: headers);
@@ -485,6 +484,40 @@ class ApiService {
     return result;
   }
 
+  Future<dynamic> editCommunityDetails(
+      String subredditID,
+      String membersNickname,
+      String currentlyViewingNickname,
+      String communityDescription) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "subredditId": subredditID,
+      "membersNickname": membersNickname,
+      "currentlyViewingNickname": currentlyViewingNickname,
+      "communityDescription": communityDescription
+    };
+    var result = await request('/subreddit/communityDetails',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    // print(result);
+    return result;
+  }
+
+  Future<dynamic> getApprovedUsers(String communityName) async {
+    Map<String, dynamic> sentData;
+    sentData = {"subredditName": communityName};
+    var result = await request('/subreddit/users/approved',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> getBannedUsers(String communityName) async {
+    Map<String, dynamic> sentData;
+    sentData = {"subredditName": communityName};
+    var result = await request('/subreddit/users/banned',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    return result;
+  }
+
   Future<dynamic> getPopularCommunites() async {
     var result = await request('/subreddit/popularCommunity',
         headers: headerWithToken, method: 'GET');
@@ -662,6 +695,31 @@ class ApiService {
     return result;
   }
 
+  Future<dynamic> banUser(String subRedditName, String userName, String reason, String note, bool isPermanent) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "subredditName": subRedditName,
+      "userName": userName,
+      "reasonForBan": reason,
+      "modNote": note,
+      "permanent": isPermanent,
+    };
+    var result = await request('/subreddit/user/ban',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> unbanUser(String subRedditName, String userName) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "subredditName": subRedditName,
+      "userName": userName,
+    };
+    var result = await request('/subreddit/user/unban',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
   // Future<List> getSavedPosts(String username, int page, int limit) async {
   //   try {
   //     final response = await http.get(
@@ -763,13 +821,14 @@ class ApiService {
     return result;
   }
 
-  Future<dynamic> getSubredditFeed(String postId, String sortType) async {
+  Future<dynamic> getSubredditFeed(
+      String subredditName, String sortType, String page) async {
     Map<String, dynamic> sentData;
     sentData = {
-      "subredditName": postId,
+      "subredditName": subredditName,
       "sort": sortType,
-      "page": 1,
-      "limit": 3
+      "page": page,
+      "limit": "3"
     };
     var result = await request('/subreddit/feed',
         headers: headerWithToken, method: 'GET', body: sentData);
