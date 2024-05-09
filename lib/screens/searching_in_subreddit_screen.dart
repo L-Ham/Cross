@@ -3,8 +3,6 @@ import 'package:reddit_bel_ham/components/general_components/rounded_button.dart
 import 'package:reddit_bel_ham/components/searching_components/sort_bottom_sheet.dart';
 import 'package:reddit_bel_ham/components/searching_components/sort_time_bottom_sheet.dart';
 import 'package:reddit_bel_ham/screens/comments_search_screen.dart';
-import 'package:reddit_bel_ham/screens/communities_search_screen.dart';
-import 'package:reddit_bel_ham/screens/people_search_screen.dart';
 import 'package:reddit_bel_ham/screens/post_search_screen.dart';
 import 'package:reddit_bel_ham/screens/searching_screen.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
@@ -43,6 +41,7 @@ class _SearchingInSubredditState extends State<SearchingInSubreddit>
   List<PostSearchCard> searchedPosts = [];
   List<CommentSearchCard> searchedComments = [];
   List<PostSearchCard> originalList = [];
+  late bool isSubreddit = true;
 
   bool firstTime = true;
   bool isLoading = false;
@@ -55,29 +54,53 @@ class _SearchingInSubredditState extends State<SearchingInSubreddit>
     setState(() {
       isLoading = true;
     });
-    Map<String, dynamic> commentsResponse =
-        await apiService.searchCommentsInSubreddit({
-      "search": _searchController.text,
-      "relevance":
-          sortValue == "Most relevant" ? true.toString() : false.toString(),
-      "top": sortValue == "Top" ? true.toString() : false.toString(),
-      "new": sortValue == "New" ? true.toString() : false.toString(),
-      "subredditName": subredditName,
-    });
-    searchComments(commentsResponse['comments'] as List<dynamic>);
-    // Map<String, dynamic> postsResponse =
-    //     await apiService.searchPostsInSubreddit({
-    //   "search": _searchController.text,
-    //   "subRedditName": subredditName,
-    //   "relevance":
-    //       sortValue == "Most relevant" ? true.toString() : false.toString(),
-    //   "top": sortValue == "Top" ? true.toString() : false.toString(),
-    //   "new": sortValue == "New" ? true.toString() : false.toString(),
-    //   "mediaOnly": false.toString(),
-    //   "isNSFW": true.toString(),
-    // });
-    // print(postsResponse);
-    // searchPosts(postsResponse['posts'] as List<dynamic>);
+    if (isSubreddit) {
+      Map<String, dynamic> commentsResponse =
+          await apiService.searchCommentsInSubreddit({
+        "search": _searchController.text,
+        "relevance":
+            sortValue == "Most relevant" ? true.toString() : false.toString(),
+        "top": sortValue == "Top" ? true.toString() : false.toString(),
+        "new": sortValue == "New" ? true.toString() : false.toString(),
+        "subredditName": subredditName,
+      });
+      searchComments(commentsResponse['comments'] as List<dynamic>);
+      Map<String, dynamic> postsResponse =
+          await apiService.searchPostsInSubreddit({
+        "search": _searchController.text,
+        "relevance":
+            sortValue == "Most relevant" ? true.toString() : false.toString(),
+        "top": sortValue == "Top" ? true.toString() : false.toString(),
+        "new": sortValue == "New" ? true.toString() : false.toString(),
+        "mediaOnly": false.toString(),
+        "isNSFW": true.toString(),
+        "subredditName": subredditName,
+      });
+      searchPosts(postsResponse['posts'] as List<dynamic>);
+    } else {
+      Map<String, dynamic> commentsResponse =
+          await apiService.searchCommentsInProfile({
+        "search": _searchController.text,
+        "relevance":
+            sortValue == "Most relevant" ? true.toString() : false.toString(),
+        "top": sortValue == "Top" ? true.toString() : false.toString(),
+        "new": sortValue == "New" ? true.toString() : false.toString(),
+        "username": subredditName,
+      });
+      searchComments(commentsResponse['comments'] as List<dynamic>);
+      Map<String, dynamic> postsResponse =
+          await apiService.searchPostsInProfile({
+        "search": _searchController.text,
+        "relevance":
+            sortValue == "Most relevant" ? true.toString() : false.toString(),
+        "top": sortValue == "Top" ? true.toString() : false.toString(),
+        "new": sortValue == "New" ? true.toString() : false.toString(),
+        "mediaOnly": false.toString(),
+        "isNSFW": true.toString(),
+        "username": subredditName,
+      });
+      searchPosts(postsResponse['posts'] as List<dynamic>);
+    }
     if (mounted) {
       setState(() {
         isLoading = false;
@@ -208,6 +231,7 @@ class _SearchingInSubredditState extends State<SearchingInSubreddit>
         sortValue = args['searchType'] as String;
         isSorted = true;
       }
+      isSubreddit = args['isSubreddit'] as bool;
     });
     if (firstTime) {
       getSearchesFromBack();

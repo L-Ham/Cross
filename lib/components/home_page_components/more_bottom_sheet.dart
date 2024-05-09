@@ -205,7 +205,6 @@ Widget buildMoreModalBottomSheet(BuildContext context, Post post) {
                         ApiService apiService = ApiService(TokenDecoder.token);
                         apiService.deletePost(post.postId);
                         Navigator.pop(context);
-                        Navigator.pop(context);
                       }
                     },
                     child: Row(
