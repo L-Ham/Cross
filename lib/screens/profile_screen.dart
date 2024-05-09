@@ -5,6 +5,7 @@ import 'package:reddit_bel_ham/components/comments_components/comment_card.dart'
 import 'package:reddit_bel_ham/components/empty_dog.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/chatting_screen.dart';
+import 'package:reddit_bel_ham/screens/comments_screen.dart';
 import 'package:reddit_bel_ham/screens/edit_profile_screen.dart';
 import 'package:reddit_bel_ham/screens/new_message_screen.dart';
 import 'package:reddit_bel_ham/screens/searching_screen.dart';
@@ -911,11 +912,20 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                   // Navigator.pushNamed(context, CommentsScreen.id,
                                                   // arguments: {"post": post});
                                                 },
-                                                child: PostCard(
-                                                  post: post,
-                                                  isModertor: isMyProfile,
-                                                  // isModertor: isModerator,
-                                                  isCommunityFeed: true,
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    Navigator.pushNamed(context,
+                                                        CommentsScreen.id,
+                                                        arguments: {
+                                                          "post": post
+                                                        });
+                                                  },
+                                                  child: PostCard(
+                                                    post: post,
+                                                    isModertor: isMyProfile,
+                                                    // isModertor: isModerator,
+                                                    isCommunityFeed: true,
+                                                  ),
                                                 ),
                                               ),
                                             )

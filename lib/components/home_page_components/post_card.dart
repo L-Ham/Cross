@@ -94,7 +94,7 @@ class Post {
       userAvatarImage:
           json['creatorAvatarImage'] ?? "assets/images/avatarDaniel.png",
       userName: json['creatorUsername'] ?? 'thekey119',
-      subredditName: json['subredditName'] ?? 'Dragon Oath',
+      subredditName: json['subredditName'] ?? '',
       options: json['poll'] != null && json['poll']['options'] != null
           ? (json['poll']['options'] as List)
               .map((option) => option['option'] as String)
