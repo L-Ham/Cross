@@ -217,6 +217,7 @@ class ApiService {
     sentData = {"search": userName};
     var result = await request('/user/searchUsernames',
         headers: headerWithToken, method: 'GET', body: sentData);
+    print( 'result: $result');
     return result;
   }
 
@@ -638,6 +639,12 @@ class ApiService {
   }
   Future<dynamic> getUserSelfInfo() async {
     var result = await request('/user/selfInfo',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+    Future<dynamic> getUserInfo(String id) async {
+      // print('IDDD: $id');
+    var result = await request('/user/info?userId=$id',
         headers: headerWithToken, method: 'GET');
     return result;
   }
@@ -1067,4 +1074,21 @@ class ApiService {
 
     return result;
   }
+  Future<dynamic> followUser(String username) async {
+    var result = await request('/user/followUser',
+        headers: headerWithToken, method: 'PATCH', body: {"usernameToFollow": username});
+    return result;
+  }
+    Future<dynamic> unfollowUser(String username) async {
+    var result = await request('/user/unfollowUser',
+        headers: headerWithToken, method: 'PATCH', body: {"usernameToUnfollow": username});
+    return result;
+  }
+    Future<dynamic> getProfileFeed(
+      String username, String page, String limit) async {
+    var result = await request('/user/posts?username=${username.replaceFirst('u/','')}&page=$page&limit=$limit',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+
 }
