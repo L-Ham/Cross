@@ -63,6 +63,7 @@ class _ChattingScreenState extends State<ChattingScreen> {
       child: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: Row(
             children: [
               Text('Chatting'),
