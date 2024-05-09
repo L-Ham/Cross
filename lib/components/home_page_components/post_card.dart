@@ -8,14 +8,17 @@ import 'package:reddit_bel_ham/components/home_page_components/share_bottom_shee
 import 'package:reddit_bel_ham/components/home_page_components/video_player.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
+import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:reddit_bel_ham/components/subreddit_components/moderator_post_bottom_sheet.dart';
+import 'package:reddit_bel_ham/utilities/time_ago.dart';
 
 import 'package:reddit_bel_ham/utilities/post_voting.dart';
 
 class Post {
   String postId;
   String userId;
+  String userAvatarImage;
   String userName;
   List<String> options = [];
   List<int> numOfVotersPerOption = [];
@@ -23,7 +26,7 @@ class Post {
   String? selectedPollOption;
   DateTime? startTime;
   DateTime? endTime;
-  String subredditName;
+  String subredditName = "";
   String avatarImage = 'assets/images/redditAvata2.png';
   String content;
   String contentTitle;
@@ -31,7 +34,7 @@ class Post {
   String link;
   String video;
   String subredditId;
-  List<String> image;
+  List<String> image = [];
   String createdFrom;
   int upvotes;
   int comments;
@@ -51,20 +54,20 @@ class Post {
 
   Post({
     required this.postId,
-    required this.subredditName,
-    //required this.userAvatarImage,
+    this.subredditName = "Dragon Oath",
+    this.userAvatarImage = "assets/images/avatarDaniel.png",
+    this.userName = "thekey119",
     required this.contentTitle,
     required this.content,
     required this.upvotes,
     required this.comments,
     required this.type,
     required this.link,
-    required this.image,
+    this.image = const [],
     required this.video,
     required this.createdFrom,
     required this.userId,
     this.subredditId = "",
-    this.userName = "",
     this.options = const [],
     this.numOfVotersPerOption = const [],
     this.isPollVoted = false,
@@ -85,16 +88,74 @@ class Post {
     this.isSaved = false
   });
 
-  static fromJson(json) {}
+  factory Post.fromJson(Map<String, dynamic> json) {
+    return Post(
+      postId: json['_id'] ?? '',
+      userId: json['user'] ?? '',
+      userAvatarImage:
+          json['creatorAvatarImage'] ?? "assets/images/avatarDaniel.png",
+      userName: json['creatorUsername'] ?? 'thekey119',
+      subredditName: json['subredditName'] ?? 'Dragon Oath',
+      options: json['poll'] != null && json['poll']['options'] != null
+          ? (json['poll']['options'] as List)
+              .map((option) => option['option'] as String)
+              .toList()
+          : [],
+      numOfVotersPerOption:
+          json['poll'] != null && json['poll']['options'] != null
+              ? (json['poll']['options'] as List)
+                  .map((option) => (option['voters'] as List).length)
+                  .toList()
+              : [],
+      selectedPollOption: json['poll']['options'].firstWhere(
+          (option) =>
+              (option['voters'] as List<dynamic>).contains(TokenDecoder.id),
+          orElse: () => {"option": null})['option'],
+      isPollVoted: json['poll'] == null ||
+              json['poll']['options'] == null ||
+              json['poll']['options'].isEmpty
+          ? false
+          : (json['poll']['options'] as List).any((option) =>
+              option['voters'] == null
+                  ? false
+                  : (option['voters'] as List).contains(TokenDecoder.id)),
+      startTime: json['poll'] == null || json['poll']['startTime'] == null
+          ? null
+          : DateTime.parse(json['poll']['startTime']),
+      endTime: json['poll'] == null || json['poll']['endTime'] == null
+          ? null
+          : DateTime.parse(json['poll']['endTime']),
+      content: json['text'] ?? '',
+      contentTitle: json['title'] ?? '',
+      type: json['type'] ?? '',
+      link: json['url'] ?? '',
+      video: json['video'] ?? '',
+      image: json['imageUrls'] != null
+          ? (json['imageUrls'] as List).map((image) => image as String).toList()
+          : [],
+      createdFrom: json['createdAt'] ?? '',
+      upvotes: json['upvotes'] ?? 0,
+      comments: json['commentCount'] ?? 0,
+      spamCount: json['spamCount'] ?? 0,
+      isUpvoted: json['isUpvoted'] ?? false,
+      isDownvoted: json['isDownvoted'] ?? false,
+      isNSFW: json['isNSFW'] ?? false,
+      isSpoiler: json['isSpoiler'] ?? false,
+      isLocked: json['isLocked'] ?? false,
+      isApproved: json['approved'] ?? false,
+      isDisapproved: json['disapproved'] ?? false,
+    );
+  }
 }
 
 class PostCard extends StatefulWidget {
   final Post post;
   final bool isModertor;
   final bool isExpanded;
+  final bool isCommunityFeed;
 
   const PostCard(
-      {required this.post, this.isModertor = false, this.isExpanded = false});
+      {required this.post, this.isModertor = false, this.isExpanded = false, this.isCommunityFeed = false});
 
   @override
   _PostCardState createState() => _PostCardState();
@@ -131,9 +192,16 @@ class _PostCardState extends State<PostCard> {
                 Padding(
                   padding: EdgeInsets.only(
                       left: ScreenSizeHandler.screenWidth * 0.04),
-                  child: Avatar(
-                    avatar: post.avatarImage,
-                    radius: 15,
+                  child: CircleAvatar(
+                    radius: ScreenSizeHandler.screenWidth * 0.03,
+                    backgroundImage: widget.isCommunityFeed
+                        ? post.userAvatarImage !=
+                                "assets/images/avatarDaniel.png"
+                            ? NetworkImage(post.userAvatarImage)
+                            : AssetImage(post.userAvatarImage)
+                                as ImageProvider<Object>?
+                        : AssetImage("assets/images/avatarDaniel.png")
+                            as ImageProvider<Object>?,
                   ),
                 ),
                 SizedBox(width: ScreenSizeHandler.screenWidth * 0.02),
@@ -283,7 +351,7 @@ class _PostCardState extends State<PostCard> {
                           ),
                         ),
                       ),
-                      if (post.type == 'link')
+                      if (widget.post.type == 'link')
                         GestureDetector(
                           onTap: () => {
                             _launchURL(post.link),
@@ -304,7 +372,7 @@ class _PostCardState extends State<PostCard> {
                               });
                             },
                             previewData: post.previewData,
-                            text: post.link,
+                            text: widget.post.link,
                             width: ScreenSizeHandler.screenWidth * 0.25,
                           ),
                         ),

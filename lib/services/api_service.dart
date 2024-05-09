@@ -42,6 +42,10 @@ class ApiService {
           response =
               await http.post(url, headers: headers, body: jsonEncode(body));
           break;
+          case 'DELETE':
+          response =
+              await http.delete(url, headers: headers, body: jsonEncode(body));
+          break;
         case 'PATCH':
           response =
               await http.patch(url, headers: headers, body: jsonEncode(body));
@@ -492,6 +496,40 @@ class ApiService {
     return result;
   }
 
+  Future<dynamic> editCommunityDetails(
+      String subredditID,
+      String membersNickname,
+      String currentlyViewingNickname,
+      String communityDescription) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "subredditId": subredditID,
+      "membersNickname": membersNickname,
+      "currentlyViewingNickname": currentlyViewingNickname,
+      "communityDescription": communityDescription
+    };
+    var result = await request('/subreddit/communityDetails',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    // print(result);
+    return result;
+  }
+
+  Future<dynamic> getApprovedUsers(String communityName) async {
+    Map<String, dynamic> sentData;
+    sentData = {"subredditName": communityName};
+    var result = await request('/subreddit/users/approved',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> getBannedUsers(String communityName) async {
+    Map<String, dynamic> sentData;
+    sentData = {"subredditName": communityName};
+    var result = await request('/subreddit/users/banned',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    return result;
+  }
+
   Future<dynamic> getPopularCommunites() async {
     var result = await request('/subreddit/popularCommunity',
         headers: headerWithToken, method: 'GET');
@@ -523,6 +561,112 @@ class ApiService {
         headers: headerWithToken, method: 'PATCH', body: sentData);
     return result;
   }
+  Future<dynamic> getUserSelfInfo() async {
+    var result = await request('/user/selfInfo',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+  Future<dynamic> addSocialLink(Map<String, dynamic> body) async {
+    var result = await request('/user/socialLink',
+        headers: headerWithToken, method: 'POST',
+        body: body
+    );
+    return result;
+  }
+  Future<dynamic> deleteSocialLink(String linkId) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "socialLinkId": linkId,
+    };
+    var result = await request('/user/socialLink',
+        headers: headerWithToken, method: 'DELETE', body: sentData);
+    return result;
+  }
+  Future<void> uploadAvatarImage(
+      File imageFile) async {
+    var request =
+        http.MultipartRequest('POST', Uri.parse('$baseURL/user/avatarImage'));
+
+    request.headers.addAll({
+      'Content-Type': 'multipart/form-data',
+      'Authorization': "Bearer $token",
+    });
+
+
+      debugPrint('Image file path: ${imageFile.path}');
+      request.files
+          .add(await http.MultipartFile.fromPath('file', imageFile.path));
+    var response;
+    try {
+      response = await request.send();
+      // Handle the response...
+    } on SocketException catch (e) {
+      debugPrint('SocketException: $e');
+      // Handle the exception...
+    }
+    if (response.statusCode == 200) {
+      debugPrint('Media uploaded successfully');
+    } else {
+      debugPrint(response.statusCode.toString());
+      String responseBody = await response.stream.bytesToString();
+
+      // Parse the string as JSON
+      Map<String, dynamic> responseJson = jsonDecode(responseBody);
+
+      debugPrint(response.statusCode.toString());
+      debugPrint('Response body: $responseBody');
+      debugPrint('Media upload failed');
+    }
+  }
+    Future<void> uploadBannerImage(
+      File imageFile) async {
+    var request =
+        http.MultipartRequest('POST', Uri.parse('$baseURL/user/banner'));
+
+    request.headers.addAll({
+      'Content-Type': 'multipart/form-data',
+      'Authorization': "Bearer $token",
+    });
+
+
+      debugPrint('Image file path: ${imageFile.path}');
+      request.files
+          .add(await http.MultipartFile.fromPath('file', imageFile.path));
+    var response;
+    try {
+      response = await request.send();
+      // Handle the response...
+    } on SocketException catch (e) {
+      debugPrint('SocketException: $e');
+      // Handle the exception...
+    }
+    if (response.statusCode == 200) {
+      debugPrint('Media uploaded successfully');
+    } else {
+      debugPrint(response.statusCode.toString());
+      String responseBody = await response.stream.bytesToString();
+
+      // Parse the string as JSON
+      Map<String, dynamic> responseJson = jsonDecode(responseBody);
+
+      debugPrint(response.statusCode.toString());
+      debugPrint('Response body: $responseBody');
+      debugPrint('Media upload failed');
+    }
+  }
+    Future<dynamic> editProfileInfo(displayName,about,contentVisibility, communitiesVisibility) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "displayName": displayName,
+      "about": about,
+      "contentVisibility": contentVisibility,
+      "communitiesVisibility": communitiesVisibility
+    };
+    var result = await request('/user/profileSettings',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
 
   Future<dynamic> getTrendingPosts() async {
     var result = await request('/post/trending',
@@ -568,6 +712,31 @@ class ApiService {
         headers: headerWithToken, method: 'GET', body: body);
     print("BOS HENAA");
     print(result);
+    return result;
+  }
+
+  Future<dynamic> banUser(String subRedditName, String userName, String reason, String note, bool isPermanent) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "subredditName": subRedditName,
+      "userName": userName,
+      "reasonForBan": reason,
+      "modNote": note,
+      "permanent": isPermanent,
+    };
+    var result = await request('/subreddit/user/ban',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> unbanUser(String subRedditName, String userName) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "subredditName": subRedditName,
+      "userName": userName,
+    };
+    var result = await request('/subreddit/user/unban',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
     return result;
   }
 
@@ -672,13 +841,14 @@ class ApiService {
     return result;
   }
 
-  Future<dynamic> getSubredditFeed(String postId, String sortType) async {
+  Future<dynamic> getSubredditFeed(
+      String subredditName, String sortType, String page) async {
     Map<String, dynamic> sentData;
     sentData = {
-      "subredditName": postId,
+      "subredditName": subredditName,
       "sort": sortType,
-      "page": 1,
-      "limit": 3
+      "page": page,
+      "limit": "3"
     };
     var result = await request('/subreddit/feed',
         headers: headerWithToken, method: 'GET', body: sentData);

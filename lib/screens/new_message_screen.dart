@@ -83,6 +83,7 @@ class _NewMessageScreenState extends State<NewMessageScreen> {
         messageFocus.requestFocus();
       } else {
         userNameFocus.requestFocus();
+              userNameController.text = args["userName"] ?? "";
       }
       isReply = args["isReply"];
     }
