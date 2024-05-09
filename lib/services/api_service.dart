@@ -42,7 +42,7 @@ class ApiService {
           response =
               await http.post(url, headers: headers, body: jsonEncode(body));
           break;
-          case 'DELETE':
+        case 'DELETE':
           response =
               await http.delete(url, headers: headers, body: jsonEncode(body));
           break;
@@ -561,18 +561,19 @@ class ApiService {
         headers: headerWithToken, method: 'PATCH', body: sentData);
     return result;
   }
+
   Future<dynamic> getUserSelfInfo() async {
     var result = await request('/user/selfInfo',
         headers: headerWithToken, method: 'GET');
     return result;
   }
+
   Future<dynamic> addSocialLink(Map<String, dynamic> body) async {
     var result = await request('/user/socialLink',
-        headers: headerWithToken, method: 'POST',
-        body: body
-    );
+        headers: headerWithToken, method: 'POST', body: body);
     return result;
   }
+
   Future<dynamic> deleteSocialLink(String linkId) async {
     Map<String, dynamic> sentData;
     sentData = {
@@ -582,8 +583,8 @@ class ApiService {
         headers: headerWithToken, method: 'DELETE', body: sentData);
     return result;
   }
-  Future<void> uploadAvatarImage(
-      File imageFile) async {
+
+  Future<void> uploadAvatarImage(File imageFile) async {
     var request =
         http.MultipartRequest('POST', Uri.parse('$baseURL/user/avatarImage'));
 
@@ -592,14 +593,13 @@ class ApiService {
       'Authorization': "Bearer $token",
     });
 
-
-      debugPrint('Image file path: ${imageFile.path}');
-      request.files
-          .add(await http.MultipartFile.fromPath('file', imageFile.path));
+    debugPrint('Image file path: ${imageFile.path}');
+    request.files
+        .add(await http.MultipartFile.fromPath('file', imageFile.path));
     var response;
     try {
       response = await request.send();
-      print(response); 
+      print(response);
       // Handle the response...
     } on SocketException catch (e) {
       print('hena');
@@ -621,8 +621,8 @@ class ApiService {
       // debugPrint('Media upload failed');
     }
   }
-    Future<void> uploadBannerImage(
-      File imageFile) async {
+
+  Future<void> uploadBannerImage(File imageFile) async {
     var request =
         http.MultipartRequest('POST', Uri.parse('$baseURL/user/banner'));
 
@@ -631,10 +631,9 @@ class ApiService {
       'Authorization': "Bearer $token",
     });
 
-
-      debugPrint('Image file path: ${imageFile.path}');
-      request.files
-          .add(await http.MultipartFile.fromPath('file', imageFile.path));
+    debugPrint('Image file path: ${imageFile.path}');
+    request.files
+        .add(await http.MultipartFile.fromPath('file', imageFile.path));
     var response;
     try {
       response = await request.send();
@@ -658,7 +657,9 @@ class ApiService {
       // debugPrint('Media upload failed');
     }
   }
-    Future<dynamic> editProfileInfo(displayName,about,contentVisibility, communitiesVisibility) async {
+
+  Future<dynamic> editProfileInfo(
+      displayName, about, contentVisibility, communitiesVisibility) async {
     Map<String, dynamic> sentData;
     sentData = {
       "displayName": displayName,
@@ -670,7 +671,6 @@ class ApiService {
         headers: headerWithToken, method: 'PATCH', body: sentData);
     return result;
   }
-
 
   Future<dynamic> getTrendingPosts() async {
     var result = await request('/post/trending',
@@ -719,7 +719,8 @@ class ApiService {
     return result;
   }
 
-  Future<dynamic> banUser(String subRedditName, String userName, String reason, String note, bool isPermanent) async {
+  Future<dynamic> banUser(String subRedditName, String userName, String reason,
+      String note, bool isPermanent) async {
     Map<String, dynamic> sentData;
     sentData = {
       "subredditName": subRedditName,
@@ -981,15 +982,22 @@ class ApiService {
         headers: headerWithToken, method: 'PATCH', body: sentData);
     return result;
   }
-    Future<dynamic> getAvatarImage() async {
+
+  Future<dynamic> getAvatarImage() async {
     var result = await request('/user/avatarImage',
         headers: headerWithToken, method: 'GET');
     return result;
   }
-  Future<dynamic> getBannerImage() async {
-    var result = await request('/user/banner',
-        headers: headerWithToken, method: 'GET');
 
+  Future<dynamic> getBannerImage() async {
+    var result =
+        await request('/user/banner', headers: headerWithToken, method: 'GET');
+    return result;
+  }
+
+  Future<dynamic> getAllActivity() async {
+    var result = await request('/notification/user',
+        headers: headerWithToken, method: 'GET');
     return result;
   }
 }
