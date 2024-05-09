@@ -1,4 +1,4 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_bel_ham/components/home_page_components/mark_all_as_read.dart';
@@ -48,6 +48,9 @@ import 'screens/home_page_screen.dart';
 import 'screens/blocked_accounts.dart';
 import 'screens/subreddit_screen.dart';
 import 'screens/subreddit_search_screen.dart';
+import 'screens/inside_chat_screen.dart';
+import 'screens/chatting_screen.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:reddit_bel_ham/screens/inbox_messages.dart';
 import 'screens/profile_screen.dart';
@@ -200,6 +203,7 @@ class RedditByLham extends StatelessWidget {
         AddApprovedUserScreen.id: (context) => const AddApprovedUserScreen(),
         BannedUsersScreen.id: (context) => const BannedUsersScreen(),
         BanUserScreen.id: (context) => const BanUserScreen(),
+        ChattingScreen.id: (context) => ChattingScreen(),
         ActivityScreen.id: (context) => const ActivityScreen(),
       },
       initialRoute: (token == null)

@@ -8,6 +8,7 @@ import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 
 const String baseURL = "https://reddit-bylham.me/api";
 
+
 //const String baseURL = "https://e895ac26-6dc5-4b44-8937-20b3ad854396.mock.pstmn.io/api";
 class ApiService {
   String token = '';
@@ -418,6 +419,80 @@ class ApiService {
         method: 'PATCH',
         body: {"password": password});
     return result;
+  }
+
+  Future<dynamic> getUserChats() async {
+    var response = await request('/conversation/getUserChats',
+        headers: headerWithToken, method: 'GET');
+    print(response);
+    return response;
+  }
+
+  Future<dynamic> sendTextMessage(String conversationId, String message) async {
+    var response = await request('/chat/sendMessage',
+        headers: headerWithToken,
+        method: 'POST',
+        body: {"chatId": conversationId, "type": "text", "message": message});
+
+    return response;
+  }
+
+  Future<Map<String, dynamic>?> sendImageMessage(
+      File imageFile, String conversationId) async {
+    print('inside api call');
+    var request =
+        http.MultipartRequest('POST', Uri.parse('$baseURL/chat/sendMessage'));
+
+    request.headers.addAll({
+      'Content-Type': 'multipart/form-data',
+      'Authorization': "Bearer $token",
+    });
+
+    request.fields['chatId'] = conversationId;
+    request.fields['type'] = "image";
+    request.files
+        .add(await http.MultipartFile.fromPath('file', imageFile.path));
+
+    var response;
+    print('bypassed api call');
+    try {
+      response = await request.send();
+    } on SocketException catch (e) {
+      debugPrint('SocketException: $e');
+    }
+
+    if (response.statusCode == 200) {
+      debugPrint('Media uploaded successfully');
+      String responseBody = await response.stream.bytesToString();
+      return jsonDecode(responseBody); // Return the parsed JSON
+    } else {
+      debugPrint('${response.statusCode.toString()}zzzzzzzzzzzzzzzzzz');
+      String responseBody = await response.stream.bytesToString();
+      debugPrint(response.statusCode.toString());
+      debugPrint('Response body: $responseBody');
+      debugPrint('Media upload failed');
+      return null; // Return null or throw an exception
+    }
+  }
+
+  Future<dynamic> startNewConversation(
+      String chatName, List<String> participants) async {
+    var response = await http.post(
+      Uri.parse('https://reddit-bylham.me/api/conversation/create'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({"chatName": chatName, "participants": participants}),
+    );
+    print(response);
+    print(response.statusCode);
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to create community');
+    }
   }
 
   Future<dynamic> joinCommunity(String subredditID) async {
