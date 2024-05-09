@@ -8,7 +8,9 @@ import 'package:reddit_bel_ham/components/mod_tools_components/user_tile.dart';
 import 'package:reddit_bel_ham/components/mod_tools_components/user_bottom_sheet_tile.dart';
 import 'package:reddit_bel_ham/components/general_components/continue_button.dart';
 import 'package:reddit_bel_ham/screens/ban_user_screen.dart';
+import 'package:reddit_bel_ham/screens/ban_details_screen.dart';
 import '../utilities/time_ago.dart';
+import '../utilities/go_to_profile.dart';
 
 class BannedUsersScreen extends StatefulWidget {
   const BannedUsersScreen({super.key});
@@ -59,9 +61,11 @@ class _BannedUsersScreenState extends State<BannedUsersScreen> {
         await apiService.getBannedUsers(communityName);
     if (response['message'] ==
         "Retrieved subreddit Banned Users Successfully") {
-      setState(() {
-        bannedUsers = response['bannedUsers'];
-      });
+      if (mounted) {
+        setState(() {
+          bannedUsers = response['bannedUsers'];
+        });
+      }
     } else {
       showDialog(
         context: context,
@@ -87,31 +91,22 @@ class _BannedUsersScreenState extends State<BannedUsersScreen> {
     Map<String, dynamic> response =
         await apiService.unbanUser(communityName, userName);
     if (response['message'] == "User unbanned successfully") {
-      showSnackBar('u/$userName was unbanned');
+      if (mounted) {
+        setState(() {
+          showSnackBar('u/$userName was unbanned');
+        });
+      }
       Navigator.pop(context);
     } else {
-      showSnackBar('Error: ${response['message']}');
-      // showDialog(
-      //   context: context,
-      //   builder: (BuildContext context) {
-      //     return AlertDialog(
-      //       title: const Text('Error'),
-      //       content: Text('${response['message']}'),
-      //       actions: [
-      //         TextButton(
-      //           onPressed: () {
-      //             Navigator.pop(context);
-      //           },
-      //           child: const Text('OK'),
-      //         ),
-      //       ],
-      //     );
-      //   },
-      // );
+      if (mounted) {
+        setState(() {
+          showSnackBar('Error: ${response['message']}');
+        });
+      }
     }
   }
 
-  void userOptions(String username) async {
+  void userOptions(String username, String ruleBroken, String modNote) async {
     await showModalBottomSheet(
         context: context,
         builder: (BuildContext bc) {
@@ -135,7 +130,15 @@ class _BannedUsersScreenState extends State<BannedUsersScreen> {
                             0.8,
                         color: Colors.grey,
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(context, BanDetailsScreen.id,
+                            arguments: {
+                              'ruleBroken': ruleBroken,
+                              'modNote': modNote,
+                              'userName': username,
+                              'communityName': communityName,
+                            });
+                      },
                     ),
                     UserBottomSheetTile(
                       text: 'View profile',
@@ -146,7 +149,9 @@ class _BannedUsersScreenState extends State<BannedUsersScreen> {
                             0.8,
                         color: Colors.grey,
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        goToProfile(context, username);
+                      },
                     ),
                     UserBottomSheetTile(
                       text: 'Unban',
@@ -267,10 +272,16 @@ class _BannedUsersScreenState extends State<BannedUsersScreen> {
                                     'u/${bannedUsers[index]['userName']}',
                                 subtitleText:
                                     "${bannedUsers[index]['bannedAt'] != null ? timeAgo(bannedUsers[index]['bannedAt']) : '1 wk ago'} . ${bannedUsers[index]['reasonForBan'] ?? 'No reason provided'}",
-                                onTap: () {},
+                                onTap: () {
+                                  goToProfile(
+                                      context, bannedUsers[index]['userName']);
+                                },
                                 avatarLink: bannedUsers[index]['avatarImage'],
                                 onIconTap: () {
-                                  userOptions(bannedUsers[index]['userName']);
+                                  userOptions(
+                                      bannedUsers[index]['userName'],
+                                      bannedUsers[index]['reasonForBan'],
+                                      bannedUsers[index]['modNote']);
                                 },
                               ),
                             ],

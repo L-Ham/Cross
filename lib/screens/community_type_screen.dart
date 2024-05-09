@@ -17,11 +17,12 @@ class CommunityTypeScreen extends StatefulWidget {
 
 class _CommunityTypeScreenState extends State<CommunityTypeScreen> {
   ApiService apiService = ApiService(TokenDecoder.token);
-  bool isButtonEnabled = false;
   double sliderValue = 0;
   bool isSwitched = false;
   String communityName = '';
   String privacy = '';
+  String initialPrivacy = '';
+  bool initialAgeRestriction = false;
 
   @override
   void didChangeDependencies() {
@@ -29,6 +30,7 @@ class _CommunityTypeScreenState extends State<CommunityTypeScreen> {
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     communityName = args["communityName"];
     super.didChangeDependencies();
+    getCommunityType();
   }
 
   void showSnackBar(String snackBarText) {
@@ -52,14 +54,43 @@ class _CommunityTypeScreenState extends State<CommunityTypeScreen> {
     });
   }
 
+  Future<void> getCommunityType() async {
+    Map<String, dynamic> response =
+        await apiService.getCommunityType(communityName);
+    if (response['message'] == "Retrieved subreddit type") {
+      if (mounted) {
+        setState(() {
+          initialPrivacy = response['privacy'];
+          initialAgeRestriction = response['ageRestriction'];
+          privacy = response['privacy'];
+          sliderValue = privacy == 'public'
+              ? 0
+              : privacy == 'restricted'
+                  ? 1
+                  : 2;
+          isSwitched = response['ageRestriction'];
+        });
+      }
+    } else {
+      if (mounted) {
+        setState(() {
+          showSnackBar('Error: ${response['message']}');
+        });
+      }
+    }
+  }
+
   Future<void> changeCommunityType() async {
     Map<String, dynamic> response = await apiService.changeCommunityType(
         communityName, isSwitched, privacy);
-    if (response['message'] ==
-        "Subreddit type changed successfully") {
+    if (response['message'] == "Subreddit type changed successfully") {
       Navigator.pop(context);
     } else {
-      showSnackBar('Error: ${response['message']}');
+      if (mounted) {
+        setState(() {
+          showSnackBar('Error: ${response['message']}');
+        });
+      }
     }
   }
 
@@ -73,11 +104,11 @@ class _CommunityTypeScreenState extends State<CommunityTypeScreen> {
         actions: [
           SettingsSaveButton(
             onPressed: () {
-              //TODO: Implement the save button functionality
               changeCommunityType();
             },
             isUnderlined: false,
-            isEnabled: true,
+            isEnabled: (initialPrivacy != privacy ||
+                initialAgeRestriction != isSwitched),
           )
         ],
       ),
@@ -128,7 +159,6 @@ class _CommunityTypeScreenState extends State<CommunityTypeScreen> {
                               value: sliderValue,
                               onChanged: (double val) {
                                 setState(() {
-                                  isButtonEnabled = true;
                                   sliderValue = val;
                                   privacy = sliderValue == 0
                                       ? 'public'
@@ -184,7 +214,7 @@ class _CommunityTypeScreenState extends State<CommunityTypeScreen> {
                             ),
                           ),
                           Padding(
-                            padding:  EdgeInsets.symmetric(
+                            padding: EdgeInsets.symmetric(
                               vertical: ScreenSizeHandler.screenHeight *
                                   kSettingsVerticalPaddingHeightRatio,
                             ),

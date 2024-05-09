@@ -7,8 +7,8 @@ import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'package:reddit_bel_ham/components/mod_tools_components/user_tile.dart';
 import 'package:reddit_bel_ham/components/mod_tools_components/user_bottom_sheet_tile.dart';
 import 'package:reddit_bel_ham/components/general_components/continue_button.dart';
-import 'package:reddit_bel_ham/screens/new_message_screen.dart';
 import 'package:reddit_bel_ham/screens/invite_moderator_screen.dart';
+import 'package:reddit_bel_ham/utilities/go_to_profile.dart';
 
 class ModeratorsScreen extends StatefulWidget {
   const ModeratorsScreen({super.key});
@@ -38,17 +38,60 @@ class _ModeratorsScreenState extends State<ModeratorsScreen>
   @override
   void initState() {
     super.initState();
-
     _tabController = TabController(length: 2, vsync: this);
+  }
 
-    // if (isMyProfile) {
-    //   if (mounted) {
-    //     setState(() {
-    //       getProfileInfo();
-    //       isLoading = true;
-    //     });
-    //   }
-    // }
+  void showSnackBar(String snackBarText) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(snackBarText),
+          backgroundColor: Colors.white,
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(
+            left: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+            right: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+            bottom: ScreenSizeHandler.screenHeight * 0.09,
+          ),
+          duration: const Duration(seconds: 3),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+        ),
+      );
+    });
+  }
+
+  Future<void> removeModerator(String username) async {
+    Map<String, dynamic> response =
+        await apiService.removeModerator(communityName, username);
+    if (response['message'] == "Moderator removed successfully") {
+      if (mounted) {
+        setState(() {
+          showSnackBar('u/ $username was removed as a moderator');
+        });
+      }
+      getModerators();
+      Navigator.pop(context);
+    } else {
+      if (mounted) {
+        setState(() {
+          showSnackBar('Error: ${response['message']}');
+        });
+      }
+    }
+  }
+
+  Future<void> getModerators() async {
+    Map<String, dynamic> data =
+        (await apiService.getCommunityModerators(communityName)) ?? {};
+    if (mounted) {
+      if (mounted) {
+        setState(() {
+          moderators = data['moderators'];
+        });
+      }
+    }
   }
 
   void userOptions(String username) async {
@@ -66,6 +109,19 @@ class _ModeratorsScreenState extends State<ModeratorsScreen>
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                    if(username != TokenDecoder.username)
+                    UserBottomSheetTile(
+                      text: 'Edit Permissions',
+                      icon: Icon(
+                        FontAwesomeIcons.pen,
+                        size: ScreenSizeHandler.bigger *
+                            kSettingsLeadingIconRatio *
+                            0.8,
+                        color: Colors.grey,
+                      ),
+                      onTap: () {
+                      },
+                    ), 
                     UserBottomSheetTile(
                       text: 'View profile',
                       icon: Icon(
@@ -75,7 +131,9 @@ class _ModeratorsScreenState extends State<ModeratorsScreen>
                             0.8,
                         color: Colors.grey,
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        goToProfile(context, username);
+                      },
                     ),
                     UserBottomSheetTile(
                       text: 'Remove',
@@ -87,7 +145,7 @@ class _ModeratorsScreenState extends State<ModeratorsScreen>
                         color: Colors.grey,
                       ),
                       onTap: () {
-                        // removeApprovedUser(username);
+                        removeModerator(username);
                       },
                     ),
                     ContinueButton(
@@ -151,97 +209,127 @@ class _ModeratorsScreenState extends State<ModeratorsScreen>
           )
         ],
       ),
-      body: Column(
-        children: [
-          Container(
-            alignment: Alignment.centerLeft,
-            child: TabBar(
-              controller: _tabController,
-              isScrollable: true,
-              indicatorColor: Colors.white,
-              labelColor: Colors.white,
-              labelPadding:
-                  EdgeInsets.only(right: ScreenSizeHandler.smaller * 0.08),
-              unselectedLabelColor: kHintTextColor,
-              dividerHeight: 0.0,
-              tabs: const [
-                Tab(text: 'All'),
-                Tab(text: 'Editable'),
-              ],
-            ),
-          ),
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              physics: const NeverScrollableScrollPhysics(),
+      body: moderators.isEmpty
+          ? Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: ScreenSizeHandler.smaller * 0.1),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'No moderators',
+                      style: TextStyle(
+                        fontSize: ScreenSizeHandler.smaller * 0.06,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      'Moderators of this subreddit will appear here',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: ScreenSizeHandler.smaller * 0.04,
+                        fontWeight: FontWeight.normal,
+                        color: kHintTextColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : Column(
               children: [
-                ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: 
-                  moderators.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: kSettingsHorizontalPaddingHeightRatio *
-                            ScreenSizeHandler.screenWidth,
-                        vertical: 0.01 * ScreenSizeHandler.screenHeight,
-                      ),
-                      child: Column(
-                        children: [
-                          UserTile(
-                            titleText: 
-                            'u/${moderators[index]['userName']}',
-                            subtitleText: '1 wk ago . Full Permissions',
-                            onTap: () {},
-                            avatarLink:
-                                 moderators[index]['avatarImage'],
-                            withIcon: false,
-                            onIconTap: () {
-                              // userOptions(approvedUsers[index]['userName']);
-                            },
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: TabBar(
+                    controller: _tabController,
+                    isScrollable: true,
+                    indicatorColor: Colors.white,
+                    labelColor: Colors.white,
+                    labelPadding: EdgeInsets.only(
+                        right: ScreenSizeHandler.smaller * 0.08),
+                    unselectedLabelColor: kHintTextColor,
+                    dividerHeight: 0.0,
+                    tabs: const [
+                      Tab(text: 'All'),
+                      Tab(text: 'Editable'),
+                    ],
+                  ),
                 ),
-                ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: 
-                  moderators.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: kSettingsHorizontalPaddingHeightRatio *
-                            ScreenSizeHandler.screenWidth,
-                        // vertical: 0.01 * ScreenSizeHandler.screenHeight,
+                Expanded(
+                  child: TabBarView(
+                    controller: _tabController,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: [
+                      ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: moderators.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal:
+                                  kSettingsHorizontalPaddingHeightRatio *
+                                      ScreenSizeHandler.screenWidth,
+                              vertical: 0.01 * ScreenSizeHandler.screenHeight,
+                            ),
+                            child: Column(
+                              children: [
+                                UserTile(
+                                  titleText:
+                                      'u/${moderators[index]['userName']}',
+                                  subtitleText: '1 wk ago . Full Permissions',
+                                  onTap: () {
+                                    goToProfile(
+                                        context, moderators[index]['userName']);
+                                  },
+                                  avatarLink: moderators[index]['avatarImage'],
+                                  withIcon: false,
+                                  onIconTap: () {},
+                                ),
+                              ],
+                            ),
+                          );
+                        },
                       ),
-                      child: Column(
-                        children: [
-                          UserTile(
-                            titleText:
-                               'u/${moderators[index]['userName']}',
-                            subtitleText: '1 wk ago . Full Permissions',
-                            onTap: () {},
-                            avatarLink:
-                                moderators[index]['avatarImage'],
-                            onIconTap: () {
-                              userOptions(moderators[index]['userName']);
-                              // userOptions('test');
-                            },
-                          ),
-                        ],
+                      ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: moderators.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal:
+                                  kSettingsHorizontalPaddingHeightRatio *
+                                      ScreenSizeHandler.screenWidth,
+                              // vertical: 0.01 * ScreenSizeHandler.screenHeight,
+                            ),
+                            child: Column(
+                              children: [
+                                UserTile(
+                                  titleText:
+                                      'u/${moderators[index]['userName']}',
+                                  subtitleText: '1 wk ago . Full Permissions',
+                                  onTap: () {
+                                    goToProfile(
+                                        context, moderators[index]['userName']);
+                                  },
+                                  avatarLink: moderators[index]['avatarImage'],
+                                  onIconTap: () {
+                                    userOptions(moderators[index]['userName']);
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
+                    ],
+                  ),
                 ),
               ],
             ),
-          ),
-        ],
-      ),
     );
   }
 
