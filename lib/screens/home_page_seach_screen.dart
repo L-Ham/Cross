@@ -121,11 +121,13 @@ class _SearchScreenState extends State<SearchScreen> {
     }
 
     for (var trendingPost in response) {
-      setState(() {
-        trendingPostTitles.add(trendingPost["title"]);
-        trendingPostDescriptions.add(trendingPost["text"]?? "");
-        trendingPostImages.add(trendingPost["image"]);
-      });
+      if (mounted) {
+        setState(() {
+          trendingPostTitles.add(trendingPost["title"]);
+          trendingPostDescriptions.add(trendingPost["text"] ?? "");
+          trendingPostImages.add(trendingPost["image"]);
+        });
+      }
     }
   }
 

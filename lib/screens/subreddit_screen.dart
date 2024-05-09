@@ -65,7 +65,11 @@ class _SubredditScreenState extends State<SubredditScreen> {
       navigationBarIndex = index;
     });
     if (index == 2) {
-      Navigator.pushNamed(context, AddPostScreen.id);
+      Navigator.pushNamed(context, AddPostScreen.id, arguments: {
+        "subredditName": subreddit.name,
+        "subredditImage": subreddit.avatarImage,
+        "subredditId": subreddit.id
+      });
       setState(() {
         navigationBarIndex = oldIndex;
       });
@@ -153,6 +157,9 @@ class _SubredditScreenState extends State<SubredditScreen> {
     Map<String, dynamic> data = (await apiService.getSubredditFeed(
             subredditName, sortType, page.toString())) ??
         {};
+    if (data['subredditPosts'] == null) {
+      return;
+    }
     List<dynamic> jsonPosts = data['subredditPosts'];
     setState(() {
       newPosts = jsonPosts.map((json) => Post.fromJson(json)).toList();
