@@ -227,11 +227,11 @@ class _EndDrawerState extends State<EndDrawer> {
               ),
             ),
             SettingsTile(
-              leadingIcon:
-                  const SettingsTileLeadingIcon(leadingIcon: Icons.settings_outlined),
+              leadingIcon: const SettingsTileLeadingIcon(
+                  leadingIcon: Icons.settings_outlined),
               titleText: "Settings",
-              trailingWidget:
-                  const SettingsTileTrailingIcon(trailingIcon: Icons.nights_stay_sharp),
+              trailingWidget: const SettingsTileTrailingIcon(
+                  trailingIcon: Icons.nights_stay_sharp),
               onTap: () {
                 Navigator.pushNamed(context, SettingsScreen.id);
               },

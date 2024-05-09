@@ -145,7 +145,7 @@ class RedditByLham extends StatelessWidget {
         FirstScreen.id: (context) => const FirstScreen(),
         CreateCommunityScreen.id: (context) => const CreateCommunityScreen(),
         AccountSettingsScreen.id: (context) => const AccountSettingsScreen(),
-        SettingsScreen.id: (context) => const SettingsScreen(),
+        SettingsScreen.id: (context) => SettingsScreen(),
         NotificationSettingsScreen.id: (context) =>
             const NotificationSettingsScreen(),
         DisconnectScreen.id: (context) => const DisconnectScreen(),
@@ -160,7 +160,6 @@ class RedditByLham extends StatelessWidget {
         BlockedAccount.id: (context) => const BlockedAccount(),
         SavedScreen.id: (context) => const SavedScreen(),
         SubredditScreen.id: (context) => const SubredditScreen(),
-        SubredditSearchScreen.id: (context) => const SubredditSearchScreen(),
         AddPostScreen.id: (context) => const AddPostScreen(),
         CreateUsernameScreen.id: (context) => const CreateUsernameScreen(),
         AboutYouScreen.id: (context) => const AboutYouScreen(),

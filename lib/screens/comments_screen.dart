@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:reddit_bel_ham/components/home_page_components/profile_icon_with_indicator.dart';
 import 'package:reddit_bel_ham/constants.dart';
 import 'package:reddit_bel_ham/screens/add_comment_screen.dart';
+import 'package:reddit_bel_ham/services/api_service.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
+import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 
 import '../components/comments_components/comment_card.dart';
+import '../utilities/time_ago.dart';
 
 class CommentsScreen extends StatefulWidget {
   static const id = 'comments_screen';
@@ -17,7 +20,66 @@ class CommentsScreen extends StatefulWidget {
 }
 
 class _CommentsScreenState extends State<CommentsScreen> {
-  late Post pushedPost;
+  ApiService apiService = ApiService(TokenDecoder.token);
+  Post pushedPost = Post(
+      userId: "",
+      postId: "",
+      subredditName: "",
+      contentTitle: "",
+      content: "",
+      upvotes: 0,
+      comments: 0,
+      type: "text",
+      link: "",
+      image: [],
+      video: "",
+      createdFrom: "");
+
+  void getPostFromId(String postId) async {
+    await apiService.getPostFromId(postId).then((value) {
+      value = value['post'];
+      setState(() {
+        String createdFrom = timeAgo(value['createdAt']);
+        String contentTitle = value['title'];
+        String content = value['text'];
+        List<dynamic> images = value['images'];
+        //print("images $images");
+        List<dynamic> videos = value['videos'] as List<dynamic>;
+        String video = videos.isEmpty ? "" : videos[0];
+        String link = value['url'];
+        String type = value['type'];
+        int upvotes = value['upvotes'] - value['downvotes'];
+        int comments = value['commentCount'];
+        String username = value['subRedditName'];
+        List<dynamic> upvotedUsers = value['upvotedUsers'];
+        List<dynamic> downvotedUsers = value['downvotedUsers'];
+        bool isUpvoted = upvotedUsers.contains(TokenDecoder.id);
+        bool isDownvoted = downvotedUsers.contains(TokenDecoder.id);
+        pushedPost = Post(
+            userId: "1",
+            postId: postId,
+            createdFrom: createdFrom,
+            contentTitle: contentTitle,
+            content: content,
+            image: List<String>.from(images),
+            video: video,
+            link: link,
+            type: type,
+            upvotes: upvotes,
+            comments: comments,
+            subredditName: username);
+        pushedPost.isUpvoted = isUpvoted;
+        pushedPost.isDownvoted = isDownvoted;
+      });
+    });
+  }
+
+  void getAllCommentsFromPostId() async {
+    var response = await apiService.getCommentsFromPostId(
+        {"postId": pushedPost.postId, "page": 1, "limit": 10});
+    
+  }
+
   FocusNode commentFocusNode = FocusNode();
   FocusNode textFieldFocusNode = FocusNode();
   bool isCommenting = false;
@@ -73,7 +135,14 @@ class _CommentsScreenState extends State<CommentsScreen> {
   ];
   @override
   void didChangeDependencies() {
-    pushedPost = ModalRoute.of(context)!.settings.arguments as Post;
+    Map<String, dynamic> args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    if (args.containsKey('post')) {
+      pushedPost = args['post'] as Post;
+    } else {
+      String postId = args['postId'] as String;
+      getPostFromId(postId);
+    }
     super.didChangeDependencies();
   }
 

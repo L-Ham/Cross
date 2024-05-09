@@ -5,7 +5,6 @@ import 'package:reddit_bel_ham/components/general_components/reddit_loading_indi
 import '../constants.dart';
 import '../components/empty_dog.dart';
 import '../utilities/screen_size_handler.dart';
-import 'package:reddit_bel_ham/services/api_service.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 
 class SavedScreen extends StatefulWidget {
