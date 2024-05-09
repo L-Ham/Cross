@@ -22,6 +22,7 @@ import 'inbox_messages.dart';
 import '../screens/comments_screen.dart';
 import 'subreddit_search_screen.dart';
 import 'subreddit_screen.dart';
+import 'package:reddit_bel_ham/components/general_components/profile_share_bottom_sheet.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -565,7 +566,19 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                 color: Colors.white),
                                           ),
                                           IconButton(
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              showModalBottomSheet(
+                                                context: context,
+                                                builder: (context) {
+                                                  return buildProfileModalBottomSheet(
+                                                    context,
+                                                    username,
+                                                    avatarImage,
+                                                    postKarma,
+                                                  );
+                                                },
+                                              );
+                                            },
                                             icon: Icon(FontAwesomeIcons.share,
                                                 color: Colors.white, size: 20),
                                           ),

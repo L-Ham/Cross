@@ -96,10 +96,12 @@ class _ActivityScreenState extends State<ActivityScreen> {
     activitiesEarlier = activities.where((activity) {
       return activity.actualUpdatedAt.isBefore(today);
     }).toList();
+    if (mounted){
 
     setState(() {
       isLoading = false;
     });
+    }
   }
 
   @override
