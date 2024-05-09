@@ -55,9 +55,9 @@ class _ProfileScreenState extends State<ProfileScreen>
   bool isBlocked = false;
   bool isLoading = false;
   List<Post> feed = [];
-  List<CommentCard> comments = [];
+  List<dynamic> comments = [];
   List<Post> newPosts = [];
-  List<CommentCard> newComments = [];
+  List<dynamic> newComments = [];
   String id = '0';
   int page = 1;
   int page2 = 1;
@@ -196,7 +196,6 @@ class _ProfileScreenState extends State<ProfileScreen>
       });
     }
   }
-
   Future<void> getUserComments(String username, int page, int limit) async {
     print('USERNAMEEE: $username');
     Map<String, dynamic> data = (await apiService.getUserComments(
@@ -204,25 +203,21 @@ class _ProfileScreenState extends State<ProfileScreen>
         {};
     print(data);
     if (data.containsKey('hiddenPosts')) {
-      List<dynamic> comments = data['hiddenPosts'];
+      List<dynamic> newComments = data['hiddenPosts'];
+      print(newComments);
       setState(() {
         print(avatarImage);
-        for (var post in newPosts) {
-          post.avatarImage = avatarImage;
-
-          post.userName = username;
-        }
         if (page == 1) {
-          feed = newPosts;
+          comments = newComments;
         } else {
-          feed.addAll(newPosts);
+          comments.addAll(newComments);
         }
-        isFeedCalled = true;
+        isCommentsCalled = true;
       });
       print("llllllllllllllllllllllllllllllllllllllllllllllllllllllllll");
     } else {
       setState(() {
-        isFeedFinished = true;
+        isCommentsFinished = true;
       });
     }
   }
@@ -294,8 +289,11 @@ class _ProfileScreenState extends State<ProfileScreen>
     print(TokenDecoder.token);
     print(username);
     page = 1;
+    page2 = 1;
     getProfileFeed(username, page, 5);
+    getUserComments(username, page2, 8);
     page++;
+    page2++;
     //     Map<String, dynamic> args =
     //     ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>? ?? {};
     // isMyProfile = args['isMyProfile']==true?true:false;
@@ -344,6 +342,23 @@ class _ProfileScreenState extends State<ProfileScreen>
       }
     }
   }
+    void getNewCommentsForFeed() {
+    double diff = _scrollController2.position.maxScrollExtent -
+        _scrollController2.position.pixels;
+
+    if (diff < 150 && diff > 100) {
+      if (isCommentsCalled) {
+        setState(() {
+          isCommentsCalled = false;
+          if (!isCommentsFinished) {
+            getUserComments(username, page2, 4);
+            page2++;
+          }
+          print(page2);
+        });
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -362,6 +377,7 @@ class _ProfileScreenState extends State<ProfileScreen>
     });
     _tabController = TabController(length: 3, vsync: this);
     _scrollController.addListener(getNewPostsForFeed);
+    _scrollController2.addListener(getNewCommentsForFeed);
     // if (isMyProfile) {
     if (mounted) {
       // setState(() {
@@ -941,7 +957,46 @@ class _ProfileScreenState extends State<ProfileScreen>
                                             )
                                         ],
                                       ),
-                                EmptyDog(),
+                                comments.isEmpty
+                                    ? EmptyDog()
+                                    : CustomScrollView(
+                                        controller: _scrollController2,
+                                        slivers: [
+                                          for (var comment in comments)
+                                            SliverToBoxAdapter(
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  Navigator.pushNamed(context,
+                                                      CommentsScreen.id,
+                                                      arguments: {
+                                                        "postId": comment['postId']
+                                                      });
+                                                },
+                                                child: Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(comment['postTitle'], style: TextStyle(color: Colors.white, fontSize: 16,),),
+                                                      Row(
+                                                        children: [
+                                                          Text('r/${comment['subredditName']} • ${comment['score']}', style: TextStyle(color: Colors.grey, fontSize: 13,)),
+                                                          Icon(Icons.arrow_upward, color: Colors.grey, size: 15,),
+                                                      
+                                                        ],
+                                                      ),
+                                                      Text(comment['content'], style: TextStyle(color: Colors.grey, fontSize: 15),),
+                                                      Divider(
+                                                        color: kFillingColor,
+                                                      ),
+                                                    ]
+                                                  ),
+                                                )
+                                              ),
+                                            )
+                                        ],
+                                      ),
+                                
                                 SingleChildScrollView(
                                   child: Column(
                                     children: [
