@@ -345,8 +345,8 @@ class ApiService {
   Future<dynamic> getUserChats() async {
     var response = await request('/conversation/getUserChats',
         headers: headerWithToken, method: 'GET');
-        print(response);
-        return response;
+    print(response);
+    return response;
   }
 
   Future<dynamic> sendTextMessage(String conversationId, String message) async {
@@ -355,8 +355,7 @@ class ApiService {
         method: 'POST',
         body: {"chatId": conversationId, "type": "text", "message": message});
 
-    String responseBody = await response.stream.bytesToString();
-    return jsonDecode(responseBody);
+    return response;
   }
 
   Future<Map<String, dynamic>?> sendImageMessage(
@@ -394,6 +393,26 @@ class ApiService {
       debugPrint('Response body: $responseBody');
       debugPrint('Media upload failed');
       return null; // Return null or throw an exception
+    }
+  }
+
+  Future<dynamic> startNewConversation(
+      String chatName, List<String> participants) async {
+    var response = await http.post(
+      Uri.parse('https://reddit-bylham.me/api/conversation/create'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({"chatName": chatName, "participants": participants}),
+    );
+    print(response);
+    print(response.statusCode);
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to create community');
     }
   }
 }

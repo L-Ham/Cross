@@ -11,7 +11,7 @@ class ChatTile extends StatelessWidget {
     return ListTile(
       leading: CircleAvatar(
         backgroundImage: NetworkImage(
-          conversation['participantsAvatarUrls'][0],
+          conversation['participantsAvatarUrls'][0]!=null? conversation['participantsAvatarUrls'][0]:'https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png',
         ),
       ),
       title: Text(conversation['chatName'] != null

@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:reddit_bel_ham/screens/chatting_screen.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:reddit_bel_ham/components/chat_screen_components/user_message_card.dart';
@@ -201,88 +202,98 @@ class _InsideChattingScreenState extends State<InsideChattingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-          title: Row(
-            children: [
-              CircleAvatar(
-                radius: ScreenSizeHandler.screenWidth * 0.038,
-                backgroundImage:
-                    AssetImage('assets/images/elham_final_logo.png'),
-              ),
-              SizedBox(width: ScreenSizeHandler.screenWidth * 0.02),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.conversation['chatName'] != null
-                        ? widget.conversation['chatName']
-                        : 'chatName',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: ScreenSizeHandler.screenWidth * 0.035,
-                    ),
-                  ),
-                  Text(
-                    'r/TookAPicturePH',
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 151, 151, 160),
-                      fontSize: ScreenSizeHandler.screenWidth * 0.03,
-                    ),
-                  ),
-                ],
-              )
-            ],
-          ),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.ios_share_rounded),
-              onPressed: () {},
-            ),
-          ]),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: messages.length,
-              itemBuilder: (context, index) {
-                return UserMessageCard(
-                  message: messages[index],
-                );
-              },
-            ),
-          ),
-          if (pickedImage != null) // If an image is picked, display it
-            Container(
-              height: 200,
-              child: Image.file(pickedImage!),
-            ),
-          Container(
-            padding: EdgeInsets.all(ScreenSizeHandler.screenWidth * 0.02),
-            child: Row(
+    // ignore: deprecated_member_use
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.popUntil(
+          context,
+          ModalRoute.withName(ChattingScreen.id),
+        );
+        return false;
+      },
+      child: Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBar(
+            title: Row(
               children: [
-                IconButton(
-                  icon: Icon(Icons.camera_alt_outlined),
-                  onPressed: pickImage,
+                CircleAvatar(
+                  radius: ScreenSizeHandler.screenWidth * 0.038,
+                  backgroundImage:
+                      AssetImage('assets/images/elham_final_logo.png'),
                 ),
-                Expanded(
-                  child: TextField(
-                    controller: _controller,
-                    decoration: InputDecoration(
-                      hintText: 'Message',
+                SizedBox(width: ScreenSizeHandler.screenWidth * 0.02),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.conversation['chatName'] != null
+                          ? widget.conversation['chatName']
+                          : 'chatName',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: ScreenSizeHandler.screenWidth * 0.035,
+                      ),
                     ),
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.send_rounded),
-                  onPressed:
-                      pickedImage != null ? sendImageMessage : sendMessage,
-                ),
+                    Text(
+                      'r/TookAPicturePH',
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 151, 151, 160),
+                        fontSize: ScreenSizeHandler.screenWidth * 0.03,
+                      ),
+                    ),
+                  ],
+                )
               ],
             ),
-          ),
-        ],
+            actions: [
+              IconButton(
+                icon: Icon(Icons.ios_share_rounded),
+                onPressed: () {},
+              ),
+            ]),
+        body: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                itemCount: messages.length,
+                itemBuilder: (context, index) {
+                  return UserMessageCard(
+                    message: messages[index],
+                  );
+                },
+              ),
+            ),
+            if (pickedImage != null) // If an image is picked, display it
+              Container(
+                height: 200,
+                child: Image.file(pickedImage!),
+              ),
+            Container(
+              padding: EdgeInsets.all(ScreenSizeHandler.screenWidth * 0.02),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.camera_alt_outlined),
+                    onPressed: pickImage,
+                  ),
+                  Expanded(
+                    child: TextField(
+                      controller: _controller,
+                      decoration: InputDecoration(
+                        hintText: 'Message',
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.send_rounded),
+                    onPressed:
+                        pickedImage != null ? sendImageMessage : sendMessage,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

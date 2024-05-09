@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_bel_ham/screens/inside_chat_screen.dart';
+import 'package:reddit_bel_ham/services/api_service.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
+import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 
 class NewConversationScreen extends StatefulWidget {
   @override
@@ -7,24 +10,73 @@ class NewConversationScreen extends StatefulWidget {
 }
 
 class _NewConversationScreenState extends State<NewConversationScreen> {
-  final List<String> _allUsers = [
-    'User1',
-    'User2',
-    'User3',
-    'User4'
-  ]; // Replace with your list of users
+  ApiService apiService = ApiService(TokenDecoder.token);
+  final List<String> _allUsers = []; // Replace with your list of users
   final List<String> _selectedUsers = [];
   String _searchQuery = '';
-  String _groupName = ''; // Add this line
+  String _groupName = '';
+  final List<String> _searchedUsers = [];
+
+  void onUserSelected(String userName) {
+    setState(() {
+      if (!_selectedUsers.contains(userName)) {
+        _selectedUsers.add(userName);
+      }
+    });
+  }
+
+  void searchPeople() async {
+    Map<String, dynamic> response =
+        await apiService.getSearchedForBlockedUsers(_searchQuery);
+    print(response);
+    List<dynamic> resultsList = response['matchingUsernames'];
+
+    _searchedUsers.clear();
+    for (int i = 0; i < resultsList.length; i++) {
+      if (mounted) {
+        setState(() {
+          String userName = resultsList[i]["userName"];
+          _searchedUsers.add(userName);
+          if (!_allUsers.contains(userName)) {
+            _allUsers.add(userName);
+          }
+        });
+      }
+    }
+  }
+
+  void startConversation() async {
+    try {
+      var response =
+          await apiService.startNewConversation(_groupName, _selectedUsers);
+      print(response);
+     Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => InsideChattingScreen(
+          conversation: response, // Pass the response as the conversation
+          refreshConversations: () {}, // Pass a function to refresh conversations
+        ),
+      ),
+    );
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final suggestionList = _searchQuery.isEmpty
-        ? _allUsers
-        : _allUsers
-            .where((user) =>
-                user.toLowerCase().startsWith(_searchQuery.toLowerCase()))
-            .toList();
+    final suggestionList = _searchedUsers
+        .where(
+            (user) => user.toLowerCase().startsWith(_searchQuery.toLowerCase()))
+        .toList();
+
+    // Add selected users to the suggestion list
+    for (String user in _selectedUsers) {
+      if (!suggestionList.contains(user)) {
+        suggestionList.add(user);
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -49,6 +101,7 @@ class _NewConversationScreenState extends State<NewConversationScreen> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
+                controller: TextEditingController(text: _groupName),
                 onChanged: (value) {
                   setState(() {
                     _groupName = value;
@@ -56,8 +109,9 @@ class _NewConversationScreenState extends State<NewConversationScreen> {
                 },
                 textAlign: TextAlign.center,
                 decoration: InputDecoration(
-                    hintText: 'Group Name',
-                    hintStyle: TextStyle(fontSize: ScreenSizeHandler.screenWidth*0.035),
+                  hintText: 'Group Name',
+                  hintStyle: TextStyle(
+                      fontSize: ScreenSizeHandler.screenWidth * 0.035),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(
                         Radius.circular(ScreenSizeHandler.smaller * 0.1)),
@@ -88,6 +142,7 @@ class _NewConversationScreenState extends State<NewConversationScreen> {
               onChanged: (value) {
                 setState(() {
                   _searchQuery = value;
+                  searchPeople();
                 });
               },
               decoration: InputDecoration(
@@ -138,7 +193,7 @@ class _NewConversationScreenState extends State<NewConversationScreen> {
             ),
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: startConversation,
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color.fromARGB(255, 35, 35, 36),
               padding: EdgeInsets.symmetric(
