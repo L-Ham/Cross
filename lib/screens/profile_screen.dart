@@ -20,6 +20,8 @@ import 'package:reddit_bel_ham/screens/add_post_screen.dart';
 import 'communities_screen.dart';
 import 'inbox_messages.dart';
 import '../screens/comments_screen.dart';
+import 'subreddit_search_screen.dart';
+import 'subreddit_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -64,6 +66,7 @@ class _ProfileScreenState extends State<ProfileScreen>
   bool isFeedFinished = false;
   bool isCommentsFinished = false;
   bool isMarkingAllAsRead = false;
+  bool isExisting=true;
   Future<void> _launchURL(String url) async {
     if (!await launchUrl(Uri.parse(url))) {
       throw 'Could not launch $url';
@@ -76,10 +79,12 @@ class _ProfileScreenState extends State<ProfileScreen>
     if (mounted) {
       if (!isMyProfile) {
         setState(() {
-          if (data['matchingUsernames'] == null) {
+          if (data['matchingUsernames'].isEmpty) {
+            isExisting=false;
             return;
           }
           // print(data);
+
           id = data['matchingUsernames'][0]['_id'].toString();
           print('IDDDDD: $id');
         });
@@ -93,6 +98,7 @@ class _ProfileScreenState extends State<ProfileScreen>
     if (mounted) {
       setState(() {
         if (data['user'] == null) {
+          isExisting=false;
           return;
         }
         avatarImage = data['user']['avatar'] ?? '';
@@ -395,7 +401,8 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   @override
   Widget build(BuildContext context) {
-    return ModalProgressHUD(
+    return !isExisting? EmptyDog(): 
+    ModalProgressHUD(
       inAsyncCall: isLoading,
       progressIndicator: const RedditLoadingIndicator(),
       blur: 0,
@@ -520,11 +527,18 @@ class _ProfileScreenState extends State<ProfileScreen>
                                         children: [
                                           IconButton(
                                             onPressed: () {
-                                              Navigator.pushNamed(
-                                                  context, SearchingScreen.id,
-                                                  arguments: {
-                                                    'isSearching': true
-                                                  });
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      SubredditSearchScreen(
+                                                    subredditName: username,
+                                                    subredditAvatarImage:
+                                                        avatarImage,
+                                                    isSubreddit: false,
+                                                  ),
+                                                ),
+                                              );
                                             },
                                             icon: Icon(Icons.search,
                                                 color: Colors.white),
@@ -747,11 +761,24 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                                             [
                                                                             'appName'] ==
                                                                         'reddit') {
-                                                                      goToProfile(
-                                                                          context,
-                                                                          socialLinks[index]['linkOrUsername'].replaceFirst(
-                                                                              'u/',
-                                                                              ''));
+                                                                      if (socialLinks[index]
+                                                                              [
+                                                                              'linkOrUsername']
+                                                                          .toString()
+                                                                          .startsWith(
+                                                                              'u/')) {
+                                                                        goToProfile(
+                                                                            context,
+                                                                            socialLinks[index]['linkOrUsername'].replaceFirst('u/',
+                                                                                ''));
+                                                                      } else {
+                                                                        Navigator.pushNamed(
+                                                                            context,
+                                                                            SubredditScreen.id,
+                                                                            arguments:
+                                                                              socialLinks[index]['linkOrUsername'].replaceFirst('r/', '')
+                                                                            );
+                                                                      }
                                                                     } else {
                                                                       _launchURL(
                                                                           socialLinks[index]
