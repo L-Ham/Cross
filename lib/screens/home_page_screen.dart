@@ -76,7 +76,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
 
     page = 1;
     print('ZZZZZ ABL HOME FEEED');
-    getHomeFeed(sortType, page, 5);
+    getHomeFeed(sortType, page, 6);
     page++;
     print('ZZZZZ BA#D HOME FEEED');
     _scrollController.addListener(getNewPostsForFeed);
@@ -86,12 +86,12 @@ class _HomePageScreenState extends State<HomePageScreen> {
     double diff = _scrollController.position.maxScrollExtent -
         _scrollController.position.pixels;
 
-    if (diff < 250 && diff > 200) {
+    if (diff < 150 && diff > 100) {
       if (isFeedCalled) {
         setState(() {
           isFeedCalled = false;
           if (!isFeedFinished) {
-            getHomeFeed(sortType, page, 2);
+            getHomeFeed(sortType, page, 3);
             page++;
             print(page);
             print("dddddddddddddddddddddddddddddddddddddddddddddddddddddddd");
