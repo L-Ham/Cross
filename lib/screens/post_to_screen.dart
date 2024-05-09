@@ -28,6 +28,7 @@ class _PostToScreenState extends State<PostToScreen> {
   TextEditingController searchController = TextEditingController();
   bool isSearching = false;
   bool isLoading = false;
+  String? avatarImage;
 
   void selectSubreddit(int i) {
     SubredditStore().addSubreddit(subredditNames[i], subredditIds[i],
@@ -119,6 +120,7 @@ class _PostToScreenState extends State<PostToScreen> {
   List<String> searchSubredditId = [];
   String selectedSubredditName = "";
   bool isSeeMore = false;
+  bool isProfile = false;
 
   @override
   void didChangeDependencies() {
@@ -127,6 +129,12 @@ class _PostToScreenState extends State<PostToScreen> {
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
     if (args != null) {
       selectedSubredditName = args["subredditName"];
+      if (args['isProfile'] != null) {
+        isProfile = args['isProfile'];
+      }
+      if (args['avatarImage'] != null) {
+        avatarImage = args['avatarImage'];
+      }
     }
     getRecentSubreddits();
   }
@@ -238,6 +246,14 @@ class _PostToScreenState extends State<PostToScreen> {
                       SizedBox(
                         height: ScreenSizeHandler.screenHeight * 0.018,
                       ),
+                      if (isProfile && avatarImage != null)
+                        PostToSubredditTile(
+                          subredditName: selectedSubredditName,
+                          selectedSubredditName: selectedSubredditName,
+                          subredditImage: avatarImage!,
+                          numOfOnlineUsers: 0,
+                          onTap: () {},
+                        ),
                       if (subredditNames.length <= 5)
                         for (int i = 0; i < subredditNames.length; i++)
                           PostToSubredditTile(
