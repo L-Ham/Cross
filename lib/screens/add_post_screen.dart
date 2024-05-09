@@ -19,7 +19,7 @@ import 'package:video_player/video_player.dart';
 import '../components/add_post_components/add_post_tags_row.dart';
 import '../components/add_post_components/add_post_text_field.dart';
 import '../components/add_post_components/add_tags_bottom_sheet.dart';
-import '../components/add_post_components/change_post_type_bottom_sheet.dart';
+import '../components/add_post_components/red_button_bottom_sheet.dart';
 import '../components/add_post_components/icon_button_with_caption.dart';
 import '../components/add_post_components/image_edit_viewer.dart';
 import '../components/add_post_components/invalid_link_error.dart';
@@ -74,6 +74,27 @@ class _AddPostScreenState extends State<AddPostScreen> {
   bool isScheduled = false;
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
+
+  void showSnackBar(String snackBarText) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Center(child: Text(snackBarText)),
+          backgroundColor: Colors.white,
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(
+            left: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+            right: ScreenSizeHandler.screenWidth * kButtonWidthRatio,
+            bottom: ScreenSizeHandler.screenHeight * 0.05,
+          ),
+          duration: const Duration(seconds: 3),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+        ),
+      );
+    });
+  }
 
   @override
   void didChangeDependencies() {
@@ -286,6 +307,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
               buttonHeightRatio: 0.05,
               buttonWidthRatio: isScheduled ? 0.13 : 0.08,
               onTap: () async {
+                var response;
                 if (isPostButtonActivated) {
                   if (!isSubredditSelected) {
                     final result = await Navigator.pushNamed(
@@ -326,7 +348,9 @@ class _AddPostScreenState extends State<AddPostScreen> {
                         await apiService.addMediaPostScheduled(
                             imageFiles, post);
                       } else {
-                        await apiService.addMediaPost((imageFiles), post);
+                        response =
+                            await apiService.addMediaPost((imageFiles), post);
+                        showSnackBar(response['message']);
                       }
                       if (mounted) {
                         setState(() {
@@ -346,7 +370,9 @@ class _AddPostScreenState extends State<AddPostScreen> {
                         await apiService
                             .addMediaPostScheduled([videoFile!], post);
                       } else {
-                        await apiService.addMediaPost(([videoFile!]), post);
+                        response =
+                            await apiService.addMediaPost(([videoFile!]), post);
+                        showSnackBar(response['message']);
                       }
                       if (mounted) {
                         setState(() {
@@ -376,9 +402,11 @@ class _AddPostScreenState extends State<AddPostScreen> {
                       if (isScheduled) {
                         post['scheduledTime'] = calculateScheduledTimeInMinutes(
                             selectedDate!, selectedTime!);
-                        await apiService.addPollPostScheduled(post);
+                        response = await apiService.addPollPostScheduled(post);
+                        showSnackBar(response['message']);
                       } else {
-                        await apiService.addPollPost(post);
+                        response = await apiService.addPollPost(post);
+                        showSnackBar(response['message']);
                       }
                       if (mounted) {
                         setState(() {
@@ -396,9 +424,11 @@ class _AddPostScreenState extends State<AddPostScreen> {
                       if (isScheduled) {
                         post['scheduledTime'] = calculateScheduledTimeInMinutes(
                             selectedDate!, selectedTime!);
-                        await apiService.addTextPostScheduled(post);
+                        response = await apiService.addTextPostScheduled(post);
+                        showSnackBar(response['message']);
                       } else {
-                        await apiService.addTextPost(post);
+                        response = await apiService.addTextPost(post);
+                        showSnackBar(response['message']);
                       }
                       if (mounted) {
                         setState(() {
@@ -415,9 +445,11 @@ class _AddPostScreenState extends State<AddPostScreen> {
                       if (isScheduled) {
                         post['scheduledTime'] = calculateScheduledTimeInMinutes(
                             selectedDate!, selectedTime!);
-                        await apiService.addTextPostScheduled(post);
+                        response = await apiService.addTextPostScheduled(post);
+                        showSnackBar(response['message']);
                       } else {
-                        await apiService.addTextPost(post);
+                        response = await apiService.addTextPost(post);
+                        showSnackBar(response['message']);
                       }
                       if (mounted) {
                         setState(() {
@@ -738,7 +770,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                                     final choice = await showModalBottomSheet(
                                       context: context,
                                       builder: (BuildContext context) {
-                                        return const ChangePostTypeBottomSheet();
+                                        return const RedButtonBottomSheet();
                                       },
                                     );
                                     if (choice == "continue") {
@@ -761,7 +793,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                                     final choice = await showModalBottomSheet(
                                       context: context,
                                       builder: (BuildContext context) {
-                                        return const ChangePostTypeBottomSheet();
+                                        return const RedButtonBottomSheet();
                                       },
                                     );
                                     if (choice == "continue") {
@@ -784,7 +816,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                                     final choice = await showModalBottomSheet(
                                       context: context,
                                       builder: (BuildContext context) {
-                                        return const ChangePostTypeBottomSheet();
+                                        return const RedButtonBottomSheet();
                                       },
                                     );
                                     if (choice == "continue") {
@@ -807,7 +839,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                                     final choice = await showModalBottomSheet(
                                       context: context,
                                       builder: (BuildContext context) {
-                                        return const ChangePostTypeBottomSheet();
+                                        return const RedButtonBottomSheet();
                                       },
                                     );
                                     if (choice == "continue") {

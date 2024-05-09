@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_bel_ham/components/general_components/interactive_text.dart';
+import 'package:reddit_bel_ham/screens/searching_in_subreddit_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../screens/home_page_seach_screen.dart';
@@ -184,65 +186,104 @@ class _SubredditSearchScreenState extends State<SubredditSearchScreen> {
                 ),
               ),
               SliverToBoxAdapter(
-                child: Container(
-                  color: Color.fromARGB(255, 30, 30, 30),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: ScreenSizeHandler.screenHeight * 0.015,
-                            horizontal: ScreenSizeHandler.screenWidth * 0.06),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.rocket_outlined,
-                              size: ScreenSizeHandler.bigger * 0.03,
-                            ),
-                            SizedBox(
-                              width: ScreenSizeHandler.screenWidth * 0.006,
-                            ),
-                            Text(
-                              ' Best of ',
-                              style: TextStyle(
-                                  fontSize: ScreenSizeHandler.bigger * 0.019),
-                            ),
-                            Text(
-                              'r/${widget.subredditName}',
-                              style: TextStyle(
-                                  fontSize: ScreenSizeHandler.bigger * 0.019,
-                                  fontWeight: FontWeight.bold),
-                            )
-                          ],
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, SearchingInSubreddit.id,
+                        arguments: {
+                          "search": '',
+                          "subredditName": widget.subredditName,
+                          "subredditImage": widget.subredditAvatarImage,
+                          "searchType": "Top"
+                        });
+                  },
+                  child: Container(
+                    color: Color.fromARGB(255, 30, 30, 30),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: ScreenSizeHandler.screenHeight * 0.015,
+                              horizontal: ScreenSizeHandler.screenWidth * 0.06),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.rocket_outlined,
+                                size: ScreenSizeHandler.bigger * 0.03,
+                              ),
+                              SizedBox(
+                                width: ScreenSizeHandler.screenWidth * 0.006,
+                              ),
+                              Text(
+                                ' Best of ',
+                                style: TextStyle(
+                                    fontSize: ScreenSizeHandler.bigger * 0.019),
+                              ),
+                              Text(
+                                'r/${widget.subredditName}',
+                                style: TextStyle(
+                                    fontSize: ScreenSizeHandler.bigger * 0.019,
+                                    fontWeight: FontWeight.bold),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: ScreenSizeHandler.screenHeight * 0.015,
-                            horizontal: ScreenSizeHandler.screenWidth * 0.06),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.settings_outlined,
-                              size: ScreenSizeHandler.bigger * 0.03,
-                            ),
-                            SizedBox(
-                              width: ScreenSizeHandler.screenWidth * 0.006,
-                            ),
-                            Text(
-                              ' New in ',
-                              style: TextStyle(
-                                  fontSize: ScreenSizeHandler.bigger * 0.019),
-                            ),
-                            Text(
-                              'r/${widget.subredditName}',
-                              style: TextStyle(
-                                  fontSize: ScreenSizeHandler.bigger * 0.019,
-                                  fontWeight: FontWeight.bold),
-                            )
-                          ],
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: ScreenSizeHandler.screenHeight * 0.015,
+                              horizontal: ScreenSizeHandler.screenWidth * 0.06),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.settings_outlined,
+                                size: ScreenSizeHandler.bigger * 0.03,
+                              ),
+                              SizedBox(
+                                width: ScreenSizeHandler.screenWidth * 0.006,
+                              ),
+                              Text(
+                                ' New in ',
+                                style: TextStyle(
+                                    fontSize: ScreenSizeHandler.bigger * 0.019),
+                              ),
+                              Text(
+                                'r/${widget.subredditName}',
+                                style: TextStyle(
+                                    fontSize: ScreenSizeHandler.bigger * 0.019,
+                                    fontWeight: FontWeight.bold),
+                              )
+                            ],
+                          ),
                         ),
-                      )
-                    ],
+                        if (_controller.text.isNotEmpty)
+                          Container(
+                            color: kBackgroundColor,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                      ScreenSizeHandler.screenWidth * 0.07,
+                                  vertical:
+                                      ScreenSizeHandler.screenHeight * 0.015),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: InteractiveText(
+                                  text: 'Search for "${_controller.text}"',
+                                  fontSizeRatio: 0.02,
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                        context, SearchingInSubreddit.id,
+                                        arguments: {
+                                          "search": _controller.text,
+                                          "subredditName": widget.subredditName,
+                                          "subredditImage":
+                                              widget.subredditAvatarImage
+                                        });
+                                  },
+                                ),
+                              ),
+                            ),
+                          )
+                      ],
+                    ),
                   ),
                 ),
               )

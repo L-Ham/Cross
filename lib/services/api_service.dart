@@ -219,7 +219,7 @@ class ApiService {
     return result;
   }
 
-  Future<void> addMediaPost(
+  Future<dynamic> addMediaPost(
       List<File> imageFiles, Map<String, dynamic> body) async {
     var request =
         http.MultipartRequest('POST', Uri.parse('$baseURL/post/createPost'));
@@ -246,6 +246,8 @@ class ApiService {
     var response;
     try {
       response = await request.send();
+      response = await http.Response.fromStream(response);
+      return jsonDecode(response.body);
       // Handle the response...
     } on SocketException catch (e) {
       debugPrint('SocketException: $e');
@@ -263,6 +265,9 @@ class ApiService {
       debugPrint(response.statusCode.toString());
       debugPrint('Response body: $responseBody');
       debugPrint('Media upload failed');
+
+      response = await http.Response.fromStream(response);
+      return jsonDecode(response.body);
     }
   }
 
@@ -305,7 +310,7 @@ class ApiService {
       String responseBody = await response.stream.bytesToString();
 
       // Parse the string as JSON
-      Map<String, dynamic> responseJson = jsonDecode(responseBody);
+      Map<String, dynamic> responseJson = jsonDecode(response);
 
       debugPrint(response.statusCode.toString());
       debugPrint('Response body: $responseBody');
@@ -429,6 +434,13 @@ class ApiService {
         method: 'DELETE',
         body: {"subRedditId": subredditID});
 
+    return result;
+  }
+
+  Future<dynamic> deletePost(String postId) async {
+    var result = await request('/post/deletePost',
+        headers: headerWithToken, method: 'DELETE', body: {"postId": postId});
+    print(result);
     return result;
   }
 
@@ -667,20 +679,27 @@ class ApiService {
   }
 
   Future<dynamic> searchPosts(Map<String, dynamic> body) async {
-    print("NOW");
+    print(body);
     var result = await request('/post/searchPosts',
         headers: headerWithToken, method: 'GET', body: body);
-    print("FOCUS ON NEXT");
-    print(result);
     return result;
   }
 
   Future<dynamic> searchComments(Map<String, dynamic> body) async {
-    print("NOW");
     var result = await request('/comment/searchComments',
         headers: headerWithToken, method: 'GET', body: body);
-    print("FOCUS ON NEXT");
-    print(result);
+    return result;
+  }
+
+  Future<dynamic> searchCommentsInSubreddit(Map<String, dynamic> body) async {
+    var result = await request('/comment/subreddit/searchComment',
+        headers: headerWithToken, method: 'GET', body: body);
+    return result;
+  }
+
+  Future<dynamic> searchPostsInSubreddit(Map<String, dynamic> body) async {
+    var result = await request('/post/subreddit/searchPosts',
+        headers: headerWithToken, method: 'GET', body: body);
     return result;
   }
 
@@ -693,9 +712,10 @@ class ApiService {
   }
 
   Future<dynamic> getCommentsFromPostId(Map<String, dynamic> body) async {
-    Map<String, dynamic> sentData;
     var result = await request('/post/comments',
         headers: headerWithToken, method: 'GET', body: body);
+    print("BOS HENAA");
+    print(result);
     return result;
   }
 
@@ -838,6 +858,129 @@ class ApiService {
         headers: headerWithToken, method: 'GET', body: sentData);
     return result;
   }
+
+  Future<dynamic> upvotePost(String postId) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "postId": postId,
+    };
+    var result = await request('/post/upvote',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> downvotePost(String postId) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "postId": postId,
+    };
+    var result = await request('/post/downvote',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> cancelUpvote(String postId) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "postId": postId,
+    };
+    var result = await request('/post/cancelUpvote',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> cancelDownvote(String postId) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "postId": postId,
+    };
+    var result = await request('/post/cancelDownvote',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> upvoteComment(String commentId) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "commentId": commentId,
+    };
+    var result = await request('/comment/upvote',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> cancelCommentUpvote(String commentId) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "commentId": commentId,
+    };
+    var result = await request('/comment/cancelUpvote',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> downvoteComment(String commentId) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "commentId": commentId,
+    };
+    var result = await request('/comment/downvote',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> cancelCommentDownvote(String commentId) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "commentId": commentId,
+    };
+    var result = await request('/comment/cancelDownvote',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> addVoteToPoll(String postId, String option) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "postId": postId,
+      "option": option,
+    };
+    var result = await request('/post/votePoll',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> addComment(Map<String, dynamic> body) async {
+    var result = await request('/comment/addComment',
+        headers: headerWithToken, method: 'POST', body: body);
+    return result;
+  }
+
+  Future<dynamic> editPost(Map<String, dynamic> body) async {
+    var result = await request('/post/editPost',
+        headers: headerWithToken, method: 'PATCH', body: body);
+    return result;
+  }
+
+  Future<dynamic> savePost(String postId) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "postId": postId,
+    };
+    var result = await request('/post/save',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+  Future<dynamic> unsavePost(String postId) async {
+    Map<String, dynamic> sentData;
+    sentData = {
+      "postId": postId,
+    };
+    var result = await request('/post/unsave',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
     Future<dynamic> getAvatarImage() async {
     var result = await request('/user/avatarImage',
         headers: headerWithToken, method: 'GET');
@@ -846,6 +989,7 @@ class ApiService {
   Future<dynamic> getBannerImage() async {
     var result = await request('/user/banner',
         headers: headerWithToken, method: 'GET');
+
     return result;
   }
 }

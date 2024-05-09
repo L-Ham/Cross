@@ -19,7 +19,6 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  
   List<String> trendingPostTitles = [];
   List<String> trendingPostDescriptions = [];
   List<String> trendingPostImages = [];
@@ -45,14 +44,16 @@ class _SearchScreenState extends State<SearchScreen> {
     searchSubreddit(resultsList);
     Map<String, dynamic> response =
         await apiService.getSearchedForBlockedUsers(_searchController.text);
-    searchPeople(response['matchingUsernames'] as List<dynamic>);
+    searchPeople(response['matchingUsernames'] ?? [] as List<dynamic>);
   }
 
   void searchPeople(List<dynamic> resultsList) {
-    setState(() {
-      userNames.clear();
-      userAvatarImages.clear();
-    });
+    if (mounted) {
+      setState(() {
+        userNames.clear();
+        userAvatarImages.clear();
+      });
+    }
     for (int i = 0; i < resultsList.length; i++) {
       mounted
           ? setState(() {
@@ -73,11 +74,13 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void searchSubreddit(List<dynamic> resultsList) {
-    setState(() {
-      subredditNames.clear();
-      subredditMembers.clear();
-      subredditAvatarImages.clear();
-    });
+    if (mounted) {
+      setState(() {
+        subredditNames.clear();
+        subredditMembers.clear();
+        subredditAvatarImages.clear();
+      });
+    }
     for (int i = 0; i < resultsList.length; i++) {
       mounted
           ? setState(() {
@@ -109,16 +112,18 @@ class _SearchScreenState extends State<SearchScreen> {
   void getTrendingPosts() async {
     var response = await apiService.getTrendingPosts();
     response = response["trendingPosts"];
-    setState(() {
-      trendingPostTitles.clear();
-      trendingPostDescriptions.clear();
-      trendingPostImages.clear();
-    });
+    if (mounted) {
+      setState(() {
+        trendingPostTitles.clear();
+        trendingPostDescriptions.clear();
+        trendingPostImages.clear();
+      });
+    }
 
     for (var trendingPost in response) {
       setState(() {
         trendingPostTitles.add(trendingPost["title"]);
-        trendingPostDescriptions.add(trendingPost["text"]);
+        trendingPostDescriptions.add(trendingPost["text"]?? "");
         trendingPostImages.add(trendingPost["image"]);
       });
     }
@@ -293,34 +298,34 @@ class _SearchScreenState extends State<SearchScreen> {
                     color: Colors.black,
                   ),
                   if (trendingPostTitles.isNotEmpty)
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: ScreenSizeHandler.screenWidth * 0.06),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(
-                              bottom: ScreenSizeHandler.screenHeight * 0.01),
-                          child: const Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "Trending Today",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: ScreenSizeHandler.screenWidth * 0.06),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(
+                                bottom: ScreenSizeHandler.screenHeight * 0.01),
+                            child: const Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "Trending Today",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600),
+                              ),
                             ),
                           ),
-                        ),
-                        for (int i = 0;
-                            i < min(6, trendingPostImages.length);
-                            i++)
-                          TrendingPreviewTile(
-                              image: trendingPostImages[i],
-                              title: trendingPostTitles[i],
-                              description: trendingPostDescriptions[i])
-                      ],
-                    ),
-                  )
+                          for (int i = 0;
+                              i < min(6, trendingPostImages.length);
+                              i++)
+                            TrendingPreviewTile(
+                                image: trendingPostImages[i],
+                                title: trendingPostTitles[i],
+                                description: trendingPostDescriptions[i])
+                        ],
+                      ),
+                    )
                 ],
               ),
       ),
@@ -488,7 +493,8 @@ class TrendingPreviewTile extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(right: ScreenSizeHandler.screenWidth * 0.02),
+                padding: EdgeInsets.only(
+                    right: ScreenSizeHandler.screenWidth * 0.02),
                 child: Image.network(
                   image,
                   width: ScreenSizeHandler.screenWidth * 0.15,

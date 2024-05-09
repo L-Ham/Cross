@@ -31,6 +31,7 @@ class _NewMessageScreenState extends State<NewMessageScreen> {
 
   bool isReply = false;
   bool isLoading = false;
+  bool isSubreddit = false;
 
   void showSnackBar(String snackBarText) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -74,15 +75,23 @@ class _NewMessageScreenState extends State<NewMessageScreen> {
   void didChangeDependencies() {
     Map<String, dynamic> args =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    isReply = args["isReply"];
-    if (isReply) {
-      subjectController.text = args["subject"];
-      userNameController.text = args["userName"];
-      messageId = args["parentMessageId"];
-      messageFocus.requestFocus();
-    } else {
-      userNameFocus.requestFocus();
-      userNameController.text = args["userName"] ?? "";
+    if (args['isReply'] != null) {
+      if (isReply) {
+        subjectController.text = args["subject"];
+        userNameController.text = args["userName"];
+        messageId = args["parentMessageId"];
+        messageFocus.requestFocus();
+      } else {
+        userNameFocus.requestFocus();
+              userNameController.text = args["userName"] ?? "";
+      }
+      isReply = args["isReply"];
+    }
+    if (args['isSubreddit'] != null) {
+      isSubreddit = args["isSubreddit"];
+      if (isSubreddit) {
+        userNameController.text = args["subredditName"];
+      }
     }
     super.didChangeDependencies();
   }
@@ -124,7 +133,7 @@ class _NewMessageScreenState extends State<NewMessageScreen> {
                     "subject": subjectController.text,
                     "message": messageController.text,
                     "parentMessageId": messageId,
-                    "isSubreddit": false,
+                    "isSubreddit": isSubreddit,
                   };
                   ApiService apiService = ApiService(TokenDecoder.token);
                   setState(() {
@@ -136,7 +145,7 @@ class _NewMessageScreenState extends State<NewMessageScreen> {
                   });
                   if (response['message'] == "Message sent") {
                     if (mounted) {
-                      Navigator.pop(context,messageController.text);
+                      Navigator.pop(context, messageController.text);
                     }
                   } else {
                     showSnackBar(response['message']);
@@ -172,6 +181,7 @@ class _NewMessageScreenState extends State<NewMessageScreen> {
                               hintText: "username",
                               maxLines: 1,
                               maxLength: 20,
+                              isSubreddit: isSubreddit,
                             ),
                             Divider(
                                 color: Colors.grey[800],
@@ -273,6 +283,7 @@ class NewMessageTextField extends StatelessWidget {
     this.minLines = null,
     required this.controller,
     required this.focusNode,
+    this.isSubreddit = false,
     super.key,
   });
 
@@ -283,6 +294,7 @@ class NewMessageTextField extends StatelessWidget {
   final int? minLines;
   final TextEditingController controller;
   final FocusNode focusNode;
+  final bool isSubreddit;
 
   @override
   Widget build(BuildContext context) {
@@ -292,7 +304,7 @@ class NewMessageTextField extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: 5),
             child: Text(
-              "u/ ",
+              isSubreddit ? "r/ " : "u/ ",
               style: TextStyle(
                   color: Colors.white,
                   fontSize: ScreenSizeHandler.bigger * 0.018),

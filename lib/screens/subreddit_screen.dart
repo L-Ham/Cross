@@ -3,6 +3,8 @@ import 'dart:convert'; // for jsonDecode
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:reddit_bel_ham/components/general_components/reddit_loading_indicator.dart';
+import 'package:reddit_bel_ham/screens/add_comment_screen.dart';
+import 'package:reddit_bel_ham/screens/comments_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
@@ -19,7 +21,6 @@ import 'package:reddit_bel_ham/screens/add_post_screen.dart';
 import 'package:reddit_bel_ham/components/subreddit_components/subreddit_sortype_bottom_sheet.dart';
 
 import 'package:reddit_bel_ham/screens/mod_tools_screen.dart';
-
 
 class SubredditScreen extends StatefulWidget {
   const SubredditScreen({Key? key}) : super(key: key);
@@ -71,13 +72,12 @@ class _SubredditScreenState extends State<SubredditScreen> {
     }
   }
 
-
   bool isLoading = true;
 
   Future<void> getCommunityData() async {
     Map<String, dynamic> data =
         (await apiService.getCommunityDetails(subredditName)) ?? {};
-        (await apiService.getCommunityDetails(subredditName)) ?? {};
+    (await apiService.getCommunityDetails(subredditName)) ?? {};
     if (mounted) {
       setState(() {
         isLoading = false;
@@ -144,8 +144,8 @@ class _SubredditScreenState extends State<SubredditScreen> {
             isModerator = true;
           }
         }
-      }
-    });
+      });
+    }
     print('mmmmmmmmmmmmmmmmmmmmmmmmm');
   }
 
@@ -153,7 +153,6 @@ class _SubredditScreenState extends State<SubredditScreen> {
     Map<String, dynamic> data = (await apiService.getSubredditFeed(
             subredditName, sortType, page.toString())) ??
         {};
-
     List<dynamic> jsonPosts = data['subredditPosts'];
     setState(() {
       newPosts = jsonPosts.map((json) => Post.fromJson(json)).toList();
@@ -164,7 +163,6 @@ class _SubredditScreenState extends State<SubredditScreen> {
       }
       isFeedCalled = true;
     });
-    print("llllllllllllllllllllllllllllllllllllllllllllllllllllllllll");
   }
 
   @override
@@ -455,7 +453,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
                       padding: EdgeInsets.only(
                           right: ScreenSizeHandler.bigger * 0.025),
                       child: ElevatedButton(
-                      onPressed: () {
+                        onPressed: () {
                           Navigator.pushNamed(
                             context,
                             ModToolsScreen.id,
@@ -679,20 +677,21 @@ class _SubredditScreenState extends State<SubredditScreen> {
                           if (_isJoined) Spacer() else Spacer(),
                           if (isModerator)
                             ElevatedButton(
-                               onPressed: () {
-                          Navigator.pushNamed(
-                            context,
-                            ModToolsScreen.id,
-                            arguments: {
-                              "communityName": subredditName,
-                              "subredditID": subredditID,
-                              "membersNickname": subredditMembersNickname,
-                              "currentlyViewingNickname":
-                                  subredditOnlineNickname,
-                              "communityDescription": subredditDescription,
-                            },
-                          );
-                        },
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  ModToolsScreen.id,
+                                  arguments: {
+                                    "communityName": subredditName,
+                                    "subredditID": subredditID,
+                                    "membersNickname": subredditMembersNickname,
+                                    "currentlyViewingNickname":
+                                        subredditOnlineNickname,
+                                    "communityDescription":
+                                        subredditDescription,
+                                  },
+                                );
+                              },
                               style: ButtonStyle(
                                 padding:
                                     MaterialStateProperty.all(EdgeInsets.zero),
@@ -1007,10 +1006,16 @@ class _SubredditScreenState extends State<SubredditScreen> {
               ),
               for (var post in feed)
                 SliverToBoxAdapter(
-                  child: PostCard(
-                    post: post,
-                    isModertor: isModerator,
-                    isCommunityFeed: true,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, CommentsScreen.id,
+                          arguments: {"post": post});
+                    },
+                    child: PostCard(
+                      post: post,
+                      isModertor: isModerator,
+                      isCommunityFeed: true,
+                    ),
                   ),
                 ),
             ],
