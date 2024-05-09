@@ -569,10 +569,10 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                   onTap: () {
                                     Navigator.pushNamed(
                                         context, CommentsScreen.id,
-                                        arguments: {"post": posts[index]});
+                                        arguments: {"post": feed[index]});
                                   },
                                   child: PostCard(
-                                    post: posts[index],
+                                    post: feed[index],
                                   ),
                                 );
                               },

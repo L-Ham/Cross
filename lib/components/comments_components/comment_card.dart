@@ -25,7 +25,7 @@ class Comment {
   bool isUsernameTileClicked = false;
   String submittedTime = '2h';
   final List<Comment> replies;
-  String avatarImage = "";
+  String? avatarImage = "assets/images/avatarDaniel.png";
 
   Comment(
       {required this.userId,
@@ -84,14 +84,14 @@ class _CommentCardState extends State<CommentCard> {
             child: CircleAvatar(
               radius: 15,
               child:
-                  widget.comment.avatarImage == "assets/images/avatarDaniel.png"
+                  widget.comment.avatarImage != "assets/images/avatarDaniel.png"
                       ? ClipRRect(
                           borderRadius: BorderRadius.circular(24),
                           child: Image.network(
                             widget.comment.isUsernameBlocked &&
                                     !widget.comment.isUsernameTileClicked
                                 ? 'assets/images/blocked_account_avatar.png'
-                                : 'assets/images/redditAvata2.png',
+                                : widget.comment.avatarImage!,
                           ),
                         )
                       : ClipRRect(
@@ -100,7 +100,7 @@ class _CommentCardState extends State<CommentCard> {
                             widget.comment.isUsernameBlocked &&
                                     !widget.comment.isUsernameTileClicked
                                 ? 'assets/images/blocked_account_avatar.png'
-                                : 'assets/images/redditAvata2.png',
+                                : 'assets/images/avatarDaniel.png',
                           ),
                         ),
             ),
