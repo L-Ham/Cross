@@ -77,12 +77,22 @@ class _DrawerOneState extends State<DrawerOne> {
         if (newCommunity.isModerator) {
           moderatingCommunities.add(newCommunity);
         }
-        if (newCommunity.isFavorite) {
-          favoriteCommunities.add(newCommunity.name);
-          favSubredditImages.add(newCommunity.avatar);
-        }
         return newCommunity;
       }).toList();
+    });
+  }
+
+  Future<void> getFavouriteCommunities() async {
+    List<dynamic> data = (await apiService.getFavouriteCommunities()) ?? [];
+    List<String> favoriteCommunities = [];
+
+    for (var community in data) {
+      favoriteCommunities.add(community['name']);
+    }
+
+    setState(() {
+      // Assuming favoriteCommunities is a state variable
+      this.favoriteCommunities = favoriteCommunities;
     });
   }
 
@@ -388,17 +398,12 @@ class _DrawerOneState extends State<DrawerOne> {
                                   GestureDetector(
                                     onTap: () {
                                       setState(() {
-                                        favoriteCommunities.contains(
-                                                moderatingCommunities[index - 3]
-                                                    .name)
-                                            ? unfavouriteSubreddit(
-                                                moderatingCommunities[index - 3]
-                                                    .id)
-                                            : favouriteSubreddit(
-                                                moderatingCommunities[index - 3]
-                                                    .id);
-                                        favoriteCommunities = [];
-                                        getYourCommunities();
+                                        moderatingCommunities[index - 3].isFavorite
+                                          ? unfavouriteSubreddit(
+                                              moderatingCommunities[index - 3].id)
+                                          : favouriteSubreddit(
+                                              moderatingCommunities[index - 3].id);
+                                        getFavouriteCommunities();
                                       });
                                     },
                                     child: Icon(
@@ -499,22 +504,12 @@ class _DrawerOneState extends State<DrawerOne> {
                                                   GestureDetector(
                                                     onTap: () {
                                                       setState(() {
-                                                        favoriteCommunities
-                                                                .contains(
-                                                                    yourCommunities[
-                                                                            index -
-                                                                                1]
-                                                                        .name)
-                                                            ? favoriteCommunities.remove(
-                                                                yourCommunities[
-                                                                        index -
-                                                                            1]
-                                                                    .name)
-                                                            : favoriteCommunities.add(
-                                                                yourCommunities[
-                                                                        index -
-                                                                            1]
-                                                                    .name);
+                                                        yourCommunities[index - 1].isFavorite
+                                                          ? unfavouriteSubreddit(
+                                                              yourCommunities[index - 1].id)
+                                                          : favouriteSubreddit(
+                                                              yourCommunities[index - 1].id);
+                                                        getFavouriteCommunities();
                                                       });
                                                     },
                                                     child: Icon(
