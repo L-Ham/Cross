@@ -571,7 +571,8 @@ class ApiService {
     return result;
   }
 
-  Future<dynamic> getSavedPosts(String username, int page, int limit) async {
+  Future<dynamic> getSavedPosts(
+      String username, String page, String limit) async {
     Map<String, dynamic> sentData;
     sentData = {"username": username, "page": page, "limit": limit};
     var result = await request('/user/savedPosts',
@@ -1138,26 +1139,20 @@ class ApiService {
         body: {"usernameToUnfollow": username});
     return result;
   }
+
   Future<dynamic> getProfileFeed(
       String username, String page, String limit) async {
     Map<String, dynamic> sentData;
-    sentData = {
-      "username": username,
-      "page": page,
-      "limit": limit
-    };
+    sentData = {"username": username, "page": page, "limit": limit};
     var result = await request('/user/posts',
         headers: headerWithToken, method: 'GET', body: sentData);
     return result;
   }
-    Future<dynamic> getUserComments(
+
+  Future<dynamic> getUserComments(
       String username, String page, String limit) async {
     Map<String, dynamic> sentData;
-    sentData = {
-      "username": username,
-      "page": page,
-      "limit": limit
-    };
+    sentData = {"username": username, "page": page, "limit": limit};
     var result = await request('/user/comments',
         headers: headerWithToken, method: 'GET', body: sentData);
     return result;
@@ -1173,7 +1168,9 @@ class ApiService {
         headers: headerWithToken, method: 'PATCH', body: sentData);
     return result;
   }
-  Future<dynamic> removeApprovedUser(String communityName, String userName) async {
+
+  Future<dynamic> removeApprovedUser(
+      String communityName, String userName) async {
     Map<String, dynamic> sentData;
     sentData = {
       "subredditName": communityName,
@@ -1184,16 +1181,18 @@ class ApiService {
     return result;
   }
 
-  Future<dynamic> changeCommunityType(String communityName, bool ageRestriction, String privacyType) async {
+  Future<dynamic> changeCommunityType(
+      String communityName, bool ageRestriction, String privacyType) async {
     var result = await request(
         '/subreddit/type?subredditName=$communityName&ageRestriction=$ageRestriction&privacyType=$privacyType',
         headers: headerWithToken,
-        method: 'PATCH', body: {});
+        method: 'PATCH',
+        body: {});
     return result;
   }
 
   Future<dynamic> inviteModerator(String communityName, String username) async {
-        Map<String, dynamic> sentData;
+    Map<String, dynamic> sentData;
     sentData = {
       "subredditName": communityName,
       "invitedModeratorUsername": username,
@@ -1211,6 +1210,13 @@ class ApiService {
         headers: headerWithToken, method: 'GET', body: sentData);
     return response;
   }
+
+  Future<dynamic> getUserHistory() async {
+    var result = await request('/user/history/get',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+
   Future<dynamic> getCommunityType(String communityName) async {
         Map<String, dynamic> sentData;
     sentData = {
