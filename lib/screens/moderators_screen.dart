@@ -26,9 +26,10 @@ class _ModeratorsScreenState extends State<ModeratorsScreen>
   var moderators = [];
   bool isInvited = false;
   late TabController _tabController;
+  bool isFirstTime = true;
 
   void invitedBottomSheet() async {
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1));
     await showModalBottomSheet(
         context: context,
         builder: (BuildContext bc) {
@@ -75,6 +76,8 @@ class _ModeratorsScreenState extends State<ModeratorsScreen>
                     ),
                     ContinueButton(
                       onPress: () {
+                        acceptInvitation();
+                        isInvited = false;
                         Navigator.pop(context);
                       },
                       text: 'Accept',
@@ -82,6 +85,8 @@ class _ModeratorsScreenState extends State<ModeratorsScreen>
                     ),
                     ContinueButton(
                       onPress: () {
+                        declineInvitation();
+                        isInvited = false;
                         Navigator.pop(context);
                       },
                       text: 'Decline',
@@ -104,16 +109,18 @@ class _ModeratorsScreenState extends State<ModeratorsScreen>
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     communityName = args["communityName"];
     moderators = args["moderators"];
-    if (args['isInvited'] != null) {
-      isInvited = args['isInvited'];
-    }
-    if (isInvited) {
-      if (mounted) {
-        // setState(() {
-          invitedBottomSheet();
-        // });
+    if (isFirstTime) {
+      if (args['isInvited'] != null) {
+        isInvited = args['isInvited'];
       }
+      if (isInvited) {
+        if (mounted) {
+          invitedBottomSheet();
+        }
+      }
+      isFirstTime = false;
     }
+
     super.didChangeDependencies();
   }
 
@@ -173,6 +180,41 @@ class _ModeratorsScreenState extends State<ModeratorsScreen>
           moderators = data['moderators'];
         });
       }
+    }
+  }
+
+  Future<void> acceptInvitation() async {
+    Map<String, dynamic> response =
+        await apiService.acceptModeratorInvitation(communityName);
+    if (response['message'] == "Moderator accepted successfully") {
+      if (mounted) {
+        setState(() {
+          showSnackBar('You are now a moderator');
+        });
+      }
+      getModerators();
+    } else {
+        if (mounted) {
+          setState(() {
+            showSnackBar('Error: ${response['message']}');
+            Navigator.pop(context);
+          });
+        }
+      }
+  }
+
+  Future<void> declineInvitation() async {
+    Map<String, dynamic> response =
+        await apiService.declineModeratorInvitation(communityName);
+    if (response['message'] == "Moderator declined successfully") {
+      Navigator.pop(context);
+    } else {
+      if (mounted) {
+        setState(() {
+          showSnackBar('Error: ${response['message']}');
+        });
+      }
+      Navigator.pop(context);
     }
   }
 
