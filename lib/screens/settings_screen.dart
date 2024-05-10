@@ -12,9 +12,6 @@ import 'package:reddit_bel_ham/components/settings_components/settings_tile_trai
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 
 class SettingsScreen extends StatefulWidget {
-  late String avatarImage;
-  SettingsScreen({this.avatarImage = "assets/images/reddit_logo.png"});
-
   static const String id = 'settings_screen';
 
   @override
@@ -26,6 +23,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool isBananaEnabled = false;
   bool isMuted = false;
   bool recentCommunities = false;
+  String avatarImage = "";
+
+  @override
+  void didChangeDependencies() {
+    Map<String, dynamic> args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    avatarImage = args["avatar"];
+
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,12 +79,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                           child: CircleAvatar(
                             radius: ScreenSizeHandler.bigger * 0.015,
-                            backgroundImage: widget.avatarImage !=
-                                    'assets/images/reddit_logo.png'
-                                ? NetworkImage(widget.avatarImage)
-                                : const AssetImage(
-                                        'assets/images/reddit_logo.png')
-                                    as ImageProvider,
+                            backgroundImage:
+                                avatarImage != 'assets/images/reddit_logo.png'
+                                    ? NetworkImage(avatarImage)
+                                    : const AssetImage(
+                                            'assets/images/reddit_logo.png')
+                                        as ImageProvider,
                           ),
                         ),
                         titleText: 'u/$username',

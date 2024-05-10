@@ -1235,7 +1235,7 @@ class ApiService {
   }
 
   Future<dynamic> getCommunityType(String communityName) async {
-        Map<String, dynamic> sentData;
+    Map<String, dynamic> sentData;
     sentData = {
       "subredditName": communityName,
     };
@@ -1245,14 +1245,47 @@ class ApiService {
   }
 
   Future<dynamic> removeModerator(String communityName, String userName) async {
-      Map<String, dynamic> sentData;
+    Map<String, dynamic> sentData;
     sentData = {
       "subredditName": communityName,
-      "moderatorName":  userName,
+      "moderatorName": userName,
     };
     var result = await request('/subreddit/mod/remove',
         headers: headerWithToken, method: 'PATCH', body: sentData);
     return result;
   }
 
+  Future<dynamic> getYourCommunities() async {
+    var result = await request('/user/community',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+
+  Future<dynamic> getFavouriteCommunities() async {
+    var result = await request('/subreddit/user/favourite',
+        headers: headerWithToken, method: 'GET');
+    return result;
+  }
+
+  Future<dynamic> favouriteSubreddit(String subredditID) async {
+    var result = await request('/user/favouriteSubreddit',
+        headers: headerWithToken,
+        method: 'PATCH',
+        body: {"subRedditId": subredditID});
+    return result;
+  }
+
+  Future<dynamic> unfavouriteSubreddit(String subredditID) async {
+    var result = await request('/user/unfavouriteSubreddit',
+        headers: headerWithToken,
+        method: 'PATCH',
+        body: {"subRedditId": subredditID});
+    return result;
+  }
+
+  Future<dynamic> logout(String? fcmToken) async {
+    var result = await request('/auth/logout',
+        headers: headerWithToken, method: 'POST', body: {"fcmToken": fcmToken});
+    return result;
+  }
 }

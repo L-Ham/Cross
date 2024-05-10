@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -66,12 +67,15 @@ class _HomePageScreenState extends State<HomePageScreen> {
   bool isFeedCalled = false;
   bool isFeedFinished = false;
 
+  ApiService apiService = ApiService(TokenDecoder.token);
+  String avatarImageReturned = 'assets/images/reddit_logo.png';
+
   @override
   void initState() {
     super.initState();
     username = TokenDecoder.username;
     email = TokenDecoder.email;
-
+    getUserSelfInfo();
     print(TokenDecoder.token);
 
     page = 1;
@@ -79,6 +83,21 @@ class _HomePageScreenState extends State<HomePageScreen> {
     getHomeFeed(sortType, page, 6);
     page++;
     _scrollController.addListener(getNewPostsForFeed);
+  }
+
+  Future<void> getUserSelfInfo() async {
+    Map<String, dynamic> data = (await apiService.getUserSelfInfo()) ?? {};
+    setState(() {
+      avatarImageReturned =
+          data['user']['avatar'] ?? 'assets/images/reddit_logo.png';
+    });
+
+    print("avataaaaaar$avatarImageReturned");
+  }
+
+  Future<void> logout(String? fcm) async {
+    var result = await apiService.logout(fcm);
+    print(result);
   }
 
   void getNewPostsForFeed() {
@@ -296,6 +315,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
   @override
   void didChangeDependencies() {
     getTrendingPosts();
+    getUserSelfInfo();
     super.didChangeDependencies();
   }
 
@@ -537,7 +557,10 @@ class _HomePageScreenState extends State<HomePageScreen> {
                 onTap: () {
                   _scaffoldKey.currentState?.openEndDrawer();
                 },
-                child: ProfileIconWithIndicator(isOnline: onlineStatusToggle),
+                child: ProfileIconWithIndicator(
+                  isOnline: onlineStatusToggle,
+                  imageURL: avatarImageReturned,
+                ),
               ),
             ),
           ],
@@ -573,7 +596,10 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                   onTap: () {
                                     Navigator.pushNamed(
                                         context, CommentsScreen.id,
-                                        arguments: {"post": feed[index]});
+                                        arguments: {
+                                          "post": posts[index],
+                                          "avatar": avatarImageReturned,
+                                        });
                                   },
                                   child: PostCard(
                                     post: feed[index],
@@ -670,6 +696,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                 ? ScreenSizeHandler.smaller * 0.5
                 : ScreenSizeHandler.smaller * 0.42;
           }),
+          avatarImage: avatarImageReturned,
         ),
       ),
     );
@@ -678,7 +705,11 @@ class _HomePageScreenState extends State<HomePageScreen> {
 
 class DrawerBottomSheet extends StatefulWidget {
   // final bool isExitPressed;
-  const DrawerBottomSheet({super.key});
+  final String avatarImage;
+
+  const DrawerBottomSheet({Key? key, required this.avatarImage})
+      : super(key: key);
+
   @override
   State<DrawerBottomSheet> createState() => _DrawerBottomSheetState();
 }
@@ -689,6 +720,14 @@ class _DrawerBottomSheetState extends State<DrawerBottomSheet> {
   void initState() {
     super.initState();
     username = TokenDecoder.username;
+  }
+
+  String? getFCMtoken() {
+    FirebaseMessaging.instance.getToken().then((String? token) {
+      assert(token != null);
+      print('Push Messaging token: $token');
+      return token;
+    });
   }
 
   bool isExitPressed = false;
@@ -734,7 +773,9 @@ class _DrawerBottomSheetState extends State<DrawerBottomSheet> {
                   identifier: 'second_exit_app_button_identifier',
                   child: SettingsTile(
                     fontColor: Colors.red,
-                    onTap: () {
+                    onTap: () async {
+                      var result = await apiService.logout(getFCMtoken());
+                      print(result);
                       Navigator.popUntil(context, ModalRoute.withName('/'));
                       Navigator.pushNamed(context, LoginScreen.id);
                       SharedPreferences.getInstance().then((prefs) {
@@ -754,9 +795,15 @@ class _DrawerBottomSheetState extends State<DrawerBottomSheet> {
                   children: [
                     ListTile(
                       leading: CircleAvatar(
+                        backgroundImage: widget.avatarImage ==
+                                'assets/images/reddit_logo.png'
+                            ? const AssetImage('assets/images/reddit_logo.png')
+                            : NetworkImage(
+                                widget.avatarImage,
+                              ) as ImageProvider,
                         backgroundColor: Colors.white,
                         radius: ScreenSizeHandler.smaller * 0.03,
-                        child: Text('P'),
+                        // child: Text('P'),
                       ),
                       title: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

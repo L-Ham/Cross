@@ -21,8 +21,10 @@ class ProfileIconWithIndicator extends StatelessWidget {
           backgroundColor: Colors.transparent,
           radius: radius,
           child: CircleAvatar(
-            backgroundImage:
-                AssetImage(imageURL ?? 'assets/images/reddit_logo.png'),
+            backgroundImage: imageURL != "assets/images/reddit_logo.png"
+                ? NetworkImage(imageURL!)
+                : const AssetImage("assets/images/reddit_logo.png")
+                    as ImageProvider,
             radius: 18,
           ),
         ),
@@ -32,10 +34,10 @@ class ProfileIconWithIndicator extends StatelessWidget {
             left: radius * 0,
             child: CircleAvatar(
               backgroundColor: Colors.black,
-              radius: radius*0.32,
+              radius: radius * 0.32,
               child: CircleAvatar(
                 backgroundColor: Colors.green,
-                radius: radius*0.23,
+                radius: radius * 0.23,
               ),
             ),
           ),
