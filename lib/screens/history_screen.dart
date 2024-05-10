@@ -198,15 +198,17 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   ),
                 ),
                 SizedBox(width: 8.0),
-                DropdownButton2(
-                  value:selectedMenuItem,
-                    items: dropdownItems,
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        selectedMenuItem = newValue!;
-                        getFeed();
-                      });
-                    }),
+                DropdownButtonHideUnderline(
+                  child: DropdownButton2(
+                    value:selectedMenuItem,
+                      items: dropdownItems,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedMenuItem = newValue!;
+                          getFeed();
+                        });
+                      }),
+                ),
               ],
             ),
           ),
