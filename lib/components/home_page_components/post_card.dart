@@ -175,6 +175,7 @@ class _PostCardState extends State<PostCard> {
   bool isTypeVideo = false;
   bool isSpamed = false;
   ApiService apiService = ApiService(TokenDecoder.token);
+  
 
   Future<void> _launchURL(String url) async {
     if (!await launchUrl(Uri.parse(url))) {
