@@ -549,12 +549,16 @@ class _SubredditScreenState extends State<SubredditScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                textAlign: TextAlign.left,
-                                'r/$subredditName',
-                                style: TextStyle(
-                                  fontSize: ScreenSizeHandler.bigger * 0.024,
-                                  fontWeight: FontWeight.bold,
+                              Container(
+                                width: ScreenSizeHandler.screenWidth * 0.4,
+                                child: Text(
+                                  textAlign: TextAlign.left,
+                                  'r/$subredditName',
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: ScreenSizeHandler.bigger * 0.024,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                               if (!_isJoined && !isModerator)
