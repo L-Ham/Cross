@@ -4,6 +4,7 @@ import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 
 import '../../constants.dart';
 import '../general_components/linkified_text.dart';
+import 'package:reddit_bel_ham/screens/moderators_screen.dart';
 
 class MessageReplyTile extends StatefulWidget {
   const MessageReplyTile(
@@ -69,11 +70,17 @@ class _MessageReplyTileState extends State<MessageReplyTile> {
               Padding(
                 padding: EdgeInsets.only(
                     top: ScreenSizeHandler.screenHeight * 0.012),
-                child: widget.subject ==
-                        "You have been invited to moderate a subreddit"
+                child: widget.subject.contains('invitation to moderate')
                     ? GestureDetector(
                         onTap: () {
-                          print('bala7');
+                        //bala7
+                          Navigator.pushNamed(
+                            context, ModeratorsScreen.id, arguments: {
+                              "communityName": widget.subject.split('/r/')[0],
+                              "moderators" : [],
+                              "isInvited" : true,
+                            }
+                          );
                         },
                         child: Html(
                           data: widget.message,

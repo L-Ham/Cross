@@ -90,7 +90,7 @@ class MessageTile extends StatelessWidget {
                         color: isRead ? Colors.grey[600] : Colors.white,
                         fontSize: ScreenSizeHandler.bigger * 0.017),
                   ),
-                  subject == "You have been invited to moderate a subreddit"
+                  subject.contains('invitation to moderate')
                       ? Html(
                           data: message,
                           style: {
