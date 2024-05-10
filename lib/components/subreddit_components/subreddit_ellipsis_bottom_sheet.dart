@@ -65,8 +65,11 @@ Widget buildSubredditEllipsisModalBottomSheet(
             children: [
               GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, NewMessageScreen.id,
-                      arguments: {"isSubreddit": true, "subredditName": subreddit.name});
+                  Navigator.pushNamed(context, NewMessageScreen.id, arguments: {
+                    "isSubreddit": true,
+                    "subredditName": subreddit.name,
+                    "isReply": false
+                  });
                 },
                 child: EllipsisTile(
                     tileText: "Message moderators",

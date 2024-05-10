@@ -1233,6 +1233,22 @@ class ApiService {
         headers: headerWithToken, method: 'GET');
     return result;
   }
+  Future<dynamic> getUpvotedPosts(
+      String username, String page, String limit) async {
+    Map<String, dynamic> sentData;
+    sentData = {"username": username, "page": page, "limit": limit};
+    var response = await request('/user/upvotedPosts',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    return response;
+  }
+  Future<dynamic> getDownVotedPosts(
+      String username, String page, String limit) async {
+    Map<String, dynamic> sentData;
+    sentData = {"username": username, "page": page, "limit": limit};
+    var response = await request('/user/downvotedPosts',
+        headers: headerWithToken, method: 'GET', body: sentData);
+    return response;
+  }
 
   Future<dynamic> getCommunityType(String communityName) async {
     Map<String, dynamic> sentData;
@@ -1288,4 +1304,24 @@ class ApiService {
         headers: headerWithToken, method: 'POST', body: {"fcmToken": fcmToken});
     return result;
   }
+  Future<dynamic> acceptModeratorInvitation(String communityName) async {
+      Map<String, dynamic> sentData;
+    sentData = {
+      "subredditName":communityName,
+    };
+    var result = await request('/subreddit/mod/invite/accept',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+    Future<dynamic> declineModeratorInvitation(String communityName) async {
+      Map<String, dynamic> sentData;
+    sentData = {
+      "subredditName":communityName,
+    };
+    var result = await request('/subreddit/mod/invite/decline',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
 }

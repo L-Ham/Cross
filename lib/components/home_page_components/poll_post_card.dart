@@ -24,7 +24,9 @@ class _PollPostState extends State<PollPost> {
   void initState() {
     options = widget.post.options;
     votes = widget.post.numOfVotersPerOption;
+    if(votes.isNotEmpty){
     sum = votes.reduce((value, element) => value + element);
+    }
     print(widget.post.numOfVotersPerOption);
     print(sum);
     isSubmitted = widget.post.isPollVoted;

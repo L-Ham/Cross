@@ -47,75 +47,73 @@ class _CommentsScreenState extends State<CommentsScreen> {
     setState(() {
       isLoading = true;
     });
-    await apiService.getPostFromId(postId).then((value) {
-      value = value['post'];
-      setState(() {
-        String userId = value['user'];
-        String subredditId = value['subReddit'] ?? "";
-        bool approved = value['approved'];
-        bool disapproved = value['disapproved'];
-        bool isNSFW = value['isNSFW'];
-        bool isSpoiler = value['isSpoiler'];
-        bool isLocked = value['isLocked'];
-        String avatarImage =
-            value['creatorAvatar'] ?? "assets/images/planet3.png";
-        String userName = value['creatorName'];
-        String createdFrom = timeAgo(value['createdAt']);
-        String contentTitle = value['title'];
-        String content = value['text'] ?? "";
-        List<dynamic> images = value['images'];
-        List<String> imageUrls =
-            images.map((image) => image['url'] as String).toList();
-        List<dynamic> videos = value['videos'] as List<dynamic>;
-        String video = videos.isEmpty ? "" : videos[0];
-        String link = value['url'];
-        String type = value['type'];
-        int upvotes = value['upvotes'] - value['downvotes'];
-        int comments = value['commentCount'];
-        String username = value['subRedditName'] ?? "";
-        List<dynamic> upvotedUsers = value['upvotedUsers'];
-        List<dynamic> downvotedUsers = value['downvotedUsers'];
-        bool isUpvoted = upvotedUsers.contains(TokenDecoder.id);
-        bool isDownvoted = downvotedUsers.contains(TokenDecoder.id);
-        bool isOwner = TokenDecoder.id == userId;
-        List<dynamic> poll = [];
-        List<String> pollOptions = [];
-        List<int> votersCount = [];
-        bool isVoted = false;
-        String? votedOption = "";
-        DateTime pollEnd = DateTime.now();
-        if (value['poll']['options'].isNotEmpty) {
-          poll = value['poll']['options'];
-          pollOptions =
-              poll.map((option) => option['option'] as String).toList();
-          votersCount = poll
-              .map((option) => (option['voters'] as List<dynamic>).length)
-              .toList();
-          isVoted = poll.any((option) =>
-              (option['voters'] as List<dynamic>).contains(TokenDecoder.id));
-          votedOption = poll.firstWhere(
-              (option) =>
-                  (option['voters'] as List<dynamic>).contains(TokenDecoder.id),
-              orElse: () => {"option": null})['option'];
-          pollEnd = DateTime.parse(value['poll']['endTime']);
-        }
+    var value = await apiService.getPostFromId(postId);
+    value = value['post'];
+    setState(() {
+      String userId = value['user'];
+      String subredditId = value['subReddit'] ?? "";
+      bool approved = value['approved'];
+      bool disapproved = value['disapproved'];
+      bool isNSFW = value['isNSFW'];
+      bool isSpoiler = value['isSpoiler'];
+      bool isLocked = value['isLocked'];
+      String avatarImage =
+          value['creatorAvatar'] ?? "assets/images/planet3.png";
+      String userName = value['creatorName'];
+      String createdFrom = timeAgo(value['createdAt']);
+      String contentTitle = value['title'];
+      String content = value['text'] ?? "";
+      List<dynamic> images = value['images'];
+      List<String> imageUrls =
+          images.map((image) => image['url'] as String).toList();
+      List<dynamic> videos = value['videos'] as List<dynamic>;
+      String video = videos.isEmpty ? "" : videos[0];
+      String link = value['url'];
+      String type = value['type'];
+      int upvotes = value['upvotes'] - value['downvotes'];
+      int comments = value['commentCount'];
+      String username = value['subRedditName'] ?? "";
+      List<dynamic> upvotedUsers = value['upvotedUsers'];
+      List<dynamic> downvotedUsers = value['downvotedUsers'];
+      bool isUpvoted = upvotedUsers.contains(TokenDecoder.id);
+      bool isDownvoted = downvotedUsers.contains(TokenDecoder.id);
+      bool isOwner = TokenDecoder.id == userId;
+      List<dynamic> poll = [];
+      List<String> pollOptions = [];
+      List<int> votersCount = [];
+      bool isVoted = false;
+      String? votedOption = "";
+      DateTime pollEnd = DateTime.now();
+      if (value['poll']['options'].isNotEmpty) {
+        poll = value['poll']['options'];
+        pollOptions = poll.map((option) => option['option'] as String).toList();
+        votersCount = poll
+            .map((option) => (option['voters'] as List<dynamic>).length)
+            .toList();
+        isVoted = poll.any((option) =>
+            (option['voters'] as List<dynamic>).contains(TokenDecoder.id));
+        votedOption = poll.firstWhere(
+            (option) =>
+                (option['voters'] as List<dynamic>).contains(TokenDecoder.id),
+            orElse: () => {"option": null})['option'];
+        pollEnd = DateTime.parse(value['poll']['endTime']?? DateTime.now().toString());
+      }
 
-        setState(() {
-          isLoading = false;
-        });
-        pushedPost = Post(
-            userId: userId,
-            postId: postId,
-            createdFrom: createdFrom,
-            contentTitle: contentTitle,
-            content: content,
-            image: imageUrls,
-            video: video,
-            link: link,
-            type: type,
-            upvotes: upvotes,
-            comments: comments,
-            subredditName: username);
+      setState(() {
+        isLoading = false;
+      });
+      setState(() {
+        pushedPost.userId = userId;
+        pushedPost.postId = postId;
+        pushedPost.createdFrom = createdFrom;
+        pushedPost.contentTitle = contentTitle;
+        pushedPost.content = content;
+        pushedPost.image = imageUrls;
+        pushedPost.video = video;
+        pushedPost.link = link;
+        pushedPost.type = type;
+        pushedPost.upvotes = upvotes;
+        pushedPost.comments = comments;
         pushedPost.isUpvoted = isUpvoted;
         pushedPost.isDownvoted = isDownvoted;
         pushedPost.isNSFW = isNSFW;
@@ -125,15 +123,44 @@ class _CommentsScreenState extends State<CommentsScreen> {
         pushedPost.isDisapproved = disapproved;
         pushedPost.avatarImage = avatarImage;
         pushedPost.userName = userName;
+        pushedPost.subredditName = username;
         pushedPost.options = pollOptions;
         pushedPost.numOfVotersPerOption = votersCount;
         pushedPost.isPollVoted = isVoted;
         pushedPost.selectedPollOption = votedOption;
         pushedPost.endTime = pollEnd;
         pushedPost.subredditId = subredditId;
-        pushedPost.numOfVotersPerOption = votersCount;
         pushedPost.isOwner = isOwner;
       });
+      // pushedPost = Post(
+      //     userId: userId,
+      //     postId: postId,
+      //     createdFrom: createdFrom,
+      //     contentTitle: contentTitle,
+      //     content: content,
+      //     image: imageUrls,
+      //     video: video,
+      //     link: link,
+      //     type: type,
+      //     upvotes: upvotes,
+      //     comments: comments,
+      //     isUpvoted: isUpvoted,
+      //     isDownvoted: isDownvoted,
+      //     isNSFW: isNSFW,
+      //     isSpoiler: isSpoiler,
+      //     isLocked: isLocked,
+      //     isApproved: approved,
+      //     isDisapproved: disapproved,
+      //     avatarImage: avatarImage,
+      //     userName: userName,
+      //     subredditName: username,
+      //     options: pollOptions,
+      //     numOfVotersPerOption: votersCount,
+      //     isPollVoted: isVoted,
+      //     selectedPollOption: votedOption,
+      //     endTime: pollEnd,
+      //     subredditId: subredditId,
+      //     isOwner: isOwner);
     });
     setState(() {
       getAllCommentsFromPostId();
@@ -175,7 +202,8 @@ class _CommentsScreenState extends State<CommentsScreen> {
       bool isDownvoted = comment['isDownvoted'];
       List<dynamic> repliesData = comment['replies'];
       String userName = comment['userName'];
-      String userAvatar = comment['userAvatar']?? "assets/images/avatarDaniel.png";
+      String userAvatar =
+          comment['userAvatar'] ?? "assets/images/avatarDaniel.png";
       List<Comment> repliesList =
           repliesData.isNotEmpty ? parseComments(repliesData) : [];
 
@@ -297,7 +325,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
       var response = await apiService.getCommentsFromPostId({
         "postId": pushedPost.postId,
         "page": pageNum.toString(),
-        "limit": 10.toString()
+        "limit": 15.toString()
       });
       if (response['message'] == "The retrieved array is empty") {
         pageNum--;

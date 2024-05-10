@@ -91,8 +91,9 @@ class Post {
     return Post(
       postId: json['_id'] ?? '',
       userId: json['user'] ?? '',
-      userAvatarImage:
-          json['creatorAvatarImage'] ?? "assets/images/avatarDaniel.png",
+      userAvatarImage: json['creatorAvatarImage'] ??
+          json['creatorAvatar'] ??
+          "assets/images/avatarDaniel.png",
       userName: json['creatorUsername'] ?? 'thekey119',
       subredditName: json['subredditName'] ?? '',
       options: json['poll'] != null && json['poll']['options'] != null
@@ -144,6 +145,7 @@ class Post {
       isApproved: json['approved'] ?? false,
       isDisapproved: json['disapproved'] ?? false,
       isOwner: TokenDecoder.id == (json['user'] ?? ''),
+      avatarImage: json['subredditAvatar'] ?? 'assets/images/planet3.png',
     );
   }
 }
@@ -173,6 +175,7 @@ class _PostCardState extends State<PostCard> {
   bool isTypeVideo = false;
   bool isSpamed = false;
   ApiService apiService = ApiService(TokenDecoder.token);
+  
 
   Future<void> _launchURL(String url) async {
     if (!await launchUrl(Uri.parse(url))) {
@@ -233,10 +236,17 @@ class _PostCardState extends State<PostCard> {
                                 ? NetworkImage(post.userAvatarImage)
                                 : AssetImage(post.userAvatarImage)
                                     as ImageProvider<Object>?
-                            : post.avatarImage != "assets/images/planet3.png"
-                                ? NetworkImage(post.avatarImage)
-                                : AssetImage(post.avatarImage)
-                                    as ImageProvider<Object>?,
+                            : post.subredditName == ""
+                                ? post.userAvatarImage !=
+                                        "assets/images/avatarDaniel.png"
+                                    ? NetworkImage(post.userAvatarImage)
+                                    : AssetImage(post.userAvatarImage)
+                                        as ImageProvider<Object>?
+                                : post.avatarImage !=
+                                        "assets/images/planet3.png"
+                                    ? NetworkImage(post.avatarImage)
+                                    : AssetImage(post.avatarImage)
+                                        as ImageProvider<Object>?,
                   ),
                 ),
                 SizedBox(width: ScreenSizeHandler.screenWidth * 0.02),
@@ -251,7 +261,9 @@ class _PostCardState extends State<PostCard> {
                                 : "r/${post.subredditName}"
                             : widget.isCommunityFeed
                                 ? '${post.userName} • ${post.createdFrom}'
-                                : 'r/${post.subredditName} • ${post.createdFrom}',
+                                : post.subredditName == ""
+                                    ? 'u/${post.userName} • ${post.createdFrom}'
+                                    : 'r/${post.subredditName} • ${post.createdFrom}',
                         style: TextStyle(
                             height: 0.8,
                             color: Colors.white,

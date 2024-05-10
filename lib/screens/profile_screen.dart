@@ -69,6 +69,7 @@ class _ProfileScreenState extends State<ProfileScreen>
   bool isCommentsFinished = false;
   bool isMarkingAllAsRead = false;
   bool isExisting=true;
+  bool isGettingFeed = false;
   Future<void> _launchURL(String url) async {
     if (!await launchUrl(Uri.parse(url))) {
       throw 'Could not launch $url';
