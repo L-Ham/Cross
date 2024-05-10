@@ -1271,4 +1271,24 @@ class ApiService {
     return result;
   }
 
+  Future<dynamic> acceptModeratorInvitation(String communityName) async {
+      Map<String, dynamic> sentData;
+    sentData = {
+      "subredditName":communityName,
+    };
+    var result = await request('/subreddit/mod/invite/accept',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
+    Future<dynamic> declineModeratorInvitation(String communityName) async {
+      Map<String, dynamic> sentData;
+    sentData = {
+      "subredditName":communityName,
+    };
+    var result = await request('/subreddit/mod/invite/decline',
+        headers: headerWithToken, method: 'PATCH', body: sentData);
+    return result;
+  }
+
 }

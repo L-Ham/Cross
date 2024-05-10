@@ -76,7 +76,7 @@ class _MessageReplyTileState extends State<MessageReplyTile> {
                         //bala7
                           Navigator.pushNamed(
                             context, ModeratorsScreen.id, arguments: {
-                              "communityName": widget.subject.split('/r/')[0],
+                              "communityName": widget.subject.split('/r/')[1],
                               "moderators" : [],
                               "isInvited" : true,
                             }
