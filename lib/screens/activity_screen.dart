@@ -92,7 +92,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
     activitiesToday = activities.where((activity) {
       return activity.actualUpdatedAt.isAfter(today);
     }).toList();
-
+    
     activitiesEarlier = activities.where((activity) {
       return activity.actualUpdatedAt.isBefore(today);
     }).toList();
@@ -131,7 +131,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                     ScreenSizeHandler.screenWidth * 0.05,
                                 vertical:
                                     ScreenSizeHandler.screenHeight * 0.01),
-                            child: Text("Today",
+                            child: Text("Recent",
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w500,
@@ -139,13 +139,11 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                         ScreenSizeHandler.bigger * 0.024)),
                           ),
                         if (activitiesToday.isNotEmpty)
-                          ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: activitiesToday.length,
-                            itemBuilder: (context, index) {
-                              return AcitivityViewTile(
-                                  activityTileClass: activitiesToday[index]);
-                            },
+                          Column(
+                            children: [
+                              for (var activity in activitiesToday)
+                                AcitivityViewTile(activityTileClass: activity),
+                            ],
                           ),
                         if (activitiesEarlier.isNotEmpty)
                           Padding(
@@ -154,7 +152,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                     ScreenSizeHandler.screenWidth * 0.05,
                                 vertical:
                                     ScreenSizeHandler.screenHeight * 0.01),
-                            child: Text("Today",
+                            child: Text("Earlier",
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w500,
@@ -162,13 +160,11 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                         ScreenSizeHandler.bigger * 0.024)),
                           ),
                         if (activitiesEarlier.isNotEmpty)
-                          ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: activitiesToday.length,
-                            itemBuilder: (context, index) {
-                              return AcitivityViewTile(
-                                  activityTileClass: activitiesEarlier[index]);
-                            },
+                          Column(
+                            children: [
+                              for (var activity in activitiesEarlier)
+                                AcitivityViewTile(activityTileClass: activity),
+                            ],
                           ),
                       ],
                     ),
@@ -375,7 +371,7 @@ class MoreActivityBottomSheet extends StatelessWidget {
                 onTap: () {
                   Navigator.pop(context, 1);
                 },
-                child: const SettingsTile(
+                child: SettingsTile(
                     leadingIcon: SettingsTileLeadingIcon(
                       leadingIcon: Icons.remove_red_eye_outlined,
                     ),
@@ -387,7 +383,7 @@ class MoreActivityBottomSheet extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.symmetric(
                     vertical: ScreenSizeHandler.screenHeight * 0.004),
-                child: const SettingsTile(
+                child: SettingsTile(
                     leadingIcon: SettingsTileLeadingIcon(
                       leadingIcon: Icons.cancel_outlined,
                     ),
@@ -401,7 +397,7 @@ class MoreActivityBottomSheet extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.symmetric(
                     vertical: ScreenSizeHandler.screenHeight * 0.004),
-                child: const SettingsTile(
+                child: SettingsTile(
                     leadingIcon: SettingsTileLeadingIcon(
                       leadingIcon: Icons.notifications_off_outlined,
                     ),

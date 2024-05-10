@@ -297,7 +297,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
       var response = await apiService.getCommentsFromPostId({
         "postId": pushedPost.postId,
         "page": pageNum.toString(),
-        "limit": 10.toString()
+        "limit": 15.toString()
       });
       if (response['message'] == "The retrieved array is empty") {
         pageNum--;

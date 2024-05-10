@@ -1,9 +1,7 @@
 import 'dart:ui';
-import 'dart:convert'; // for jsonDecode
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:reddit_bel_ham/components/general_components/reddit_loading_indicator.dart';
-import 'package:reddit_bel_ham/screens/add_comment_screen.dart';
 import 'package:reddit_bel_ham/screens/comments_screen.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -19,7 +17,7 @@ import 'package:reddit_bel_ham/components/subreddit_components/subreddit_ellipsi
 import 'package:reddit_bel_ham/screens/subreddit_seemore_screen.dart';
 import 'package:reddit_bel_ham/screens/add_post_screen.dart';
 import 'package:reddit_bel_ham/components/subreddit_components/subreddit_sortype_bottom_sheet.dart';
-
+import 'package:reddit_bel_ham/screens/inside_chat_screen.dart';
 import 'package:reddit_bel_ham/screens/mod_tools_screen.dart';
 
 class SubredditScreen extends StatefulWidget {
@@ -56,6 +54,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
   int page = 1;
   bool isFeedCalled = false;
   bool isFeedFinished = false;
+  bool isFetchingFeed = false;
 
   int navigationBarIndex = 0;
   int oldIndex = 0;
@@ -66,11 +65,12 @@ class _SubredditScreenState extends State<SubredditScreen> {
       navigationBarIndex = index;
     });
     if (index == 2) {
-      Navigator.pushNamed(context, AddPostScreen.id, arguments: {
-        "subredditName": subreddit.name,
-        "subredditImage": subreddit.avatarImage,
-        "subredditId": subreddit.id
+      Navigator.pushNamed(context, AddPostScreen.id);
+      setState(() {
+        navigationBarIndex = oldIndex;
       });
+    } else if (index == 3) {
+      Navigator.pushNamed(context, InsideChattingScreen.id);
       setState(() {
         navigationBarIndex = oldIndex;
       });
@@ -82,10 +82,11 @@ class _SubredditScreenState extends State<SubredditScreen> {
   Future<void> getCommunityData() async {
     Map<String, dynamic> data =
         (await apiService.getCommunityDetails(subredditName)) ?? {};
-    (await apiService.getCommunityDetails(subredditName)) ?? {};
     if (mounted) {
+      if (!data.containsKey("communityDetails")) {
+        Navigator.pop(context);
+      }
       setState(() {
-        isLoading = false;
         isLoading = false;
       });
     }
@@ -110,7 +111,6 @@ class _SubredditScreenState extends State<SubredditScreen> {
         _isJoined = data['communityDetails']['isMember'];
         isMuted = data['communityDetails']['isMuted'];
         subredditLink = "http://https://reddit-bylham.me/r/${subredditName}";
-        print(TokenDecoder.token);
       });
 
       subreddit = Subreddit(
@@ -142,6 +142,9 @@ class _SubredditScreenState extends State<SubredditScreen> {
     Map<String, dynamic> data =
         (await apiService.getCommunityModerators(subredditName)) ?? {};
     if (mounted) {
+      if (!data.containsKey("moderators")) {
+        Navigator.pop(context);
+      }
       setState(() {
         moderators = data['moderators'];
         for (var moderator in moderators) {
@@ -155,6 +158,9 @@ class _SubredditScreenState extends State<SubredditScreen> {
   }
 
   Future<void> getSubredditFeed(String sortType, int page, int limit) async {
+    setState(() {
+      isFetchingFeed = true;
+    });
     Map<String, dynamic> data = (await apiService.getSubredditFeed(
             subredditName, sortType, page.toString(), limit.toString())) ??
         {};
@@ -175,6 +181,9 @@ class _SubredditScreenState extends State<SubredditScreen> {
         isFeedFinished = true;
       });
     }
+    setState(() {
+      isFetchingFeed = false;
+    });
   }
 
   @override
@@ -187,7 +196,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
       getCommunityData();
       getCommunityModerators();
       page = 1;
-      getSubredditFeed(sortType, page, 5);
+      getSubredditFeed(sortType, page, 6);
       page++;
     });
     _scrollController.addListener(_updateAppBarText);
@@ -215,7 +224,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
       if (isFeedCalled) {
         setState(() {
           isFeedCalled = false;
-          getSubredditFeed(sortType, page, 2);
+          getSubredditFeed(sortType, page, 3);
           page++;
           print(page);
           print("dddddddddddddddddddddddddddddddddddddddddddddddddddddddd");
@@ -709,7 +718,6 @@ class _SubredditScreenState extends State<SubredditScreen> {
                                     "communityDescription":
                                         subredditDescription,
                                     "moderators": moderators,
-
                                   },
                                 );
                               },
@@ -969,7 +977,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
                                 sortType = value;
                                 page = 1;
                                 isFeedFinished = false;
-                                getSubredditFeed(sortType, page, 5);
+                                getSubredditFeed(sortType, page, 6);
                                 page++;
                               });
                             }
@@ -1041,6 +1049,12 @@ class _SubredditScreenState extends State<SubredditScreen> {
                     ),
                   ),
                 ),
+              if (isFetchingFeed)
+                const SliverToBoxAdapter(
+                  child: Center(
+                    child: RedditLoadingIndicator(),
+                  ),
+                )
             ],
           ),
         ));

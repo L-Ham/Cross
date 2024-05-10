@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_bel_ham/components/general_components/continue_button.dart';
 import 'package:reddit_bel_ham/components/general_components/reddit_loading_indicator.dart';
@@ -67,6 +68,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
   String sortType = 'Hot';
   bool isFeedCalled = false;
   bool isFeedFinished = false;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -111,6 +113,11 @@ class _HomePageScreenState extends State<HomePageScreen> {
   }
 
   Future<void> getHomeFeed(String sortType, int page, int limit) async {
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+      });
+    }
     Map<String, dynamic> data = (await apiService.getHomeFeed(
             sortType, page.toString(), limit.toString())) ??
         {};
@@ -132,9 +139,19 @@ class _HomePageScreenState extends State<HomePageScreen> {
         isFeedFinished = true;
       });
     }
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   void getTrendingPosts() async {
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+      });
+    }
     var response = await apiService.getTrendingPosts();
     response = response["trendingPosts"];
     if (mounted) {
@@ -142,7 +159,6 @@ class _HomePageScreenState extends State<HomePageScreen> {
         trending.clear();
       });
     }
-
     for (var trendingPost in response) {
       if (mounted) {
         setState(() {
@@ -151,6 +167,11 @@ class _HomePageScreenState extends State<HomePageScreen> {
               image: trendingPost["image"]));
         });
       }
+    }
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -560,22 +581,30 @@ class _HomePageScreenState extends State<HomePageScreen> {
                         children: [
                           SingleChildScrollView(
                             controller: _scrollController,
-                            child: ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: feed.length,
-                              itemBuilder: (context, index) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    Navigator.pushNamed(
-                                        context, CommentsScreen.id,
-                                        arguments: {"post": feed[index]});
+                            child: Column(
+                              children: [
+                                ListView.builder(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: feed.length,
+                                  itemBuilder: (context, index) {
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.pushNamed(
+                                            context, CommentsScreen.id,
+                                            arguments: {"post": feed[index]});
+                                      },
+                                      child: PostCard(
+                                        post: feed[index],
+                                      ),
+                                    );
                                   },
-                                  child: PostCard(
-                                    post: feed[index],
+                                ),
+                                if (isLoading)
+                                  const Center(
+                                    child: RedditLoadingIndicator(),
                                   ),
-                                );
-                              },
+                              ],
                             ),
                           ),
                           SingleChildScrollView(
@@ -631,6 +660,10 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                     return PostCard(post: feed[index]);
                                   },
                                 ),
+                                if (isLoading)
+                                  const Align(
+                                      alignment: Alignment.center,
+                                      child: RedditLoadingIndicator())
                               ],
                             ),
                           ),
