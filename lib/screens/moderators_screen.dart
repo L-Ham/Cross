@@ -24,7 +24,79 @@ class _ModeratorsScreenState extends State<ModeratorsScreen>
   ApiService apiService = ApiService(TokenDecoder.token);
   String communityName = '';
   var moderators = [];
+  bool isInvited = false;
   late TabController _tabController;
+
+  void invitedBottomSheet() async {
+    await Future.delayed(const Duration(seconds: 2));
+    await showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return ClipRRect(
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(20.0),
+            ),
+            child: Container(
+              padding: EdgeInsets.only(
+                  bottom: ScreenSizeHandler.screenHeight * 0.025),
+              color: Colors.grey[900],
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: ScreenSizeHandler.screenHeight * 0.01),
+                      child: Center(
+                        child: Text(
+                          'Congrats!',
+                          style: TextStyle(
+                            fontSize: ScreenSizeHandler.smaller * 0.045,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: ScreenSizeHandler.screenHeight * 0.01,
+                          horizontal: ScreenSizeHandler.screenWidth * 0.03),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'You are invited to become a moderator!',
+                          style: TextStyle(
+                            fontSize: ScreenSizeHandler.smaller * 0.03,
+                            fontWeight: FontWeight.normal,
+                            color: kHintTextColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                    ContinueButton(
+                      onPress: () {
+                        Navigator.pop(context);
+                      },
+                      text: 'Accept',
+                      color: Colors.blue[900],
+                    ),
+                    ContinueButton(
+                      onPress: () {
+                        Navigator.pop(context);
+                      },
+                      text: 'Decline',
+                      color: Colors.grey[800],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+    setState(
+      () {},
+    );
+  }
 
   @override
   void didChangeDependencies() {
@@ -32,6 +104,16 @@ class _ModeratorsScreenState extends State<ModeratorsScreen>
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     communityName = args["communityName"];
     moderators = args["moderators"];
+    if (args['isInvited'] != null) {
+      isInvited = args['isInvited'];
+    }
+    if (isInvited) {
+      if (mounted) {
+        // setState(() {
+          invitedBottomSheet();
+        // });
+      }
+    }
     super.didChangeDependencies();
   }
 
@@ -109,19 +191,18 @@ class _ModeratorsScreenState extends State<ModeratorsScreen>
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    if(username != TokenDecoder.username)
-                    UserBottomSheetTile(
-                      text: 'Edit Permissions',
-                      icon: Icon(
-                        FontAwesomeIcons.pen,
-                        size: ScreenSizeHandler.bigger *
-                            kSettingsLeadingIconRatio *
-                            0.8,
-                        color: Colors.grey,
+                    if (username != TokenDecoder.username)
+                      UserBottomSheetTile(
+                        text: 'Edit Permissions',
+                        icon: Icon(
+                          FontAwesomeIcons.pen,
+                          size: ScreenSizeHandler.bigger *
+                              kSettingsLeadingIconRatio *
+                              0.8,
+                          color: Colors.grey,
+                        ),
+                        onTap: () {},
                       ),
-                      onTap: () {
-                      },
-                    ), 
                     UserBottomSheetTile(
                       text: 'View profile',
                       icon: Icon(
@@ -303,7 +384,6 @@ class _ModeratorsScreenState extends State<ModeratorsScreen>
                               horizontal:
                                   kSettingsHorizontalPaddingHeightRatio *
                                       ScreenSizeHandler.screenWidth,
-                              // vertical: 0.01 * ScreenSizeHandler.screenHeight,
                             ),
                             child: Column(
                               children: [

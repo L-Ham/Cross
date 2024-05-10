@@ -52,6 +52,37 @@ class _InviteModeratorScreenState extends State<InviteModeratorScreen> {
   }
 
   Future<void> inviteModerator() async {
+    Map<String, dynamic> args = {
+      "receiverName": _controller.text,
+      "subject":  'invitation to moderate /r/$communityName',
+      "message": '''
+    <div class="md">
+      <p>gadzooks!
+        <strong>you are invited to become a moderator</strong>
+        of
+        <a href="/r/$communityName/about/usermanagement" className="
+          text-[#4fbcff]">/r/$communityName: $communityName</a>!
+      </p>
+      <p>
+        <strong><em>to accept</em>, visit the
+          <a href="/r/$communityName/about/usermanagement" className="text-[#4fbcff]">
+            moderators page for /r/$communityName
+          </a> and click "accept".
+        </strong>
+      </p>
+      <p>
+        <em>otherwise,</em> if you did not expect to receive this, you can simply ignore this invitation or report it.
+      </p>
+    </div>
+  ''',
+      "isSubreddit": false,
+      "parentMessageId": null,
+    };
+    Map<String, dynamic> response0 = await apiService.composeMessage(args);
+    if (response0['message'] != "Message sent") {
+      showSnackBar(response0['message']);
+    }
+
     Map<String, dynamic> response =
         await apiService.inviteModerator(communityName, _controller.text);
     if (response['message'] == "Moderator invited successfully") {
