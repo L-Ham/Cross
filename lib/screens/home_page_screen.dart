@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_bel_ham/components/general_components/continue_button.dart';
 import 'package:reddit_bel_ham/components/general_components/reddit_loading_indicator.dart';
@@ -68,7 +67,6 @@ class _HomePageScreenState extends State<HomePageScreen> {
   String sortType = 'Hot';
   bool isFeedCalled = false;
   bool isFeedFinished = false;
-  bool isLoading = false;
 
   @override
   void initState() {
@@ -79,10 +77,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
     print(TokenDecoder.token);
 
     page = 1;
-    print('ZZZZZ ABL HOME FEEED');
     getHomeFeed(sortType, page, 5);
     page++;
-    print('ZZZZZ BA#D HOME FEEED');
     _scrollController.addListener(getNewPostsForFeed);
   }
 
@@ -113,11 +109,6 @@ class _HomePageScreenState extends State<HomePageScreen> {
   }
 
   Future<void> getHomeFeed(String sortType, int page, int limit) async {
-    if (mounted) {
-      setState(() {
-        isLoading = true;
-      });
-    }
     Map<String, dynamic> data = (await apiService.getHomeFeed(
             sortType, page.toString(), limit.toString())) ??
         {};
@@ -139,19 +130,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
         isFeedFinished = true;
       });
     }
-    if (mounted) {
-      setState(() {
-        isLoading = false;
-      });
-    }
   }
 
   void getTrendingPosts() async {
-    if (mounted) {
-      setState(() {
-        isLoading = true;
-      });
-    }
     var response = await apiService.getTrendingPosts();
     response = response["trendingPosts"];
     if (mounted) {
@@ -159,6 +140,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
         trending.clear();
       });
     }
+
     for (var trendingPost in response) {
       if (mounted) {
         setState(() {
@@ -167,11 +149,6 @@ class _HomePageScreenState extends State<HomePageScreen> {
               image: trendingPost["image"]));
         });
       }
-    }
-    if (mounted) {
-      setState(() {
-        isLoading = false;
-      });
     }
   }
 
@@ -404,24 +381,29 @@ class _HomePageScreenState extends State<HomePageScreen> {
                   child: DropdownButton2(
                     items: dropdownItems,
                     onChanged: (String? newValue) {
-                      if (newValue != "Latest") {
-                        setState(() {
-                          selectedMenuItem = newValue!;
-                        });
-                        if (selectedMenuItem == "Home") {
-                          sortType = 'Hot';
-                          page = 1;
-                          controller.jumpToPage(0);
-                          getHomeFeed(sortType, page, 5);
-                          page++;
-                        }
-                        if (selectedMenuItem == "Popular") {
-                          sortType = 'Rising';
-                          page = 1;
-                          controller.jumpToPage(1);
-                          getHomeFeed(sortType, page, 5);
-                          page++;
-                        }
+                      setState(() {
+                        selectedMenuItem = newValue!;
+                      });
+                      if (selectedMenuItem == "Home") {
+                        sortType = 'Hot';
+                        page = 1;
+                        controller.jumpToPage(0);
+                        getHomeFeed(sortType, page, 5);
+                        page++;
+                      }
+                      if (selectedMenuItem == "Popular") {
+                        sortType = 'Rising';
+                        page = 1;
+                        controller.jumpToPage(1);
+                        getHomeFeed(sortType, page, 5);
+                        page++;
+                      }
+                      if (selectedMenuItem == "Latest") {
+                        sortType = 'New';
+                        page = 1;
+                        controller.jumpToPage(1);
+                        getHomeFeed(sortType, page, 5);
+                        page++;
                       }
                     },
                     value: selectedMenuItem,
@@ -574,99 +556,93 @@ class _HomePageScreenState extends State<HomePageScreen> {
                         onPageChanged: (value) => setState(() {
                           if (value == 0) {
                             selectedMenuItem = "Home";
-                          } else {
+                          } else if (value == 1) {
                             selectedMenuItem = "Popular";
+                          } else if (value == 2) {
+                            selectedMenuItem = "Latest";
                           }
                         }),
                         children: [
                           SingleChildScrollView(
                             controller: _scrollController,
-                            child: Column(
-                              children: [
-                                ListView.builder(
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemCount: feed.length,
-                                  itemBuilder: (context, index) {
-                                    return GestureDetector(
-                                      onTap: () {
-                                        Navigator.pushNamed(
-                                            context, CommentsScreen.id,
-                                            arguments: {"post": feed[index]});
-                                      },
-                                      child: PostCard(
-                                        post: feed[index],
-                                      ),
-                                    );
+                            child: ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: feed.length,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                        context, CommentsScreen.id,
+                                        arguments: {"post": feed[index]});
                                   },
-                                ),
-                                if (isLoading)
-                                  const Center(
-                                    child: RedditLoadingIndicator(),
+                                  child: PostCard(
+                                    post: feed[index],
                                   ),
-                              ],
+                                );
+                              },
                             ),
                           ),
-                          SingleChildScrollView(
-                            child: Column(
-                              children: [
-                                Container(
-                                  height: ScreenSizeHandler.screenHeight * 0.05,
-                                  color: Colors.black,
-                                  child: Row(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                            left:
-                                                ScreenSizeHandler.screenWidth *
-                                                    0.02,
-                                            right:
-                                                ScreenSizeHandler.screenWidth *
-                                                    0.02),
-                                        child: Icon(
-                                          Icons.trending_up_rounded,
-                                          color: Colors.white,
-                                          size:
-                                              ScreenSizeHandler.smaller * 0.055,
-                                        ),
-                                      ),
-                                      const Text(
-                                        'Trending Today',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: kDefaultFontSize,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: GestureDetector(
+                          if (selectedMenuItem == 'Popular') ...[
+                            SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  Container(
+                                    height:
+                                        ScreenSizeHandler.screenHeight * 0.05,
+                                    color: Colors.black,
                                     child: Row(
-                                      children: trending
-                                          .map((post) =>
-                                              TrendingPostCard(post: post))
-                                          .toList(),
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              left: ScreenSizeHandler
+                                                      .screenWidth *
+                                                  0.02,
+                                              right: ScreenSizeHandler
+                                                      .screenWidth *
+                                                  0.02),
+                                          child: Icon(
+                                            Icons.trending_up_rounded,
+                                            color: Colors.white,
+                                            size: ScreenSizeHandler.smaller *
+                                                0.055,
+                                          ),
+                                        ),
+                                        const Text(
+                                          'Trending Today',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: kDefaultFontSize,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                ),
-                                ListView.builder(
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemCount: feed.length,
-                                  itemBuilder: (context, index) {
-                                    return PostCard(post: feed[index]);
-                                  },
-                                ),
-                                if (isLoading)
-                                  const Align(
-                                      alignment: Alignment.center,
-                                      child: RedditLoadingIndicator())
-                              ],
+                                  SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: GestureDetector(
+                                      child: Row(
+                                        children: trending
+                                            .map((post) =>
+                                                TrendingPostCard(post: post))
+                                            .toList(),
+                                      ),
+                                    ),
+                                  ),
+                                  ListView.builder(
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: feed.length,
+                                    itemBuilder: (context, index) {
+                                      return PostCard(post: feed[index]);
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
+                          ],
                         ],
                       ),
         drawer: Drawer(
