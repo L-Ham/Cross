@@ -21,10 +21,11 @@ class ProfileIconWithIndicator extends StatelessWidget {
           backgroundColor: Colors.transparent,
           radius: radius,
           child: CircleAvatar(
-            backgroundImage: imageURL != "assets/images/reddit_logo.png"
-                ? NetworkImage(imageURL!)
-                : const AssetImage("assets/images/reddit_logo.png")
-                    as ImageProvider,
+            backgroundImage:
+                imageURL != "assets/images/reddit_logo.png" && imageURL != null
+                    ? NetworkImage(imageURL!)
+                    : const AssetImage("assets/images/reddit_logo.png")
+                        as ImageProvider,
             radius: 18,
           ),
         ),

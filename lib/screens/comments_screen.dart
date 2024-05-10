@@ -96,7 +96,8 @@ class _CommentsScreenState extends State<CommentsScreen> {
             (option) =>
                 (option['voters'] as List<dynamic>).contains(TokenDecoder.id),
             orElse: () => {"option": null})['option'];
-        pollEnd = DateTime.parse(value['poll']['endTime']?? DateTime.now().toString());
+        pollEnd = DateTime.parse(
+            value['poll']['endTime'] ?? DateTime.now().toString());
       }
 
       setState(() {
@@ -386,10 +387,9 @@ class _CommentsScreenState extends State<CommentsScreen> {
               child: Icon(Icons.more_horiz,
                   size: ScreenSizeHandler.bigger * 0.035),
             ),
-            Padding(
-              padding:
-                  EdgeInsets.only(left: ScreenSizeHandler.screenWidth * 0.016),
-              child: const ProfileIconWithIndicator(isOnline: true, radius: 15),
+            const ProfileIconWithIndicator(
+              isOnline: true,
+              imageURL: "assets/images/reddit_logo.png",
             ),
           ],
         ),
