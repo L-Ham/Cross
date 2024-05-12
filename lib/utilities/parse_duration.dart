@@ -1,6 +1,14 @@
 Duration parseDuration(String duration) {
-  int value = int.parse(duration.substring(0, duration.length - 1));
-  String unit = duration.substring(duration.length - 1);
+  int value;
+  String unit;
+
+  if (duration.endsWith('mo')) {
+    value = int.parse(duration.substring(0, duration.length - 2));
+    unit = 'mo';
+  } else {
+    value = int.parse(duration.substring(0, duration.length - 1));
+    unit = duration.substring(duration.length - 1);
+  }
 
   switch (unit) {
     case 's':
