@@ -69,7 +69,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
       value: 'Recent',
       child: Row(
         children: [
-         
           const Text('Recent'),
         ],
       ),
@@ -78,7 +77,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
       value: 'Upvoted',
       child: Row(
         children: [
-         
           const Text('Upvoted'),
         ],
       ),
@@ -87,7 +85,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
       value: 'Downvoted',
       child: Row(
         children: [
-          
           const Text('Downvoted'),
         ],
       ),
@@ -104,7 +101,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
           isFeedCalled = false;
           if (!isFeedFinished) {
             getHistoryFeed();
-            
           }
         });
       }
@@ -116,7 +112,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
     if (data.containsKey('historyPosts')) {
       List<dynamic> jsonPosts = data['historyPosts'];
       setState(() {
-        newPosts = jsonPosts.map((json) => Post.fromJson(json)).toList();
+        newPosts = jsonPosts
+            .map((json) => Post.fromJson(json))
+            .toList()
+            .reversed
+            .toList();
         if (page == 1) {
           feed = newPosts;
         } else {
@@ -132,45 +132,55 @@ class _HistoryScreenState extends State<HistoryScreen> {
   }
 
   void getFeed() async {
-  switch (selectedMenuItem) {
-    case 'Recent':
-      Map<String, dynamic> response = await apiService.getUserHistory();
-      if(response.containsKey('historyPosts')){
-        setState((){feed = (response['historyPosts'] as List)
-          .map((item) => Post.fromJson(item))
-          .toList(); });
+    switch (selectedMenuItem) {
+      case 'Recent':
+        Map<String, dynamic> response = await apiService.getUserHistory();
+        if (response.containsKey('historyPosts')) {
+          setState(() {
+            feed = (response['historyPosts'] as List)
+                .map((item) => Post.fromJson(item))
+                .toList();
+          });
           print(feed);
-      }
-      break;
-    case 'Upvoted':
-      Map<String, dynamic> response = await apiService.getUpvotedPosts(
-          TokenDecoder.username.toString(), page.toString(), limit.toString());
-      if(response.containsKey('upvotedPosts')){
-       setState((){ upFeed = (response['upvotedPosts'] as List)
-          .map((item) => Post.fromJson(item))
-          .toList(); });
-      }
-      break;
-   case 'Downvoted':
-  Map<String, dynamic> response = await apiService.getDownVotedPosts(
-      TokenDecoder.username.toString(), page.toString(), limit.toString());
-      print(response);
-  if(response.containsKey('downvotedPosts')){
-   setState((){ downFeed = (response['downvotedPosts'] as List)
-      .map((item) => Post.fromJson(item))
-      .toList(); });
-    print(downFeed); // Add this line
+        }
+        break;
+      case 'Upvoted':
+        Map<String, dynamic> response = await apiService.getUpvotedPosts(
+            TokenDecoder.username.toString(),
+            page.toString(),
+            limit.toString());
+        if (response.containsKey('upvotedPosts')) {
+          setState(() {
+            upFeed = (response['upvotedPosts'] as List)
+                .map((item) => Post.fromJson(item))
+                .toList();
+          });
+        }
+        break;
+      case 'Downvoted':
+        Map<String, dynamic> response = await apiService.getDownVotedPosts(
+            TokenDecoder.username.toString(),
+            page.toString(),
+            limit.toString());
+        print(response);
+        if (response.containsKey('downvotedPosts')) {
+          setState(() {
+            downFeed = (response['downvotedPosts'] as List)
+                .map((item) => Post.fromJson(item))
+                .toList();
+          });
+          print(downFeed); // Add this line
+        }
+        break;
+      default:
+        Map<String, dynamic> response = await apiService.getUserHistory();
+        if (response.containsKey('historyPosts')) {
+          feed = (response['historyPosts'] as List)
+              .map((item) => Post.fromJson(item))
+              .toList();
+        }
+    }
   }
-      break;
-    default:
-      Map<String, dynamic> response = await apiService.getUserHistory();
-      if(response.containsKey('historyPosts')){
-        feed = (response['historyPosts'] as List)
-          .map((item) => Post.fromJson(item))
-          .toList(); 
-      }
-  }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -200,7 +210,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 SizedBox(width: 8.0),
                 DropdownButtonHideUnderline(
                   child: DropdownButton2(
-                    value:selectedMenuItem,
+                      value: selectedMenuItem,
                       items: dropdownItems,
                       onChanged: (String? newValue) {
                         setState(() {

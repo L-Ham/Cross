@@ -68,7 +68,7 @@ class _ProfileScreenState extends State<ProfileScreen>
   bool isFeedFinished = false;
   bool isCommentsFinished = false;
   bool isMarkingAllAsRead = false;
-  bool isExisting=true;
+  bool isExisting = true;
   bool isGettingFeed = false;
   Future<void> _launchURL(String url) async {
     if (!await launchUrl(Uri.parse(url))) {
@@ -83,7 +83,7 @@ class _ProfileScreenState extends State<ProfileScreen>
       if (!isMyProfile) {
         setState(() {
           if (data['matchingUsernames'].isEmpty) {
-            isExisting=false;
+            isExisting = false;
             return;
           }
           // print(data);
@@ -101,7 +101,7 @@ class _ProfileScreenState extends State<ProfileScreen>
     if (mounted) {
       setState(() {
         if (data['user'] == null) {
-          isExisting=false;
+          isExisting = false;
           return;
         }
         avatarImage = data['user']['avatar'] ?? '';
@@ -177,24 +177,22 @@ class _ProfileScreenState extends State<ProfileScreen>
     print(data);
     if (data.containsKey('userPosts')) {
       List<dynamic> jsonPosts = data['userPosts'];
-      if (mounted)
-      {
+      if (mounted) {
+        setState(() {
+          newPosts = jsonPosts.map((json) => Post.fromJson(json)).toList();
+          print(avatarImage);
+          for (var post in newPosts) {
+            post.userAvatarImage = avatarImage;
 
-      setState(() {
-        newPosts = jsonPosts.map((json) => Post.fromJson(json)).toList();
-        print(avatarImage);
-        for (var post in newPosts) {
-          post.userAvatarImage = avatarImage;
-
-          post.userName = username;
-        }
-        if (page == 1) {
-          feed = newPosts;
-        } else {
-          feed.addAll(newPosts);
-        }
-        isFeedCalled = true;
-      });
+            post.userName = username;
+          }
+          if (page == 1) {
+            feed = newPosts;
+          } else {
+            feed.addAll(newPosts);
+          }
+          isFeedCalled = true;
+        });
       }
       print("llllllllllllllllllllllllllllllllllllllllllllllllllllllllll");
     } else {
@@ -203,6 +201,7 @@ class _ProfileScreenState extends State<ProfileScreen>
       });
     }
   }
+
   Future<void> getUserComments(String username, int page, int limit) async {
     print('USERNAMEEE: $username');
     Map<String, dynamic> data = (await apiService.getUserComments(
@@ -349,7 +348,8 @@ class _ProfileScreenState extends State<ProfileScreen>
       }
     }
   }
-    void getNewCommentsForFeed() {
+
+  void getNewCommentsForFeed() {
     double diff = _scrollController2.position.maxScrollExtent -
         _scrollController2.position.pixels;
 
@@ -425,723 +425,785 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   @override
   Widget build(BuildContext context) {
-    return !isExisting? EmptyDog(): 
-    ModalProgressHUD(
-      inAsyncCall: isLoading,
-      progressIndicator: const RedditLoadingIndicator(),
-      blur: 0,
-      opacity: 0,
-      offset: Offset(ScreenSizeHandler.screenWidth * 0.38,
-          ScreenSizeHandler.screenHeight * 0.6),
-      child: Scaffold(
-        bottomNavigationBar: Theme(
-          data: ThemeData(
-            splashColor: kBackgroundColor,
-            highlightColor: kBackgroundColor,
-          ),
-          child: BottomNavigationBar(
-            selectedFontSize: kAcknowledgeTextSmallerFontRatio *
-                ScreenSizeHandler.smaller *
-                0.9,
-            unselectedFontSize: kAcknowledgeTextSmallerFontRatio *
-                ScreenSizeHandler.smaller *
-                0.9,
-            type: BottomNavigationBarType.fixed,
-            backgroundColor: kBackgroundColor,
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: 'Home',
-                // backgroundColor: Colors.black,
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.group_outlined),
-                label: 'Communities',
+    return !isExisting
+        ? EmptyDog()
+        : ModalProgressHUD(
+            inAsyncCall: isLoading,
+            progressIndicator: const RedditLoadingIndicator(),
+            blur: 0,
+            opacity: 0,
+            offset: Offset(ScreenSizeHandler.screenWidth * 0.38,
+                ScreenSizeHandler.screenHeight * 0.6),
+            child: Scaffold(
+              bottomNavigationBar: Theme(
+                data: ThemeData(
+                  splashColor: kBackgroundColor,
+                  highlightColor: kBackgroundColor,
+                ),
+                child: BottomNavigationBar(
+                  selectedFontSize: kAcknowledgeTextSmallerFontRatio *
+                      ScreenSizeHandler.smaller *
+                      0.9,
+                  unselectedFontSize: kAcknowledgeTextSmallerFontRatio *
+                      ScreenSizeHandler.smaller *
+                      0.9,
+                  type: BottomNavigationBarType.fixed,
+                  backgroundColor: kBackgroundColor,
+                  items: const <BottomNavigationBarItem>[
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.home),
+                      label: 'Home',
+                      // backgroundColor: Colors.black,
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.group_outlined),
+                      label: 'Communities',
 
-                // backgroundColor: Colors.black,
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.add_outlined),
-                label: 'Create',
-                // backgroundColor: Colors.black,
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.messenger_outline_sharp),
-                label: 'Chat',
-                // backgroundColor: Colors.black,
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.notifications_none_rounded),
-                label: 'Inbox',
+                      // backgroundColor: Colors.black,
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.add_outlined),
+                      label: 'Create',
+                      // backgroundColor: Colors.black,
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.messenger_outline_sharp),
+                      label: 'Chat',
+                      // backgroundColor: Colors.black,
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.notifications_none_rounded),
+                      label: 'Inbox',
 
-                // backgroundColor: Colors.black,
+                      // backgroundColor: Colors.black,
+                    ),
+                  ],
+                  currentIndex: navigationBarIndex,
+                  selectedItemColor: Colors.white,
+                  unselectedItemColor: Colors.grey,
+                  unselectedLabelStyle: TextStyle(color: Colors.grey),
+                  showUnselectedLabels: true,
+                  onTap: _onItemTapped,
+                ),
               ),
-            ],
-            currentIndex: navigationBarIndex,
-            selectedItemColor: Colors.white,
-            unselectedItemColor: Colors.grey,
-            unselectedLabelStyle: TextStyle(color: Colors.grey),
-            showUnselectedLabels: true,
-            onTap: _onItemTapped,
-          ),
-        ),
-        body: navigationBarIndex == 1
-            ? const CommunitiesScreen()
-            : navigationBarIndex == 3
-                ? const ChattingScreen()
-                : navigationBarIndex == 4
-                    ? isMarkingAllAsRead
-                        ? const Center(child: RedditLoadingIndicator())
-                        : const InboxMessagesScreen()
-                    : CustomScrollView(
-                        slivers: <Widget>[
-                          SliverPersistentHeader(
-                            pinned: true,
-                            delegate: _SliverAppBarDelegate(
-                              minHeight: 120.0,
-                              maxHeight: socialLinks.length < 2
-                                  ? 420.0
-                                  : socialLinks.length < 4
-                                      ? 560.0
-                                      : 600.0,
-                              onExpandStatusChange: (expanded) {
-                                WidgetsBinding.instance!
-                                    .addPostFrameCallback((_) {
-                                  if (isAppBarExpanded != expanded) {
-                                    setState(() {
-                                      isAppBarExpanded = expanded;
-                                    });
-                                  }
-                                });
-                              },
-                              child: Container(
-                                decoration: bannerImage.isEmpty
-                                    ? BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: [Colors.blue, Colors.black],
-                                          begin: Alignment.topCenter,
-                                          end: Alignment.center,
-                                        ),
-                                      )
-                                    : BoxDecoration(
-                                        image: DecorationImage(
-                                          image: NetworkImage(bannerImage),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                child: Stack(
-                                  alignment: Alignment.centerLeft,
-                                  children: [
-                                    Positioned(
-                                      left: 0.0,
-                                      top: 15.0,
-                                      child: IconButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        icon: Icon(Icons.arrow_back,
-                                            color: Colors.white),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      left:
-                                          ScreenSizeHandler.screenWidth * 0.75,
-                                      top: 15.0,
-                                      child: Row(
-                                        children: [
-                                          IconButton(
-                                            onPressed: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      SubredditSearchScreen(
-                                                    subredditName: username,
-                                                    subredditAvatarImage:
-                                                        avatarImage,
-                                                    isSubreddit: false,
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                            icon: Icon(Icons.search,
-                                                color: Colors.white),
-                                          ),
-                                          IconButton(
-                                            onPressed: () {
-                                              showModalBottomSheet(
-                                                context: context,
-                                                builder: (context) {
-                                                  return buildProfileModalBottomSheet(
-                                                    context,
-                                                    username,
-                                                    avatarImage,
-                                                    postKarma,
-                                                  );
-                                                },
-                                              );
-                                            },
-                                            icon: Icon(FontAwesomeIcons.share,
-                                                color: Colors.white, size: 20),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    AnimatedBuilder(
-                                      animation: _tabController.animation!,
-                                      builder: (context, child) {
-                                        return Padding(
-                                          padding: EdgeInsets.only(
-                                              left: isAppBarExpanded
-                                                  ? 20.0
-                                                  : 40.0,
-                                              bottom: 40.0),
-                                          child: Row(
-                                            children: [
-                                              avatarImage.isEmpty
-                                                  ? Icon(
-                                                      Icons.account_circle,
-                                                      color: Colors.white,
-                                                      size: isAppBarExpanded
-                                                          ? 70
-                                                          : 20,
-                                                    )
-                                                  : ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              100.0),
-                                                      child: Image.network(
-                                                          avatarImage,
-                                                          width:
-                                                              isAppBarExpanded
-                                                                  ? 70
-                                                                  : 25,
-                                                          height:
-                                                              isAppBarExpanded
-                                                                  ? 70
-                                                                  : 25),
-                                                    ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 8.0),
-                                                child: Text(
-                                                  displayName,
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: isAppBarExpanded
-                                                        ? 30.0
-                                                        : 17.0,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
+              body: navigationBarIndex == 1
+                  ? const CommunitiesScreen()
+                  : navigationBarIndex == 3
+                      ? const ChattingScreen()
+                      : navigationBarIndex == 4
+                          ? isMarkingAllAsRead
+                              ? const Center(child: RedditLoadingIndicator())
+                              : const InboxMessagesScreen()
+                          : CustomScrollView(
+                              slivers: <Widget>[
+                                SliverPersistentHeader(
+                                  pinned: true,
+                                  delegate: _SliverAppBarDelegate(
+                                    minHeight: 120.0,
+                                    maxHeight: socialLinks.length < 2
+                                        ? 420.0
+                                        : socialLinks.length < 4
+                                            ? 560.0
+                                            : 600.0,
+                                    onExpandStatusChange: (expanded) {
+                                      WidgetsBinding.instance!
+                                          .addPostFrameCallback((_) {
+                                        if (isAppBarExpanded != expanded) {
+                                          setState(() {
+                                            isAppBarExpanded = expanded;
+                                          });
+                                        }
+                                      });
+                                    },
+                                    child: Container(
+                                      decoration: bannerImage.isEmpty
+                                          ? BoxDecoration(
+                                              gradient: LinearGradient(
+                                                colors: [
+                                                  Colors.blue,
+                                                  Colors.black
+                                                ],
+                                                begin: Alignment.topCenter,
+                                                end: Alignment.center,
                                               ),
-                                            ],
+                                            )
+                                          : BoxDecoration(
+                                              image: DecorationImage(
+                                                image:
+                                                    NetworkImage(bannerImage),
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                      child: Stack(
+                                        alignment: Alignment.centerLeft,
+                                        children: [
+                                          Positioned(
+                                            left: 0.0,
+                                            top: 15.0,
+                                            child: IconButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              icon: Icon(Icons.arrow_back,
+                                                  color: Colors.white),
+                                            ),
                                           ),
-                                        );
-                                      },
-                                    ),
-                                    Column(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        if (isAppBarExpanded) ...[
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                                top: socialLinks.length < 2
-                                                    ? 220.0
-                                                    : 320.0,
-                                                left: 16),
+                                          Positioned(
+                                            left:
+                                                ScreenSizeHandler.screenWidth *
+                                                    0.75,
+                                            top: 15.0,
                                             child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
                                               children: [
-                                                ElevatedButton(
+                                                IconButton(
                                                   onPressed: () {
-                                                    isMyProfile
-                                                        ? Navigator.pushNamed(
-                                                            context,
-                                                            EditProfileScreen
-                                                                .id,
-                                                            arguments: {
-                                                                'isAddSocialLinkPressed':
-                                                                    false,
-                                                                'avatarImage':
-                                                                    avatarImage,
-                                                                'bannerImage':
-                                                                    bannerImage,
-                                                              }).then((value) =>
-                                                            getSelfProfileInfo())
-                                                        : isFriend
-                                                            ? unfollowUser(
-                                                                username)
-                                                            : followUser(
-                                                                username);
-                                                  },
-                                                  child: Text(
-                                                    isMyProfile
-                                                        ? 'Edit'
-                                                        : isFriend
-                                                            ? 'Following'
-                                                            : 'Follow',
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                  style:
-                                                      ElevatedButton.styleFrom(
-                                                    backgroundColor:
-                                                        Colors.transparent,
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              100.0),
-                                                      side: BorderSide(
-                                                          color: Colors.white,
-                                                          width: 1.0),
-                                                    ),
-                                                  ),
-                                                ),
-                                                if (!isMyProfile) ...[
-                                                  ElevatedButton(
-                                                    onPressed: () {
-                                                      Navigator.pushNamed(
-                                                          context,
-                                                          NewMessageScreen.id,
-                                                          arguments: {
-                                                            'userName':
-                                                                username,
-                                                            'isReply': false
-                                                          });
-                                                    },
-                                                    child: Icon(
-                                                        Icons.message_outlined,
-                                                        color: Colors.white,
-                                                        size: 20),
-                                                    style: ElevatedButton
-                                                        .styleFrom(
-                                                      backgroundColor:
-                                                          Colors.transparent,
-                                                      shape: CircleBorder(
-                                                        side: BorderSide(
-                                                            color: Colors.white,
-                                                            width: 1.0),
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            SubredditSearchScreen(
+                                                          subredditName:
+                                                              username,
+                                                          subredditAvatarImage:
+                                                              avatarImage,
+                                                          isSubreddit: false,
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ),
-                                                  // ElevatedButton(
-                                                  //   onPressed: () {},
-                                                  //   child: Icon(Icons.person_add_alt_outlined,
-                                                  //       color: Colors.white, size: 25),
-                                                  //   style: ElevatedButton.styleFrom(
-                                                  //     backgroundColor: Colors.transparent,
-                                                  //     shape: CircleBorder(
-                                                  //       side: BorderSide(
-                                                  //           color: Colors.white, width: 1.0),
-                                                  //     ),
-                                                  //   ),
-                                                  // ),
-                                                ]
+                                                    );
+                                                  },
+                                                  icon: Icon(Icons.search,
+                                                      color: Colors.white),
+                                                ),
+                                                IconButton(
+                                                  onPressed: () {
+                                                    showModalBottomSheet(
+                                                      context: context,
+                                                      builder: (context) {
+                                                        return buildProfileModalBottomSheet(
+                                                          context,
+                                                          username,
+                                                          avatarImage,
+                                                          postKarma,
+                                                        );
+                                                      },
+                                                    );
+                                                  },
+                                                  icon: Icon(
+                                                      FontAwesomeIcons.share,
+                                                      color: Colors.white,
+                                                      size: 20),
+                                                ),
                                               ],
                                             ),
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 16.0),
-                                            child: Text(
-                                                'u/$username • $postKarma karma • $created',
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 13)),
-                                          ),
-                                          // isMyProfile?
-                                          Expanded(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Container(
-                                                height: socialLinks.length < 2
-                                                    ? 50
-                                                    : socialLinks.length < 4
-                                                        ? 60
-                                                        : 130,
-                                                child: GridView.builder(
-                                                    gridDelegate:
-                                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                                            crossAxisCount: 2,
-                                                            mainAxisExtent: 50),
-                                                    itemCount:
-                                                        socialLinks.length + 1,
-                                                    itemBuilder:
-                                                        (context, index) {
-                                                      var iconName = index <
-                                                              socialLinks.length
-                                                          ? socialLinks[index]
-                                                              ['appName']
-                                                          : '';
-                                                      var icon =
-                                                          iconMapping[iconName];
-                                                      return index !=
-                                                              socialLinks.length
-                                                          ? Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(8.0),
-                                                              child:
-                                                                  RoundedButton(
-                                                                onTap: () {
-                                                                  setState(() {
-                                                                    if (socialLinks[index]
-                                                                            [
-                                                                            'appName'] ==
-                                                                        'reddit') {
-                                                                      if (socialLinks[index]
-                                                                              [
-                                                                              'linkOrUsername']
-                                                                          .toString()
-                                                                          .startsWith(
-                                                                              'u/')) {
-                                                                        goToProfile(
-                                                                            context,
-                                                                            socialLinks[index]['linkOrUsername'].replaceFirst('u/',
-                                                                                ''));
-                                                                      } else {
-                                                                        Navigator.pushNamed(
-                                                                            context,
-                                                                            SubredditScreen.id,
-                                                                            arguments:
-                                                                              socialLinks[index]['linkOrUsername'].replaceFirst('r/', '')
-                                                                            );
-                                                                      }
-                                                                    } else {
-                                                                      _launchURL(
-                                                                          socialLinks[index]
-                                                                              [
-                                                                              'linkOrUsername']);
-                                                                    }
-                                                                  });
-                                                                },
-                                                                buttonHeightRatio:
-                                                                    0.06,
-                                                                buttonWidthRatio:
-                                                                    0.1,
-                                                                child: Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .spaceEvenly,
-                                                                  mainAxisSize:
-                                                                      MainAxisSize
-                                                                          .min,
-                                                                  children: [
-                                                                    icon!,
-                                                                    Padding(
-                                                                      padding: const EdgeInsets
-                                                                          .only(
-                                                                          left:
-                                                                              8.0),
-                                                                      child:
-                                                                          Text(
-                                                                        socialLinks[index]
-                                                                            [
-                                                                            "displayText"],
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                Colors.white,
-                                                                            fontSize: 13),
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            )
-                                                          : socialLinks.length <
-                                                                      5 &&
-                                                                  isMyProfile
-                                                              ? Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                          .all(
-                                                                          8.0),
-                                                                  child:
-                                                                      ElevatedButton(
-                                                                    onPressed:
-                                                                        () {
-                                                                      Navigator.pushNamed(
-                                                                          context,
-                                                                          EditProfileScreen
-                                                                              .id,
-                                                                          arguments: {
-                                                                            'isAddSocialLinkPressed':
-                                                                                true,
-                                                                            'avatarImage':
-                                                                                avatarImage,
-                                                                            'bannerImage':
-                                                                                bannerImage,
-                                                                          }).then(
-                                                                          (value) =>
-                                                                              getSelfProfileInfo());
-                                                                    },
-                                                                    child: Row(
-                                                                      mainAxisSize:
-                                                                          MainAxisSize
-                                                                              .min,
-                                                                      children: [
-                                                                        Icon(
-                                                                            Icons
-                                                                                .add,
-                                                                            color:
-                                                                                Colors.white),
-                                                                        Text(
-                                                                            'Add social link',
-                                                                            style:
-                                                                                TextStyle(color: Colors.white, fontSize: 13)),
-                                                                      ],
-                                                                    ),
-                                                                    style: ElevatedButton
-                                                                        .styleFrom(
-                                                                      backgroundColor:
-                                                                          kBackgroundColor,
-                                                                      shape:
-                                                                          RoundedRectangleBorder(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(100.0),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                )
-                                                              : null;
-                                                    }),
-                                              ),
-                                            ),
-                                          )
-                                          // :SizedBox(height: 30,),
-                                        ],
-                                        Container(
-                                          color: Colors.black,
-                                          child: TabBar(
-                                            controller: _tabController,
-                                            indicatorColor: Colors.blue,
-                                            labelColor: Colors.white,
-                                            unselectedLabelColor:
-                                                Colors.white.withOpacity(0.5),
-                                            indicatorSize:
-                                                TabBarIndicatorSize.tab,
-                                            labelStyle: TextStyle(
-                                              fontSize: 16.0,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                            tabs: <Widget>[
-                                              Tab(
-                                                text: 'Posts',
-                                              ),
-                                              Tab(text: 'Comments'),
-                                              Tab(text: 'About'),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          SliverFillRemaining(
-                            child: TabBarView(
-                              controller: _tabController,
-                              children: <Widget>[
-                                feed.isEmpty
-                                    ? EmptyDog()
-                                    : CustomScrollView(
-                                        controller: _scrollController,
-                                        slivers: [
-                                          for (var post in feed)
-                                            SliverToBoxAdapter(
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  Navigator.pushNamed(context,
-                                                      CommentsScreen.id,
-                                                      arguments: {
-                                                        "post": post
-                                                      });
-
-                                                },
-                                                child: GestureDetector(
-                                                  onTap: () {
-                                                    Navigator.pushNamed(context,
-                                                        CommentsScreen.id,
-                                                        arguments: {
-                                                          "post": post
-                                                        });
-                                                  },
-                                                  child: PostCard(
-                                                    post: post,
-                                                    isModertor: isMyProfile,
-                                                    // isModertor: isModerator,
-                                                    isCommunityFeed: true,
-                                                  ),
+                                          AnimatedBuilder(
+                                            animation:
+                                                _tabController.animation!,
+                                            builder: (context, child) {
+                                              return Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: isAppBarExpanded
+                                                        ? 20.0
+                                                        : 40.0,
+                                                    bottom: 40.0),
+                                                child: Row(
+                                                  children: [
+                                                    avatarImage.isEmpty
+                                                        ? Icon(
+                                                            Icons
+                                                                .account_circle,
+                                                            color: Colors.white,
+                                                            size:
+                                                                isAppBarExpanded
+                                                                    ? 70
+                                                                    : 20,
+                                                          )
+                                                        : ClipRRect(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        100.0),
+                                                            child: Image.network(
+                                                                avatarImage,
+                                                                width:
+                                                                    isAppBarExpanded
+                                                                        ? 70
+                                                                        : 25,
+                                                                height:
+                                                                    isAppBarExpanded
+                                                                        ? 70
+                                                                        : 25),
+                                                          ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 8.0),
+                                                      child: Text(
+                                                        displayName,
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize:
+                                                              isAppBarExpanded
+                                                                  ? 30.0
+                                                                  : 17.0,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
-                                              ),
-                                            )
-                                        ],
-                                      ),
-                                comments.isEmpty
-                                    ? EmptyDog()
-                                    : CustomScrollView(
-                                        controller: _scrollController2,
-                                        slivers: [
-                                          for (var comment in comments)
-                                            SliverToBoxAdapter(
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  Navigator.pushNamed(context,
-                                                      CommentsScreen.id,
-                                                      arguments: {
-                                                        "postId": comment['postId']
-                                                      });
-                                                },
-                                                child: Padding(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                              );
+                                            },
+                                          ),
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              if (isAppBarExpanded) ...[
+                                                Padding(
+                                                  padding: EdgeInsets.only(
+                                                      top:
+                                                          socialLinks.length < 2
+                                                              ? 220.0
+                                                              : 320.0,
+                                                      left: 16),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
                                                     children: [
-                                                      Text(comment['postTitle'], style: TextStyle(color: Colors.white, fontSize: 16,),),
-                                                      Row(
-                                                        children: [
-                                                          Text('r/${comment['subredditName']} • ${comment['score']}', style: TextStyle(color: Colors.grey, fontSize: 13,)),
-                                                          Icon(Icons.arrow_upward, color: Colors.grey, size: 15,),
-                                                      
-                                                        ],
+                                                      ElevatedButton(
+                                                        onPressed: () {
+                                                          isMyProfile
+                                                              ? Navigator.pushNamed(
+                                                                  context,
+                                                                  EditProfileScreen
+                                                                      .id,
+                                                                  arguments: {
+                                                                      'isAddSocialLinkPressed':
+                                                                          false,
+                                                                      'avatarImage':
+                                                                          avatarImage,
+                                                                      'bannerImage':
+                                                                          bannerImage,
+                                                                    }).then(
+                                                                  (value) =>
+                                                                      getSelfProfileInfo())
+                                                              : isFriend
+                                                                  ? unfollowUser(
+                                                                      username)
+                                                                  : followUser(
+                                                                      username);
+                                                        },
+                                                        child: Text(
+                                                          isMyProfile
+                                                              ? 'Edit'
+                                                              : isFriend
+                                                                  ? 'Following'
+                                                                  : 'Follow',
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                        style: ElevatedButton
+                                                            .styleFrom(
+                                                          backgroundColor:
+                                                              Colors
+                                                                  .transparent,
+                                                          shape:
+                                                              RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        100.0),
+                                                            side: BorderSide(
+                                                                color: Colors
+                                                                    .white,
+                                                                width: 1.0),
+                                                          ),
+                                                        ),
                                                       ),
-                                                      Text(comment['content'], style: TextStyle(color: Colors.grey, fontSize: 15),),
-                                                      Divider(
-                                                        color: kFillingColor,
-                                                      ),
-                                                    ]
+                                                      if (!isMyProfile) ...[
+                                                        ElevatedButton(
+                                                          onPressed: () {
+                                                            Navigator.pushNamed(
+                                                                context,
+                                                                NewMessageScreen
+                                                                    .id,
+                                                                arguments: {
+                                                                  'userName':
+                                                                      username,
+                                                                  'isReply':
+                                                                      false
+                                                                });
+                                                          },
+                                                          child: Icon(
+                                                              Icons
+                                                                  .message_outlined,
+                                                              color:
+                                                                  Colors.white,
+                                                              size: 20),
+                                                          style: ElevatedButton
+                                                              .styleFrom(
+                                                            backgroundColor:
+                                                                Colors
+                                                                    .transparent,
+                                                            shape: CircleBorder(
+                                                              side: BorderSide(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  width: 1.0),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        // ElevatedButton(
+                                                        //   onPressed: () {},
+                                                        //   child: Icon(Icons.person_add_alt_outlined,
+                                                        //       color: Colors.white, size: 25),
+                                                        //   style: ElevatedButton.styleFrom(
+                                                        //     backgroundColor: Colors.transparent,
+                                                        //     shape: CircleBorder(
+                                                        //       side: BorderSide(
+                                                        //           color: Colors.white, width: 1.0),
+                                                        //     ),
+                                                        //   ),
+                                                        // ),
+                                                      ]
+                                                    ],
                                                   ),
-                                                )
-                                              ),
-                                            )
-                                        ],
-                                      ),
-                                
-                                SingleChildScrollView(
-                                  child: Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 32.0, right: 32, left: 16),
-                                        child: Row(
-                                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(postKarma,
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.bold)),
-                                            Padding(
-                                              padding: EdgeInsets.only(
-                                                  left: ScreenSizeHandler
-                                                          .screenWidth *
-                                                      0.59),
-                                              child: Text(commentKarma,
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            bottom: 10.0, right: 32, left: 16),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text('Post Karma',
-                                                style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 13,
-                                                )),
-                                            Text('Comment Karma',
-                                                style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 13,
-                                                )),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        width: double.infinity,
-                                        padding: EdgeInsets.only(left: 16),
-                                        child: Text(
-                                          about,
-                                          style: TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                      if (!isMyProfile) ...[
-                                        GestureDetector(
-                                          onTap: () {
-                                            Navigator.pushNamed(
-                                                context, NewMessageScreen.id,
-                                                arguments: {
-                                                  'userName': username,
-                                                  'isReply': false
-                                                });
-                                          },
-                                          child: Container(
-                                            width: double.infinity,
-                                            padding: EdgeInsets.only(
-                                                top: 20, left: 16),
-                                            child: Row(
-                                              children: [
-                                                Icon(
-                                                  FontAwesomeIcons.envelope,
-                                                  color: Colors.grey,
-                                                  size: 20,
                                                 ),
                                                 Padding(
                                                   padding:
                                                       const EdgeInsets.only(
-                                                          left: 8.0),
+                                                          left: 16.0),
                                                   child: Text(
-                                                    'Send a message',
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 15,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
+                                                      'u/$username • $postKarma karma • $created',
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 13)),
                                                 ),
+                                                // isMyProfile?
+                                                Expanded(
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Container(
+                                                      height: socialLinks
+                                                                  .length <
+                                                              2
+                                                          ? 50
+                                                          : socialLinks.length <
+                                                                  4
+                                                              ? 60
+                                                              : 130,
+                                                      child: GridView.builder(
+                                                          gridDelegate:
+                                                              SliverGridDelegateWithFixedCrossAxisCount(
+                                                                  crossAxisCount:
+                                                                      2,
+                                                                  mainAxisExtent:
+                                                                      50),
+                                                          itemCount: socialLinks
+                                                                  .length +
+                                                              1,
+                                                          itemBuilder:
+                                                              (context, index) {
+                                                            var iconName = index <
+                                                                    socialLinks
+                                                                        .length
+                                                                ? socialLinks[
+                                                                        index]
+                                                                    ['appName']
+                                                                : '';
+                                                            var icon = iconMapping[
+                                                                iconName
+                                                                    .toString()
+                                                                    .toLowerCase()];
+                                                            return index !=
+                                                                    socialLinks
+                                                                        .length
+                                                                ? Padding(
+                                                                    padding:
+                                                                        const EdgeInsets
+                                                                            .all(
+                                                                            8.0),
+                                                                    child:
+                                                                        RoundedButton(
+                                                                      onTap:
+                                                                          () {
+                                                                        setState(
+                                                                            () {
+                                                                          if (socialLinks[index]['appName'] ==
+                                                                              'reddit') {
+                                                                            if (socialLinks[index]['linkOrUsername'].toString().startsWith('u/')) {
+                                                                              goToProfile(context, socialLinks[index]['linkOrUsername'].replaceFirst('u/', ''));
+                                                                            } else {
+                                                                              Navigator.pushNamed(context, SubredditScreen.id, arguments: socialLinks[index]['linkOrUsername'].replaceFirst('r/', ''));
+                                                                            }
+                                                                          } else {
+                                                                            _launchURL(socialLinks[index]['linkOrUsername']);
+                                                                          }
+                                                                        });
+                                                                      },
+                                                                      buttonHeightRatio:
+                                                                          0.06,
+                                                                      buttonWidthRatio:
+                                                                          0.1,
+                                                                      child:
+                                                                          Row(
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.spaceEvenly,
+                                                                        mainAxisSize:
+                                                                            MainAxisSize.min,
+                                                                        children: [
+                                                                          icon!,
+                                                                          Padding(
+                                                                            padding:
+                                                                                const EdgeInsets.only(left: 8.0),
+                                                                            child:
+                                                                                Text(
+                                                                              socialLinks[index]["displayText"],
+                                                                              style: TextStyle(color: Colors.white, fontSize: 13),
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  )
+                                                                : socialLinks.length <
+                                                                            5 &&
+                                                                        isMyProfile
+                                                                    ? Padding(
+                                                                        padding: const EdgeInsets
+                                                                            .all(
+                                                                            8.0),
+                                                                        child:
+                                                                            ElevatedButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                            Navigator.pushNamed(context, EditProfileScreen.id, arguments: {
+                                                                              'isAddSocialLinkPressed': true,
+                                                                              'avatarImage': avatarImage,
+                                                                              'bannerImage': bannerImage,
+                                                                            }).then((value) => getSelfProfileInfo());
+                                                                          },
+                                                                          child:
+                                                                              Row(
+                                                                            mainAxisSize:
+                                                                                MainAxisSize.min,
+                                                                            children: [
+                                                                              Icon(Icons.add, color: Colors.white),
+                                                                              Text('Add social link', style: TextStyle(color: Colors.white, fontSize: 13)),
+                                                                            ],
+                                                                          ),
+                                                                          style:
+                                                                              ElevatedButton.styleFrom(
+                                                                            backgroundColor:
+                                                                                kBackgroundColor,
+                                                                            shape:
+                                                                                RoundedRectangleBorder(
+                                                                              borderRadius: BorderRadius.circular(100.0),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      )
+                                                                    : null;
+                                                          }),
+                                                    ),
+                                                  ),
+                                                )
+                                                // :SizedBox(height: 30,),
+                                              ],
+                                              Container(
+                                                color: Colors.black,
+                                                child: TabBar(
+                                                  controller: _tabController,
+                                                  indicatorColor: Colors.blue,
+                                                  labelColor: Colors.white,
+                                                  unselectedLabelColor: Colors
+                                                      .white
+                                                      .withOpacity(0.5),
+                                                  indicatorSize:
+                                                      TabBarIndicatorSize.tab,
+                                                  labelStyle: TextStyle(
+                                                    fontSize: 16.0,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                  tabs: <Widget>[
+                                                    Tab(
+                                                      text: 'Posts',
+                                                    ),
+                                                    Tab(text: 'Comments'),
+                                                    Tab(text: 'About'),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SliverFillRemaining(
+                                  child: TabBarView(
+                                    controller: _tabController,
+                                    children: <Widget>[
+                                      feed.isEmpty
+                                          ? EmptyDog()
+                                          : CustomScrollView(
+                                              controller: _scrollController,
+                                              slivers: [
+                                                for (var post in feed)
+                                                  SliverToBoxAdapter(
+                                                    child: GestureDetector(
+                                                      onTap: () {
+                                                        Navigator.pushNamed(
+                                                            context,
+                                                            CommentsScreen.id,
+                                                            arguments: {
+                                                              "post": post
+                                                            });
+                                                      },
+                                                      child: GestureDetector(
+                                                        onTap: () {
+                                                          Navigator.pushNamed(
+                                                              context,
+                                                              CommentsScreen.id,
+                                                              arguments: {
+                                                                "post": post
+                                                              });
+                                                        },
+                                                        child: PostCard(
+                                                          post: post,
+                                                          isModertor:
+                                                              isMyProfile,
+                                                          // isModertor: isModerator,
+                                                          isCommunityFeed: true,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )
                                               ],
                                             ),
-                                          ),
-                                        ),
-                                      ],
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 8.0),
-                                        child: Container(
-                                          width: double.infinity,
-                                          color: Colors.black,
-                                          padding: EdgeInsets.only(
-                                              top: 10, left: 16, bottom: 10),
-                                          child: Text(
-                                            "TROPHIES",
-                                            style: TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 13,
-                                                fontWeight: FontWeight.bold),
-                                          ),
+                                      comments.isEmpty
+                                          ? EmptyDog()
+                                          : CustomScrollView(
+                                              controller: _scrollController2,
+                                              slivers: [
+                                                for (var comment in comments)
+                                                  SliverToBoxAdapter(
+                                                    child: GestureDetector(
+                                                        onTap: () {
+                                                          Navigator.pushNamed(
+                                                              context,
+                                                              CommentsScreen.id,
+                                                              arguments: {
+                                                                "postId":
+                                                                    comment[
+                                                                        'postId']
+                                                              });
+                                                        },
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal:
+                                                                      8.0),
+                                                          child: Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Text(
+                                                                  comment[
+                                                                      'postTitle'],
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        16,
+                                                                  ),
+                                                                ),
+                                                                Row(
+                                                                  children: [
+                                                                    Text(
+                                                                        'r/${comment['subredditName']} • ${comment['score']}',
+                                                                        style:
+                                                                            TextStyle(
+                                                                          color:
+                                                                              Colors.grey,
+                                                                          fontSize:
+                                                                              13,
+                                                                        )),
+                                                                    Icon(
+                                                                      Icons
+                                                                          .arrow_upward,
+                                                                      color: Colors
+                                                                          .grey,
+                                                                      size: 15,
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                Text(
+                                                                  comment[
+                                                                      'content'],
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .grey,
+                                                                      fontSize:
+                                                                          15),
+                                                                ),
+                                                                Divider(
+                                                                  color:
+                                                                      kFillingColor,
+                                                                ),
+                                                              ]),
+                                                        )),
+                                                  )
+                                              ],
+                                            ),
+                                      SingleChildScrollView(
+                                        child: Column(
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 32.0,
+                                                  right: 32,
+                                                  left: 16),
+                                              child: Row(
+                                                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text(postKarma,
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.bold)),
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        left: ScreenSizeHandler
+                                                                .screenWidth *
+                                                            0.59),
+                                                    child: Text(commentKarma,
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 10.0,
+                                                  right: 32,
+                                                  left: 16),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text('Post Karma',
+                                                      style: TextStyle(
+                                                        color: Colors.grey,
+                                                        fontSize: 13,
+                                                      )),
+                                                  Text('Comment Karma',
+                                                      style: TextStyle(
+                                                        color: Colors.grey,
+                                                        fontSize: 13,
+                                                      )),
+                                                ],
+                                              ),
+                                            ),
+                                            Container(
+                                              width: double.infinity,
+                                              padding:
+                                                  EdgeInsets.only(left: 16),
+                                              child: Text(
+                                                about,
+                                                style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 15,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ),
+                                            if (!isMyProfile) ...[
+                                              GestureDetector(
+                                                onTap: () {
+                                                  Navigator.pushNamed(context,
+                                                      NewMessageScreen.id,
+                                                      arguments: {
+                                                        'userName': username,
+                                                        'isReply': false
+                                                      });
+                                                },
+                                                child: Container(
+                                                  width: double.infinity,
+                                                  padding: EdgeInsets.only(
+                                                      top: 20, left: 16),
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        FontAwesomeIcons
+                                                            .envelope,
+                                                        color: Colors.grey,
+                                                        size: 20,
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                                left: 8.0),
+                                                        child: Text(
+                                                          'Send a message',
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 8.0),
+                                              child: Container(
+                                                width: double.infinity,
+                                                color: Colors.black,
+                                                padding: EdgeInsets.only(
+                                                    top: 10,
+                                                    left: 16,
+                                                    bottom: 10),
+                                                child: Text(
+                                                  "TROPHIES",
+                                                  style: TextStyle(
+                                                      color: Colors.grey,
+                                                      fontSize: 13,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],
@@ -1149,11 +1211,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                                 ),
                               ],
                             ),
-                          ),
-                        ],
-                      ),
-      ),
-    );
+            ),
+          );
   }
 
   @override

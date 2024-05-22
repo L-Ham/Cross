@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:reddit_bel_ham/components/general_components/reddit_loading_indicator.dart';
@@ -59,6 +60,7 @@ class LoginScreenState extends State<LoginScreen> {
       'email': userName,
       'userName': userName,
       'password': password,
+      'fcmToken': await FirebaseMessaging.instance.getToken()
     };
     late final response;
     String message = 'Login failed.';
@@ -78,44 +80,38 @@ class LoginScreenState extends State<LoginScreen> {
         TokenDecoder.updateToken(token);
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => const HomePageScreen()));
-      }
-      else
-      {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        behavior: SnackBarBehavior.floating,
-        margin: EdgeInsets.only(
-            bottom: ScreenSizeHandler.screenHeight * 0.12,
-            left: ScreenSizeHandler.screenWidth * 0.04,
-            right: ScreenSizeHandler.screenWidth * 0.04),
-
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        content: Center(child: Text(message)),
-        duration: const Duration(seconds: 3),
-      ));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(
+              bottom: ScreenSizeHandler.screenHeight * 0.12,
+              left: ScreenSizeHandler.screenWidth * 0.04,
+              right: ScreenSizeHandler.screenWidth * 0.04),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+          content: Center(child: Text(message)),
+          duration: const Duration(seconds: 3),
+        ));
       }
     } catch (e) {
       print(e);
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         behavior: SnackBarBehavior.floating,
         margin: EdgeInsets.only(
             bottom: ScreenSizeHandler.screenHeight * 0.12,
             left: ScreenSizeHandler.screenWidth * 0.04,
             right: ScreenSizeHandler.screenWidth * 0.04),
-
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
         content: Center(child: Text(message)),
         duration: const Duration(seconds: 3),
       ));
-    } 
-    finally {
+    } finally {
       setState(() {
         isLoading = false;
       });
-
     }
   }
 
@@ -124,7 +120,10 @@ class LoginScreenState extends State<LoginScreen> {
     print(token);
     final url = Uri.parse('$baseURL/auth/googleLogin');
 
-    final Map<String, dynamic> requestData = {'token': token};
+    final Map<String, dynamic> requestData = {
+      'token': token,
+      'fcmToken': await FirebaseMessaging.instance.getToken()
+    };
     late final response;
     String message = 'Login failed.';
     try {
@@ -143,32 +142,28 @@ class LoginScreenState extends State<LoginScreen> {
         TokenDecoder.updateToken(token);
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => HomePageScreen()));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(
+              bottom: ScreenSizeHandler.screenHeight * 0.12,
+              left: ScreenSizeHandler.screenWidth * 0.04,
+              right: ScreenSizeHandler.screenWidth * 0.04),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+          content: Center(child: Text(message)),
+          duration: const Duration(seconds: 3),
+        ));
       }
-      else 
-      {
+    } catch (e) {
+      print(e);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         behavior: SnackBarBehavior.floating,
         margin: EdgeInsets.only(
             bottom: ScreenSizeHandler.screenHeight * 0.12,
             left: ScreenSizeHandler.screenWidth * 0.04,
             right: ScreenSizeHandler.screenWidth * 0.04),
-
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        content: Center(child: Text(message)),
-        duration: const Duration(seconds: 3),
-      ));
-      }
-    } catch (e) {
-      print(e);
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        behavior: SnackBarBehavior.floating,
-        margin: EdgeInsets.only(
-            bottom: ScreenSizeHandler.screenHeight * 0.12,
-            left: ScreenSizeHandler.screenWidth * 0.04,
-            right: ScreenSizeHandler.screenWidth * 0.04),
-
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
@@ -179,7 +174,6 @@ class LoginScreenState extends State<LoginScreen> {
       setState(() {
         isLoading = false;
       });
-
     }
   }
 
@@ -301,8 +295,8 @@ class LoginScreenState extends State<LoginScreen> {
                           suffixIcon: isNameFocused
                               ? IconButton(
                                   icon: Semantics(
-                                    identifier: 'login_screen_clear_button',
-                                    child: const Icon(Icons.clear_rounded)),
+                                      identifier: 'login_screen_clear_button',
+                                      child: const Icon(Icons.clear_rounded)),
                                   onPressed: () {
                                     setState(() {
                                       nameController.clear();
@@ -345,8 +339,10 @@ class LoginScreenState extends State<LoginScreen> {
                           suffixIcon: isPassFocused
                               ? IconButton(
                                   icon: Semantics(
-                                    identifier: 'login_screen_password_visibility_button',
-                                    child: const Icon(Icons.visibility_rounded)),
+                                      identifier:
+                                          'login_screen_password_visibility_button',
+                                      child:
+                                          const Icon(Icons.visibility_rounded)),
                                   onPressed: () {
                                     setState(() {
                                       isPassObscure = !isPassObscure;

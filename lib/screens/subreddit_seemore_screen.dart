@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:reddit_bel_ham/screens/mod_tools_screen.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import '../constants.dart';
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
@@ -294,7 +295,20 @@ class _SubredditSeeMoreScreenState extends State<SubredditSeeMoreScreen> {
                   padding:
                       EdgeInsets.only(right: ScreenSizeHandler.bigger * 0.025),
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context,
+                        ModToolsScreen.id,
+                        arguments: {
+                          "communityName": widget.subreddit.name,
+                          "subredditID": widget.subreddit.id,
+                          "membersNickname": widget.subreddit.onlineNickname,
+                          "currentlyViewingNickname": widget.subreddit.onlineNickname,
+                          "communityDescription": widget.subreddit.description,
+                          "moderators": moderators,
+                        },
+                      );
+                    },
                     style: ButtonStyle(
                       padding: MaterialStateProperty.all(EdgeInsets.zero),
                       minimumSize: MaterialStateProperty.all(Size.zero),

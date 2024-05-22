@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reddit_bel_ham/components/home_page_components/post_card.dart';
 import 'package:reddit_bel_ham/components/subreddit_components/subreddit_navbar_icon.dart';
 import 'package:reddit_bel_ham/screens/subreddit_search_screen.dart';
+import 'package:reddit_bel_ham/utilities/subreddit_store.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import '../constants.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
@@ -112,6 +113,9 @@ class _SubredditScreenState extends State<SubredditScreen> {
         isMuted = data['communityDetails']['isMuted'];
         subredditLink = "http://https://reddit-bylham.me/r/${subredditName}";
       });
+
+      SubredditStore().addSubreddit(subredditName, subredditID,
+          subredditAvatarImage, int.parse(subredditMembersCount));
 
       subreddit = Subreddit(
           name: subredditName,

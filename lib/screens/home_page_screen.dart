@@ -30,6 +30,7 @@ import 'package:reddit_bel_ham/screens/notifications_settings_screen.dart';
 
 import 'package:reddit_bel_ham/utilities/screen_size_handler.dart';
 import 'package:reddit_bel_ham/services/api_service.dart';
+import 'package:reddit_bel_ham/utilities/searches_store.dart';
 import 'package:reddit_bel_ham/utilities/subreddit_store.dart';
 import 'package:reddit_bel_ham/utilities/token_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -775,13 +776,14 @@ class _DrawerBottomSheetState extends State<DrawerBottomSheet> {
                   child: SettingsTile(
                     fontColor: Colors.red,
                     onTap: () async {
-                      var result = await apiService.logout(getFCMtoken());
-                      print(result);
-                      Navigator.popUntil(context, ModalRoute.withName('/'));
+                      var result = apiService.logout(getFCMtoken());
+                      Navigator.popUntil(
+                          context, ModalRoute.withName('/'));
                       Navigator.pushNamed(context, LoginScreen.id);
                       SharedPreferences.getInstance().then((prefs) {
                         prefs.remove('token');
                         SubredditStore().clearSubreddits();
+                        SearchStore().clearSearches();
                       });
                     },
                     leadingIcon: Padding(
