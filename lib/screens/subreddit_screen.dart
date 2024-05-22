@@ -1023,7 +1023,7 @@ class _SubredditScreenState extends State<SubredditScreen> {
                           ),
                           Text(
                             "${sortType.toUpperCase()} POSTS",
-                            style: TextStyle(
+style: TextStyle(
                               color: kDisabledButtonColor,
                               fontSize: ScreenSizeHandler.bigger * 0.015,
                               fontWeight: FontWeight.bold,
